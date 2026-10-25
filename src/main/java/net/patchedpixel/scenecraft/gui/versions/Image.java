@@ -61,12 +61,6 @@ public class Image implements AutoCloseable {
             bytes = in.readAllBytes();
         }
         in = new ByteArrayInputStream(bytes);
-        if (bytes[0] != (byte) 0x89 || bytes[1] != 0x50 || bytes[2] != 0x4E || bytes[3] != 0x47) {
-            BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(bytes));
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            ImageIO.write(bufferedImage, "png", out);
-            in = new ByteArrayInputStream(out.toByteArray());
-        }
 
         return new Image(NativeImage.read(in));
     }
