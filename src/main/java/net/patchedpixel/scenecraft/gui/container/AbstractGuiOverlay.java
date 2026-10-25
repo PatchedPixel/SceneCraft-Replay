@@ -30,7 +30,6 @@ import net.patchedpixel.scenecraft.gui.OffsetGuiRenderer;
 import net.patchedpixel.scenecraft.gui.RenderInfo;
 import net.patchedpixel.scenecraft.gui.element.GuiElement;
 import net.patchedpixel.scenecraft.gui.function.*;
-import net.patchedpixel.scenecraft.gui.function.*;
 import net.patchedpixel.scenecraft.gui.utils.EventRegistrations;
 import net.patchedpixel.scenecraft.gui.utils.MouseUtils;
 import net.patchedpixel.scenecraft.gui.utils.geometry.Dimension;

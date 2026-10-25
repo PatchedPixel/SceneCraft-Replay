@@ -4,7 +4,6 @@ import com.google.common.base.Strings;
 import net.patchedpixel.scenecraft.gui.container.GuiContainer;
 import net.patchedpixel.scenecraft.gui.container.GuiPanel;
 import net.patchedpixel.scenecraft.gui.element.*;
-import net.patchedpixel.scenecraft.gui.element.*;
 import net.patchedpixel.scenecraft.gui.function.Click;
 import net.patchedpixel.scenecraft.gui.function.KeyHandler;
 import net.patchedpixel.scenecraft.gui.function.KeyInput;

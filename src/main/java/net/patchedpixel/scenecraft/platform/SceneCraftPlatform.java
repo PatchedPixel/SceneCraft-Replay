@@ -24,10 +24,10 @@ public class SceneCraftPlatform {
     private final String version;
     private SceneCraft mod;
 
-    public SceneCraftPlatform() {
-        this.version = ModLoadingContext.get().getContainer().getModInfo().getVersion().toString();
+    public SceneCraftPlatform(FMLJavaModLoadingContext context) {
+        this.version = context.getContainer().getModInfo().getVersion().toString();
 
-        ModLoadingContext.get().registerExtensionPoint(
+        context.registerExtensionPoint(
                 IExtensionPoint.DisplayTest.class,
                 () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (remoteVersion, isFromServer) -> true)
         );
@@ -36,14 +36,14 @@ public class SceneCraftPlatform {
             return;
         }
 
-        IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
+        IEventBus modBus = context.getModEventBus();
 
         modBus.addListener(this::onRegisterKeyMappings);
         modBus.addListener(this::onClientSetup);
 
         MinecraftForge.EVENT_BUS.register(new GuiEventBridge());
 
-        ModLoadingContext.get().registerExtensionPoint(
+        context.registerExtensionPoint(
                 ConfigScreenHandler.ConfigScreenFactory.class,
                 () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, parent) -> {
                     if (this.mod == null) {

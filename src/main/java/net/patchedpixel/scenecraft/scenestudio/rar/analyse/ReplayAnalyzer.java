@@ -26,7 +26,6 @@ import net.patchedpixel.scenecraft.scenestudio.protocol.Packet;
 import net.patchedpixel.scenecraft.scenestudio.protocol.PacketType;
 import net.patchedpixel.scenecraft.scenestudio.protocol.PacketTypeRegistry;
 import net.patchedpixel.scenecraft.scenestudio.protocol.packets.*;
-import net.patchedpixel.scenecraft.scenestudio.protocol.packets.*;
 import net.patchedpixel.scenecraft.scenestudio.protocol.registry.Registries;
 import net.patchedpixel.scenecraft.scenestudio.rar.cache.WriteableCache;
 import net.patchedpixel.scenecraft.scenestudio.rar.state.Chunk;

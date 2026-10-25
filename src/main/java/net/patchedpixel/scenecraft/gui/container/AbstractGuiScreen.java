@@ -31,7 +31,6 @@ import net.patchedpixel.scenecraft.gui.RenderInfo;
 import net.patchedpixel.scenecraft.gui.element.GuiElement;
 import net.patchedpixel.scenecraft.gui.element.GuiLabel;
 import net.patchedpixel.scenecraft.gui.function.*;
-import net.patchedpixel.scenecraft.gui.function.*;
 import net.patchedpixel.scenecraft.gui.utils.geometry.Dimension;
 import net.patchedpixel.scenecraft.gui.utils.geometry.Point;
 import net.patchedpixel.scenecraft.gui.utils.geometry.ReadableDimension;
