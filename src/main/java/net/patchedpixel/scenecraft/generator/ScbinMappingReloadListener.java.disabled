@@ -1,0 +1,33 @@
+package net.patchedpixel.scenecraft.generator;
+
+import com.mojang.logging.LogUtils;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import org.slf4j.Logger;
+
+import java.io.IOException;
+import java.nio.file.Path;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+public final class ScbinMappingReloadListener implements ResourceManagerReloadListener {
+    private static final Logger LOGGER = LogUtils.getLogger();
+    private static final String OUTPUT_PROPERTY = "scenecraft.generateScbinMapping";
+
+    private final AtomicBoolean done = new AtomicBoolean();
+
+    @Override
+    public void onResourceManagerReload(ResourceManager resourceManager) {
+        String value = System.getProperty(OUTPUT_PROPERTY);
+        if (value == null || !done.compareAndSet(false, true)) {
+            return;
+        }
+
+        Path output = value.equals("true") ? ScbinMappingGeneratorV2.defaultOutput() : Path.of(value);
+
+        try {
+            ScbinMappingGeneratorV2.generate(output);
+        } catch (IOException | RuntimeException e) {
+            LOGGER.error("Failed to generate mapping", e);
+        }
+    }
+}

@@ -2,17 +2,32 @@ modLoader="javafml"
 
 loaderVersion="${loader_version_range}"
 license="${mod_license}"
-issueTrackerURL="https://github.com/PatchedPixel/SceneCraft/issues"
+issueTrackerURL="https://github.com/PatchedPixel/SceneCraft-Replay/issues"
 
 [[mods]]
 modId="${mod_id}"
 version="${mod_version}"
 displayName="${mod_name}"
-#displayURL="https://modrinth.com/mod/scenecraft-replay"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/scenecraft-replay"
 logoFile="favicon_logo.png"
 credits="johni0702 and CrushedPixel as original ReplayMod developers"
 authors="${mod_authors}"
 description='''${mod_description}'''
+
+# FRAPI intregation
+[modproperties.${mod_id}]
+"frex:flawless_frames_handler" = "net.patchedpixel.scenecraft.render.utils.FlawlessFrames"
+
+# Better Mod List integration
+[modproperties.modmenu]
+badges=["client"]
+links=[
+    "Original Mod=https://modrinth.com/mod/replaymod",
+    "Modrinth=https://modrinth.com/mod/scenecraft-replay",
+    "CurseForge=https://www.curseforge.com/minecraft/mc-mods/scenecraft-replay"
+]
+contributors=[]
+sources="https://github.com/PatchedPixel/SceneCraft-Replay"
 
 [[dependencies.${mod_id}]]
     modId="forge"

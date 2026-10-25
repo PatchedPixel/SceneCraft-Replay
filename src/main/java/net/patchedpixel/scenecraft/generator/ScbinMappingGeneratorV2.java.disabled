@@ -1,0 +1,254 @@
+package net.patchedpixel.scenecraft.generator;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import net.minecraft.SharedConstants;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+public final class ScbinMappingGeneratorV2 {
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
+    public static Path defaultOutput() {
+        return Paths.get(System.getProperty("user.home"), "Downloads", "mapping.json");
+    }
+
+    public static void generate(Path output) throws IOException {
+        Map<String, Object> existingMaster = loadExistingMapping(defaultOutput());
+
+        Map<String, Object> mapping = new LinkedHashMap<>();
+        mapping.put("targetVersion", "mc" + SharedConstants.getCurrentVersion().getId());
+
+        mapping.put("entities", generateRegistry(BuiltInRegistries.ENTITY_TYPE, getRegistryMap(existingMaster, "entities")));
+        mapping.put("blocks", generateRegistry(BuiltInRegistries.BLOCK, getRegistryMap(existingMaster, "blocks")));
+        mapping.put("items", generateRegistry(BuiltInRegistries.ITEM, getRegistryMap(existingMaster, "items")));
+        mapping.put("sounds", generateRegistry(BuiltInRegistries.SOUND_EVENT, getRegistryMap(existingMaster, "sounds")));
+        mapping.put("particles", generateRegistry(BuiltInRegistries.PARTICLE_TYPE, getRegistryMap(existingMaster, "particles")));
+
+        if (output.getParent() != null) {
+            Files.createDirectories(output.getParent());
+        }
+
+        Files.writeString(output, GSON.toJson(mapping));
+        System.out.println("Generated mapping: " + output.toAbsolutePath());
+    }
+
+    private static Map<String, Object> loadExistingMapping(Path path) {
+        if (Files.exists(path)) {
+            try {
+                String content = Files.readString(path);
+                return GSON.fromJson(content, new TypeToken<Map<String, Object>>(){}.getType());
+            } catch (Exception e) {
+                System.err.println("Failed to read the old mapping from Downloads; creating a new one from scratch.");
+            }
+        }
+        return null;
+    }
+
+    private static Map<String, String> getRegistryMap(Map<String, Object> master, String key) {
+        if (master != null && master.containsKey(key)) {
+            try {
+                return (Map<String, String>) master.get(key);
+            } catch (Exception ignored) {}
+        }
+        return new LinkedHashMap<>();
+    }
+
+    private static <T> Map<String, String> generateRegistry(Registry<T> registry, Map<String, String> oldRegistryMap) {
+        Map<String, String> result = new LinkedHashMap<>();
+        Set<String> usedCodes = new LinkedHashSet<>();
+
+        for (Map.Entry<String, String> entry : oldRegistryMap.entrySet()) {
+            String id = entry.getKey();
+            String code = entry.getValue();
+
+            if (code.indexOf('.') >= 0) {
+                continue;
+            }
+
+            if (registry.containsKey(ResourceLocation.parse(id))) {
+                result.put(id, code);
+                usedCodes.add(code);
+            }
+        }
+
+        List<ResourceLocation> ids = registry.keySet().stream().sorted(Comparator.comparing(ResourceLocation::toString)).toList();
+
+        for (ResourceLocation id : ids) {
+            String idStr = id.toString();
+            if (!result.containsKey(idStr)) {
+                String code = generateCode(id, usedCodes);
+                result.put(idStr, code);
+            }
+        }
+        return result;
+    }
+
+    private static String generateCode(ResourceLocation id, Set<String> usedCodes) {
+        String name = id.getPath().replace(".", "");
+
+        if (!name.contains("_")) {
+            for (int length = 1; length <= 3; length++) {
+                if (length > name.length()) {
+                    break;
+                }
+
+                String candidate = name.substring(0, length);
+
+                if (!usedCodes.contains(candidate)) {
+                    usedCodes.add(candidate);
+                    return candidate;
+                }
+            }
+        }
+
+        String[] words = name.split("_");
+
+        if (words.length <= 3) {
+            String initialCode = getInitialCode(words);
+
+            if (!initialCode.isEmpty() && initialCode.length() <= 3 && !usedCodes.contains(initialCode)) {
+                usedCodes.add(initialCode);
+                return initialCode;
+            }
+
+            List<String> wordCandidates = generateWordCandidates(words);
+
+            for (String candidate : wordCandidates) {
+                if (candidate.length() <= 3 && !usedCodes.contains(candidate)) {
+                    usedCodes.add(candidate);
+                    return candidate;
+                }
+            }
+        }
+
+        List<String> candidates = new ArrayList<>();
+
+        generateCombinations(name.replace("_", ""), 0, 3, new StringBuilder(), candidates);
+
+        for (String candidate : candidates) {
+            if (candidate.length() > 3) {
+                continue;
+            }
+
+            if (!usedCodes.contains(candidate)) {
+                usedCodes.add(candidate);
+                return candidate;
+            }
+        }
+        throw new IllegalStateException("Could not generate unique mapping code for: " + id);
+    }
+
+    private static String getInitialCode(String[] words) {
+        StringBuilder result = new StringBuilder();
+
+        for (String word : words) {
+            if (word.isEmpty()) {
+                continue;
+            }
+
+            result.append(word.charAt(0));
+
+            if (result.length() == 3) {
+                break;
+            }
+        }
+        return result.toString();
+    }
+
+    private static List<String> generateWordCandidates(String[] words) {
+        List<String> result = new ArrayList<>();
+
+        if (words.length == 0) {
+            return result;
+        }
+
+        if (words.length == 3) {
+            for (int a = 0; a < words[0].length(); a++) {
+                for (int b = 0; b < words[1].length(); b++) {
+                    for (int c = 0; c < words[2].length(); c++) {
+                        String candidate = "" + words[0].charAt(a) + words[1].charAt(b) + words[2].charAt(c);
+                        result.add(candidate);
+                    }
+                }
+            }
+            return result;
+        }
+
+        if (words.length == 2) {
+            for (int a = 0; a < words[0].length(); a++) {
+                for (int b = 0; b < words[1].length(); b++) {
+                    result.add("" + words[0].charAt(a) + words[1].charAt(b));
+                }
+            }
+
+            for (int a = 0; a < words[0].length(); a++) {
+                for (int b = 0; b < words[1].length(); b++) {
+                    for (int c = b + 1;
+                         c < words[1].length();
+                         c++) {
+
+                        result.add("" + words[0].charAt(a) + words[1].charAt(b) + words[1].charAt(c));
+                    }
+                }
+            }
+
+            for (int a = 0; a < words[0].length(); a++) {
+                for (int b = a + 1;
+                     b < words[0].length();
+                     b++) {
+
+                    for (int c = 0;
+                         c < words[1].length();
+                         c++) {
+
+                        result.add("" + words[0].charAt(a) + words[0].charAt(b) + words[1].charAt(c));
+                    }
+                }
+            }
+            return result;
+        }
+
+        if (words.length > 3) {
+            for (int a = 0; a < words[0].length(); a++) {
+                for (int b = 0; b < words[1].length(); b++) {
+                    for (int c = 0; c < words[2].length(); c++) {
+                        result.add("" + words[0].charAt(a) + words[1].charAt(b) + words[2].charAt(c));
+                    }
+                }
+            }
+            return result;
+        }
+        return result;
+    }
+
+    private static void generateCombinations(String name, int start, int maxLength, StringBuilder current, List<String> result) {
+        if (!current.isEmpty()) {
+            result.add(current.toString());
+        }
+
+        if (current.length() == maxLength) {
+            return;
+        }
+
+        for (int i = start; i < name.length(); i++) {
+            current.append(name.charAt(i));
+            generateCombinations(name, i + 1, maxLength, current, result);
+            current.deleteCharAt(current.length() - 1);
+        }
+    }
+}
