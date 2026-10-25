@@ -16,10 +16,8 @@ import net.patchedpixel.scenecraft.gui.versions.callbacks.InitScreenCallback;
 import net.patchedpixel.scenecraft.gui.versions.callbacks.OpenGuiScreenCallback;
 import net.patchedpixel.scenecraft.gui.versions.callbacks.PostRenderScreenCallback;
 import net.patchedpixel.scenecraft.gui.versions.callbacks.PreTickCallback;
-
 import net.patchedpixel.scenecraft.core.versions.MCVer;
 import net.minecraft.client.gui.GuiGraphics;
-
 import net.patchedpixel.scenecraft.gui.versions.callbacks.KeyboardCallback;
 import net.patchedpixel.scenecraft.gui.versions.callbacks.MouseCallback;
 

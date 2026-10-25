@@ -109,9 +109,13 @@ public class ConnectionEventHandler {
             Channel channel = networkManager.channel();
             packetListener = new PacketListener(core, channel, outputPath, replayFile, metaData);
 
-            String target = PacketListener.DECODER_KEY;
-            channel.pipeline().addBefore(target, PacketListener.RAW_RECORDER_KEY, packetListener);
-            channel.pipeline().addAfter(target, PacketListener.DECODED_RECORDER_KEY, packetListener.new DecodedPacketListener());
+            if(channel.pipeline().get(PacketListener.DECODER_KEY) != null) {
+                channel.pipeline().addBefore(PacketListener.DECODER_KEY, PacketListener.RAW_RECORDER_KEY, packetListener);
+                channel.pipeline().addAfter(PacketListener.DECODER_KEY, PacketListener.DECODED_RECORDER_KEY, packetListener.new DecodedPacketListener());
+            } else {
+                channel.pipeline().addBefore("packet_handler", PacketListener.RAW_RECORDER_KEY, packetListener);
+                channel.pipeline().addAfter(PacketListener.RAW_RECORDER_KEY, PacketListener.DECODED_RECORDER_KEY, packetListener.new DecodedPacketListener());
+            }
 
             recordingEventHandler = new RecordingEventHandler(packetListener);
             recordingEventHandler.register();

@@ -57,12 +57,12 @@ public class CameraPathExporter {
         Entity entity = mc.getCameraEntity() == null ? mc.player : mc.getCameraEntity();
 
         net.minecraft.client.Camera camera = mc.gameRenderer.getMainCamera();
-        Vec3 vec = camera.position();
+        Vec3 vec = camera.getPosition();
         float x = (float) vec.x();
         float y = (float) vec.y();
         float z = (float) vec.z();
-        float yaw = camera.yRot() + 180;
-        float pitch = camera.xRot();
+        float yaw = camera.getYRot() + 180;
+        float pitch = camera.getXRot();
         float roll = entity instanceof CameraEntity ? ((CameraEntity) entity).roll : 0;
 
         Quaternionf quatYaw = new Quaternionf().rotationAxis((float) Math.toRadians(yaw), 0, -1, 0);

@@ -47,6 +47,9 @@ import java.util.List;
 import static net.patchedpixel.scenecraft.core.versions.MCVer.*;
 
 public class MinecraftGuiRenderer implements GuiRenderer {
+    public static final float LAYER_Z_STEP = 20f;
+    private static final float OVERLAY_Z = 0.1f;
+
     private final Minecraft mc = getMinecraft();
 
     private final GuiGraphics context;
@@ -208,10 +211,10 @@ public class MinecraftGuiRenderer implements GuiRenderer {
         RenderSystem.enableColorLogicOp();
         RenderSystem.logicOp(GlStateManager.LogicOp.OR_REVERSE);
         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-        buffer.vertex(matrix, left, bottom, 0).endVertex();
-        buffer.vertex(matrix, right, bottom, 0).endVertex();
-        buffer.vertex(matrix, right, top, 0).endVertex();
-        buffer.vertex(matrix, left, top, 0).endVertex();
+        buffer.vertex(matrix, left, bottom, OVERLAY_Z).endVertex();
+        buffer.vertex(matrix, right, bottom, OVERLAY_Z).endVertex();
+        buffer.vertex(matrix, right, top, OVERLAY_Z).endVertex();
+        buffer.vertex(matrix, left, top, OVERLAY_Z).endVertex();
         BufferUploader.drawWithShader(buffer.end());
         RenderSystem.disableColorLogicOp();
         RenderSystem.setShaderColor(1, 1, 1, 1);

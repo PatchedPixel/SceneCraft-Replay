@@ -85,23 +85,23 @@ public abstract class MixinClientPacketListener {
 
     @Inject(method = "handleSetBorderLerpSize", at = @At("HEAD"))
     private void scenecraft$lerpStart(ClientboundSetBorderLerpSizePacket packet, CallbackInfo ci) {
-        SceneCraftReplay.pending = FullReplaySender.borderPacketTime(packet);
+        SceneCraftReplay.pendingBorderReplayTime = FullReplaySender.borderPacketTime(packet);
     }
 
     @Inject(method = "handleSetBorderLerpSize", at = @At("RETURN"))
     private void scenecraft$lerpEnd(ClientboundSetBorderLerpSizePacket packet, CallbackInfo ci) {
-        SceneCraftReplay.pending = -1L;
+        SceneCraftReplay.pendingBorderReplayTime = -1L;
         FullReplaySender.forgetBorderPacket(packet);
     }
 
     @Inject(method = "handleInitializeBorder", at = @At("HEAD"))
     private void scenecraft$initStart(ClientboundInitializeBorderPacket packet, CallbackInfo ci) {
-        SceneCraftReplay.pending = FullReplaySender.borderPacketTime(packet);
+        SceneCraftReplay.pendingBorderReplayTime = FullReplaySender.borderPacketTime(packet);
     }
 
     @Inject(method = "handleInitializeBorder", at = @At("RETURN"))
     private void scenecraft$initEnd(ClientboundInitializeBorderPacket packet, CallbackInfo ci) {
-        SceneCraftReplay.pending = -1L;
+        SceneCraftReplay.pendingBorderReplayTime = -1L;
         FullReplaySender.forgetBorderPacket(packet);
     }
 }

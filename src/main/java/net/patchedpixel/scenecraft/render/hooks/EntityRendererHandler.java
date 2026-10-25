@@ -16,7 +16,6 @@ import net.minecraft.client.gui.screens.Screen;
 
 import net.patchedpixel.scenecraft.core.events.PostRenderCallback;
 import net.patchedpixel.scenecraft.core.events.PreRenderCallback;
-import net.minecraft.util.Util;
 
 import java.io.IOException;
 

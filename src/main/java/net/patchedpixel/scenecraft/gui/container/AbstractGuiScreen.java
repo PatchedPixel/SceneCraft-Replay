@@ -218,7 +218,13 @@ public abstract class AbstractGuiScreen<T extends AbstractGuiScreen<T>> extends 
             }
             MinecraftGuiRenderer renderer = new MinecraftGuiRenderer(stack);
             for (int layer = 0; layer <= layers; layer++) {
-                draw(renderer, screenSize, renderInfo.layer(layer));
+                stack.pose().pushPose();
+                stack.pose().translate(0, 0, layer * MinecraftGuiRenderer.LAYER_Z_STEP);
+                try {
+                    draw(renderer, screenSize, renderInfo.layer(layer));
+                } finally {
+                    stack.pose().popPose();
+                }
             }
         }
 

@@ -27,8 +27,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Optional;
@@ -50,7 +49,7 @@ public class SceneCraftReplay implements Module {
         return replayHandler;
     }
 
-    public static long pending = -1L;
+    public static long pendingBorderReplayTime = -1L;
 
     public SceneCraftReplay(SceneCraft core) {
         this.core = core;
@@ -77,49 +76,39 @@ public class SceneCraftReplay implements Module {
             }
         }, true);
 
-        registry.registerKeyBinding("scenecraft.input.thumbnail", InputConstants.KEY_N, new Runnable() {
-            @Override
-            public void run() {
-                if (replayHandler != null) {
-                    Minecraft mc = MCVer.getMinecraft();
-                    ListenableFuture<NoGuiScreenshot> future = NoGuiScreenshot.take(mc, 1280, 720);
-                    Futures.addCallback(future, new FutureCallback<NoGuiScreenshot>() {
-                        @Override
-                        public void onSuccess(NoGuiScreenshot result) {
-                            try {
-                                core.printInfoToChat("scenecraft.chat.savingthumb");
-                                @SuppressWarnings("deprecation") // there's no easy way to produce jpg images from NativeImage
-                                BufferedImage image = result.getImage().toBufferedImage();
-                                // Encoding with alpha fails on OpenJDK and produces broken image on Sun JDK.
-                                BufferedImage bgrImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_3BYTE_BGR);
-                                Graphics graphics = bgrImage.getGraphics();
-                                graphics.drawImage(image, 0, 0, null);
-                                graphics.dispose();
-                                java.io.ByteArrayOutputStream thumbOut = new java.io.ByteArrayOutputStream();
-                                javax.imageio.ImageIO.write(bgrImage, "jpg", thumbOut);
-                                replayHandler.getReplayFile().writeThumbBytes(thumbOut.toByteArray());
-                                core.printInfoToChat("scenecraft.chat.savedthumb");
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Throwable t) {
-                            t.printStackTrace();
+        registry.registerKeyBinding("scenecraft.input.thumbnail", InputConstants.KEY_N, () -> {
+            if (replayHandler != null) {
+                Minecraft mc = MCVer.getMinecraft();
+                ListenableFuture<NoGuiScreenshot> future = NoGuiScreenshot.take(mc, 1280, 720);
+                Futures.addCallback(future, new FutureCallback<>() {
+                    @Override
+                    public void onSuccess(NoGuiScreenshot result) {
+                        try {
+                            core.printInfoToChat("scenecraft.chat.savingthumb");
+                            ByteArrayOutputStream thumbOut = new ByteArrayOutputStream();
+                            result.getImage().writePNG(thumbOut);
+                            replayHandler.getReplayFile().writeThumbBytes(thumbOut.toByteArray());
+                            core.printInfoToChat("scenecraft.chat.savedthumb");
+                        } catch (IOException e) {
+                            e.printStackTrace();
                             core.printWarningToChat("scenecraft.chat.failedthumb");
+                        } finally {
+                            result.getImage().close();
                         }
-                    }, Runnable::run);
-                }
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        t.printStackTrace();
+                        core.printWarningToChat("scenecraft.chat.failedthumb");
+                    }
+                }, Runnable::run);
             }
         }, true);
 
-        keyPlayPause = registry.registerKeyBinding("scenecraft.input.playpause", InputConstants.KEY_P, new Runnable() {
-            @Override
-            public void run() {
-                if (replayHandler != null) {
-                    replayHandler.getOverlay().playPauseButton.onClick(new Click(-1, -1, 0, 0));
-                }
+        keyPlayPause = registry.registerKeyBinding("scenecraft.input.playpause", InputConstants.KEY_P, () -> {
+            if (replayHandler != null) {
+                replayHandler.getOverlay().playPauseButton.onClick(new Click(-1, -1, 0, 0));
             }
         }, true);
 
@@ -138,14 +127,14 @@ public class SceneCraftReplay implements Module {
 
     @Override
     public void initClient() {
-        cameraControllerRegistry.register("scenecraft.camera.classic", new Function<CameraEntity, CameraController>() {
+        cameraControllerRegistry.register("scenecraft.camera.classic", new Function<>() {
             @Nullable
             @Override
             public CameraController apply(CameraEntity cameraEntity) {
                 return new ClassicCameraController(cameraEntity);
             }
         });
-        cameraControllerRegistry.register("scenecraft.camera.vanilla", new Function<CameraEntity, CameraController>() {
+        cameraControllerRegistry.register("scenecraft.camera.vanilla", new Function<>() {
             @Nullable
             @Override
             public CameraController apply(@Nullable CameraEntity cameraEntity) {
@@ -204,10 +193,6 @@ public class SceneCraftReplay implements Module {
 
     public Logger getLogger() {
         return LOGGER;
-    }
-
-    public CameraControllerRegistry getCameraControllerRegistry() {
-        return cameraControllerRegistry;
     }
 
     public CameraController createCameraController(CameraEntity cameraEntity) {

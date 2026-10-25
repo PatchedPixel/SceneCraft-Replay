@@ -7,7 +7,7 @@ import net.patchedpixel.scenecraft.core.versions.MCVer;
 import net.patchedpixel.scenecraft.gui.utils.color.Color;
 import net.patchedpixel.scenecraft.gui.utils.color.ReadableColor;
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
 import net.minecraftforge.fml.ModList;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 

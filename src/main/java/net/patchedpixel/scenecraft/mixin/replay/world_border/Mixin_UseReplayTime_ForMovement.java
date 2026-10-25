@@ -16,7 +16,7 @@ public class Mixin_UseReplayTime_ForMovement {
 
     @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/Util;getMillis()J"))
     private long scenecraft$beginTime() {
-        long packetTime = SceneCraftReplay.pending;
+        long packetTime = SceneCraftReplay.pendingBorderReplayTime;
         return packetTime >= 0L ? packetTime : scenecraft$replayNowOrReal();
     }
 

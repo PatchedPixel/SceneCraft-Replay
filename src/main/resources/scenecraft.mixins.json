@@ -42,6 +42,7 @@
     "replay.MixinRenderArrow",
     "replay.MixinRenderItem",
     "replay.MixinRenderLivingBase",
+    "replay.NetworkConstantsAccessor",
     "replay.entity_tracking.Mixin_EntityExt",
     "replay.world_border.Mixin_UseReplayTime_ForMovement",
     "replay.world_border.Mixin_UseReplayTime_ForTexture"

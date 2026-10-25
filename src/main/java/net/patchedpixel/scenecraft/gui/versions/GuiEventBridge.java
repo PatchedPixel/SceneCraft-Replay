@@ -1,6 +1,7 @@
 package net.patchedpixel.scenecraft.gui.versions;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.gui.GuiGraphics;
 import net.patchedpixel.scenecraft.core.versions.MCVer;
 import net.patchedpixel.scenecraft.gui.function.CharInput;
 import net.patchedpixel.scenecraft.gui.function.Click;
@@ -94,7 +95,14 @@ public class GuiEventBridge {
 
     @SubscribeEvent
     public void onRenderPost(ScreenEvent.Render.Post event) {
-        PostRenderScreenCallback.EVENT.invoker().postRenderScreen(event.getGuiGraphics(), event.getPartialTick());
+        GuiGraphics graphics = event.getGuiGraphics();
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, 400);
+        try {
+            PostRenderScreenCallback.EVENT.invoker().postRenderScreen(graphics, event.getPartialTick());
+        } finally {
+            graphics.pose().popPose();
+        }
     }
 
     @SubscribeEvent

@@ -53,7 +53,6 @@ import static net.patchedpixel.scenecraft.core.versions.MCVer.literalText;
 import com.mojang.blaze3d.platform.Window;
 
 public abstract class AbstractGuiOverlay<T extends AbstractGuiOverlay<T>> extends AbstractGuiContainer<T> {
-
     private final UserInputGuiScreen userInputGuiScreen = new UserInputGuiScreen();
     private final EventHandler eventHandler = new EventHandler();
     private boolean visible;
@@ -212,7 +211,13 @@ public abstract class AbstractGuiOverlay<T extends AbstractGuiOverlay<T>> extend
             }
             MinecraftGuiRenderer renderer = new MinecraftGuiRenderer(stack);
             for (int layer = 0; layer <= layers; layer++) {
-                draw(renderer, screenSize, renderInfo.layer(layer));
+                stack.pose().pushPose();
+                stack.pose().translate(0, 0, layer * MinecraftGuiRenderer.LAYER_Z_STEP);
+                try {
+                    draw(renderer, screenSize, renderInfo.layer(layer));
+                } finally {
+                    stack.pose().popPose();
+                }
             }
         }
 

@@ -34,48 +34,45 @@ public class NoGuiScreenshot {
 
     public static ListenableFuture<NoGuiScreenshot> take(final Minecraft mc, final int width, final int height) {
         final SettableFuture<NoGuiScreenshot> future = SettableFuture.create();
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (future.isCancelled()) {
-                    return;
-                }
+        Runnable runnable = () -> {
+            if (future.isCancelled()) {
+                return;
+            }
 
-                final boolean guiHidden = mc.options.hideGui;
-                final Screen orgScreen = mc.screen;
-                try {
-                    mc.screen = null;
-                    mc.options.hideGui = true;
+            final boolean guiHidden = mc.options.hideGui;
+            final Screen orgScreen = mc.screen;
+            try {
+                mc.screen = null;
+                mc.options.hideGui = true;
 
-                    mc.gameRenderer.render(mc.getFrameTime(), Util.getNanos(), true);
-                } catch (Throwable t) {
-                    future.setException(t);
-                    return;
-                } finally {
-                    mc.screen = orgScreen;
-                    mc.options.hideGui = guiHidden;
-                }
+                mc.gameRenderer.render(mc.getFrameTime(), Util.getNanos(), true);
+            } catch (Throwable t) {
+                future.setException(t);
+                return;
+            } finally {
+                mc.screen = orgScreen;
+                mc.options.hideGui = guiHidden;
+            }
 
-                // The frame without GUI has been rendered
-                // Read it, create the screenshot and finish the future
-                try {
-                    Image image = new Image(Screenshot.takeScreenshot(mc.getMainRenderTarget()));
-                    int imageWidth = image.getWidth();
-                    int imageHeight = image.getHeight();
+            // The frame without GUI has been rendered
+            // Read it, create the screenshot and finish the future
+            try {
+                Image image = new Image(Screenshot.takeScreenshot(mc.getMainRenderTarget()));
+                int imageWidth = image.getWidth();
+                int imageHeight = image.getHeight();
 
-                    // Scale & crop
-                    float scaleFactor = Math.max((float) width / imageWidth, (float) height / imageHeight);
-                    int croppedWidth = Math.min(Math.max(0, (int) (width / scaleFactor)), imageWidth);
-                    int croppedHeight = Math.min(Math.max(0, (int) (height / scaleFactor)), imageHeight);
-                    int offsetX = (imageWidth - croppedWidth) / 2;
-                    int offsetY = (imageHeight - croppedHeight) / 2;
-                    image = image.scaledSubRect(offsetX, offsetY, croppedWidth, croppedHeight, width, height);
+                // Scale & crop
+                float scaleFactor = Math.max((float) width / imageWidth, (float) height / imageHeight);
+                int croppedWidth = Math.min(Math.max(0, (int) (width / scaleFactor)), imageWidth);
+                int croppedHeight = Math.min(Math.max(0, (int) (height / scaleFactor)), imageHeight);
+                int offsetX = (imageWidth - croppedWidth) / 2;
+                int offsetY = (imageHeight - croppedHeight) / 2;
+                image = image.scaledSubRect(offsetX, offsetY, croppedWidth, croppedHeight, width, height);
 
-                    // Finish
-                    future.set(new NoGuiScreenshot(image, width, height));
-                } catch (Throwable t) {
-                    future.setException(t);
-                }
+                // Finish
+                future.set(new NoGuiScreenshot(image, width, height));
+            } catch (Throwable t) {
+                future.setException(t);
             }
         };
 

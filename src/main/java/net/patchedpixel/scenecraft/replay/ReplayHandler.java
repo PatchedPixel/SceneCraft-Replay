@@ -26,6 +26,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.embedded.EmbeddedChannel;
+import net.minecraftforge.network.NetworkConstants;
+import net.patchedpixel.scenecraft.mixin.replay.NetworkConstantsAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientHandshakePacketListenerImpl;
 import net.minecraft.CrashReport;
@@ -42,12 +44,7 @@ import java.io.IOException;
 import java.util.*;
 
 import net.minecraft.client.gui.screens.LevelLoadingScreen;
-
-
-
-
 import net.minecraft.network.protocol.PacketFlow;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -183,6 +180,7 @@ public class ReplayHandler {
         channel.pipeline().addLast("bundler", new PacketBundlePacker(PacketFlow.CLIENTBOUND));
         channel.pipeline().addLast("packet_handler", networkManager);
         channel.pipeline().fireChannelActive();
+        channel.attr(NetworkConstantsAccessor.sceneCraft$getFmlNetVersion()).set(NetworkConstants.NOVERSION);
 
         networkManager.setProtocol(ConnectionProtocol.LOGIN);
         networkManager.setListener(new ClientHandshakePacketListenerImpl(

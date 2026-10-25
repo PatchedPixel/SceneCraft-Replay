@@ -19,7 +19,7 @@ public abstract class Mixin_ShowSpectatedHand_Iris {
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/multiplayer/MultiPlayerGameMode;m_105295_()Lnet/minecraft/world/level/GameType;",
-                    remap = true
+                    remap = false
             ),
             require = 0
     )
