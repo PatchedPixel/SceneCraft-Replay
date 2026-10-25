@@ -1,6 +1,9 @@
-package net.patchedpixel.scenecraft.core;
+package net.patchedpixel.scenecraft;
 
 import net.patchedpixel.scenecraft.compat.SceneCraftCompat;
+import net.patchedpixel.scenecraft.core.Module;
+import net.patchedpixel.scenecraft.core.Setting;
+import net.patchedpixel.scenecraft.core.SettingsRegistry;
 import net.patchedpixel.scenecraft.core.files.ReplayFilesService;
 import net.patchedpixel.scenecraft.core.files.ReplayFoldersService;
 import net.patchedpixel.scenecraft.core.gui.GuiBackgroundProcesses;
@@ -10,6 +13,8 @@ import net.patchedpixel.scenecraft.core.versions.scheduler.Scheduler;
 import net.patchedpixel.scenecraft.core.versions.scheduler.SchedulerImpl;
 import net.patchedpixel.scenecraft.editor.SceneCraftEditor;
 import net.patchedpixel.scenecraft.extras.SceneCraftExtras;
+import net.patchedpixel.scenecraft.platform.KeyBindingRegistry;
+import net.patchedpixel.scenecraft.platform.SceneCraftPlatform;
 import net.patchedpixel.scenecraft.record.SceneCraftRecorder;
 import net.patchedpixel.scenecraft.render.SceneCraftRender;
 import net.patchedpixel.scenecraft.replay.SceneCraftReplay;
@@ -29,7 +34,7 @@ import java.util.concurrent.TimeoutException;
 
 import static net.patchedpixel.scenecraft.core.versions.MCVer.identifier;
 
-public class SceneCraft implements Module, Scheduler {
+public class SceneCraft implements net.patchedpixel.scenecraft.core.Module, Scheduler {
     public static final String MOD_ID = "scenecraft";
 
     public static final ResourceLocation TEXTURE = identifier(SceneCraft.MOD_ID, "replay_gui.png");
@@ -37,29 +42,27 @@ public class SceneCraft implements Module, Scheduler {
 
     private static final Minecraft mc = MCVer.getMinecraft();
 
-    private final SceneCraftBackend backend;
+    private final SceneCraftPlatform backend;
     private final SchedulerImpl scheduler = new SchedulerImpl();
     private final KeyBindingRegistry keyBindingRegistry = new KeyBindingRegistry();
     private final SettingsRegistry settingsRegistry = new SettingsRegistry();
-    {
-        settingsRegistry.register(Setting.class);
-    }
+    { settingsRegistry.register(Setting.class); }
 
     { instance = this; }
     public static SceneCraft instance;
 
-    private final List<Module> modules = new ArrayList<>();
+    private final List<net.patchedpixel.scenecraft.core.Module> modules = new ArrayList<>();
 
     private final GuiBackgroundProcesses backgroundProcesses = new GuiBackgroundProcesses();
     public final ReplayFoldersService folders = new ReplayFoldersService(settingsRegistry);
     public final ReplayFilesService files = new ReplayFilesService(folders);
 
-    public SceneCraft(SceneCraftBackend backend) {
+    public SceneCraft(SceneCraftPlatform backend) {
         this.backend = backend;
 
         I18n.setI18n(net.minecraft.client.resources.language.I18n::get);
 
-        // Register all RM modules
+        // Register all modules
         modules.add(this);
         modules.add(new SceneCraftRecorder(this));
         SceneCraftReplay replayModule = new SceneCraftReplay(this);
@@ -81,12 +84,12 @@ public class SceneCraft implements Module, Scheduler {
         return settingsRegistry;
     }
 
-    void registerModuleKeyBindings() {
+    public void registerModuleKeyBindings() {
         modules.forEach(m -> m.registerKeyBindings(keyBindingRegistry));
     }
 
-    void initModules() {
-        modules.forEach(Module::initCommon);
+    public void initModules() {
+        modules.forEach(net.patchedpixel.scenecraft.core.Module::initCommon);
         modules.forEach(Module::initClient);
     }
 
@@ -165,7 +168,7 @@ public class SceneCraft implements Module, Scheduler {
                     .append(Component.literal("] "))
                     .append(Component.translatable(message, args).setStyle(alert));
             // Send message to chat GUI
-            // The ingame GUI is initialized at startup, therefore this is possible before the client is connected
+            // The in game GUI is initialized at startup, therefore this is possible before the client is connected
             mc.gui.getChat().addMessage(text);
         }
     }

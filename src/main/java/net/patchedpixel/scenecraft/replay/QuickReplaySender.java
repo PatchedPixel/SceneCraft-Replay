@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import java.io.IOException;
 import java.util.function.Consumer;
 
-import static net.patchedpixel.scenecraft.core.utils.Utils.DEFAULT_MS_PER_TICK;
+import static net.patchedpixel.scenecraft.platform.Utils.DEFAULT_MS_PER_TICK;
 import static net.patchedpixel.scenecraft.core.versions.MCVer.getMinecraft;
 import static net.patchedpixel.scenecraft.core.versions.MCVer.getPacketTypeRegistry;
 import static net.patchedpixel.scenecraft.replay.SceneCraftReplay.LOGGER;

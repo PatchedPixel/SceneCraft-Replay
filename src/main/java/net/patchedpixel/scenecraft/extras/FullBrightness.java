@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.extras;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.events.PostRenderCallback;
 import net.patchedpixel.scenecraft.core.events.PreRenderCallback;
 import com.mojang.blaze3d.platform.InputConstants;

@@ -1,5 +1,6 @@
 package net.patchedpixel.scenecraft.record.handler;
 
+import net.minecraft.network.protocol.game.*;
 import net.patchedpixel.scenecraft.core.events.PreRenderCallback;
 import net.patchedpixel.scenecraft.record.packet.PacketListener;
 import net.patchedpixel.scenecraft.gui.utils.EventRegistrations;
@@ -8,23 +9,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.network.protocol.game.ClientboundBlockDestructionPacket;
-import net.minecraft.network.protocol.game.ClientboundAnimatePacket;
-import net.minecraft.network.protocol.game.ClientboundSetEntityLinkPacket;
-import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket;
-import net.minecraft.network.protocol.game.ClientboundMoveEntityPacket;
-import net.minecraft.network.protocol.game.ClientboundRotateHeadPacket;
-import net.minecraft.network.protocol.game.ClientboundSetEntityMotionPacket;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.client.server.IntegratedServer;
-import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
-import net.minecraft.network.protocol.game.ClientboundLevelEventPacket;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.core.BlockPos;
 
@@ -65,19 +55,7 @@ public class RecordingEventHandler extends EventRegistrations {
         try {
             LocalPlayer player = mc.player;
             assert player != null;
-            packetListener.save(new ClientboundAddEntityPacket(
-                    player.getId(),
-                    player.getUUID(),
-                    player.getX(),
-                    player.getY(),
-                    player.getZ(),
-                    player.getXRot(),
-                    player.getYRot(),
-                    player.getType(),
-                    0,
-                    player.getDeltaMovement(),
-                    player.getYHeadRot()
-            ));
+            packetListener.save(new ClientboundAddPlayerPacket(player));
             packetListener.save(new ClientboundSetEntityDataPacket(player.getId(), player.getEntityData().getNonDefaultValues()));
             lastX = lastY = lastZ = null;
             playerItems.clear();

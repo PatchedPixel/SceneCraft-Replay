@@ -1,8 +1,8 @@
 package net.patchedpixel.scenecraft.render;
 
 import net.patchedpixel.scenecraft.core.Module;
-import net.patchedpixel.scenecraft.core.SceneCraft;
-import net.patchedpixel.scenecraft.core.utils.Utils;
+import net.patchedpixel.scenecraft.SceneCraft;
+import net.patchedpixel.scenecraft.platform.Utils;
 import net.patchedpixel.scenecraft.render.utils.RenderJob;
 import net.patchedpixel.scenecraft.replay.ReplayHandler;
 import net.patchedpixel.scenecraft.replay.events.ReplayClosedCallback;

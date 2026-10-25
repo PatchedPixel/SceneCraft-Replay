@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.core.files;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.gui.RestoreReplayGui;
 import net.patchedpixel.scenecraft.scenestudio.replay.ReplayFile;
 import net.patchedpixel.scenecraft.scenestudio.replay.ZipReplayFile;

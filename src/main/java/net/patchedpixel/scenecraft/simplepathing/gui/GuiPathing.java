@@ -6,9 +6,9 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.utils.Result;
-import net.patchedpixel.scenecraft.core.utils.Utils;
+import net.patchedpixel.scenecraft.platform.Utils;
 import net.patchedpixel.scenecraft.pathing.gui.GuiKeyframeRepository;
 import net.patchedpixel.scenecraft.pathing.player.RealtimeTimelinePlayer;
 import net.patchedpixel.scenecraft.pathing.properties.CameraProperties;
@@ -62,7 +62,7 @@ import java.util.Collections;
 import java.util.concurrent.CancellationException;
 import java.util.function.Consumer;
 
-import static net.patchedpixel.scenecraft.core.utils.Utils.error;
+import static net.patchedpixel.scenecraft.platform.Utils.error;
 import static net.patchedpixel.scenecraft.core.versions.MCVer.getMinecraft;
 import static net.patchedpixel.scenecraft.simplepathing.SceneCraftSimplePathing.LOGGER;
 

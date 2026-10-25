@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.render.utils;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.minecraftforge.fml.ModList;
 
 import java.util.List;

@@ -1,8 +1,8 @@
 package net.patchedpixel.scenecraft.simplepathing;
 
-import net.patchedpixel.scenecraft.core.KeyBindingRegistry;
+import net.patchedpixel.scenecraft.platform.KeyBindingRegistry;
 import net.patchedpixel.scenecraft.core.Module;
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.SettingsRegistry;
 import net.patchedpixel.scenecraft.core.events.SettingsChangedCallback;
 import net.patchedpixel.scenecraft.gui.utils.EventRegistrations;

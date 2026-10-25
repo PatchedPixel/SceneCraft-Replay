@@ -1,5 +1,7 @@
-package net.patchedpixel.scenecraft.core;
+package net.patchedpixel.scenecraft.platform;
 
+import net.minecraftforge.api.distmarker.OnlyIn;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.gui.GuiReplaySettings;
 import net.patchedpixel.scenecraft.gui.versions.GuiEventBridge;
 import net.minecraft.SharedConstants;
@@ -16,13 +18,14 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 
+@OnlyIn(Dist.CLIENT)
 @Mod(SceneCraft.MOD_ID)
-public class SceneCraftBackend {
+public class SceneCraftPlatform {
     private final String version;
     private SceneCraft mod;
 
-    public SceneCraftBackend() {
-        this.version = ModLoadingContext.get().getActiveContainer().getModInfo().getVersion().toString();
+    public SceneCraftPlatform() {
+        this.version = ModLoadingContext.get().getContainer().getModInfo().getVersion().toString();
 
         ModLoadingContext.get().registerExtensionPoint(
                 IExtensionPoint.DisplayTest.class,

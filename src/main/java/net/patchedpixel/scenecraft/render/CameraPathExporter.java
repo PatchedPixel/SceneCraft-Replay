@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.render;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.versions.MCVer;
 import net.patchedpixel.scenecraft.replay.camera.CameraEntity;
 import de.javagl.jgltf.impl.v2.Accessor;
@@ -30,7 +30,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 
-import static net.patchedpixel.scenecraft.core.utils.Utils.configure;
+import static net.patchedpixel.scenecraft.platform.Utils.configure;
 
 public class CameraPathExporter {
     /** OpenGL's GL_FLOAT, which is what glTF uses as component type for 32 bit floats. */

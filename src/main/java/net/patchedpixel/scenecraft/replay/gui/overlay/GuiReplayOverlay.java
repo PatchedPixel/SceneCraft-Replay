@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.replay.gui.overlay;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.events.KeyBindingEventCallback;
 import net.patchedpixel.scenecraft.core.events.KeyEventCallback;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -26,7 +26,7 @@ import net.patchedpixel.scenecraft.gui.utils.geometry.WritablePoint;
 import net.minecraft.client.Options;
 import net.minecraft.client.resources.language.I18n;
 
-import static net.patchedpixel.scenecraft.core.SceneCraft.TEXTURE_SIZE;
+import static net.patchedpixel.scenecraft.SceneCraft.TEXTURE_SIZE;
 
 public class GuiReplayOverlay extends AbstractGuiOverlay<GuiReplayOverlay> {
     private final SceneCraftReplay mod = SceneCraftReplay.instance;

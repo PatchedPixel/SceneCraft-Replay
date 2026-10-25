@@ -24,7 +24,7 @@
  */
 package net.patchedpixel.scenecraft.gui.element;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.gui.GuiRenderer;
 import net.patchedpixel.scenecraft.gui.RenderInfo;
 import net.patchedpixel.scenecraft.gui.container.GuiContainer;

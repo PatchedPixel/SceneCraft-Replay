@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.record.handler;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.SettingsRegistry;
 import net.patchedpixel.scenecraft.core.gui.GuiReplayButton;
 import net.patchedpixel.scenecraft.record.ServerInfoExt;

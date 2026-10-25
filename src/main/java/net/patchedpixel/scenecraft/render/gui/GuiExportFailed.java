@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.render.gui;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.render.RenderSettings;
 import net.patchedpixel.scenecraft.render.FFmpegWriter;
 import net.patchedpixel.scenecraft.gui.container.GuiPanel;

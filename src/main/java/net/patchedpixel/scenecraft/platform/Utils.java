@@ -1,4 +1,4 @@
-package net.patchedpixel.scenecraft.core.utils;
+package net.patchedpixel.scenecraft.platform;
 
 import com.google.common.base.Throwables;
 import com.google.common.net.PercentEscaper;
@@ -56,9 +56,9 @@ import static net.patchedpixel.scenecraft.core.versions.MCVer.getMinecraft;
 import com.mojang.blaze3d.platform.InputConstants;
 
 public class Utils {
-    private static Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final float DEFAULT_MS_PER_TICK = 1000 / 20;
+    public static final float DEFAULT_MS_PER_TICK = (float) 1000 / 20;
 
     private static InputStream getResourceAsStream(String path) {
         return Utils.class.getResourceAsStream(path);

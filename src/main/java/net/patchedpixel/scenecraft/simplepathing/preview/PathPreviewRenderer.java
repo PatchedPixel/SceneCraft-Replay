@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.simplepathing.preview;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.events.PostRenderWorldCallback;
 import net.patchedpixel.scenecraft.core.versions.MCVer;
 import net.patchedpixel.scenecraft.pathing.properties.CameraProperties;
@@ -37,7 +37,7 @@ import org.joml.Vector3f;
 import java.util.Comparator;
 import java.util.Optional;
 
-import static net.patchedpixel.scenecraft.core.SceneCraft.TEXTURE;
+import static net.patchedpixel.scenecraft.SceneCraft.TEXTURE;
 import static net.patchedpixel.scenecraft.core.versions.MCVer.identifier;
 
 public class PathPreviewRenderer extends EventRegistrations {

@@ -2,8 +2,8 @@ package net.patchedpixel.scenecraft.core.gui;
 
 import com.google.common.io.Files;
 import com.google.gson.Gson;
-import net.patchedpixel.scenecraft.core.SceneCraft;
-import net.patchedpixel.scenecraft.core.utils.Utils;
+import net.patchedpixel.scenecraft.SceneCraft;
+import net.patchedpixel.scenecraft.platform.Utils;
 import net.patchedpixel.scenecraft.core.versions.MCVer;
 import net.patchedpixel.scenecraft.scenestudio.io.ReplayInputStream;
 import net.patchedpixel.scenecraft.scenestudio.io.ReplayOutputStream;

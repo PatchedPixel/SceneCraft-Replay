@@ -114,7 +114,7 @@ public enum PacketType {
     EntityNBTUpdate(State.PLAY, null),
     UnloadChunk(State.PLAY, "forget_level_chunk"),
     SetPassengers(State.PLAY, "set_passengers"),
-    OpenHorseWindow(State.PLAY, "mount_screen_open"),
+    OpenHorseWindow(State.PLAY, "horse_screen_open"),
     UpdateLight(State.PLAY, "light_update"),
     TradeList(State.PLAY, "merchant_offers"),
     UpdateViewPosition(State.PLAY, "set_chunk_cache_center"),
@@ -129,7 +129,7 @@ public enum PacketType {
     UpdateSimulationDistance(State.PLAY, "set_simulation_distance"),
     Features(State.PLAY, "update_enabled_features"),
     PlayerListEntryRemove(State.PLAY, "player_info_remove"),
-    Bundle(State.PLAY, "bundle"),
+    Bundle(State.PLAY, "bundle_delimiter"),
     Reconfigure(State.PLAY, null),
     ResetScore(State.PLAY, null);
 

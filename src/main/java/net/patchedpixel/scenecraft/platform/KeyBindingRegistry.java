@@ -1,4 +1,4 @@
-package net.patchedpixel.scenecraft.core;
+package net.patchedpixel.scenecraft.platform;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -15,7 +15,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 
-import static net.patchedpixel.scenecraft.core.SceneCraft.MOD_ID;
+import static net.patchedpixel.scenecraft.SceneCraft.MOD_ID;
 import static net.patchedpixel.scenecraft.core.versions.MCVer.identifier;
 
 import java.util.ArrayList;

@@ -41,13 +41,12 @@ public class MCVer {
     }
 
     public static State fromMc(ConnectionProtocol mcState) {
-        switch (mcState) {
-            case HANDSHAKING: return State.HANDSHAKE;
-            case STATUS: return State.STATUS;
-            case LOGIN: return State.LOGIN;
-            case PLAY: return State.PLAY;
-        }
-        throw new IllegalArgumentException("Unexpected value: " + mcState);
+        return switch (mcState) {
+            case HANDSHAKING -> State.HANDSHAKE;
+            case STATUS -> State.STATUS;
+            case LOGIN -> State.LOGIN;
+            case PLAY -> State.PLAY;
+        };
     }
 
     public static PacketTypeRegistry getPacketTypeRegistry(ConnectionProtocol state) {
@@ -152,11 +151,11 @@ public class MCVer {
     }
 
     public static ResourceLocation identifier(String id) {
-        return new ResourceLocation(id);
+        return ResourceLocation.parse(id);
     }
 
     public static ResourceLocation identifier(String namespace, String path) {
-        return new ResourceLocation(namespace, path);
+        return ResourceLocation.fromNamespaceAndPath(namespace, path);
     }
 
     public static Optional<AbstractWidget> findButton(Iterable<? extends GuiEventListener> buttonList, @SuppressWarnings("unused") String text, @SuppressWarnings("unused") int id) {

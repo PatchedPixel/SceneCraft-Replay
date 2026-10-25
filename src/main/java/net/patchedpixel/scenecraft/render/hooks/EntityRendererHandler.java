@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.render.hooks;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.events.PreRenderHandCallback;
 import net.patchedpixel.scenecraft.core.versions.MCVer;
 import net.patchedpixel.scenecraft.render.RenderSettings;

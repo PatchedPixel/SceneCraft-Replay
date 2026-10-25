@@ -3,7 +3,7 @@ package net.patchedpixel.scenecraft.render.gui;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.gui.element.*;
 import net.patchedpixel.scenecraft.render.RenderSettings;
 import net.patchedpixel.scenecraft.render.SceneCraftRender;
@@ -16,7 +16,6 @@ import net.patchedpixel.scenecraft.gui.container.GuiContainer;
 import net.patchedpixel.scenecraft.gui.container.GuiPanel;
 import net.patchedpixel.scenecraft.gui.container.GuiScreen;
 import net.patchedpixel.scenecraft.gui.container.GuiVerticalList;
-import net.patchedpixel.scenecraft.gui.element.*;
 import net.patchedpixel.scenecraft.gui.element.advanced.GuiColorPicker;
 import net.patchedpixel.scenecraft.gui.element.advanced.GuiDropdownMenu;
 import net.patchedpixel.scenecraft.gui.layout.CustomLayout;
@@ -46,7 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
-import static net.patchedpixel.scenecraft.core.utils.Utils.error;
+import static net.patchedpixel.scenecraft.platform.Utils.error;
 import static net.patchedpixel.scenecraft.render.SceneCraftRender.LOGGER;
 
 public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {

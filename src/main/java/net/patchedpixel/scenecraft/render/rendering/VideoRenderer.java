@@ -1,7 +1,7 @@
 package net.patchedpixel.scenecraft.render.rendering;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.versions.MCVer;
 import net.patchedpixel.scenecraft.pathing.player.AbstractTimelinePlayer;
 import net.patchedpixel.scenecraft.pathing.player.ReplayTimer;
@@ -55,7 +55,7 @@ import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.Iterables.getLast;
-import static net.patchedpixel.scenecraft.core.utils.Utils.DEFAULT_MS_PER_TICK;
+import static net.patchedpixel.scenecraft.platform.Utils.DEFAULT_MS_PER_TICK;
 import static net.patchedpixel.scenecraft.core.versions.MCVer.*;
 import static net.patchedpixel.scenecraft.render.SceneCraftRender.LOGGER;
 
