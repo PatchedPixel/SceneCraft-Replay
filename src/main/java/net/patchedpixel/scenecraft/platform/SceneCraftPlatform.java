@@ -1,11 +1,11 @@
 package net.patchedpixel.scenecraft.platform;
 
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.gui.GuiReplaySettings;
 import net.patchedpixel.scenecraft.gui.versions.GuiEventBridge;
 import net.minecraft.SharedConstants;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -15,9 +15,7 @@ import net.minecraftforge.network.NetworkConstants;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 
-@OnlyIn(Dist.CLIENT)
 @Mod(SceneCraft.MOD_ID)
 public class SceneCraftPlatform {
     private final String version;
