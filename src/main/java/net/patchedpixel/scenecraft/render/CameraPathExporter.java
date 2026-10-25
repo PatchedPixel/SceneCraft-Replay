@@ -21,7 +21,6 @@ import org.joml.Quaternionf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.entity.Entity;
 import org.apache.commons.io.FilenameUtils;
-
 import net.minecraft.world.phys.Vec3;
 
 import java.io.IOException;
