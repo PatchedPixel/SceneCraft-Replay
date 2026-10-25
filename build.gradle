@@ -79,7 +79,7 @@ def tinyexrOutDir = new File(tinyexrRepoDir, "${tinyexrGroup.replace('.', '/')}/
 def tinyexrOutJar = new File(tinyexrOutDir, "${tinyexrArtifact}-${lwjgl_version}.jar")
 
 def jgltfGroup = "net.patchedpixel.shaded-jgltf"
-def jacksonGroup = "net.patchedpixel.shaded-jgltf"
+def jacksonGroup = "net.patchedpixel.shaded-jackson"
 
 repositories {
     mavenCentral()
