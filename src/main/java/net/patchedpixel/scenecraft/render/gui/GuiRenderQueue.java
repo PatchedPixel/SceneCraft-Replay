@@ -2,9 +2,9 @@ package net.patchedpixel.scenecraft.render.gui;
 
 import com.google.common.collect.Iterables;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.utils.Result;
-import net.patchedpixel.scenecraft.core.utils.Utils;
+import net.patchedpixel.scenecraft.platform.Utils;
 import net.patchedpixel.scenecraft.core.versions.MCVer;
 import net.patchedpixel.scenecraft.render.RenderSettings;
 import net.patchedpixel.scenecraft.render.SceneCraftRender;
@@ -328,7 +328,7 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
         addButton.setEnabled(timelineSupplier != null);
         editButton.setEnabled(selected == 1);
         removeButton.setEnabled(selected >= 1);
-        renderButton.setEnabled(jobs.size() > 0);
+        renderButton.setEnabled(!jobs.isEmpty());
         renderButton.setI18nLabel("scenecraft.gui.renderqueue.render" + (selected > 0 ? "selected" : "all"));
 
         String[] compatError = VideoRenderer.checkCompat(jobs.stream().map(RenderJob::getSettings));

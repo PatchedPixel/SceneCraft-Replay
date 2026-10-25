@@ -1,7 +1,7 @@
 package net.patchedpixel.scenecraft.extras;
 
-import net.patchedpixel.scenecraft.core.KeyBindingRegistry;
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.platform.KeyBindingRegistry;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.gui.utils.geometry.ReadableDimension;
 import net.patchedpixel.scenecraft.replay.events.ReplayOpenedCallback;
 import net.patchedpixel.scenecraft.replay.gui.overlay.GuiReplayOverlay;

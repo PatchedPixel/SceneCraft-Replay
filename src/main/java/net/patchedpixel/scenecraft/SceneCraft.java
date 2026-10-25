@@ -1,6 +1,10 @@
-package net.patchedpixel.scenecraft.core;
+package net.patchedpixel.scenecraft;
 
 import net.patchedpixel.scenecraft.compat.SceneCraftCompat;
+import net.patchedpixel.scenecraft.platform.KeyBindingRegistry;
+import net.patchedpixel.scenecraft.core.Module;
+import net.patchedpixel.scenecraft.core.Setting;
+import net.patchedpixel.scenecraft.core.SettingsRegistry;
 import net.patchedpixel.scenecraft.core.files.ReplayFilesService;
 import net.patchedpixel.scenecraft.core.files.ReplayFoldersService;
 import net.patchedpixel.scenecraft.core.gui.GuiBackgroundProcesses;
@@ -10,6 +14,7 @@ import net.patchedpixel.scenecraft.core.versions.scheduler.Scheduler;
 import net.patchedpixel.scenecraft.core.versions.scheduler.SchedulerImpl;
 import net.patchedpixel.scenecraft.editor.SceneCraftEditor;
 import net.patchedpixel.scenecraft.extras.SceneCraftExtras;
+import net.patchedpixel.scenecraft.platform.SceneCraftBackend;
 import net.patchedpixel.scenecraft.record.SceneCraftRecorder;
 import net.patchedpixel.scenecraft.render.SceneCraftRender;
 import net.patchedpixel.scenecraft.replay.SceneCraftReplay;
@@ -29,7 +34,7 @@ import java.util.concurrent.TimeoutException;
 
 import static net.patchedpixel.scenecraft.core.versions.MCVer.identifier;
 
-public class SceneCraft implements Module, Scheduler {
+public class SceneCraft implements net.patchedpixel.scenecraft.core.Module, Scheduler {
     public static final String MOD_ID = "scenecraft";
 
     public static final Identifier TEXTURE = identifier(SceneCraft.MOD_ID, "replay_gui.png");
@@ -48,7 +53,7 @@ public class SceneCraft implements Module, Scheduler {
     { instance = this; }
     public static SceneCraft instance;
 
-    private final List<Module> modules = new ArrayList<>();
+    private final List<net.patchedpixel.scenecraft.core.Module> modules = new ArrayList<>();
 
     private final GuiBackgroundProcesses backgroundProcesses = new GuiBackgroundProcesses();
     public final ReplayFoldersService folders = new ReplayFoldersService(settingsRegistry);
@@ -81,12 +86,12 @@ public class SceneCraft implements Module, Scheduler {
         return settingsRegistry;
     }
 
-    void registerModuleKeyBindings() {
+    public void registerModuleKeyBindings() {
         modules.forEach(m -> m.registerKeyBindings(keyBindingRegistry));
     }
 
-    void initModules() {
-        modules.forEach(Module::initCommon);
+    public void initModules() {
+        modules.forEach(net.patchedpixel.scenecraft.core.Module::initCommon);
         modules.forEach(Module::initClient);
     }
 

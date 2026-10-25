@@ -2,8 +2,8 @@ package net.patchedpixel.scenecraft.pathing.gui;
 
 import com.google.common.util.concurrent.SettableFuture;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.patchedpixel.scenecraft.core.SceneCraft;
-import net.patchedpixel.scenecraft.core.utils.Utils;
+import net.patchedpixel.scenecraft.SceneCraft;
+import net.patchedpixel.scenecraft.platform.Utils;
 import net.patchedpixel.scenecraft.render.gui.GuiRenderQueue;
 import net.patchedpixel.scenecraft.render.gui.GuiRenderSettings;
 import net.patchedpixel.scenecraft.replay.ReplayHandler;

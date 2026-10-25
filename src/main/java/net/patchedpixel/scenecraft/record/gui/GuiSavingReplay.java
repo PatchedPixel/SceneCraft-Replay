@@ -1,7 +1,7 @@
 package net.patchedpixel.scenecraft.record.gui;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
-import net.patchedpixel.scenecraft.core.utils.Utils;
+import net.patchedpixel.scenecraft.SceneCraft;
+import net.patchedpixel.scenecraft.platform.Utils;
 import net.patchedpixel.scenecraft.record.Setting;
 import net.patchedpixel.scenecraft.replay.gui.screen.GuiReplayViewer;
 import net.patchedpixel.scenecraft.scenestudio.replay.ReplayMetaData;

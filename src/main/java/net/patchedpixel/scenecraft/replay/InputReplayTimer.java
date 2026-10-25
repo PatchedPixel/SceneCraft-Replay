@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.replay;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.versions.MCVer;
 import net.patchedpixel.scenecraft.replay.camera.CameraController;
 import net.patchedpixel.scenecraft.replay.camera.CameraEntity;

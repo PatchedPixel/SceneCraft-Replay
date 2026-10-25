@@ -17,7 +17,7 @@ import net.minecraft.client.DeltaTracker;
 import javax.annotation.Nullable;
 import java.util.Iterator;
 
-import static net.patchedpixel.scenecraft.core.utils.Utils.DEFAULT_MS_PER_TICK;
+import static net.patchedpixel.scenecraft.platform.Utils.DEFAULT_MS_PER_TICK;
 import static net.patchedpixel.scenecraft.core.versions.MCVer.*;
 
 /**

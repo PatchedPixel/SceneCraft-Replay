@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.extras.advancedscreenshots;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.render.RenderSettings;
 import net.patchedpixel.scenecraft.render.gui.GuiRenderSettings;
 import net.patchedpixel.scenecraft.replay.SceneCraftReplay;
@@ -20,7 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import static net.patchedpixel.scenecraft.core.utils.Utils.error;
+import static net.patchedpixel.scenecraft.platform.Utils.error;
 import static net.patchedpixel.scenecraft.render.SceneCraftRender.LOGGER;
 
 public class GuiCreateScreenshot extends GuiRenderSettings implements Loadable {

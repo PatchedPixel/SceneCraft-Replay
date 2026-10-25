@@ -1,7 +1,7 @@
 package net.patchedpixel.scenecraft.extras;
 
 import net.patchedpixel.scenecraft.core.Module;
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.extras.advancedscreenshots.AdvancedScreenshots;
 import net.patchedpixel.scenecraft.extras.playeroverview.PlayerOverview;
 import org.apache.logging.log4j.LogManager;

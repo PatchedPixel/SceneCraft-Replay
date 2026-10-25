@@ -1,4 +1,4 @@
-package net.patchedpixel.scenecraft.core.utils;
+package net.patchedpixel.scenecraft.platform;
 
 import com.google.common.base.Throwables;
 import com.google.common.net.PercentEscaper;

@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.mixin.replay;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.replay.Setting;
 import net.patchedpixel.scenecraft.replay.handler.GuiHandler.MainMenuButtonPosition;
 import net.minecraft.client.gui.screens.TitleScreen;

@@ -1,7 +1,7 @@
 package net.patchedpixel.scenecraft.replay.gui.screen;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.render.gui.GuiRenderQueue;
 import net.patchedpixel.scenecraft.render.rendering.VideoRenderer;
 import net.patchedpixel.scenecraft.render.utils.RenderJob;
@@ -18,7 +18,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.ChatFormatting;
 import net.patchedpixel.scenecraft.core.SettingsRegistry;
 import net.patchedpixel.scenecraft.core.gui.GuiReplaySettings;
-import net.patchedpixel.scenecraft.core.utils.Utils;
+import net.patchedpixel.scenecraft.platform.Utils;
 import net.patchedpixel.scenecraft.core.versions.MCVer;
 import net.patchedpixel.scenecraft.replay.Setting;
 import net.patchedpixel.scenecraft.scenestudio.replay.ReplayFile;

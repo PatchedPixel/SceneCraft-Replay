@@ -11,7 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static net.patchedpixel.scenecraft.core.utils.Utils.ensureDirectoryExists;
+import static net.patchedpixel.scenecraft.platform.Utils.ensureDirectoryExists;
 
 public class ReplayFoldersService {
     private final Path mcDir = MCVer.getMinecraft().gameDirectory.toPath();

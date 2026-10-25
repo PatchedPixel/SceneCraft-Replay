@@ -36,7 +36,7 @@ public class StringUtils {
         Font fontRenderer = MCVer.getFontRenderer();
         List<String> rows = new ArrayList<>();
         String remaining = string;
-        while(remaining.length() > 0) {
+        while(!remaining.isEmpty()) {
             String[] split = remaining.split(" ");
             String b = "";
             for(String sp : split) {

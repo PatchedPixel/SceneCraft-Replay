@@ -24,7 +24,7 @@
  */
 package net.patchedpixel.scenecraft.gui;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.gui.utils.NonNull;
 import net.patchedpixel.scenecraft.core.versions.MCVer;
 import net.minecraft.client.Minecraft;

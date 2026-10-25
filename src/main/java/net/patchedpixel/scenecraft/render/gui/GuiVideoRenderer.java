@@ -1,10 +1,10 @@
 package net.patchedpixel.scenecraft.render.gui;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.gui.utils.geometry.Dimension;
 import net.patchedpixel.scenecraft.gui.utils.geometry.ReadableDimension;
 
-import net.patchedpixel.scenecraft.core.utils.Utils;
+import net.patchedpixel.scenecraft.platform.Utils;
 import net.patchedpixel.scenecraft.render.rendering.VideoRenderer;
 import net.patchedpixel.scenecraft.gui.GuiRenderer;
 import net.patchedpixel.scenecraft.gui.RenderInfo;

@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.mixin.core;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.replay.SceneCraftReplay;
 import net.minecraft.client.KeyMapping;
 import org.spongepowered.asm.mixin.Final;

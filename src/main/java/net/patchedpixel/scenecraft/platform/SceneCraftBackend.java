@@ -1,6 +1,7 @@
-package net.patchedpixel.scenecraft.core;
+package net.patchedpixel.scenecraft.platform;
 
 //import net.patchedpixel.scenecraft.ScbinMappingReloadListener;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.gui.GuiReplaySettings;
 import net.patchedpixel.scenecraft.record.SceneCraftRecorder;
 //import net.minecraft.resources.Identifier;
@@ -39,7 +40,7 @@ public class SceneCraftBackend {
             }
             return new GuiReplaySettings(parent, this.mod.getSettingsRegistry()).toMinecraft();
         });
-        modBus.addListener(FMLClientSetupEvent.class, event -> {
+        modBus.addListener(FMLClientSetupEvent.class, _ -> {
             if (this.mod != null) this.mod.initModules();
         });
     }

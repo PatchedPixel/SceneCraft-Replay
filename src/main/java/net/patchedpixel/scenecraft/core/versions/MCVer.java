@@ -41,14 +41,13 @@ public class MCVer {
     }
 
     public static State fromMc(ConnectionProtocol mcState) {
-        switch (mcState) {
-            case HANDSHAKING: return State.HANDSHAKE;
-            case STATUS: return State.STATUS;
-            case LOGIN: return State.LOGIN;
-            case CONFIGURATION: return State.CONFIGURATION;
-            case PLAY: return State.PLAY;
-        }
-        throw new IllegalArgumentException("Unexpected value: " + mcState);
+        return switch (mcState) {
+            case HANDSHAKING -> State.HANDSHAKE;
+            case STATUS -> State.STATUS;
+            case LOGIN -> State.LOGIN;
+            case CONFIGURATION -> State.CONFIGURATION;
+            case PLAY -> State.PLAY;
+        };
     }
 
     public static PacketTypeRegistry getPacketTypeRegistry(ConnectionProtocol state) {

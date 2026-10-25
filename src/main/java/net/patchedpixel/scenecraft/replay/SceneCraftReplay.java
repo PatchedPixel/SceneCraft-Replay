@@ -5,9 +5,9 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import net.patchedpixel.scenecraft.compat.SceneCraftCompat;
-import net.patchedpixel.scenecraft.core.KeyBindingRegistry;
+import net.patchedpixel.scenecraft.platform.KeyBindingRegistry;
 import net.patchedpixel.scenecraft.core.Module;
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.utils.ModCompat;
 import net.patchedpixel.scenecraft.core.versions.MCVer;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -59,56 +59,50 @@ public class SceneCraftReplay implements Module {
 
     @Override
     public void registerKeyBindings(KeyBindingRegistry registry) {
-        registry.registerKeyBinding("scenecraft.input.marker", InputConstants.KEY_M, new Runnable() {
-            @Override
-            public void run() {
-                if (replayHandler != null ) {
-                    CameraEntity camera = replayHandler.getCameraEntity();
-                    if (camera != null) {
-                        Marker marker = new Marker();
-                        marker.setTime(replayHandler.getReplaySender().currentTimeStamp());
-                        marker.setX(camera.getX());
-                        marker.setY(camera.getY());
-                        marker.setZ(camera.getZ());
-                        marker.setYaw(camera.getYRot());
-                        marker.setPitch(camera.getXRot());
-                        marker.setRoll(camera.roll);
-                        replayHandler.getOverlay().timeline.addMarker(marker);
-                    }
+        registry.registerKeyBinding("scenecraft.input.marker", InputConstants.KEY_M, () -> {
+            if (replayHandler != null ) {
+                CameraEntity camera = replayHandler.getCameraEntity();
+                if (camera != null) {
+                    Marker marker = new Marker();
+                    marker.setTime(replayHandler.getReplaySender().currentTimeStamp());
+                    marker.setX(camera.getX());
+                    marker.setY(camera.getY());
+                    marker.setZ(camera.getZ());
+                    marker.setYaw(camera.getYRot());
+                    marker.setPitch(camera.getXRot());
+                    marker.setRoll(camera.roll);
+                    replayHandler.getOverlay().timeline.addMarker(marker);
                 }
             }
         }, true);
 
-        registry.registerKeyBinding("scenecraft.input.thumbnail", InputConstants.KEY_N, new Runnable() {
-            @Override
-            public void run() {
-                if (replayHandler != null) {
-                    Minecraft mc = MCVer.getMinecraft();
-                    ListenableFuture<NoGuiScreenshot> future = NoGuiScreenshot.take(mc, 1280, 720);
-                    Futures.addCallback(future, new FutureCallback<>() {
-                        @Override
-                        public void onSuccess(NoGuiScreenshot result) {
-                            try {
-                                core.printInfoToChat("scenecraft.chat.savingthumb");
-                                ByteArrayOutputStream thumbOut = new ByteArrayOutputStream();
-                                result.getImage().writePNG(thumbOut);
-                                replayHandler.getReplayFile().writeThumbBytes(thumbOut.toByteArray());
-                                core.printInfoToChat("scenecraft.chat.savedthumb");
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                                core.printWarningToChat("scenecraft.chat.failedthumb");
-                            } finally {
-                                result.getImage().close();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Throwable t) {
-                            t.printStackTrace();
+        registry.registerKeyBinding("scenecraft.input.thumbnail", InputConstants.KEY_N, () -> {
+            if (replayHandler != null) {
+                Minecraft mc = MCVer.getMinecraft();
+                ListenableFuture<NoGuiScreenshot> future = NoGuiScreenshot.take(mc, 1280, 720);
+                Futures.addCallback(future, new FutureCallback<>() {
+                    @Override
+                    public void onSuccess(NoGuiScreenshot result) {
+                        try {
+                            core.printInfoToChat("scenecraft.chat.savingthumb");
+                            ByteArrayOutputStream thumbOut = new ByteArrayOutputStream();
+                            result.getImage().writePNG(thumbOut);
+                            replayHandler.getReplayFile().writeThumbBytes(thumbOut.toByteArray());
+                            core.printInfoToChat("scenecraft.chat.savedthumb");
+                        } catch (IOException e) {
+                            e.printStackTrace();
                             core.printWarningToChat("scenecraft.chat.failedthumb");
+                        } finally {
+                            result.getImage().close();
                         }
-                    }, Runnable::run);
-                }
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        t.printStackTrace();
+                        core.printWarningToChat("scenecraft.chat.failedthumb");
+                    }
+                }, Runnable::run);
             }
         }, true);
 

@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.extras.advancedscreenshots;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.SettingsRegistry;
 import net.patchedpixel.scenecraft.core.versions.MCVer;
 import net.patchedpixel.scenecraft.extras.Setting;

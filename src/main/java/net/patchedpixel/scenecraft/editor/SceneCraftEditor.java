@@ -1,7 +1,7 @@
 package net.patchedpixel.scenecraft.editor;
 
 import net.patchedpixel.scenecraft.core.Module;
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.editor.handler.GuiHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

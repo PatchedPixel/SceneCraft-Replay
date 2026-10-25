@@ -471,7 +471,7 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
                     break;
                 case InputConstants.KEY_BACKSPACE:
                     if (isEnabled()) {
-                        if (getSelectedText().length() > 0) {
+                        if (!getSelectedText().isEmpty()) {
                             deleteSelectedText();
                         } else if (words) {
                             deletePreviousWord();
@@ -482,7 +482,7 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
                     return true;
                 case InputConstants.KEY_DELETE:
                     if (isEnabled()) {
-                        if (getSelectedText().length() > 0) {
+                        if (!getSelectedText().isEmpty()) {
                             deleteSelectedText();
                         } else if (words) {
                             deleteNextWord();

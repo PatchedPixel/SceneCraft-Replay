@@ -6,6 +6,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.events.SettingsChangedCallback;
 import net.patchedpixel.scenecraft.core.versions.MCVer;
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +23,7 @@ import java.nio.file.WatchService;
 import java.util.List;
 import java.util.Map;
 
-import static net.patchedpixel.scenecraft.core.utils.Utils.ensureDirectoryExists;
+import static net.patchedpixel.scenecraft.platform.Utils.ensureDirectoryExists;
 import static net.patchedpixel.scenecraft.core.versions.MCVer.getMinecraft;
 
 class SettingsRegistryBackend {

@@ -1,8 +1,8 @@
 package net.patchedpixel.scenecraft.record.handler;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.utils.ModCompat;
-import net.patchedpixel.scenecraft.core.utils.Utils;
+import net.patchedpixel.scenecraft.platform.Utils;
 import net.patchedpixel.scenecraft.editor.gui.MarkerProcessor;
 import net.patchedpixel.scenecraft.record.ServerInfoExt;
 import net.patchedpixel.scenecraft.record.Setting;

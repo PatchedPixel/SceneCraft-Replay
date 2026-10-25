@@ -1,7 +1,7 @@
 package net.patchedpixel.scenecraft.editor.gui;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
-import net.patchedpixel.scenecraft.core.utils.Utils;
+import net.patchedpixel.scenecraft.SceneCraft;
+import net.patchedpixel.scenecraft.platform.Utils;
 import net.patchedpixel.scenecraft.editor.SceneCraftEditor;
 import net.patchedpixel.scenecraft.gui.utils.color.Color;
 import net.patchedpixel.scenecraft.replay.gui.overlay.GuiMarkerTimeline;

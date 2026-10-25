@@ -9,8 +9,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.resources.language.I18n;
 
-import static net.patchedpixel.scenecraft.core.SceneCraft.TEXTURE;
-import static net.patchedpixel.scenecraft.core.SceneCraft.TEXTURE_SIZE;
+import static net.patchedpixel.scenecraft.SceneCraft.TEXTURE;
+import static net.patchedpixel.scenecraft.SceneCraft.TEXTURE_SIZE;
 
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 

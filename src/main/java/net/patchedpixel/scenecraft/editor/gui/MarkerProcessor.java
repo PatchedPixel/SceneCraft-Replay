@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.editor.gui;
 
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.versions.MCVer;
 import net.patchedpixel.scenecraft.scenestudio.PacketData;
 import net.patchedpixel.scenecraft.scenestudio.data.Marker;

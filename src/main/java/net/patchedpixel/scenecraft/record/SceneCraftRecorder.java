@@ -1,8 +1,8 @@
 package net.patchedpixel.scenecraft.record;
 
-import net.patchedpixel.scenecraft.core.KeyBindingRegistry;
+import net.patchedpixel.scenecraft.platform.KeyBindingRegistry;
 import net.patchedpixel.scenecraft.core.Module;
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.utils.Restrictions;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.patchedpixel.scenecraft.record.handler.ConnectionEventHandler;

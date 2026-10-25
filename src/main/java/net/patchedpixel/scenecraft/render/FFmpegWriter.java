@@ -97,7 +97,7 @@ public class FFmpegWriter implements FrameConsumer<BitmapFrame> {
                 quote = c;
                 lastQuoted = true;
             } else if (Character.isWhitespace(c)) {
-                if (lastQuoted || current.length() > 0) {
+                if (lastQuoted || !current.isEmpty()) {
                     result.add(current.toString());
                     current.setLength(0);
                     lastQuoted = false;
@@ -109,7 +109,7 @@ public class FFmpegWriter implements FrameConsumer<BitmapFrame> {
         if (quote != 0) {
             throw new IllegalArgumentException("Unbalanced quotes in " + line);
         }
-        if (lastQuoted || current.length() > 0) {
+        if (lastQuoted || !current.isEmpty()) {
             result.add(current.toString());
         }
         return result;

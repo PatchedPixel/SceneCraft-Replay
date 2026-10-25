@@ -2,7 +2,7 @@ package net.patchedpixel.scenecraft.replay;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import net.patchedpixel.scenecraft.core.SceneCraft;
+import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.gui.versions.Image;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.systems.RenderSystem;
