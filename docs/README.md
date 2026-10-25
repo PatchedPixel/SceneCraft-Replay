@@ -20,7 +20,7 @@ SceneCraft records your Minecraft sessions, lets you replay them from any angle,
 
 ## Requirements
 
-- Minecraft and a mod loader that matches the jar you downloaded (currently Minecraft 26.3 on NeoForge).
+- Minecraft and a mod loader that matches the jar you downloaded.
 - The Java version your Minecraft version requires.
 - **FFmpeg** for video output. SceneCraft uses the default `ffmpeg` executable unless you point to your own in the render settings. PNG and OpenEXR sequences do not need FFmpeg.
 
@@ -100,18 +100,19 @@ Rendering works on both the OpenGL and Vulkan backends of Minecraft. When a pres
 
 For people reading or contributing to the code. All code is under `src/main/java/net/patchedpixel/scenecraft`.
 
-| Package | Responsibility |
-|---|---|
-| `core` | Mod entry point, settings, key bindings, shared events and version helpers (`MCVer`). |
-| `record` | Recording the session into a replay file. |
-| `replay` | Replay playback, the free camera, and the replay senders (full and quick). |
-| `editor`, `pathing`, `simplepathing` | The timeline, keyframes and camera path (editor GUI, interpolation, path preview). |
+| Package | Responsibility                                                                                   |
+|---|--------------------------------------------------------------------------------------------------|
+| `core` | The core system of mod (will be remove later).                                                   |
+| `record` | Recording the session into a replay file.                                                        |
+| `replay` | Replay playback, the free camera, and the replay senders (full and quick).                       |
+| `editor`, `pathing`, `simplepathing` | The timeline, keyframes and camera path (editor GUI, interpolation, path preview).               |
 | `render` | Video, PNG and EXR output, the capturers that read frames from the GPU, and the render pipeline. |
-| `scenestudio` | Replay data library: packet data, filters, IO. |
-| `gui` | The GUI toolkit used by the editor screens. |
-| `extras` | Optional extras such as Quick Mode, player overview, full brightness and advanced screenshots. |
-| `compat` | Compatibility with other mods. |
-| `mixin` | Mixins (configured in `scenecraft.mixins.json`). |
+| `scenestudio` | Replay data library: packet data, filters, IO.                                                   |
+| `gui` | The GUI toolkit used by the editor screens.                                                      |
+| `extras` | Optional extras such as Quick Mode, player overview, full brightness and advanced screenshots.   |
+| `compat` | Compatibility with other mods.                                                                   |
+| `mixin` | Mixins (configured in `scenecraft.mixins.json`).                                                 |
+| `platform` | Platform (mod loader) entry and high level mod loader abstraction.                               |
 
 ## Troubleshooting
 

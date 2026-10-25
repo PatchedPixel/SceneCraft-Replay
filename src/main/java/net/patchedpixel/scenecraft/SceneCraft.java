@@ -14,7 +14,7 @@ import net.patchedpixel.scenecraft.core.versions.scheduler.Scheduler;
 import net.patchedpixel.scenecraft.core.versions.scheduler.SchedulerImpl;
 import net.patchedpixel.scenecraft.editor.SceneCraftEditor;
 import net.patchedpixel.scenecraft.extras.SceneCraftExtras;
-import net.patchedpixel.scenecraft.platform.SceneCraftBackend;
+import net.patchedpixel.scenecraft.platform.SceneCraftPlatform;
 import net.patchedpixel.scenecraft.record.SceneCraftRecorder;
 import net.patchedpixel.scenecraft.render.SceneCraftRender;
 import net.patchedpixel.scenecraft.replay.SceneCraftReplay;
@@ -42,7 +42,7 @@ public class SceneCraft implements net.patchedpixel.scenecraft.core.Module, Sche
 
     private static final Minecraft mc = MCVer.getMinecraft();
 
-    private final SceneCraftBackend backend;
+    private final SceneCraftPlatform backend;
     private final SchedulerImpl scheduler = new SchedulerImpl();
     private final KeyBindingRegistry keyBindingRegistry = new KeyBindingRegistry();
     private final SettingsRegistry settingsRegistry = new SettingsRegistry();
@@ -59,7 +59,7 @@ public class SceneCraft implements net.patchedpixel.scenecraft.core.Module, Sche
     public final ReplayFoldersService folders = new ReplayFoldersService(settingsRegistry);
     public final ReplayFilesService files = new ReplayFilesService(folders);
 
-    public SceneCraft(SceneCraftBackend backend) {
+    public SceneCraft(SceneCraftPlatform backend) {
         this.backend = backend;
 
         I18n.setI18n(net.minecraft.client.resources.language.I18n::get);

@@ -17,11 +17,11 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
 @Mod(value = SceneCraft.MOD_ID, dist = Dist.CLIENT)
-public class SceneCraftBackend {
+public class SceneCraftPlatform {
     private final String version;
     private SceneCraft mod;
 
-    public SceneCraftBackend(IEventBus modBus, ModContainer container) {
+    public SceneCraftPlatform(IEventBus modBus, ModContainer container) {
         this.version = container.getModInfo().getVersion().toString();
 
         modBus.addListener(RegisterKeyMappingsEvent.class, event -> {
