@@ -309,8 +309,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg)
-            throws Exception {
+    public void channelRead(ChannelHandlerContext ctx, Object msg) {
         // When in async mode and the replay sender shut down, then don't send packets
         if(terminate && asyncMode) {
             return;

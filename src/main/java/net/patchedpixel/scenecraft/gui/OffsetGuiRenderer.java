@@ -155,9 +155,7 @@ public class OffsetGuiRenderer implements GuiRenderer {
         right = Math.max(left, right);
         bottom = Math.max(top, bottom);
 
-        renderer.pushScissor(
-                left, top, right - left, bottom - top
-        );
+        renderer.pushScissor(left, top, right - left, bottom - top);
     }
 
     @Override

@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.patchedpixel.scenecraft.gui.utils.geometry.Point;
 import net.patchedpixel.scenecraft.gui.utils.geometry.ReadableDimension;
 import net.patchedpixel.scenecraft.gui.utils.geometry.ReadablePoint;
-
 import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.versions.MCVer;
 import net.patchedpixel.scenecraft.pathing.properties.CameraProperties;
