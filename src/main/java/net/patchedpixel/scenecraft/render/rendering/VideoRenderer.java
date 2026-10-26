@@ -355,8 +355,6 @@ public class VideoRenderer implements RenderInfo {
     }
 
     private void tick() {
-        mc.getTextureManager().tick();
-
         mc.tick();
     }
 

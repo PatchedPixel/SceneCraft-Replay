@@ -5,6 +5,7 @@ import net.patchedpixel.scenecraft.record.SceneCraftRecorder;
 import net.patchedpixel.scenecraft.record.handler.RecordingEventHandler;
 import net.patchedpixel.scenecraft.replay.SceneCraftReplay;
 import net.patchedpixel.scenecraft.replay.FullReplaySender;
+import net.patchedpixel.scenecraft.replay.ext.EntityExt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
@@ -17,9 +18,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
@@ -30,8 +34,12 @@ public abstract class MixinClientPacketListener {
     // The stupid name is required as otherwise Mixin treats it as a shadow, seemingly ignoring the lack of @Shadow
     private static Minecraft mcStatic = MCVer.getMinecraft();
 
+    private static final String LERP_TO = "Lnet/minecraft/world/entity/Entity;lerpTo(DDDFFIZ)V";
+
     @Shadow
     private Map<UUID, PlayerInfo> playerInfoMap;
+
+    @Unique private Entity scenecraft$entity;
 
     @Inject(method = "handlePlayerInfoUpdate", at=@At("HEAD"))
     public void recordOwnJoin(ClientboundPlayerInfoUpdatePacket packet, CallbackInfo ci) {
@@ -68,6 +76,9 @@ public abstract class MixinClientPacketListener {
     private void updatePositionIfNotTracked(Entity entity) {
         if (entity != null && entity.level() instanceof ClientLevel world) {
             if (!world.tickingEntities.contains(entity)) {
+                if (entity.isControlledByLocalInstance()) {
+                    return;
+                }
 
                 int ticks = 0;
                 Vec3 prevPos;
@@ -103,5 +114,52 @@ public abstract class MixinClientPacketListener {
     private void scenecraft$initEnd(ClientboundInitializeBorderPacket packet, CallbackInfo ci) {
         SceneCraftReplay.pendingBorderReplayTime = -1L;
         FullReplaySender.forgetBorderPacket(packet);
+    }
+
+    @Redirect(method = "handleMoveEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getYRot()F"))
+    private float scenecraft$getTrackedYaw(Entity instance) {
+        return ((EntityExt) instance).scenecraft$getTrackedYaw();
+    }
+
+    @Redirect(method = "handleMoveEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getXRot()F"))
+    private float scenecraft$getTrackedPitch(Entity instance) {
+        return ((EntityExt) instance).scenecraft$getTrackedPitch();
+    }
+
+    @Redirect(method = "handleMoveEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getX()D"))
+    private double scenecraft$getTrackedX(Entity instance) {
+        return instance.isPassenger() ? instance.getX() : instance.getPositionCodec().decode(0L, 0L, 0L).x();
+    }
+
+    @Redirect(method = "handleMoveEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getY()D"))
+    private double scenecraft$getTrackedY(Entity instance) {
+        return instance.isPassenger() ? instance.getY() : instance.getPositionCodec().decode(0L, 0L, 0L).y();
+    }
+
+    @Redirect(method = "handleMoveEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;getZ()D"))
+    private double scenecraft$getTrackedZ(Entity instance) {
+        return instance.isPassenger() ? instance.getZ() : instance.getPositionCodec().decode(0L, 0L, 0L).z();
+    }
+
+    @ModifyVariable(method = { "handleMoveEntity", "handleTeleportEntity" }, at = @At(value = "INVOKE", target = LERP_TO), ordinal = 0)
+    private Entity scenecraft$captureEntity(Entity entity) {
+        return this.scenecraft$entity = entity;
+    }
+
+    @Inject(method = { "handleMoveEntity", "handleTeleportEntity" }, at = @At("RETURN"))
+    private void scenecraft$resetEntityField(CallbackInfo ci) {
+        this.scenecraft$entity = null;
+    }
+
+    @ModifyArg(method = { "handleMoveEntity", "handleTeleportEntity" }, at = @At(value = "INVOKE", target = LERP_TO), index = 3)
+    private float scenecraft$captureTrackedYaw(float value) {
+        ((EntityExt) this.scenecraft$entity).scenecraft$setTrackedYaw(value);
+        return value;
+    }
+
+    @ModifyArg(method = { "handleMoveEntity", "handleTeleportEntity" }, at = @At(value = "INVOKE", target = LERP_TO), index = 4)
+    private float scenecraft$captureTrackedPitch(float value) {
+        ((EntityExt) this.scenecraft$entity).scenecraft$setTrackedPitch(value);
+        return value;
     }
 }

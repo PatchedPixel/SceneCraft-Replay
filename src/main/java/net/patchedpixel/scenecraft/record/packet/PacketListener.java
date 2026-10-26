@@ -27,6 +27,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.BundlePacket;
+import net.minecraft.network.protocol.BundlerInfo;
 import net.minecraft.network.protocol.PacketFlow;
 import net.minecraft.network.protocol.game.ClientboundAddPlayerPacket;
 import net.minecraft.network.protocol.game.ClientboundCustomPayloadPacket;
@@ -46,6 +48,7 @@ import net.minecraft.network.protocol.login.ClientboundLoginCompressionPacket;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -250,8 +253,26 @@ public class PacketListener extends ChannelInboundHandlerAdapter {
             if (buf.readableBytes() > 0) {
                 packet = decodePacket(connectionState, buf);
             }
-        } else if (msg instanceof net.minecraft.network.protocol.Packet) {
-            packet = encodeMcPacket(connectionState, (net.minecraft.network.protocol.Packet<?>) msg);
+        } else if (msg instanceof net.minecraft.network.protocol.Packet<?> mcPacket) {
+            List<Packet> packets = new ArrayList<>(1);
+            BundlerInfo.Provider provider = ctx.channel().attr(BundlerInfo.BUNDLER_PROVIDER).get();
+            if (provider != null) {
+                provider.getBundlerInfo(PacketFlow.CLIENTBOUND).unbundlePacket(mcPacket, unbundled -> {
+                    try {
+                        packets.add(encodeMcPacket(connectionState, unbundled));
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            } else {
+                packets.add(encodeMcPacket(connectionState, mcPacket));
+            }
+            if (packets.size() > 1) {
+                packets.forEach(this::save);
+                super.channelRead(ctx, msg);
+                return;
+            }
+            packet = packets.isEmpty() ? null : packets.get(0);
         }
 
         currentRawPacket = packet;
@@ -275,6 +296,9 @@ public class PacketListener extends ChannelInboundHandlerAdapter {
             connectionState = ConnectionProtocol.LOGIN;
         }
         int packetId = connectionState.getPacketId(PacketFlow.CLIENTBOUND, packet);
+        if (packetId == -1) {
+            throw new IOException("Unknown packet type: " + packet.getClass());
+        }
         ByteBuf byteBuf = Unpooled.buffer();
         try {
             FriendlyByteBuf packetBuf = new FriendlyByteBuf(byteBuf);
@@ -341,6 +365,22 @@ public class PacketListener extends ChannelInboundHandlerAdapter {
         return resourcePackRecorder;
     }
 
+    private void inspectDecoded(Object msg) {
+        if (msg instanceof ClientboundCustomPayloadPacket packet) {
+            if (Restrictions.PLUGIN_CHANNEL.equals(packet.getIdentifier())) {
+                save(new ClientboundDisconnectPacket(net.minecraft.network.chat.Component.literal("Please update to view this replay.")));
+            }
+        }
+
+        if (msg instanceof ClientboundAddPlayerPacket packet) {
+            UUID uuid = packet.getPlayerId();
+            Set<String> uuids = new HashSet<>(Arrays.asList(metaData.getPlayers()));
+            uuids.add(uuid.toString());
+            metaData.setPlayers(uuids.toArray(new String[0]));
+            saveMetaData();
+        }
+    }
+
     public class DecodedPacketListener extends ChannelDuplexHandler {
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -354,20 +394,15 @@ public class PacketListener extends ChannelInboundHandlerAdapter {
                 return;
             }
 
-            if (msg instanceof ClientboundCustomPayloadPacket) {
-                ClientboundCustomPayloadPacket packet = (ClientboundCustomPayloadPacket) msg;
-                if (Restrictions.PLUGIN_CHANNEL.equals(packet.getIdentifier())) {
-                    save(new ClientboundDisconnectPacket(net.minecraft.network.chat.Component.literal("Please update to view this replay.")));
+            if (msg instanceof BundlePacket<?> bundlePacket) {
+                for (net.minecraft.network.protocol.Packet<?> sub : bundlePacket.subPackets()) {
+                    inspectDecoded(sub);
                 }
+                super.channelRead(ctx, msg);
+                return;
             }
 
-            if (msg instanceof ClientboundAddPlayerPacket packet) {
-                UUID uuid = packet.getPlayerId();
-                Set<String> uuids = new HashSet<>(Arrays.asList(metaData.getPlayers()));
-                uuids.add(uuid.toString());
-                metaData.setPlayers(uuids.toArray(new String[uuids.size()]));
-                saveMetaData();
-            }
+            inspectDecoded(msg);
 
             if (msg instanceof ClientboundResourcePackPacket) {
                 save(resourcePackRecorder.handleResourcePack((ClientboundResourcePackPacket) msg));

@@ -176,8 +176,8 @@ public class ReplayHandler {
         fullReplaySender.setChannel(channel);
 
         channel.pipeline().addLast("decoder", new PacketDecoder(PacketFlow.CLIENTBOUND));
-        channel.pipeline().addLast(PACKET_HANDLER_NAME, quickMode ? quickReplaySender : fullReplaySender);
         channel.pipeline().addLast("bundler", new PacketBundlePacker(PacketFlow.CLIENTBOUND));
+        channel.pipeline().addLast(PACKET_HANDLER_NAME, quickMode ? quickReplaySender : fullReplaySender);
         channel.pipeline().addLast("packet_handler", networkManager);
         channel.pipeline().fireChannelActive();
         channel.attr(NetworkConstantsAccessor.sceneCraft$getFmlNetVersion()).set(NetworkConstants.NOVERSION);

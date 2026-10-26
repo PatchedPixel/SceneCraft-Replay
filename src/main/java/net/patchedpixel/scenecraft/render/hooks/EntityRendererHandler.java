@@ -78,7 +78,6 @@ public class EntityRendererHandler extends EventRegistrations implements WorldRe
                     mc.gameRenderer.setPanoramicMode(true);
                 }
 
-                mc.gameRenderer.tick();
                 if (!warmedUp) {
                     warmedUp = true;
                     mc.gameRenderer.render(mc.getFrameTime(), fakeFinishTimeNano, true);

@@ -31,6 +31,13 @@ public abstract class MixinMultiPlayerGameMode {
         }
     }
 
+    @Inject(method = "isAlwaysFlying", at = @At("HEAD"), cancellable = true)
+    private void sceneCraftReplay_isAlwaysFlying(CallbackInfoReturnable<Boolean> ci) {
+        if(this.minecraft.player instanceof CameraEntity) {
+            ci.setReturnValue(this.minecraft.player.isSpectator());
+        }
+    }
+
     @Inject(method = "createPlayer(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/stats/StatsCounter;Lnet/minecraft/client/ClientRecipeBook;ZZ)Lnet/minecraft/client/player/LocalPlayer;", at=@At("HEAD"), cancellable = true)
     private void sceneCraftReplay_createReplayCamera(ClientLevel worldIn, StatsCounter statisticsManager, ClientRecipeBook recipeBookClient, boolean lastSneaking, boolean lastSprinting, CallbackInfoReturnable<LocalPlayer> ci) {
         if (SceneCraftReplay.instance.getReplayHandler() != null) {
