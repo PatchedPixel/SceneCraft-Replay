@@ -51,8 +51,10 @@ import java.util.Set;
 import static net.patchedpixel.scenecraft.scenestudio.util.Utils.within;
 
 public class SquashFilter implements StreamFilter {
-    private static final long POS_MIN = Byte.MIN_VALUE;
-    private static final long POS_MAX = Byte.MAX_VALUE;
+    /** Entity movement is accumulated in 1/4096 blocks, the unit of vanilla's relative move packets (a short). */
+    private static final double POS_UNITS = 4096.0;
+    private static final long POS_MIN = Short.MIN_VALUE;
+    private static final long POS_MAX = Short.MAX_VALUE;
 
     private static class Team {
         private final String name;
@@ -312,9 +314,10 @@ public class SquashFilter implements StreamFilter {
                     DPosition deltaPos = movement.getLeft();
                     Pair<Float, Float> yawPitch = movement.getMiddle();
                     if (deltaPos != null) {
-                        entity.dx += deltaPos.getX() * 32;
-                        entity.dy += deltaPos.getY() * 32;
-                        entity.dz += deltaPos.getZ() * 32;
+                        // Round instead of truncating, otherwise small deltas are lost and entities drift
+                        entity.dx += Math.round(deltaPos.getX() * POS_UNITS);
+                        entity.dy += Math.round(deltaPos.getY() * POS_UNITS);
+                        entity.dz += Math.round(deltaPos.getZ() * POS_UNITS);
                     }
                     if (yawPitch != null) {
                         entity.yaw = yawPitch.getKey();
@@ -434,9 +437,7 @@ public class SquashFilter implements StreamFilter {
             case UpdateScore:
             case DisplayScoreboard:
             case ResetScore:
-                // As of 1.20.5 the scoreboard is part of the ClientPlayNetHandler which only gets reset when switching
-                // away from the play phase.
-                currentPlayPhase.add(data.retain());
+                currentJoinGame.add(data.retain());
 
                 break;
 
@@ -573,8 +574,8 @@ public class SquashFilter implements StreamFilter {
         currentJoinGame.forEach(PacketData::release);
         currentJoinGame.clear();
 
-        // Prior to 1.20.5, the scoreboard and teams were part of the world and were manually copied over in Respawn but
-        // not in JoinGame.
+        teams.values().forEach(Team::release);
+        teams.clear();
 
         clearStateAtRespawn();
     }
@@ -686,9 +687,9 @@ public class SquashFilter implements StreamFilter {
                     cameraPositionRotation.yaw = location.getYaw();
                     cameraPositionRotation.pitch = location.getPitch();
                 }
-                cameraPositionRotation.x += entity.dx / 32.0;
-                cameraPositionRotation.y += entity.dy / 32.0;
-                cameraPositionRotation.z += entity.dz / 32.0;
+                cameraPositionRotation.x += entity.dx / POS_UNITS;
+                cameraPositionRotation.y += entity.dy / POS_UNITS;
+                cameraPositionRotation.z += entity.dz / POS_UNITS;
                 if (entity.yaw != null && entity.pitch != null) {
                     cameraPositionRotation.yaw = entity.yaw;
                     cameraPositionRotation.pitch = entity.pitch;
@@ -728,7 +729,7 @@ public class SquashFilter implements StreamFilter {
                 entity.dx -= mx;
                 entity.dy -= my;
                 entity.dz -= mz;
-                DPosition deltaPos = new DPosition(mx / 32.0, my / 32.0, mz / 32.0);
+                DPosition deltaPos = new DPosition(mx / POS_UNITS, my / POS_UNITS, mz / POS_UNITS);
                 result.add(new PacketData(entity.lastTimestamp, PacketEntityMovement.write(
                         registry, e.getKey(), deltaPos, null, entity.onGround)));
             }
@@ -902,7 +903,7 @@ public class SquashFilter implements StreamFilter {
 
         private boolean useExistingLightData = true;
 
-         ChunkData(long firstAppearance, int x, int z) {
+        ChunkData(long firstAppearance, int x, int z) {
             this.firstAppearance = firstAppearance;
             this.x = x;
             this.z = z;
@@ -1012,7 +1013,6 @@ public class SquashFilter implements StreamFilter {
         private MutablePair<Long, PacketBlockChange> blockChanges(IPosition pos) {
             int x = pos.getX();
             int y = pos.getY();
-            int chunkY = y / 16;
             int z = pos.getZ();
             int index = y << 10 | (x & 15) << 5 | (z & 15);
             return allBlockChanges.computeIfAbsent(index, k -> MutablePair.of(0L, null));

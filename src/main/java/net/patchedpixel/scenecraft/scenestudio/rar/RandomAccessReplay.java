@@ -63,7 +63,7 @@ import java.util.function.Consumer;
 public abstract class RandomAccessReplay {
     private static final String CACHE_ENTRY = "quickModeCache.bin";
     private static final String CACHE_INDEX_ENTRY = "quickModeCacheIndex.bin";
-    private static final int CACHE_VERSION = 10;
+    private static final int CACHE_VERSION = 11;
     private static final Logger LOGGER = LogUtils.getLogger();
 
     private final ReplayFile replayFile;

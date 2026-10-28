@@ -37,6 +37,7 @@ public class ScreenshotWriter implements FrameConsumer<BitmapFrame> {
                     byte b = frame.getByteBuffer().get();
                     byte g = frame.getByteBuffer().get();
                     byte r = frame.getByteBuffer().get();
+                    frame.getByteBuffer().get();
 
                     img.setRGBA(x, y, r, g, b, 0xff);
                 }

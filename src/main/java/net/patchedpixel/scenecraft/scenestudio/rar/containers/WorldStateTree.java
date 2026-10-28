@@ -140,9 +140,7 @@ public class WorldStateTree extends StateTree<World> {
 
                         featuresChanged.forEach(sink);
 
-                        if (registriesChanged) {
-                            replay.tags.play(sink, -1, targetTime);
-                        }
+                        replay.tags.play(sink, -1, targetTime);
                     } else {
                         sink.accept(targetWorld.info.toRespawnPacket().write(registry));
                     }

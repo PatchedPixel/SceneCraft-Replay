@@ -24,6 +24,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
+import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
@@ -57,7 +58,13 @@ public class PathPreviewRenderer extends EventRegistrations {
     }
 
     { on(PostRenderWorldCallback.EVENT, this::renderCameraPath); }
-    private void renderCameraPath(PoseStack matrixStack) {
+    private void renderCameraPath(PoseStack levelPoseStack) {
+        // At RenderLevelStageEvent.AFTER_WEATHER vanilla has already applied the camera rotation to the RenderSystem
+        // model-view matrix (LevelRenderer#renderLevel: mulPoseMatrix(poseStack) + applyModelViewMatrix), which the
+        // shaders pick up as ModelViewMat. Multiplying the vertices with the level pose stack as well would apply the
+        // camera rotation twice (path would no longer stay in place). So only use a fresh, identity pose stack here
+        // for the camera-relative translation, exactly like the original does.
+        PoseStack matrixStack = new PoseStack();
         if (((EntityRendererHandler.IEntityRenderer) mc.gameRenderer).sceneCraftRender_getHandler() != null) return;
         if (!replayHandler.getReplaySender().isAsyncMode() || mc.options.hideGui) return;
 
@@ -87,7 +94,7 @@ public class PathPreviewRenderer extends EventRegistrations {
 
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        RenderSystem.disableDepthTest();
+        RenderSystem.enableDepthTest();
         try {
             for (PathSegment segment : path.getSegments()) {
                 Interpolator interpolator = segment.getInterpolator();
@@ -137,6 +144,9 @@ public class PathPreviewRenderer extends EventRegistrations {
                 }
             }
 
+            // Keyframe icons are drawn on top of everything (no depth test) with the original's blend function
+            RenderSystem.blendFunc(GlStateManager.SourceFactor.DST_COLOR, GlStateManager.DestFactor.SRC_COLOR);
+            RenderSystem.disableDepthTest();
             path.getKeyframes().stream()
                     .map(k -> Pair.of(k, k.getValue(CameraProperties.POSITION).map(this::tripleD2Vec)))
                     .filter(p -> p.getRight().isPresent())
@@ -144,6 +154,8 @@ public class PathPreviewRenderer extends EventRegistrations {
                     .filter(p -> distanceSquared(p.getRight(), viewPos) < renderDistanceSquared)
                     .sorted(new KeyframeComparator(viewPos)) // Need to render the furthest first
                     .forEachOrdered(p -> drawPoint(matrixStack, viewPos, p.getRight(), p.getLeft()));
+            RenderSystem.defaultBlendFunc();
+            RenderSystem.enableDepthTest();
 
             int time = guiPathing.timeline.getCursorPosition();
             Optional<Integer> entityId = path.getValue(SpectatorProperty.PROPERTY, time);

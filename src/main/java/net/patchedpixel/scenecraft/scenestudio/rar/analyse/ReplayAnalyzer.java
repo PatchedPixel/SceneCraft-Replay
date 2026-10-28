@@ -78,10 +78,12 @@ public class ReplayAnalyzer {
             Integer entityId = PacketUtils.getEntityId(packet);
             PacketType type = packet.getType();
             switch (type) {
+                case SpawnPlayer:
+                case SpawnExpOrb:
                 case SpawnObject: {
                     Entity.Builder entity = replay.world.transientThings.newEntity(time, entityId);
 
-                    if (type == (PacketType.SpawnObject)) {
+                    if (type == PacketType.SpawnPlayer) {
                         PacketPlayerListEntry entry = playerListEntries.get(PacketSpawnPlayer.getPlayerListEntryId(packet));
                         if (entry != null) {
                             entity.addSpawnPacket(PacketPlayerListEntry.write(registry, PacketPlayerListEntry.Action.init(registry), entry));

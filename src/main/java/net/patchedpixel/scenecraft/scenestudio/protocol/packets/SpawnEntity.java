@@ -50,6 +50,14 @@ public class SpawnEntity {
                 float pitch = in.readByte() / 256f * 360;
                 return new Location(x, y, z, yaw, pitch);
             }
+        } else if (packet.getType() == PacketType.SpawnExpOrb) {
+            try (Packet.Reader in = packet.reader()) {
+                in.readVarInt(); // id
+                double x = in.readDouble();
+                double y = in.readDouble();
+                double z = in.readDouble();
+                return new Location(x, y, z, 0, 0);
+            }
         }
         return null;
     }

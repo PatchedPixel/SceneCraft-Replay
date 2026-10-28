@@ -75,18 +75,12 @@ public class PacketTeam {
 
     private static void skipTeamInfo(Packet packet, Packet.Reader in) throws IOException {
         in.readText(); // display name
-
-        
-        in.readVarInt(); // name tag visibility
-        in.readVarInt(); // collision rule
-
-        if (in.readBoolean()) {
-            in.readVarInt(); // color
-        }
+        in.readByte(); // flags
+        in.readString(); // name tag visibility
+        in.readString(); // collision rule
+        in.readVarInt(); // color (ChatFormatting enum ordinal)
         in.readText(); // prefix
         in.readText(); // suffix
-
-        in.readByte(); // flags
     }
 
     public static Packet createTeam(Packet template, Collection<String> players) throws IOException {

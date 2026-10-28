@@ -60,7 +60,7 @@ public class Replay implements RandomAccessState {
 
     @Override
     public void play(PacketSink sink, int currentTimeStamp, int targetTime) throws IOException {
-        // As of 1.20.2, features are exclusive to the config phase and will instead be sent on world change
+        features.play(sink, currentTimeStamp, targetTime);
 
         tags.play(sink, currentTimeStamp, targetTime);
         world.play(sink, currentTimeStamp, targetTime);
@@ -68,7 +68,7 @@ public class Replay implements RandomAccessState {
 
     @Override
     public void rewind(PacketSink sink, int currentTimeStamp, int targetTime) throws IOException {
-        // As of 1.20.2, features are exclusive to the config phase and will instead be sent on world change
+        features.rewind(sink, currentTimeStamp, targetTime);
 
         tags.rewind(sink, currentTimeStamp, targetTime);
         world.rewind(sink, currentTimeStamp, targetTime);

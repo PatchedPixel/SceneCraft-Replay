@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.patchedpixel.scenecraft.gui.utils.geometry.Point;
 import net.patchedpixel.scenecraft.gui.utils.geometry.ReadableDimension;
 import net.patchedpixel.scenecraft.gui.utils.geometry.ReadablePoint;
+
 import net.patchedpixel.scenecraft.SceneCraft;
 import net.patchedpixel.scenecraft.core.versions.MCVer;
 import net.patchedpixel.scenecraft.pathing.properties.CameraProperties;
@@ -29,6 +30,7 @@ import java.util.Comparator;
 import java.util.Optional;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import org.lwjgl.opengl.GL11;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -113,10 +115,6 @@ public class GuiKeyframeTimeline extends AbstractGuiTimeline<GuiKeyframeTimeline
 
         SPTimeline timeline = mod.getCurrentTimeline();
 
-        ReadablePoint screenOffset = new Point(renderer.getGpuOffsetX(), renderer.getGpuOffsetY());
-        ReadableDimension screenSize = gui.overlay.getMaxSize();
-        renderer.pushScissor(-screenOffset.getX(), -screenOffset.getY(), screenSize.getWidth(), screenSize.getHeight());
-
         timeline.getTimeline().getPaths().stream().flatMap(path -> path.getKeyframes().stream()).forEach(keyframe -> {
             if (keyframe.getTime() >= startTime && keyframe.getTime() <= endTime) {
                 double relativeTime = keyframe.getTime() - startTime;
@@ -185,14 +183,25 @@ public class GuiKeyframeTimeline extends AbstractGuiTimeline<GuiKeyframeTimeline
         });
 
         if (!linesRenderState.lines.isEmpty()) {
+            // The lines connect this timeline to the replay timeline above it and therefore leave the bounds of this
+            // element. The strict OffsetGuiRenderer scissor would clip them to this element, so drop the GL scissor
+            // while drawing them and restore it afterwards.
+            renderer.getContext().flush();
+            boolean scissorWasEnabled = GL11.glIsEnabled(GL11.GL_SCISSOR_TEST);
+            int[] scissorBox = new int[4];
+            if (scissorWasEnabled) {
+                GL11.glGetIntegerv(GL11.GL_SCISSOR_BOX, scissorBox);
+            }
+            RenderSystem.disableScissor();
+
             Minecraft mc = getMinecraft();
             float guiScale = (float) mc.getWindow().getGuiScale();
             Matrix4f matrix = renderer.getContext().pose().last().pose();
             int lineColor = linesRenderState.color;
-            int red = (lineColor >> 24) & 0xFF;
-            int green = (lineColor >> 16) & 0xFF;
-            int blue = (lineColor >> 8) & 0xFF;
-            int alpha = lineColor & 0xFF;
+            int alpha = (lineColor >> 24) & 0xFF;
+            int red = (lineColor >> 16) & 0xFF;
+            int green = (lineColor >> 8) & 0xFF;
+            int blue = lineColor & 0xFF;
 
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             RenderSystem.enableBlend();
@@ -206,9 +215,11 @@ public class GuiKeyframeTimeline extends AbstractGuiTimeline<GuiKeyframeTimeline
             }
             BufferUploader.drawWithShader(buffer.end());
             RenderSystem.lineWidth(1.0F);
-        }
 
-        renderer.popScissor();
+            if (scissorWasEnabled) {
+                RenderSystem.enableScissor(scissorBox[0], scissorBox[1], scissorBox[2], scissorBox[3]);
+            }
+        }
 
         // Draw colored quads on spectator path segments
         for (PathSegment segment : timeline.getPositionPath().getSegments()) {
@@ -367,7 +378,7 @@ public class GuiKeyframeTimeline extends AbstractGuiTimeline<GuiKeyframeTimeline
     @Override
     public boolean mouseDrag(Click click) {
         if (!dragging) {
-            if (scrubbing && click.button == 1) {
+            if (scrubbing && click.button == InputConstants.MOUSE_BUTTON_LEFT) {
                 // Left click, the user might try to move the cursor by clicking and holding
                 int time = getTimeAt(click.x, click.y);
                 if (time != -1) {

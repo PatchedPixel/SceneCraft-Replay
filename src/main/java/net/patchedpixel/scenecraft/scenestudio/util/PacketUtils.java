@@ -35,7 +35,14 @@ import java.util.List;
  */
 public class PacketUtils {
     public static boolean isSpawnEntityPacket(Packet packet) {
-        return packet.getType() == PacketType.SpawnObject;
+        switch (packet.getType()) {
+            case SpawnPlayer:
+            case SpawnObject:
+            case SpawnExpOrb:
+                return true;
+            default:
+                return false;
+        }
     }
 
     /**
