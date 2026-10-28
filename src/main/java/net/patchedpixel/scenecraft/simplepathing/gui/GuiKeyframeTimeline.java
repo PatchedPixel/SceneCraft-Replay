@@ -198,10 +198,10 @@ public class GuiKeyframeTimeline extends AbstractGuiTimeline<GuiKeyframeTimeline
             float guiScale = (float) mc.getWindow().getGuiScale();
             Matrix4f matrix = renderer.getContext().pose().last().pose();
             int lineColor = linesRenderState.color;
-            int alpha = (lineColor >> 24) & 0xFF;
-            int red = (lineColor >> 16) & 0xFF;
-            int green = (lineColor >> 8) & 0xFF;
-            int blue = lineColor & 0xFF;
+            int red = (lineColor >> 24) & 0xFF;
+            int green = (lineColor >> 16) & 0xFF;
+            int blue = (lineColor >> 8) & 0xFF;
+            int alpha = lineColor & 0xFF;
 
             RenderSystem.setShader(GameRenderer::getPositionColorShader);
             RenderSystem.enableBlend();
