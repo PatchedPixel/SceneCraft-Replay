@@ -79,7 +79,7 @@ public abstract class PboGpuFrameCapturer<F extends Frame, D extends Enum<D> & C
             pbo.bind();
             ByteBuffer pboBuffer = pbo.map();
             channels = new HashMap<>();
-            channels.put(Channel.BRGA, readFromPbo(pboBuffer, 4, true));
+            channels.put(Channel.BRGA, readFromPbo(pboBuffer, 4, false));
             if (withDepth) {
                 channels.put(Channel.DEPTH, readFromPbo(pboBuffer, 4, false));
             }

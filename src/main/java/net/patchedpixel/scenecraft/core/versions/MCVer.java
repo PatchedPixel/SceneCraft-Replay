@@ -65,8 +65,6 @@ public class MCVer {
         Window window = mc.getWindow();
         window.framebufferWidth = width;
         window.framebufferHeight = height;
-        window.width = width;
-        window.height = height;
         mc.resizeDisplay();
     }
 
