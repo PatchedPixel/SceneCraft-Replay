@@ -18,7 +18,7 @@ public class SchedulerImpl implements Scheduler {
 
     @Override
     public void runSync(Runnable runnable) throws InterruptedException, ExecutionException, TimeoutException {
-        if (mc.isSameThread()) {
+        if(mc.isSameThread()) {
             runnable.run();
         } else {
             executor.submit(() -> {
@@ -33,7 +33,7 @@ public class SchedulerImpl implements Scheduler {
         runLater(new Runnable() {
             @Override
             public void run() {
-                if (mc.gui.overlay() != null) {
+                if(mc.gui.overlay() != null) {
                     // delay until after resources have been loaded
                     runLater(this);
                     return;
@@ -102,14 +102,14 @@ public class SchedulerImpl implements Scheduler {
     }
 
     private void runLater(Runnable runnable, Runnable defer) {
-        if (mc.isSameThread() && inRunLater) {
+        if(mc.isSameThread() && inRunLater) {
             delayedTasks.add(defer);
         } else {
             executor.schedule(() -> {
                 inRunLater = true;
                 try {
                     runnable.run();
-                } catch (ReportedException e) {
+                } catch(ReportedException e) {
                     e.printStackTrace();
                     System.err.println(e.getReport().getFriendlyReport(ReportType.CRASH));
                     mc.delayCrash(e.getReport());

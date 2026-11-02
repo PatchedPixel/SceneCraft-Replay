@@ -28,7 +28,7 @@ public class GuiExportFailed extends GuiScreen {
 
         RenderSettings settings = e.getSettings();
         // Check whether the user has configured some custom ffmpeg arguments
-        if (settings.getEncodingPreset().getValue().equals(settings.getExportArguments())) {
+        if(settings.getEncodingPreset().getValue().equals(settings.getExportArguments())) {
             // If they haven't, then this is probably a faulty ffmpeg installation and there's nothing we can do
             CrashReport crashReport = CrashReport.forThrowable(e, "Exporting video");
             CrashReportCategory details = crashReport.addCategory("Export details");

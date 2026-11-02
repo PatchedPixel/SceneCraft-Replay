@@ -61,18 +61,18 @@ public class GuiUploadScreenshot extends AbstractGuiPopup<GuiUploadScreenshot> {
 
         boolean veer = renderSettings.getRenderMethod() == RenderSettings.RenderMethod.EQUIRECTANGULAR;
 
-        if (renderSettings.getRenderMethod() == RenderSettings.RenderMethod.EQUIRECTANGULAR) {
+        if(renderSettings.getRenderMethod() == RenderSettings.RenderMethod.EQUIRECTANGULAR) {
             successLabel.setI18nText("scenecraft.gui.advancedscreenshots.finished.description.360");
         }
 
-        if (veer) {
+        if(veer) {
             veerUploadButton.onClick(() -> MCVer.openURL(URI.create("https://veer.tv/upload")));
         }
 
         showOnDiskButton.onClick(() -> MCVer.openFile(renderSettings.getOutputFile().getParentFile()));
 
         closeButton.onClick(() -> {
-            if (neverOpenCheckbox.isChecked()) {
+            if(neverOpenCheckbox.isChecked()) {
                 SettingsRegistry settingsRegistry = mod.getSettingsRegistry();
                 settingsRegistry.set(Setting.SKIP_POST_SCREENSHOT_GUI, true);
                 settingsRegistry.save();
@@ -82,7 +82,7 @@ public class GuiUploadScreenshot extends AbstractGuiPopup<GuiUploadScreenshot> {
 
         popup.addElements(new VerticalLayout.Data(0.5), successLabel);
 
-        if (veer) {
+        if(veer) {
             popup.addElements(new VerticalLayout.Data(0.5),
                     veerLabel,
                     veerUploadButton);
@@ -101,7 +101,7 @@ public class GuiUploadScreenshot extends AbstractGuiPopup<GuiUploadScreenshot> {
 
     @Override
     protected void open() {
-        if (mod.getSettingsRegistry().get(Setting.SKIP_POST_SCREENSHOT_GUI)) {
+        if(mod.getSettingsRegistry().get(Setting.SKIP_POST_SCREENSHOT_GUI)) {
             return;
         }
         super.open();

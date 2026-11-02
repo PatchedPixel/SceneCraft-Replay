@@ -51,14 +51,14 @@ public abstract class AbstractGuiTimelineTime<T extends AbstractGuiTimelineTime<
     public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
         super.draw(renderer, size, renderInfo);
 
-        if (timeline == null || timeline.getLastSize() == null) return;
+        if(timeline == null || timeline.getLastSize() == null) return;
 
         int offset = (size.getWidth() - timeline.getLastSize().getWidth()) / 2;
         int visibleLength = (int) (timeline.getLength() * timeline.getZoom());
         int markerInterval = timeline.getMarkerInterval();
         int time = timeline.getOffset() / markerInterval * markerInterval;
-        while (time <= timeline.getOffset() + visibleLength) {
-            if (time >= timeline.getOffset()) {
+        while(time <= timeline.getOffset() + visibleLength) {
+            if(time >= timeline.getOffset()) {
                 drawTime(renderer, size, time, offset);
             }
             time += markerInterval;
@@ -71,7 +71,7 @@ public abstract class AbstractGuiTimelineTime<T extends AbstractGuiTimelineTime<
         double fractionOfVisible = positionInVisible / visibleLength;
         int positionX = (int) (BORDER_LEFT + fractionOfVisible * (size.getWidth() - BORDER_LEFT - BORDER_RIGHT)) + offset;
         String str;
-        if (timeline.getLength() > 60 * 60 * 1000) {
+        if(timeline.getLength() > 60 * 60 * 1000) {
             str = String.format("%02d:%02d:%02d", time / 1000 / 60 / 60, time / 1000 / 60 % 60, time / 1000 % 60);
         } else {
             str = String.format("%02d:%02d", time / 1000 / 60, time / 1000 % 60);

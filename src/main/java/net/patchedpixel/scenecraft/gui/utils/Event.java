@@ -10,8 +10,8 @@ public class Event<T> {
     }
 
     private T invoker;
-    private Function<List<T>, T> invokerFactory;
-    private List<T> listeners = new ArrayList<>();
+    private final Function<List<T>, T> invokerFactory;
+    private final List<T> listeners = new ArrayList<>();
 
     private Event(Function<List<T>, T> invokerFactory) {
         this.invokerFactory = invokerFactory;

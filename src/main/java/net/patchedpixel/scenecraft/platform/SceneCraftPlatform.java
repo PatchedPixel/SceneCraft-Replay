@@ -35,13 +35,13 @@ public class SceneCraftPlatform {
 //                        Identifier.fromNamespaceAndPath(SceneCraft.MOD_ID, "scbin_mapping_generator"),
 //                        new ScbinMappingReloadListener()));
         container.registerExtensionPoint(IConfigScreenFactory.class, (modContainer, parent) -> {
-            if (this.mod == null) {
+            if(this.mod == null) {
                 return parent;
             }
             return new GuiReplaySettings(parent, this.mod.getSettingsRegistry()).toMinecraft();
         });
         modBus.addListener(FMLClientSetupEvent.class, _ -> {
-            if (this.mod != null) this.mod.initModules();
+            if(this.mod != null) this.mod.initModules();
         });
     }
 

@@ -28,7 +28,7 @@ public class CubicSplineInterpolator extends PolynomialSplineInterpolator {
         int row = 0;
         double x;
 
-        if (params != null) {
+        if(params != null) {
             // Apply previous values
             ys[0] = params.getValue();
             x = xs[0];
@@ -51,7 +51,7 @@ public class CubicSplineInterpolator extends PolynomialSplineInterpolator {
             row++;
         }
 
-        for (int i = 0; i < num; i++) {
+        for(int i = 0; i < num; i++) {
             // Each cubic i must produce the correct result at x[i] and x[i+1], that is y[i] and y[i+1]
             // Resulting in these linear equations for every value
             //       a[i]    b[i]     c[i]    d[i]  ...  y
@@ -77,7 +77,7 @@ public class CubicSplineInterpolator extends PolynomialSplineInterpolator {
             // Linear equation for every value (except the last one)
             //       a[i]      b[i]    c[i]  d[i]  a[i+1]    b[i+1]   c[i+1]  d[i+1]
             // (... 3x[i+1]²  2x[i+1]   1     0    3x[i+1]²  2x[i+1]    1       0     ...)
-            if (i < num - 1) {
+            if(i < num - 1) {
                 x = xs[i + 1];
                 matrix[row][i * 4] = -(matrix[row][i * 4 + 4] = 3 * x * x);
                 matrix[row][i * 4 + 1] = -(matrix[row][i * 4 + 5] = 2 * x);
@@ -86,7 +86,7 @@ public class CubicSplineInterpolator extends PolynomialSplineInterpolator {
             }
 
             // Same for the second derivative
-            if (i < num - 1) {
+            if(i < num - 1) {
                 x = xs[i + 1];
                 matrix[row][i * 4] = -(matrix[row][i * 4 + 4] = 6 * x);
                 matrix[row][i * 4 + 1] = -(matrix[row][i * 4 + 5] = 2);

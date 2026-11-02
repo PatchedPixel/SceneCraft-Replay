@@ -77,7 +77,7 @@ public abstract class AbstractGuiImage<T extends AbstractGuiImage<T>> extends Ab
     @Override
     public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
         super.draw(renderer, size, renderInfo);
-        if (texture != null) {
+        if(texture != null) {
             renderer.bindTexture(texture);
         } else {
             renderer.bindTexture(resourceLocation);
@@ -101,7 +101,7 @@ public abstract class AbstractGuiImage<T extends AbstractGuiImage<T>> extends Ab
     public T setTexture(Image img) {
         Preconditions.checkState(copyOf == null, "Cannot change texture of copy.");
         resourceLocation = null;
-        if (texture != null) {
+        if(texture != null) {
             texture.close();
         }
         texture = img.toTexture();
@@ -114,7 +114,7 @@ public abstract class AbstractGuiImage<T extends AbstractGuiImage<T>> extends Ab
     @Override
     public T setTexture(Identifier resourceLocation) {
         Preconditions.checkState(copyOf == null, "Cannot change texture of copy.");
-        if (texture != null) {
+        if(texture != null) {
             texture.close();
             texture = null;
             textureHolder.texture = null;

@@ -37,12 +37,12 @@ import java.util.*;
 public class LegacyTimelineConverter {
     public static Map<String, Timeline> convert(PathingRegistry registry, ReplayFile replayFile) throws IOException {
         KeyframeSet[] keyframeSets = readAndParse(replayFile);
-        if (keyframeSets == null) {
+        if(keyframeSets == null) {
             return Collections.emptyMap();
         }
 
         Map<String, Timeline> timelines = new LinkedHashMap<>();
-        for (KeyframeSet keyframeSet : keyframeSets) {
+        for(KeyframeSet keyframeSet : keyframeSets) {
             timelines.put(keyframeSet.name, convert(registry, keyframeSet));
         }
         return timelines;
@@ -50,7 +50,7 @@ public class LegacyTimelineConverter {
 
     private static Optional<InputStream> read(ReplayFile replayFile) throws IOException {
         Optional<InputStream> in = replayFile.get("paths.json");
-        if (!in.isPresent()) {
+        if(!in.isPresent()) {
             in = replayFile.get("paths");
         }
         return in;
@@ -64,7 +64,7 @@ public class LegacyTimelineConverter {
 
     private static KeyframeSet[] readAndParse(ReplayFile replayFile) throws IOException {
         Optional<InputStream> optIn = read(replayFile);
-        if (!optIn.isPresent()) {
+        if(!optIn.isPresent()) {
             return null;
         }
         KeyframeSet[] keyframeSets;
@@ -83,16 +83,16 @@ public class LegacyTimelineConverter {
 
         Path timePath = timeline.createPath();
         Path positionPath = timeline.createPath();
-        for (Keyframe<AdvancedPosition> positionKeyframe : keyframeSet.positionKeyframes) {
+        for(Keyframe<AdvancedPosition> positionKeyframe : keyframeSet.positionKeyframes) {
             AdvancedPosition value = positionKeyframe.value;
             net.patchedpixel.scenecraft.scenestudio.pathing.path.Keyframe keyframe = getKeyframe(positionPath, positionKeyframe.realTimestamp);
             keyframe.setValue(cameraPosition, Triple.of(value.x, value.y, value.z));
             keyframe.setValue(cameraRotation, Triple.of(value.yaw, value.pitch, value.roll));
-            if (value instanceof SpectatorData) {
+            if(value instanceof SpectatorData) {
                 // TODO Spectator keyframes
             }
         }
-        for (Keyframe<TimestampValue> timeKeyframe : keyframeSet.timeKeyframes) {
+        for(Keyframe<TimestampValue> timeKeyframe : keyframeSet.timeKeyframes) {
             TimestampValue value = timeKeyframe.value;
             net.patchedpixel.scenecraft.scenestudio.pathing.path.Keyframe keyframe = getKeyframe(timePath, timeKeyframe.realTimestamp);
             keyframe.setValue(timestamp, (int) value.value);
@@ -112,7 +112,7 @@ public class LegacyTimelineConverter {
 
     private static net.patchedpixel.scenecraft.scenestudio.pathing.path.Keyframe getKeyframe(Path path, long time) {
         net.patchedpixel.scenecraft.scenestudio.pathing.path.Keyframe keyframe = path.getKeyframe(time);
-        if (keyframe == null) {
+        if(keyframe == null) {
             keyframe = path.insert(time);
         }
         return keyframe;

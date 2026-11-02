@@ -46,7 +46,7 @@ public class Utils {
      */
     public static void link(Focusable... focusables) {
         checkArgument(new HashSet<>(Arrays.asList(focusables)).size() == focusables.length, "focusables must be unique and not null");
-        for (int i = 0; i < focusables.length; i++) {
+        for(int i = 0; i < focusables.length; i++) {
             Focusable next = focusables[(i + 1) % focusables.length];
             focusables[i].setNext(next);
             next.setPrevious(focusables[i]);
@@ -58,11 +58,11 @@ public class Utils {
         int textureBodyHeight = vHeight - topBorder - bottomBorder;
         int textureBodyWidth = uWidth - leftBorder - rightBorder;
         // Left and right borders
-        for (int pass = 0; pass < 2; pass++) {
+        for(int pass = 0; pass < 2; pass++) {
             int x = pass == 0 ? 0 : width - rightBorder;
             int textureX = pass == 0 ? u : u + uWidth - rightBorder;
             // Border
-            for (int y = topBorder; y < height - bottomBorder; y += textureBodyHeight) {
+            for(int y = topBorder; y < height - bottomBorder; y += textureBodyHeight) {
                 int segmentHeight = Math.min(textureBodyHeight, height - bottomBorder - y);
                 renderer.drawTexturedRect(x, y, textureX, v + topBorder, leftBorder, segmentHeight);
             }
@@ -73,12 +73,12 @@ public class Utils {
                     leftBorder, bottomBorder);
         }
 
-        for (int x = leftBorder; x < width - rightBorder; x += textureBodyWidth) {
+        for(int x = leftBorder; x < width - rightBorder; x += textureBodyWidth) {
             int segmentWidth = Math.min(textureBodyWidth, width - rightBorder - x);
             int textureX = u + leftBorder;
 
             // Content
-            for (int y = topBorder; y < height - bottomBorder; y += textureBodyHeight) {
+            for(int y = topBorder; y < height - bottomBorder; y += textureBodyHeight) {
                 int segmentHeight = Math.min(textureBodyHeight, height - bottomBorder - y);
                 renderer.drawTexturedRect(x, y, textureX, v + topBorder, segmentWidth, segmentHeight);
             }

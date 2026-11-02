@@ -82,7 +82,7 @@ public class ReplayInputStream extends InputStream {
      */
     public ReplayInputStream(PacketTypeRegistry registry, InputStream in) {
         this.outputLoginPhase = registry.getState() == State.LOGIN;
-        if (registry.getState() == State.PLAY) {
+        if(registry.getState() == State.PLAY) {
             throw new IllegalArgumentException("Cannot go directly to the PLAY phase, only LOGIN and CONFIGURATION are valid.");
         }
         this.registry = PacketTypeRegistry.get(State.LOGIN);
@@ -117,20 +117,20 @@ public class ReplayInputStream extends InputStream {
     }
 
     private void fillBuffer() throws IOException {
-        while (buffer.isEmpty()) {
+        while(buffer.isEmpty()) {
             int next = readInt(in);
             int length = readInt(in);
-            if (next == -1 || length == -1) {
+            if(next == -1 || length == -1) {
                 break; // reached end of stream
             }
-            if (length == 0) {
+            if(length == 0) {
                 continue; // skip empty segments
             }
 
             ByteBuf buf = ALLOC.buffer(length);
-            while (length > 0) {
+            while(length > 0) {
                 int read = buf.writeBytes(in, length);
-                if (read == -1) {
+                if(read == -1) {
                     buf.release();
                     throw new EOFException();
                 }
@@ -141,7 +141,7 @@ public class ReplayInputStream extends InputStream {
             Packet packet = new Packet(registry, packetId, registry.getType(packetId), buf);
             PacketType type = packet.getType();
 
-            switch (type) {
+            switch(type) {
                 case ConfigCustomPayload:
                 case ConfigSelectKnownPacks:
                 case ConfigRegistries:
@@ -167,20 +167,20 @@ public class ReplayInputStream extends InputStream {
             // The packet was decoded with the registry of the phase it was recorded in. Switch to the registry
             // of the next phase for the packets that follow.
             boolean loginPhasePacket = loginPhase;
-            if (type == PacketType.LoginSuccess) {
+            if(type == PacketType.LoginSuccess) {
                 loginPhase = false;
                 registry = registry.withLoginSuccess();
-            } else if (type == PacketType.ConfigFinish) {
+            } else if(type == PacketType.ConfigFinish) {
                 registry = registry.withState(State.PLAY);
-            } else if (type == PacketType.Reconfigure) {
+            } else if(type == PacketType.Reconfigure) {
                 registry = registry.withState(State.CONFIGURATION);
             }
 
-            if (type == PacketType.KeepAlive) {
+            if(type == PacketType.KeepAlive) {
                 packet.release();
                 continue; // They aren't needed in a replay
             }
-            if ((loginPhasePacket || type == PacketType.LoginSuccess) && !outputLoginPhase) {
+            if((loginPhasePacket || type == PacketType.LoginSuccess) && !outputLoginPhase) {
                 packet.release();
                 continue;
             }

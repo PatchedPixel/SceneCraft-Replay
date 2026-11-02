@@ -8,7 +8,7 @@ import java.io.IOException;
 public interface ReplayOpenedCallback {
     Event<ReplayOpenedCallback> EVENT = Event.create((listeners) ->
             (replayHandler) -> {
-                for (ReplayOpenedCallback listener : listeners) {
+                for(ReplayOpenedCallback listener : listeners) {
                     listener.replayOpened(replayHandler);
                 }
             });

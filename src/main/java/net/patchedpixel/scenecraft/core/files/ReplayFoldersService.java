@@ -48,8 +48,8 @@ public class ReplayFoldersService {
         Path path = ensureDirectoryExists(mcDir.resolve(settings.get(Setting.CACHE_PATH)));
         try {
             Files.setAttribute(path, "dos:hidden", true);
-        } catch (UnsupportedOperationException ignored) {
-        } catch (Exception e) {
+        } catch(UnsupportedOperationException ignored) {
+        } catch(Exception e) {
             e.printStackTrace();
         }
 

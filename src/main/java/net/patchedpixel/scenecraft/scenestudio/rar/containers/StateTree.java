@@ -46,7 +46,7 @@ public abstract class StateTree<T> implements RandomAccessState {
     public void load(PacketSink sink, ReadableCache cache) throws IOException {
         NetInput in = cache.seek(index);
         int time = 0;
-        for (int i = in.readVarInt(); i > 0; i--) {
+        for(int i = in.readVarInt(); i > 0; i--) {
             time += in.readVarInt();
             map.put(time, read(in));
         }
@@ -67,7 +67,7 @@ public abstract class StateTree<T> implements RandomAccessState {
 
         public void put(int time, T value) {
             T oldValue = map.put(time, value);
-            if (oldValue != null) {
+            if(oldValue != null) {
                 discard(oldValue);
             }
         }
@@ -76,7 +76,7 @@ public abstract class StateTree<T> implements RandomAccessState {
             WriteableCache.Deferred out = cache.deferred();
             out.writeVarInt(map.size());
             int lastTime = 0;
-            for (Map.Entry<Integer, T> entry : map.entrySet()) {
+            for(Map.Entry<Integer, T> entry : map.entrySet()) {
                 int time = entry.getKey();
                 out.writeVarInt(time - lastTime);
                 lastTime = time;

@@ -62,7 +62,7 @@ public abstract class AbstractGuiLabel<T extends AbstractGuiLabel<T>> extends Ab
                 .map(it -> it.visit(Optional::of)).filter(Optional::isPresent).map(Optional::get)
                 .collect(Collectors.toList());
         int y = 0;
-        for (String line : lines) {
+        for(String line : lines) {
             renderer.drawString(0, y, isEnabled() ? color : disabledColor, line);
             y+=fontRenderer.lineHeight;
         }

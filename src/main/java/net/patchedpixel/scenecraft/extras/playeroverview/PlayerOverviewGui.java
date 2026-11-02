@@ -88,8 +88,8 @@ public class PlayerOverviewGui extends GuiScreen implements Closeable {
         this.extra = extra;
 
         Collections.sort(players, new PlayerComparator()); // Sort by name, spectators last
-        for (final Player p : players) {
-            if (!(p instanceof AbstractClientPlayer)) continue;
+        for(final Player p : players) {
+            if(!(p instanceof AbstractClientPlayer)) continue;
             final Identifier texture = ((AbstractClientPlayer) p).getSkin().body().texturePath();
             final GuiClickable panel = new GuiClickable().setLayout(new HorizontalLayout().setSpacing(2)).addElements(
                     new HorizontalLayout.Data(0.5), new GuiImage() {
@@ -97,7 +97,7 @@ public class PlayerOverviewGui extends GuiScreen implements Closeable {
                         public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
                             renderer.bindTexture(texture);
                             renderer.drawTexturedRect(0, 0, 8, 8, 16, 16, 8, 8, 64, 64);
-                            if (p.isModelPartShown(PlayerModelPart.HAT)) {
+                            if(p.isModelPartShown(PlayerModelPart.HAT)) {
                                 renderer.drawTexturedRect(0, 0, 40, 8, size.getWidth(), size.getHeight(), 8, 8, 64, 64);
                             }
                         }
@@ -154,8 +154,8 @@ public class PlayerOverviewGui extends GuiScreen implements Closeable {
     private static final class PlayerComparator implements Comparator<Player> {
         @Override
         public int compare(Player o1, Player o2) {
-            if (isSpectator(o1) && !isSpectator(o2)) return 1;
-            if (isSpectator(o2) && !isSpectator(o1)) return -1;
+            if(isSpectator(o1) && !isSpectator(o2)) return 1;
+            if(isSpectator(o2) && !isSpectator(o1)) return -1;
             return o1.getName().getString().compareToIgnoreCase(o2.getName().getString());
         }
     }

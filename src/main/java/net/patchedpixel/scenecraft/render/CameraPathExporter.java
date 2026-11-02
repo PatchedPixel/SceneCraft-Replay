@@ -78,10 +78,10 @@ public class CameraPathExporter {
         float[] rotation = new float[] { quaternion.x(), quaternion.y(), quaternion.z(), quaternion.w() };
 
         timeBuffer.putFloat(framesDone / (float) settings.getFramesPerSecond());
-        for (float f : translation) {
+        for(float f : translation) {
             cameraTranslationBuffer.putFloat(f);
         }
-        for (float f : rotation) {
+        for(float f : rotation) {
             cameraRotationBuffer.putFloat(f);
         }
 
@@ -190,7 +190,7 @@ public class CameraPathExporter {
                 ? videoPath.resolve("camera.glb")
                 : videoPath.resolveSibling(FilenameUtils.getBaseName(videoPath.getFileName().toString()) + ".glb");
         java.nio.file.Path glbPath = glbBasePath;
-        for (int i = 0; Files.exists(glbPath); i++) {
+        for(int i = 0; Files.exists(glbPath); i++) {
             String baseName = FilenameUtils.getBaseName(glbBasePath.getFileName().toString());
             glbPath = glbBasePath.resolveSibling(baseName + "." + i + ".glb");
         }

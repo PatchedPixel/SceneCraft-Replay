@@ -24,8 +24,8 @@ public final class ScreenWidgets {
 
             private List<AbstractWidget> snapshot() {
                 List<AbstractWidget> out = new ArrayList<>();
-                for (GuiEventListener l : children()) {
-                    if (l instanceof AbstractWidget w) out.add(w);
+                for(GuiEventListener l : children()) {
+                    if(l instanceof AbstractWidget w) out.add(w);
                 }
                 return out;
             }
@@ -52,7 +52,7 @@ public final class ScreenWidgets {
                 AbstractWidget anchor = index < before.size() ? before.get(index) : null;
                 register(widget);
                 List<GuiEventListener> children = children();
-                if (anchor != null) {
+                if(anchor != null) {
                     children.remove(widget);
                     children.add(children.indexOf(anchor), widget);
                 }

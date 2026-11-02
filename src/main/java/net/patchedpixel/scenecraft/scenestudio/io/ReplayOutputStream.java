@@ -96,7 +96,7 @@ public class ReplayOutputStream extends OutputStream {
      */
     public ReplayOutputStream(OutputStream out, ReplayMetaData metaData) throws IOException {
         Studio studio = new SceneStudio();
-        if (metaData == null) {
+        if(metaData == null) {
             metaData = new ReplayMetaData();
             metaData.setSingleplayer(false);
             metaData.setServerName(studio.getName() + " v" + studio.getVersion());
@@ -138,7 +138,7 @@ public class ReplayOutputStream extends OutputStream {
      * @see #write(PacketData)
      */
     public void write(long time, Packet packet) throws IOException {
-        if (packet.getRegistry().getState() != State.LOGIN && loginPhase) {
+        if(packet.getRegistry().getState() != State.LOGIN && loginPhase) {
             PacketTypeRegistry registry = PacketTypeRegistry.get(State.LOGIN);
             doWrite(0, new PacketLoginSuccess(UUID.nameUUIDFromBytes(new byte[0]), "Player", Collections.emptyList(), false, new UUID(0, 0)).write(registry));
         }
@@ -146,7 +146,7 @@ public class ReplayOutputStream extends OutputStream {
     }
 
     private void doWrite(long time, Packet packet) throws IOException {
-        if (duration < time) {
+        if(duration < time) {
             duration = (int) time;
         }
 
@@ -165,7 +165,7 @@ public class ReplayOutputStream extends OutputStream {
             packet.getBuf().release();
         }
 
-        if (packet.getType() == PacketType.LoginSuccess) {
+        if(packet.getType() == PacketType.LoginSuccess) {
             loginPhase = false;
         }
     }
@@ -176,7 +176,7 @@ public class ReplayOutputStream extends OutputStream {
      * @param name Name of the new entry
      */
     public void nextEntry(String name) throws IOException {
-        if (zipOut != null) {
+        if(zipOut != null) {
             zipOut.closeEntry();
             zipOut.putNextEntry(new ZipEntry(name));
         } else {
@@ -186,7 +186,7 @@ public class ReplayOutputStream extends OutputStream {
 
     @Override
     public void close() throws IOException {
-        if (zipOut != null) {
+        if(zipOut != null) {
             zipOut.closeEntry();
 
             metaData.setDuration(duration);

@@ -52,7 +52,7 @@ public class EntityRendererHandler extends EventRegistrations implements WorldRe
     public void renderWorld(CaptureData data) {
         this.data = data;
         long offsetMillis;
-        if (SceneCraft.instance.getSettingsRegistry().get(Setting.FRAME_TIME_FROM_WORLD_TIME)) {
+        if(SceneCraft.instance.getSettingsRegistry().get(Setting.FRAME_TIME_FROM_WORLD_TIME)) {
             offsetMillis = SceneCraftReplay.instance.getReplayHandler().getReplaySender().currentTimeStamp();
         } else {
             offsetMillis = renderInfo.getFramesDone() * 1_000L / settings.getFramesPerSecond();
@@ -65,18 +65,18 @@ public class EntityRendererHandler extends EventRegistrations implements WorldRe
         fakeFinishTimeNano = finishTimeNano;
         PreRenderCallback.EVENT.invoker().preRender();
 
-        if (mc.level != null && mc.player != null) {
+        if(mc.level != null && mc.player != null) {
             Screen orgScreen = mc.gui.screen();
             boolean orgPauseOnLostFocus = mc.options.pauseOnLostFocus;
             boolean orgHudIsHidden = mc.gui.hud.isHidden();
             try {
                 mc.gui.screen = null;
                 mc.options.pauseOnLostFocus = false; // do not want the pause menu to open if the window is unfocused
-                if (omnidirectional) {
+                if(omnidirectional) {
                     // makes no sense, we wouldn't even know where to put it
                     mc.gameRenderer.mainCamera().enablePanoramicMode();
                 }
-                if (!orgHudIsHidden) mc.gui.hud.toggle();
+                if(!orgHudIsHidden) mc.gui.hud.toggle();
 
                 mc.gameRenderer.update(mc.getDeltaTracker());
                 if(!warmedUp) {
@@ -90,7 +90,7 @@ public class EntityRendererHandler extends EventRegistrations implements WorldRe
                 mc.gui.screen = orgScreen;
                 mc.options.pauseOnLostFocus = orgPauseOnLostFocus;
                 mc.gameRenderer.mainCamera().disablePanoramicMode();
-                if (!orgHudIsHidden) mc.gui.hud.toggle();
+                if(!orgHudIsHidden) mc.gui.hud.toggle();
             }
         }
 

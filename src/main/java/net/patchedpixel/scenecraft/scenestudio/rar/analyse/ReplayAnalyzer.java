@@ -73,19 +73,19 @@ public class ReplayAnalyzer {
     public void analyse(ReplayInputStream in, IntConsumer progress) throws IOException {
         int time = 0;
         PacketData packetData;
-        while ((packetData = in.readPacket()) != null) {
+        while((packetData = in.readPacket()) != null) {
             Packet packet = packetData.getPacket();
             time = (int) packetData.getTime();
             progress.accept(time);
             Integer entityId = PacketUtils.getEntityId(packet);
             PacketType type = packet.getType();
-            switch (type) {
+            switch(type) {
                 case SpawnObject: {
                     Entity.Builder entity = replay.world.transientThings.newEntity(time, entityId);
 
-                    if (type == (PacketType.SpawnObject)) {
+                    if(type == (PacketType.SpawnObject)) {
                         PacketPlayerListEntry entry = playerListEntries.get(PacketSpawnPlayer.getPlayerListEntryId(packet));
-                        if (entry != null) {
+                        if(entry != null) {
                             entity.addSpawnPacket(PacketPlayerListEntry.write(registry, PacketPlayerListEntry.Action.init(registry), entry));
                         }
                     }
@@ -94,7 +94,7 @@ public class ReplayAnalyzer {
                     break;
                 }
                 case DestroyEntities: {
-                    for (int id : PacketDestroyEntities.getEntityIds(packet)) {
+                    for(int id : PacketDestroyEntities.getEntityIds(packet)) {
                         replay.world.transientThings.removeEntity(time, id);
                     }
 
@@ -103,7 +103,7 @@ public class ReplayAnalyzer {
                 case UnloadChunk:
                 case ChunkData: {
                     PacketChunkData chunkData = PacketChunkData.read(packet, replay.world.info.dimensionType.getSections());
-                    if (chunkData.isUnload()) {
+                    if(chunkData.isUnload()) {
                         replay.world.transientThings.removeChunk(time, chunkData.getUnloadX(), chunkData.getUnloadZ());
                     } else {
                         processChunkLoad(time, chunkData.getColumn());
@@ -115,10 +115,10 @@ public class ReplayAnalyzer {
                 }
                 case BlockChange:
                 case MultiBlockChange: {
-                    for (PacketBlockChange record : PacketBlockChange.readSingleOrBulk(packet)) {
+                    for(PacketBlockChange record : PacketBlockChange.readSingleOrBulk(packet)) {
                         IPosition pos = record.getPosition();
                         Chunk.Builder chunk = replay.world.transientThings.getChunk(pos.getX() >> 4, pos.getZ() >> 4);
-                        if (chunk != null) {
+                        if(chunk != null) {
                             chunk.blocks.update(time, record);
                         }
                     }
@@ -127,9 +127,9 @@ public class ReplayAnalyzer {
                 }
                 case PlayerListEntry: {
                     Set<PacketPlayerListEntry.Action> actions = PacketPlayerListEntry.getActions(packet);
-                    for (PacketPlayerListEntry entry : PacketPlayerListEntry.read(packet)) {
-                        for (PacketPlayerListEntry.Action action : actions) {
-                            switch (action) {
+                    for(PacketPlayerListEntry entry : PacketPlayerListEntry.read(packet)) {
+                        for(PacketPlayerListEntry.Action action : actions) {
+                            switch(action) {
                                 case ADD:
                                     playerListEntries.put(entry.getId(), entry);
                                     break;
@@ -172,7 +172,7 @@ public class ReplayAnalyzer {
                 case Respawn: {
                     PacketRespawn respawn = PacketRespawn.read(packet, replay.world.info.registries);
                     String newDimension = respawn.dimension;
-                    if (!newDimension.equals(replay.world.info.dimension)) {
+                    if(!newDimension.equals(replay.world.info.dimension)) {
                         World.Builder world = replay.newWorld(time, new World.Info(replay.world.info, respawn));
                         currentViewChunkX = currentViewChunkZ = 0;
                         world.viewPosition.put(time, PacketUpdateViewPosition.write(registry, 0, 0));
@@ -244,7 +244,7 @@ public class ReplayAnalyzer {
                     break;
                 }
                 case NotifyClient: {
-                    switch (PacketNotifyClient.getAction(packet)) {
+                    switch(PacketNotifyClient.getAction(packet)) {
                         case START_RAIN:
                             replay.world.transientThings.newWeather(time);
                             break;
@@ -264,12 +264,12 @@ public class ReplayAnalyzer {
                     break;
                 }
             }
-            if (entityId != null) {
+            if(entityId != null) {
                 Entity.Builder entity = replay.world.transientThings.getEntity(entityId);
-                if (entity != null) {
+                if(entity != null) {
                     Location current = entity.getLocation();
                     Location updated = PacketUtils.updateLocation(current, packet);
-                    if (updated != null) {
+                    if(updated != null) {
                         entity.updateLocation(time, updated);
                     }
                 }
@@ -278,7 +278,7 @@ public class ReplayAnalyzer {
             packet.release();
         }
 
-        if (lastLightUpdate != null) {
+        if(lastLightUpdate != null) {
             lastLightUpdate.release();
         }
 
@@ -286,18 +286,18 @@ public class ReplayAnalyzer {
     }
 
     private void processChunkLoad(int time, PacketChunkData.Column column) throws IOException {
-        if (column.isFull()) {
+        if(column.isFull()) {
             Chunk.Builder chunk = replay.world.transientThings.newChunk(time, column);
-            if (lastLightUpdate != null) {
+            if(lastLightUpdate != null) {
                 PacketUpdateLight updateLight = PacketUpdateLight.read(lastLightUpdate);
-                if (column.x == updateLight.getX() && column.z == updateLight.getZ()) {
+                if(column.x == updateLight.getX() && column.z == updateLight.getZ()) {
                     chunk.spawnPackets.list.add(0, lastLightUpdate);
                     lastLightUpdate = null;
                 }
             }
         } else {
             Chunk.Builder chunk = replay.world.transientThings.getChunk(column.x, column.z);
-            if (chunk != null) {
+            if(chunk != null) {
                 chunk.blocks.update(time, column);
             }
         }
@@ -309,16 +309,16 @@ public class ReplayAnalyzer {
 
         LongSet toBeRemoved = new LongOpenHashSet();
 
-        for (Long2ObjectMap.Entry<Chunk.Builder> entry : replay.world.transientThings.getChunks().long2ObjectEntrySet()) {
+        for(Long2ObjectMap.Entry<Chunk.Builder> entry : replay.world.transientThings.getChunks().long2ObjectEntrySet()) {
             long key = entry.getLongKey();
             int x = longToX(key);
             int z = longToZ(key);
-            if (Math.abs(x - centerX) > distance || Math.abs(z - centerZ) > distance) {
+            if(Math.abs(x - centerX) > distance || Math.abs(z - centerZ) > distance) {
                 toBeRemoved.add(key);
             }
         }
 
-        for (long key : toBeRemoved) {
+        for(long key : toBeRemoved) {
             replay.world.transientThings.removeChunk(time, key);
         }
     }

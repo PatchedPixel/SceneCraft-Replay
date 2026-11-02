@@ -33,8 +33,8 @@ public class GuiRecordingOverlay extends EventRegistrations {
      */
     { on(RenderHudCallback.EVENT, (stack, partialTicks) -> renderRecordingIndicator(stack)); }
     private void renderRecordingIndicator(GuiGraphicsExtractor stack) {
-        if (guiControls.isStopped()) return;
-        if (settingsRegistry.get(Setting.INDICATOR)) {
+        if(guiControls.isStopped()) return;
+        if(settingsRegistry.get(Setting.INDICATOR)) {
             Font fontRenderer = mc.font;
             String text = guiControls.isPaused() ? I18n.get("scenecraft.gui.paused") : I18n.get("scenecraft.gui.record");
             MinecraftGuiRenderer renderer = new MinecraftGuiRenderer(stack);

@@ -35,7 +35,7 @@ public abstract class FullStateTree<T> extends StateTree<T> implements RandomAcc
     @Override
     public void play(PacketSink sink, int currentTimeStamp, int targetTime) throws IOException {
         Map.Entry<Integer, T> lastUpdate = map.floorEntry(targetTime);
-        if (lastUpdate != null && lastUpdate.getKey() > currentTimeStamp) {
+        if(lastUpdate != null && lastUpdate.getKey() > currentTimeStamp) {
             apply(sink, lastUpdate.getValue());
         }
     }
@@ -43,7 +43,7 @@ public abstract class FullStateTree<T> extends StateTree<T> implements RandomAcc
     @Override
     public void rewind(PacketSink sink, int currentTimeStamp, int targetTime) throws IOException {
         Map.Entry<Integer, T> lastUpdate = map.floorEntry(targetTime);
-        if (lastUpdate != null && !lastUpdate.getKey().equals(map.floorKey(currentTimeStamp))) {
+        if(lastUpdate != null && !lastUpdate.getKey().equals(map.floorKey(currentTimeStamp))) {
             apply(sink, lastUpdate.getValue());
         }
     }

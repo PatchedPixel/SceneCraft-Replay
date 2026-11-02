@@ -33,7 +33,7 @@ public class PacketDestroyEntities {
         try (Packet.Reader in = packet.reader()) {
             int len = in.readVarInt();
             List<Integer> result = new ArrayList<>(len);
-            for (int i = 0; i < len; i++) {
+            for(int i = 0; i < len; i++) {
                 result.add(in.readVarInt());
             }
             return result;
@@ -53,7 +53,7 @@ public class PacketDestroyEntities {
         try (Packet.Writer out = packet.overwrite()) {
             out.writeVarInt(entityIds.length);
 
-            for (int entityId : entityIds) {
+            for(int entityId : entityIds) {
                 out.writeVarInt(entityId);
             }
         }

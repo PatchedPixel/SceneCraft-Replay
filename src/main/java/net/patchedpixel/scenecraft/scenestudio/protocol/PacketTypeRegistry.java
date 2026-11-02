@@ -50,25 +50,25 @@ public class PacketTypeRegistry {
 
         Map<String, Integer> vanillaIds = VanillaPacketIds.forState(state);
         PacketType unknown = null;
-        for (PacketType type : PacketType.values()) {
-            if (type.getState() != state) {
+        for(PacketType type : PacketType.values()) {
+            if(type.getState() != state) {
                 continue;
             }
-            if (type.isUnknown()) {
+            if(type.isUnknown()) {
                 unknown = type;
                 continue;
             }
-            if (type.getVanillaName() == null) {
+            if(type.getVanillaName() == null) {
                 continue; // removed from the protocol
             }
             Integer id = vanillaIds.get(type.getVanillaName());
-            if (id == null) {
+            if(id == null) {
                 LOGGER.warn("Packet {} ('{}') does not exist in the {} protocol, it will be treated as unknown",
                         type, type.getVanillaName(), state);
                 continue;
             }
             PacketType existing = typeForId.get(id);
-            if (existing != null) {
+            if(existing != null) {
                 LOGGER.error("Packet net {} in the {} protocol is used by both {} and {}, keeping {}",
                         id, state, existing, type, existing);
                 continue;

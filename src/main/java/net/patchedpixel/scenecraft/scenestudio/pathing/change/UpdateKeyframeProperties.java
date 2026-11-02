@@ -110,12 +110,12 @@ public final class UpdateKeyframeProperties implements Change {
 
         Path path = timeline.getPaths().get(this.path);
         Keyframe keyframe = get(path.getKeyframes(), index);
-        for (Map.Entry<String, Optional<Object>> entry : newValues.entrySet()) {
+        for(Map.Entry<String, Optional<Object>> entry : newValues.entrySet()) {
             Property property = timeline.getProperty(entry.getKey());
-            if (property == null) throw new IllegalStateException("Property " + entry.getKey() + " unknown.");
+            if(property == null) throw new IllegalStateException("Property " + entry.getKey() + " unknown.");
             Optional<Object> newValue = entry.getValue();
             oldValues.put(entry.getKey(), keyframe.getValue(property));
-            if (newValue.isPresent()) {
+            if(newValue.isPresent()) {
                 keyframe.setValue(property, newValue.get());
             } else {
                 keyframe.removeProperty(property);
@@ -132,12 +132,12 @@ public final class UpdateKeyframeProperties implements Change {
 
         Path path = timeline.getPaths().get(this.path);
         Keyframe keyframe = get(path.getKeyframes(), index);
-        for (Map.Entry<String, Optional<Object>> entry : oldValues.entrySet()) {
+        for(Map.Entry<String, Optional<Object>> entry : oldValues.entrySet()) {
             Property property = timeline.getProperty(entry.getKey());
-            if (property == null) throw new IllegalStateException("Property " + entry.getKey() + " unknown.");
+            if(property == null) throw new IllegalStateException("Property " + entry.getKey() + " unknown.");
             Optional<Object> oldValue = entry.getValue();
             newValues.put(entry.getKey(), keyframe.getValue(property));
-            if (oldValue.isPresent()) {
+            if(oldValue.isPresent()) {
                 keyframe.setValue(property, oldValue.get());
             } else {
                 keyframe.removeProperty(property);

@@ -75,11 +75,11 @@ public abstract class AbstractGuiHorizontalScrollbar<T extends AbstractGuiHorizo
     @Override
     public boolean mouseClick(Click click) {
         Point pos = new Point(click);
-        if (getContainer() != null) {
+        if(getContainer() != null) {
             getContainer().convertFor(this, pos);
         }
 
-        if (isMouseHoveringBar(pos) && isEnabled()) {
+        if(isMouseHoveringBar(pos) && isEnabled()) {
             dragging = true;
             updateValue(pos);
             return true;
@@ -89,9 +89,9 @@ public abstract class AbstractGuiHorizontalScrollbar<T extends AbstractGuiHorizo
 
     @Override
     public boolean mouseDrag(Click click) {
-        if (dragging) {
+        if(dragging) {
             Point pos = new Point(click);
-            if (getContainer() != null) {
+            if(getContainer() != null) {
                 getContainer().convertFor(this, pos);
             }
             updateValue(pos);
@@ -101,9 +101,9 @@ public abstract class AbstractGuiHorizontalScrollbar<T extends AbstractGuiHorizo
 
     @Override
     public boolean mouseRelease(Click click) {
-        if (dragging) {
+        if(dragging) {
             Point pos = new Point(click);
-            if (getContainer() != null) {
+            if(getContainer() != null) {
                 getContainer().convertFor(this, pos);
             }
             updateValue(pos);
@@ -124,10 +124,10 @@ public abstract class AbstractGuiHorizontalScrollbar<T extends AbstractGuiHorizo
     }
 
     protected void updateValue(ReadablePoint position) {
-        if (getLastSize() == null) {
+        if(getLastSize() == null) {
             return;
         }
-        if (startDragging != null) {
+        if(startDragging != null) {
             double d = position.getX() - startDragging.getX();
             offset += d / (getLastSize().getWidth() - BORDER_LEFT - BORDER_RIGHT);
             checkOffset();
@@ -160,7 +160,7 @@ public abstract class AbstractGuiHorizontalScrollbar<T extends AbstractGuiHorizo
     }
 
     public void onValueChanged() {
-        if (onValueChanged != null) {
+        if(onValueChanged != null) {
             onValueChanged.run();
         }
     }
@@ -201,9 +201,9 @@ public abstract class AbstractGuiHorizontalScrollbar<T extends AbstractGuiHorizo
      * Make sure the offset is far enough to the left so we don't look over the edge on the right.
      */
     private void checkOffset() {
-        if (offset < 0) {
+        if(offset < 0) {
             offset = 0;
-        } else if (zoom + offset > 1) {
+        } else if(zoom + offset > 1) {
             offset = 1 - zoom;
         }
     }

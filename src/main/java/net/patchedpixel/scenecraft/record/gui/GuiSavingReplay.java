@@ -66,7 +66,7 @@ public class GuiSavingReplay {
     public void close() {
         core.getBackgroundProcesses().removeProcess(panel);
         AbstractGuiScreen<?> currentScreen = GuiScreen.from(mc.gui.screen());
-        if (currentScreen instanceof GuiReplayViewer) {
+        if(currentScreen instanceof GuiReplayViewer) {
             ((GuiReplayViewer) currentScreen).list.load();
         }
     }
@@ -87,7 +87,7 @@ public class GuiSavingReplay {
 
         panel.addElements(new VerticalLayout.Data(0.5), applyButton);
 
-        if (!core.getSettingsRegistry().get(Setting.RENAME_DIALOG)) {
+        if(!core.getSettingsRegistry().get(Setting.RENAME_DIALOG)) {
             apply();
         }
     }
@@ -141,10 +141,10 @@ public class GuiSavingReplay {
     }
 
     private void applyOutput(Path path, String newName) {
-        if (newName.isEmpty()) {
+        if(newName.isEmpty()) {
             try {
                 Files.delete(path);
-            } catch (IOException e) {
+            } catch(IOException e) {
                 logger.error("Deleting replay file:", e);
                 CrashReport crashReport = CrashReport.forThrowable(e, "Deleting replay file");
                 core.runLater(() -> Utils.error(logger, VanillaGuiScreen.wrap(mc.gui.screen()), crashReport, () -> {}));
@@ -155,11 +155,11 @@ public class GuiSavingReplay {
         try {
             Path replaysFolder = core.folders.getReplayFolder();
             Path newPath = Utils.replayNameToPath(replaysFolder, newName);
-            for (int i = 1; Files.exists(newPath); i++) {
+            for(int i = 1; Files.exists(newPath); i++) {
                 newPath = Utils.replayNameToPath(replaysFolder, newName + " (" + i + ")");
             }
             Files.move(path, newPath);
-        } catch (IOException e) {
+        } catch(IOException e) {
             logger.error("Renaming replay file:", e);
             CrashReport crashReport = CrashReport.forThrowable(e, "Renaming replay file");
             core.runLater(() -> Utils.error(logger, VanillaGuiScreen.wrap(mc.gui.screen()), crashReport, () -> {}));

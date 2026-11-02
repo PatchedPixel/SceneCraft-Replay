@@ -45,10 +45,10 @@ public class TimelineImpl implements Timeline {
 
     @Override
     public <T> Optional<T> getValue(Property<T> property, long time) {
-        for (Path path : paths) {
-            if (path.isActive()) {
+        for(Path path : paths) {
+            if(path.isActive()) {
                 Optional<T> value = path.getValue(property, time);
-                if (value.isPresent()) {
+                if(value.isPresent()) {
                     return value;
                 }
             }
@@ -58,14 +58,14 @@ public class TimelineImpl implements Timeline {
 
     @Override
     public void applyToGame(long time, Object replayHandler) {
-        for (Property<?> property : properties.values()) {
+        for(Property<?> property : properties.values()) {
             applyToGame(time, replayHandler, property);
         }
     }
 
     private <T> void applyToGame(long time, Object replayHandler, Property<T> property) {
         Optional<T> value = getValue(property, time);
-        if (value.isPresent()) {
+        if(value.isPresent()) {
             property.applyToGame(value.get(), replayHandler);
         }
     }

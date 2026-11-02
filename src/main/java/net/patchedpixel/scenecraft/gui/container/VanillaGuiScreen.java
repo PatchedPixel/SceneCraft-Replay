@@ -32,7 +32,7 @@ public class VanillaGuiScreen extends GuiScreen implements Draggable, KeyHandler
 
     public static VanillaGuiScreen wrap(net.minecraft.client.gui.screens.Screen originalGuiScreen) {
         VanillaGuiScreen gui = WRAPPERS.get(originalGuiScreen);
-        if (gui == null) {
+        if(gui == null) {
             WRAPPERS.put(originalGuiScreen, gui = new VanillaGuiScreen(originalGuiScreen));
             gui.register();
         }
@@ -60,7 +60,7 @@ public class VanillaGuiScreen extends GuiScreen implements Draggable, KeyHandler
 
     // Needs to be called from or after GuiInitEvent.Post, will auto-unregister on any GuiOpenEvent
     public void register() {
-        if (!eventHandler.active) {
+        if(!eventHandler.active) {
             eventHandler.active = true;
 
             eventHandler.register();
@@ -123,7 +123,7 @@ public class VanillaGuiScreen extends GuiScreen implements Draggable, KeyHandler
         // TODO this is a workaround for ReplayMod#560 until we remove the inner mc screen
         //      see also the note in ReplayMod's GuiBackgroundProcesses
         // If this screen ever becomes the main screen, something has gone wrong.
-        if (getSuperMcGui() == getMinecraft().gui.screen()) {
+        if(getSuperMcGui() == getMinecraft().gui.screen()) {
             getMinecraft().gui.setScreen(null);
         }
     }
@@ -139,7 +139,7 @@ public class VanillaGuiScreen extends GuiScreen implements Draggable, KeyHandler
         private void onGuiClosed() {
             unregister();
 
-            if (active) {
+            if(active) {
                 active = false;
                 getSuperMcGui().removed();
                 WRAPPERS.remove(mcScreen, VanillaGuiScreen.this);
@@ -148,7 +148,7 @@ public class VanillaGuiScreen extends GuiScreen implements Draggable, KeyHandler
 
         { on(InitScreenCallback.Pre.EVENT, this::preGuiInit); }
         private void preGuiInit(net.minecraft.client.gui.screens.Screen screen) {
-            if (screen == mcScreen && active) {
+            if(screen == mcScreen && active) {
                 active = false;
                 unregister();
                 getSuperMcGui().removed();

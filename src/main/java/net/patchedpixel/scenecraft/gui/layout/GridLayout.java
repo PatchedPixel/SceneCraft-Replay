@@ -53,7 +53,7 @@ public class GridLayout implements Layout {
         Preconditions.checkState(columns != 0, "Columns may not be 0.");
         int elements = container.getElements().size();
         int rows = (elements - 1 + columns) / columns;
-        if (rows < 1) {
+        if(rows < 1) {
             return Collections.emptyMap();
         }
         int cellWidth = (size.getWidth() + spacingX) / columns - spacingX;
@@ -67,26 +67,26 @@ public class GridLayout implements Layout {
 
         Map<GuiElement, Pair<ReadablePoint, ReadableDimension>> map = new LinkedHashMap<>();
         Iterator<Map.Entry<GuiElement, LayoutData>> iter = container.getElements().entrySet().iterator();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < columns; j++) {
-                if (!iter.hasNext()) {
+        for(int i = 0; i < rows; i++) {
+            for(int j = 0; j < columns; j++) {
+                if(!iter.hasNext()) {
                     return map;
                 }
                 int x = j * (cellWidth + spacingX);
                 int y = i * (cellHeight + spacingY);
 
-                if (maxCellSize != null) {
+                if(maxCellSize != null) {
                     cellWidth = maxCellSize.getLeft()[j];
                     cellHeight = maxCellSize.getRight()[i];
 
                     x = 0;
-                    for (int x1 = 0; x1 < j; x1++) {
+                    for(int x1 = 0; x1 < j; x1++) {
                         x += maxCellSize.getLeft()[x1];
                         x += spacingX;
                     }
 
                     y = 0;
-                    for (int y1 = 0; y1 < i; y1++) {
+                    for(int y1 = 0; y1 < i; y1++) {
                         y += maxCellSize.getRight()[y1];
                         y += spacingY;
                     }
@@ -116,17 +116,17 @@ public class GridLayout implements Layout {
         int maxWidth = 0, maxHeight = 0;
 
         int elements = 0;
-        for (Map.Entry<GuiElement, LayoutData> entry : container.getElements().entrySet()) {
+        for(Map.Entry<GuiElement, LayoutData> entry : container.getElements().entrySet()) {
             GuiElement element = entry.getKey();
             ReadableDimension minSize = element.getMinSize();
 
             int width = minSize.getWidth();
-            if (width > maxWidth) {
+            if(width > maxWidth) {
                 maxWidth = width;
             }
 
             int height = minSize.getHeight();
-            if (height > maxHeight) {
+            if(height > maxHeight) {
                 maxHeight = height;
             }
             elements++;
@@ -136,24 +136,24 @@ public class GridLayout implements Layout {
         int totalWidth = maxWidth * columns;
         int totalHeight = maxHeight * rows;
 
-        if (!cellsEqualSize) {
+        if(!cellsEqualSize) {
             Pair<int[], int[]> maxCellSize = calcNeededCellSize(container);
 
             totalWidth = 0;
-            for (int w : maxCellSize.getLeft()) {
+            for(int w : maxCellSize.getLeft()) {
                 totalWidth += w;
             }
 
             totalHeight = 0;
-            for (int h : maxCellSize.getRight()) {
+            for(int h : maxCellSize.getRight()) {
                 totalHeight += h;
             }
         }
 
-        if (elements > 0) {
+        if(elements > 0) {
             totalWidth+=spacingX * (columns - 1);
         }
-        if (elements > columns) {
+        if(elements > columns) {
             totalHeight+=spacingY * (rows - 1);
         }
         return new Dimension(totalWidth, totalHeight);
@@ -164,7 +164,7 @@ public class GridLayout implements Layout {
         int[] rowMaxHeight = new int[(container.getElements().size() - 1 + columns) / columns];
 
         int elements = 0;
-        for (Map.Entry<GuiElement, LayoutData> entry : container.getElements().entrySet()) {
+        for(Map.Entry<GuiElement, LayoutData> entry : container.getElements().entrySet()) {
             int column = elements % columns;
             int row = elements / columns;
 
@@ -172,12 +172,12 @@ public class GridLayout implements Layout {
             ReadableDimension minSize = element.getMinSize();
 
             int width = minSize.getWidth();
-            if (width > columnMaxWidth[column]) {
+            if(width > columnMaxWidth[column]) {
                 columnMaxWidth[column] = width;
             }
 
             int height = minSize.getHeight();
-            if (height > rowMaxHeight[row]) {
+            if(height > rowMaxHeight[row]) {
                 rowMaxHeight[row] = height;
             }
 
@@ -253,8 +253,8 @@ public class GridLayout implements Layout {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if(this == o) return true;
+            if(o == null || getClass() != o.getClass()) return false;
             Data data = (Data) o;
             return Double.compare(data.alignmentX, alignmentX) == 0 &&
                     Double.compare(data.alignmentY, alignmentY) == 0;

@@ -53,13 +53,13 @@ public abstract class Mixin_ForceChunkLoading {
             @Local(name = "cullFrustum") Frustum cullFrustum,
             @Local(name = "cache") RenderRegionCache cache
     ) {
-        if (!ForceChunkLoadingHook.enabled || FlawlessFrames.hasSodium()) {
+        if(!ForceChunkLoadingHook.enabled || FlawlessFrames.hasSodium()) {
             return;
         }
 
         SectionOcclusionGraph sectionOcclusionGraph = this.levelRenderer.sectionOcclusionGraph();
 
-        while (true) {
+        while(true) {
             boolean areWeDoneYet = true;
 
             // Update (or schedule update) of occlusion graph to account for newly loaded (and later also newly compiled) chunks
@@ -68,28 +68,28 @@ public abstract class Mixin_ForceChunkLoading {
 
             // Wait for any async occlusion graph updates to be done
             Future<?> fullUpdateFuture = sectionOcclusionGraph.fullUpdateTask;
-            if (fullUpdateFuture != null) {
+            if(fullUpdateFuture != null) {
                 try {
                     fullUpdateFuture.get(5, TimeUnit.SECONDS);
-                } catch (InterruptedException e) {
+                } catch(InterruptedException e) {
                     Thread.currentThread().interrupt();
                     return;
-                } catch (ExecutionException e) {
+                } catch(ExecutionException e) {
                     throw new RuntimeException(e);
-                } catch (TimeoutException e) {
+                } catch(TimeoutException e) {
                     e.printStackTrace();
                 }
             }
 
             // Re-compute visible chunks if occlusion graph has changed
-            if (sectionOcclusionGraph.consumeFrustumUpdate()) {
+            if(sectionOcclusionGraph.consumeFrustumUpdate()) {
                 this.applyFrustum(cullFrustum);
             }
 
             // Schedule changed and newly visible chunks for updating
-            for (SectionRenderDispatcher.RenderSection section : this.levelRenderer.visibleSections()) {
+            for(SectionRenderDispatcher.RenderSection section : this.levelRenderer.visibleSections()) {
                 SectionUpdateTracker.SectionDirtyState dirtyState = this.sectionUpdateTracker.getDirtyState(section.getSectionNode());
-                if (dirtyState != null
+                if(dirtyState != null
                         && dirtyState.isDirty()
                         && (section.sectionMesh.get() != CompiledSectionMesh.UNCOMPILED || this.sectionUpdateTracker.hasAllNeighbors(this.level, section.getSectionNode()))) {
                     section.compileAsync(cache.createRegion(this.level, section.getSectionNode()));
@@ -100,12 +100,12 @@ public abstract class Mixin_ForceChunkLoading {
 
             // Wait for chunks to be compiled and uploaded to the GPU
             // TODO may need to switch to the render thread for this in the future
-            if (((ForceChunkLoadingHook.IBlockOnChunkRebuilds) this.levelRenderer.sectionRenderDispatcher()).uploadEverythingBlocking()) {
+            if(((ForceChunkLoadingHook.IBlockOnChunkRebuilds) this.levelRenderer.sectionRenderDispatcher()).uploadEverythingBlocking()) {
                 areWeDoneYet = false;
             }
 
             // Repeat until no more updates are needed
-            if (areWeDoneYet) {
+            if(areWeDoneYet) {
                 break;
             }
         }

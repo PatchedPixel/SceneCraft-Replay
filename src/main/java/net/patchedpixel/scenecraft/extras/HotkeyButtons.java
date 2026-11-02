@@ -73,7 +73,7 @@ public class HotkeyButtons extends EventRegistrations implements Extra {
                         // There doesn't seem to be an KeyBindingUpdate event, so we'll just update it every time
                         setLabel(keyBinding.isBound() ? keyBinding.getBoundKey() : "");
 
-                        if (keyBinding.supportsAutoActivation()) {
+                        if(keyBinding.supportsAutoActivation()) {
                             setTooltip(new GuiTooltip().setText(new String[]{
                                     I18n.get("scenecraft.gui.ingame.autoactivating"),
                                     I18n.get("scenecraft.gui.ingame.autoactivating."
@@ -85,7 +85,7 @@ public class HotkeyButtons extends EventRegistrations implements Extra {
                         super.draw(renderer, size, renderInfo);
                     }
                 }.onClick(click -> {
-                    if (keyBinding.supportsAutoActivation() && click.hasCtrl()) {
+                    if(keyBinding.supportsAutoActivation() && click.hasCtrl()) {
                         keyBinding.setAutoActivating(!keyBinding.isAutoActivating());
                     } else {
                         keyBinding.trigger();
@@ -103,7 +103,7 @@ public class HotkeyButtons extends EventRegistrations implements Extra {
                         x(label, width(button) + 4);
                         width(label, width - x(label));
 
-                        if (textWidth > width - x(label)) {
+                        if(textWidth > width - x(label)) {
                             height(label, height(label) * 2); // split over two lines
                         }
                         y(label, (height - height(label)) / 2);

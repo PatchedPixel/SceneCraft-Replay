@@ -95,7 +95,7 @@ public class SPTimeline implements PathingRegistry {
     }
 
     public Path getPath(SPPath path) {
-        switch (path) {
+        switch(path) {
             case TIME:
                 return getTimePath();
             case POSITION:
@@ -118,7 +118,7 @@ public class SPTimeline implements PathingRegistry {
         InterpolatorType prevType = this.defaultInterpolatorType;
         this.defaultInterpolatorType = Validate.notNull(defaultInterpolatorType);
 
-        if (prevType != null && prevType != this.defaultInterpolatorType) {
+        if(prevType != null && prevType != this.defaultInterpolatorType) {
             timeline.pushChange(updateInterpolators());
         }
     }
@@ -172,7 +172,7 @@ public class SPTimeline implements PathingRegistry {
         UpdateKeyframeProperties.Builder builder = UpdateKeyframeProperties.create(path, keyframe);
         builder.setValue(CameraProperties.POSITION, Triple.of(posX, posY, posZ));
         builder.setValue(CameraProperties.ROTATION, Triple.of(yaw, pitch, roll));
-        if (spectated != -1) {
+        if(spectated != -1) {
             builder.setValue(SpectatorProperty.PROPERTY, spectated);
         }
         UpdateKeyframeProperties updateChange = builder.done();
@@ -180,7 +180,7 @@ public class SPTimeline implements PathingRegistry {
         change = CombinedChange.createFromApplied(change, updateChange);
 
         // If this new keyframe formed the first segment of the path
-        if (path.getSegments().size() == 1) {
+        if(path.getSegments().size() == 1) {
             // then create an initial interpolator of default type
             PathSegment segment = path.getSegments().iterator().next();
             Interpolator interpolator = createDefaultInterpolator();
@@ -258,7 +258,7 @@ public class SPTimeline implements PathingRegistry {
         change = CombinedChange.createFromApplied(change, updateChange);
 
         // If this new keyframe formed the first segment of the path
-        if (path.getSegments().size() == 1) {
+        if(path.getSegments().size() == 1) {
             // then create an initial interpolator
             PathSegment segment = path.getSegments().iterator().next();
             Interpolator interpolator = new LinearInterpolator();
@@ -355,7 +355,7 @@ public class SPTimeline implements PathingRegistry {
         // The interpolator that will be lost once we remove the old keyframe and has to be restored afterwards
         Optional<Interpolator> lostInterpolator = path.getSegments().stream().filter(s -> {
             // If this is the last keyframe,
-            if (Iterables.getLast(path.getKeyframes()) == keyframe) {
+            if(Iterables.getLast(path.getKeyframes()) == keyframe) {
                 return s.getEndKeyframe() == keyframe; // the previous interpolator will be lost
             } else { // otherwise
                 return s.getStartKeyframe() == keyframe; // the following interpolator will be lost
@@ -372,7 +372,7 @@ public class SPTimeline implements PathingRegistry {
 
         // Then copy over all properties
         UpdateKeyframeProperties.Builder builder = UpdateKeyframeProperties.create(path, path.getKeyframe(newTime));
-        for (Property property : keyframe.getProperties()) {
+        for(Property property : keyframe.getProperties()) {
             copyProperty(property, keyframe, builder);
         }
         Change propertyChange = builder.done();
@@ -380,7 +380,7 @@ public class SPTimeline implements PathingRegistry {
 
         Change restoreInterpolatorChange;
         Keyframe newKf = path.getKeyframe(newTime);
-        if (Iterables.getLast(path.getKeyframes()) != newKf) { // Unless this is the last keyframe
+        if(Iterables.getLast(path.getKeyframes()) != newKf) { // Unless this is the last keyframe
             // the interpolator of the following segment has been lost and needs to be restored
             restoreInterpolatorChange = lostInterpolator.<Change>flatMap(interpolator ->
                     path.getSegments().stream().filter(s -> s.getStartKeyframe() == newKf).findFirst().map(segment ->
@@ -393,7 +393,7 @@ public class SPTimeline implements PathingRegistry {
                     .findFirst().flatMap(segment -> lostInterpolator.map(interpolator -> {
                         // additionally, if the interpolation of this keyframe was set to explicit, that property
                         // has to be transferred to the start keyframe of the new segment
-                        if (newKf.getValue(ExplicitInterpolationProperty.PROPERTY).isPresent()) {
+                        if(newKf.getValue(ExplicitInterpolationProperty.PROPERTY).isPresent()) {
                             return CombinedChange.create(
                                     SetInterpolator.create(segment, interpolator),
                                     UpdateKeyframeProperties.create(path, segment.getStartKeyframe())
@@ -408,12 +408,12 @@ public class SPTimeline implements PathingRegistry {
 
         // Finally update the interpolators
         Change interpolatorUpdateChange;
-        if (spPath == SPPath.POSITION) {
+        if(spPath == SPPath.POSITION) {
             // Position / Spectator keyframes need special handling
             interpolatorUpdateChange = updateInterpolators();
         } else {
             // Time keyframes only need updating when only one segment of them exists
-            if (path.getSegments().size() == 1) {
+            if(path.getSegments().size() == 1) {
                 assert firstInterpolator.isPresent() : "One segment should have existed before as well";
                 interpolatorUpdateChange = SetInterpolator.create(path.getSegments().iterator().next(), firstInterpolator.get());
             } else {
@@ -443,10 +443,10 @@ public class SPTimeline implements PathingRegistry {
         // First, setup spectator interpolators
         Interpolator interpolator = null;
         // Iterate through all segments
-        for (PathSegment segment : pathSegments) {
-            if (isSpectatorSegment(segment)) {
+        for(PathSegment segment : pathSegments) {
+            if(isSpectatorSegment(segment)) {
                 // If the last segment was a spectator segment, then use its interpolator for this segment as well
-                if (interpolator == null) {
+                if(interpolator == null) {
                     // otherwise create a new interpolator
                     interpolator = new LinearInterpolator();
                     interpolator.registerProperty(SpectatorProperty.PROPERTY);
@@ -477,19 +477,19 @@ public class SPTimeline implements PathingRegistry {
         // Firstly, all interpolators that are not continuous need to be split up
         Interpolator lastInterpolator = null;
         Set<Interpolator> used = Collections.newSetFromMap(new IdentityHashMap<>());
-        for (PathSegment segment : pathSegments) {
-            if (isSpectatorSegment(segment)) {
+        for(PathSegment segment : pathSegments) {
+            if(isSpectatorSegment(segment)) {
                 lastInterpolator = null;
                 continue; // Chain broken by spectator segment
             }
 
             Interpolator currentInterpolator = updates.getOrDefault(segment, segment.getInterpolator());
-            if (lastInterpolator == currentInterpolator) {
+            if(lastInterpolator == currentInterpolator) {
                 continue; // All fine, interpolator is still continuous
             }
 
             // New interpolator, make sure it hasn't been used before
-            if (!used.add(interpolator)) {
+            if(!used.add(interpolator)) {
                 // It has been used before, we need to clone it and use the clone instead
                 // This will create a new interpolator for each segment which will be merged later
                 currentInterpolator = cloneInterpolator(currentInterpolator);
@@ -501,15 +501,15 @@ public class SPTimeline implements PathingRegistry {
         // Secondly, all neighbouring interpolators that are equal need to be merged
         lastInterpolator = null;
         String lastInterpolatorSerialized = null;
-        for (PathSegment segment : pathSegments) {
-            if (isSpectatorSegment(segment)) {
+        for(PathSegment segment : pathSegments) {
+            if(isSpectatorSegment(segment)) {
                 lastInterpolator = null;
                 lastInterpolatorSerialized = null;
                 continue; // Spectator segments are continuous by construction
             }
             Interpolator currentInterpolator = updates.getOrDefault(segment, segment.getInterpolator());
             String serialized = serializeInterpolator(currentInterpolator);
-            if (lastInterpolator != currentInterpolator && serialized.equals(lastInterpolatorSerialized)) {
+            if(lastInterpolator != currentInterpolator && serialized.equals(lastInterpolatorSerialized)) {
                 // This interpolator is equal to the last one but not the same, needs merging
                 updates.put(segment, lastInterpolator);
                 continue;
@@ -531,26 +531,26 @@ public class SPTimeline implements PathingRegistry {
     }
 
     private Change updateSpectatorPositions() {
-        if (entityTracker == null) {
+        if(entityTracker == null) {
             return CombinedChange.create();
         }
         List<Change> changes = new ArrayList<>();
         timePath.updateAll();
-        for (Keyframe keyframe : positionPath.getKeyframes()) {
+        for(Keyframe keyframe : positionPath.getKeyframes()) {
             Optional<Integer> spectator = keyframe.getValue(SpectatorProperty.PROPERTY);
-            if (spectator.isPresent()) {
+            if(spectator.isPresent()) {
                 Optional<Integer> time = timePath.getValue(TimestampProperty.PROPERTY, keyframe.getTime());
-                if (!time.isPresent()) {
+                if(!time.isPresent()) {
                     continue; // No time keyframes set at this video time, cannot determine replay time
                 }
                 Location expected = entityTracker.getEntityPositionAtTimestamp(spectator.get(), time.get());
-                if (expected == null) {
+                if(expected == null) {
                     continue; // We don't have any data on this entity for some reason
                 }
                 Triple<Double, Double, Double> pos = keyframe.getValue(CameraProperties.POSITION).orElse(Triple.of(0D, 0D, 0D));
                 Triple<Float, Float, Float> rot = keyframe.getValue(CameraProperties.ROTATION).orElse(Triple.of(0F, 0F, 0F));
                 Location actual = new Location(pos.getLeft(), pos.getMiddle(), pos.getRight(), rot.getLeft(), rot.getRight());
-                if (!expected.equals(actual)) {
+                if(!expected.equals(actual)) {
                     changes.add(UpdateKeyframeProperties.create(positionPath, keyframe)
                             .setValue(CameraProperties.POSITION, Triple.of(expected.getX(), expected.getY(), expected.getZ()))
                             .setValue(CameraProperties.ROTATION, Triple.of(expected.getYaw(), expected.getPitch(), 0f)).done()
@@ -597,11 +597,11 @@ public class SPTimeline implements PathingRegistry {
 
     @Override
     public void serializeInterpolator(JsonWriter writer, Interpolator interpolator) throws IOException {
-        if (interpolator instanceof LinearInterpolator) {
+        if(interpolator instanceof LinearInterpolator) {
             writer.value("linear");
-        } else if (interpolator instanceof CubicSplineInterpolator) {
+        } else if(interpolator instanceof CubicSplineInterpolator) {
             writer.value("cubic-spline");
-        } else if (interpolator instanceof CatmullRomSplineInterpolator) {
+        } else if(interpolator instanceof CatmullRomSplineInterpolator) {
             writer.beginObject();
             writer.name("type").value("catmull-rom-spline");
             writer.name("alpha").value(((CatmullRomSplineInterpolator) interpolator).getAlpha());
@@ -615,7 +615,7 @@ public class SPTimeline implements PathingRegistry {
     public Interpolator deserializeInterpolator(JsonReader reader) throws IOException {
         String type;
         JsonObject args;
-        switch (reader.peek()) {
+        switch(reader.peek()) {
             case STRING:
                 type = reader.nextString();
                 args = null;
@@ -627,13 +627,13 @@ public class SPTimeline implements PathingRegistry {
             default:
                 throw new IOException("Unexpected token: " + reader.peek());
         }
-        switch (type) {
+        switch(type) {
             case "linear":
                 return new LinearInterpolator();
             case "cubic-spline":
                 return new CubicSplineInterpolator();
             case "catmull-rom-spline":
-                if (args == null || !args.has("alpha")) {
+                if(args == null || !args.has("alpha")) {
                     throw new IOException("Missing alpha value for catmull-rom-spline.");
                 }
                 return new CatmullRomSplineInterpolator(args.get("alpha").getAsDouble());
@@ -669,7 +669,7 @@ public class SPTimeline implements PathingRegistry {
             serializeInterpolator(jsonWriter, interpolator);
             jsonWriter.endArray();
             jsonWriter.flush();
-        } catch (IOException e) {
+        } catch(IOException e) {
             CrashReport crash = CrashReport.forThrowable(e, "Serializing interpolator");
             CrashReportCategory category = crash.addCategory("Serializing interpolator");
             category.setDetail("Interpolator", interpolator::toString);
@@ -684,7 +684,7 @@ public class SPTimeline implements PathingRegistry {
         try {
             jsonReader.beginArray();
             return deserializeInterpolator(jsonReader);
-        } catch (IOException e) {
+        } catch(IOException e) {
             CrashReport crash = CrashReport.forThrowable(e, "De-serializing interpolator");
             CrashReportCategory category = crash.addCategory("De-serializing interpolator");
             category.setDetail("Interpolator", json::toString);

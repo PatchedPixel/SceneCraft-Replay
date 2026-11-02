@@ -84,8 +84,8 @@ public class DimensionType {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
         DimensionType that = (DimensionType) o;
         return tag.equals(that.tag) && name.equals(that.name);
     }
@@ -96,11 +96,11 @@ public class DimensionType {
     }
 
     public static DimensionType fromRegistry(Registries registries, String name) {
-        if (registries == null) {
+        if(registries == null) {
             return new DimensionType(name);
         }
         Registries.Entry entry = registries.getEntry("minecraft:dimension_type", name);
-        if (entry == null) {
+        if(entry == null) {
             return new DimensionType(name);
         }
         return DimensionType.fromRegistry(entry);
@@ -108,7 +108,7 @@ public class DimensionType {
 
     public static DimensionType fromRegistry(Registries registries, int id) {
         Registries.Entry entry = registries.getEntry("minecraft:dimension_type", id);
-        if (entry == null) {
+        if(entry == null) {
             return new DimensionType(new CompoundTag(), "", id);
         }
         return DimensionType.fromRegistry(entry);

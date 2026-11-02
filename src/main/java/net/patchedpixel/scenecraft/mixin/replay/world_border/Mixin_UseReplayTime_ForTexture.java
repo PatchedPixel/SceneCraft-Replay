@@ -18,7 +18,7 @@ public class Mixin_UseReplayTime_ForTexture {
     @Redirect(method = "prepareDynamicTransforms", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getMillis()J"))
     private long getWorldBorderTime() {
         ReplayHandler replayHandler = SceneCraftReplay.instance.getReplayHandler();
-        if (replayHandler != null) {
+        if(replayHandler != null) {
             return replayHandler.getReplaySender().currentTimeStamp();
         }
 

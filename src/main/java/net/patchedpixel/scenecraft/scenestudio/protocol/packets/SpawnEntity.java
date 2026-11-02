@@ -26,7 +26,7 @@ import java.io.IOException;
 
 public class SpawnEntity {
     public static Location getLocation(Packet packet) throws IOException {
-        if (packet.getType() != PacketType.SpawnObject) {
+        if(packet.getType() != PacketType.SpawnObject) {
             return null;
         }
         try (Packet.Reader in = packet.reader()) {
@@ -56,12 +56,12 @@ public class SpawnEntity {
      */
     private static void skipMovementVector(Packet.Reader in) throws IOException {
         int lowest = in.readUnsignedByte();
-        if (lowest == 0) {
+        if(lowest == 0) {
             return; // zero vector, nothing follows
         }
         in.readUnsignedByte();
         in.readInt();
-        if ((lowest & 4) == 4) {
+        if((lowest & 4) == 4) {
             in.readVarInt();
         }
     }

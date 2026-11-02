@@ -47,17 +47,17 @@ public class PacketEntityMovement {
 
             boolean onGround;
             DPosition pos = null;
-            if (hasPos) {
+            if(hasPos) {
                 int properties = in.readVarInt();
                 onGround = (properties & 1) != 0;
                 int steps = properties >>> 1;
                 long dx = 0, dy = 0, dz = 0;
-                if (steps <= 0) {
+                if(steps <= 0) {
                     dx = in.readShort();
                     dy = in.readShort();
                     dz = in.readShort();
                 } else {
-                    for (int i = 0; i < steps; i++) {
+                    for(int i = 0; i < steps; i++) {
                         in.readVarInt(); // ticks
                         dx += in.readShort();
                         dy += in.readShort();
@@ -69,7 +69,7 @@ public class PacketEntityMovement {
                 onGround = in.readBoolean();
             }
             Pair<Float, Float> yawPitch = null;
-            if (hasRot) {
+            if(hasRot) {
                 yawPitch = Pair.of(
                         in.readByte() / 256f * 360,
                         in.readByte() / 256f * 360
@@ -80,14 +80,14 @@ public class PacketEntityMovement {
     }
 
     public static Packet write(PacketTypeRegistry registry, int entityId, DPosition deltaPos, Pair<Float, Float> yawPitch, boolean onGround) throws IOException {
-        if (deltaPos == null && yawPitch == null) {
+        if(deltaPos == null && yawPitch == null) {
             // There is no "no movement" packet, a move by zero is the closest equivalent
             deltaPos = new DPosition(0, 0, 0);
         }
         boolean hasPos = deltaPos != null;
         boolean hasRot = yawPitch != null;
         PacketType type;
-        if (hasPos) {
+        if(hasPos) {
             type = hasRot ? PacketType.EntityPositionRotation : PacketType.EntityPosition;
         } else {
             type = PacketType.EntityRotation;
@@ -96,7 +96,7 @@ public class PacketEntityMovement {
         try (Packet.Writer out = packet.overwrite()) {
             out.writeVarInt(entityId);
 
-            if (hasPos) {
+            if(hasPos) {
                 out.writeVarInt(onGround ? 1 : 0); // properties: no steps
                 out.writeShort((int) Math.round(deltaPos.getX() * 4096));
                 out.writeShort((int) Math.round(deltaPos.getY() * 4096));
@@ -104,7 +104,7 @@ public class PacketEntityMovement {
             } else {
                 out.writeBoolean(onGround);
             }
-            if (hasRot) {
+            if(hasRot) {
                 out.writeByte((int) (yawPitch.getKey() / 360 * 256));
                 out.writeByte((int) (yawPitch.getValue() / 360 * 256));
             }

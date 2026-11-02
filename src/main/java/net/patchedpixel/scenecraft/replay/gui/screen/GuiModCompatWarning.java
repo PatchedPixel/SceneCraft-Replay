@@ -42,10 +42,10 @@ public class GuiModCompatWarning extends AbstractGuiScreen<GuiModCompatWarning> 
         content.addElements(data, new GuiLabel().setI18nText("scenecraft.gui.modwarning.message2"));
         content.addElements(data, new GuiLabel().setI18nText("scenecraft.gui.modwarning.message3"));
 
-        if (!difference.getMissing().isEmpty()) {
+        if(!difference.getMissing().isEmpty()) {
             content.addElements(data, new GuiLabel());
             content.addElements(data, new GuiLabel().setI18nText("scenecraft.gui.modwarning.missing"));
-            for (ModInfo modInfo : difference.getMissing()) {
+            for(ModInfo modInfo : difference.getMissing()) {
                 content.addElements(data, new GuiPanel().setLayout(new VerticalLayout().setSpacing(3)).addElements(null,
                         GuiPanel.builder().layout(new HorizontalLayout().setSpacing(3))
                                 .with(new GuiLabel().setI18nText("scenecraft.gui.modwarning.name"), null)
@@ -59,10 +59,10 @@ public class GuiModCompatWarning extends AbstractGuiScreen<GuiModCompatWarning> 
             }
         }
 
-        if (!difference.getDiffering().isEmpty()) {
+        if(!difference.getDiffering().isEmpty()) {
             content.addElements(data, new GuiLabel());
             content.addElements(data, new GuiLabel().setI18nText("scenecraft.gui.modwarning.version"));
-            for (Map.Entry<ModInfo, String> entry : difference.getDiffering().entrySet()) {
+            for(Map.Entry<ModInfo, String> entry : difference.getDiffering().entrySet()) {
                 content.addElements(data, new GuiPanel().setLayout(new VerticalLayout().setSpacing(3)).addElements(null,
                         GuiPanel.builder().layout(new HorizontalLayout().setSpacing(3))
                                 .with(new GuiLabel().setI18nText("scenecraft.gui.modwarning.name"), null)

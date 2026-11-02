@@ -14,7 +14,7 @@ public abstract class MixinKeyboardListener {
     @Inject(method = "grab(Lnet/minecraft/client/Minecraft;Z)V", at = @At("HEAD"), cancellable = true)
     static
     private void takeScreenshot(CallbackInfo ci) {
-        if (SceneCraftReplay.instance.getReplayHandler() != null) {
+        if(SceneCraftReplay.instance.getReplayHandler() != null) {
             AdvancedScreenshots.take();
             ci.cancel();
         }

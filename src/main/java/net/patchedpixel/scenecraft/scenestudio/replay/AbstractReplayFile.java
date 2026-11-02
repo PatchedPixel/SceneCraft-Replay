@@ -61,7 +61,7 @@ public abstract class AbstractReplayFile implements ReplayFile {
     @Override
     public ReplayMetaData getMetaData() throws IOException {
         Optional<InputStream> in = get(ENTRY_META_DATA);
-        if (in.isEmpty()) {
+        if(in.isEmpty()) {
             return null;
         }
         try (Reader is = new InputStreamReader(in.get())) {
@@ -72,11 +72,11 @@ public abstract class AbstractReplayFile implements ReplayFile {
     @Override
     public void writeMetaData(PacketTypeRegistry registry, ReplayMetaData metaData) throws IOException {
         metaData.setFileFormat("MCPR");
-        if (registry != null) {
+        if(registry != null) {
             metaData.setFileFormatVersion(ReplayMetaData.CURRENT_FILE_FORMAT_VERSION);
             metaData.setProtocolVersion(registry.getProtocolVersion());
         }
-        if (metaData.getGenerator() == null) {
+        if(metaData.getGenerator() == null) {
             metaData.setGenerator("SceneCraft SceneStudio v" + studio.getVersion());
         }
 
@@ -89,16 +89,16 @@ public abstract class AbstractReplayFile implements ReplayFile {
     @Override
     public ReplayInputStream getPacketData(PacketTypeRegistry registry) throws IOException {
         Optional<InputStream> in = get(ENTRY_RECORDING);
-        if (in.isEmpty()) {
+        if(in.isEmpty()) {
             return null;
         }
         ReplayMetaData metaData = getMetaData();
-        if (metaData.getFileFormatVersion() < 14) {
+        if(metaData.getFileFormatVersion() < 14) {
             throw new IOException("Unsupported replay file format version " + metaData.getFileFormatVersion()
                     + ", at least 14 is required");
         }
         int replayProtocol = metaData.getProtocolVersion();
-        if (replayProtocol != registry.getProtocolVersion()) {
+        if(replayProtocol != registry.getProtocolVersion()) {
             // No packet conversion is done, so the replay can only be read with the version it was recorded with
             throw new IOException("The replay was recorded with protocol version " + replayProtocol
                     + " but this game uses protocol version " + registry.getProtocolVersion());
@@ -114,16 +114,16 @@ public abstract class AbstractReplayFile implements ReplayFile {
     @Override
     public Map<Integer, String> getResourcePackIndex() throws IOException {
         Optional<InputStream> in = get(ENTRY_RESOURCE_PACK_INDEX);
-        if (in.isEmpty()) {
+        if(in.isEmpty()) {
             return null;
         }
         Map<Integer, String> index = new HashMap<>();
         try (Reader is = new InputStreamReader(in.get())) {
             JsonObject array = new Gson().fromJson(is, JsonObject.class);
-            for (Map.Entry<String, JsonElement> e : array.entrySet()) {
+            for(Map.Entry<String, JsonElement> e : array.entrySet()) {
                 try {
                     index.put(Integer.parseInt(e.getKey()), e.getValue().getAsString());
-                } catch (NumberFormatException ignored) {
+                } catch(NumberFormatException ignored) {
                 }
             }
         }
@@ -162,7 +162,7 @@ public abstract class AbstractReplayFile implements ReplayFile {
     @Override
     public Optional<InputStream> getThumbBytes() throws IOException {
         Optional<InputStream> maybeThumb = get(ENTRY_THUMB);
-        if (maybeThumb.isPresent()) {
+        if(maybeThumb.isPresent()) {
             return Optional.of(maybeThumb.get());
         }
 
@@ -183,11 +183,11 @@ public abstract class AbstractReplayFile implements ReplayFile {
         }
 
         maybeThumb = get(ENTRY_THUMB_OLD);
-        if (maybeThumb.isPresent()) {
+        if(maybeThumb.isPresent()) {
             PushbackInputStream in = new PushbackInputStream(maybeThumb.get(), THUMB_MAGIC_NUMBERS.length);
             byte[] buf = new byte[THUMB_MAGIC_NUMBERS.length];
             new DataInputStream(in).readFully(buf);
-            if (!Arrays.equals(buf, THUMB_MAGIC_NUMBERS)) {
+            if(!Arrays.equals(buf, THUMB_MAGIC_NUMBERS)) {
                 in.unread(buf);
             }
 
@@ -207,16 +207,16 @@ public abstract class AbstractReplayFile implements ReplayFile {
     @Override
     public Optional<Set<UUID>> getInvisiblePlayers() throws IOException {
         Optional<InputStream> in = get(ENTRY_VISIBILITY);
-        if (in.isEmpty()) {
+        if(in.isEmpty()) {
             in = get(ENTRY_VISIBILITY_OLD);
-            if (in.isEmpty()) {
+            if(in.isEmpty()) {
                 return Optional.empty();
             }
         }
         Set<UUID> uuids = new HashSet<>();
         try (Reader is = new InputStreamReader(in.get())) {
             JsonObject json = new Gson().fromJson(is, JsonObject.class);
-            for (JsonElement e : json.getAsJsonArray("hidden")) {
+            for(JsonElement e : json.getAsJsonArray("hidden")) {
                 uuids.add(UUID.fromString(e.getAsString()));
             }
         }
@@ -230,7 +230,7 @@ public abstract class AbstractReplayFile implements ReplayFile {
             JsonObject root = new JsonObject();
             JsonArray array = new JsonArray();
             root.add("hidden", array);
-            for (UUID uuid : uuids) {
+            for(UUID uuid : uuids) {
                 array.add(new JsonPrimitive(uuid.toString()));
             }
             String json = new Gson().toJson(root);
@@ -241,11 +241,11 @@ public abstract class AbstractReplayFile implements ReplayFile {
     @Override
     public Optional<Set<Marker>> getMarkers() throws IOException {
         Optional<InputStream> in = get(ENTRY_MARKERS);
-        if (in.isPresent()) {
+        if(in.isPresent()) {
             try (Reader is = new InputStreamReader(in.get())) {
                 JsonArray json = new Gson().fromJson(is, JsonArray.class);
                 Set<Marker> markers = new HashSet<>();
-                for (JsonElement element : json) {
+                for(JsonElement element : json) {
                     JsonObject obj = element.getAsJsonObject();
                     JsonObject value = obj.getAsJsonObject("value");
                     JsonObject position = value.getAsJsonObject("position");
@@ -257,7 +257,7 @@ public abstract class AbstractReplayFile implements ReplayFile {
                     marker.setYaw(position.get("yaw").getAsFloat());
                     marker.setPitch(position.get("pitch").getAsFloat());
                     marker.setRoll(position.get("roll").getAsFloat());
-                    if (value.has("name")) {
+                    if(value.has("name")) {
                         marker.setName(value.get("name").getAsString());
                     }
                     markers.add(marker);
@@ -274,7 +274,7 @@ public abstract class AbstractReplayFile implements ReplayFile {
     public void writeMarkers(Set<Marker> markers) throws IOException {
         try (OutputStream out = write(ENTRY_MARKERS)) {
             JsonArray root = new JsonArray();
-            for (Marker marker : markers) {
+            for(Marker marker : markers) {
                 JsonObject entry = new JsonObject();
                 JsonObject value = new JsonObject();
                 JsonObject position = new JsonObject();
@@ -302,7 +302,7 @@ public abstract class AbstractReplayFile implements ReplayFile {
         Map<String, InputStream> entries = getAll(PATTERN_ASSETS);
         entries.values().forEach(Closeables::closeQuietly);
         List<ReplayAssetEntry> list = new ArrayList<>();
-        for (String key : entries.keySet()) {
+        for(String key : entries.keySet()) {
             int delim = key.indexOf('_');
             UUID uuid = UUID.fromString(key.substring(0, delim));
             String name = key.substring(delim + 1, key.lastIndexOf('.'));
@@ -316,7 +316,7 @@ public abstract class AbstractReplayFile implements ReplayFile {
     @Override
     public Optional<InputStream> getAsset(UUID uuid) throws IOException {
         Map<String, InputStream> entries = getAll(Pattern.compile("asset/" + Pattern.quote(uuid.toString()) + "_.*"));
-        if (entries.isEmpty()) {
+        if(entries.isEmpty()) {
             return Optional.empty();
         }
 
@@ -331,8 +331,8 @@ public abstract class AbstractReplayFile implements ReplayFile {
     @Override
     public void removeAsset(UUID uuid) throws IOException {
         Collection<ReplayAssetEntry> assets = getAssets();
-        for (ReplayAssetEntry asset : assets) {
-            if (asset.getUuid().equals(uuid)) {
+        for(ReplayAssetEntry asset : assets) {
+            if(asset.getUuid().equals(uuid)) {
                 remove(String.format(ENTRY_ASSET, asset.getUuid().toString(), asset.getName(), asset.getFileExtension()));
             }
         }
@@ -341,11 +341,11 @@ public abstract class AbstractReplayFile implements ReplayFile {
     @Override
     public Collection<ModInfo> getModInfo() throws IOException {
         Optional<InputStream> in = get(ENTRY_MODS);
-        if (in.isPresent()) {
+        if(in.isPresent()) {
             try (Reader is = new InputStreamReader(in.get())) {
                 JsonArray json = new Gson().fromJson(is, JsonObject.class).getAsJsonArray("requiredMods");
                 List<ModInfo> modInfoList = new ArrayList<>();
-                for (JsonElement element : json) {
+                for(JsonElement element : json) {
                     JsonObject obj = element.getAsJsonObject();
                     modInfoList.add(new ModInfo(
                             obj.get("modID").getAsString(),
@@ -366,7 +366,7 @@ public abstract class AbstractReplayFile implements ReplayFile {
         try (OutputStream out = write(ENTRY_MODS)) {
             JsonObject root = new JsonObject();
             JsonArray array = new JsonArray();
-            for (ModInfo mod : modInfo) {
+            for(ModInfo mod : modInfo) {
                 JsonObject entry = new JsonObject();
                 entry.addProperty("modID", mod.getId());
                 entry.addProperty("modName", mod.getName());

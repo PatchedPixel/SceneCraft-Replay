@@ -62,7 +62,7 @@ public abstract class Mixin_BlockOnChunkRebuilds implements ForceChunkLoadingHoo
 
     @Override
     public boolean uploadEverythingBlocking() {
-        while (true) {
+        while(true) {
             long doneTasksAtStartOfLoop;
             boolean allTasksDone;
             newMainThreadWorkLock.lock();
@@ -77,14 +77,14 @@ public abstract class Mixin_BlockOnChunkRebuilds implements ForceChunkLoadingHoo
             uploadAllStagedAllocations();
 
             // If there were no tasks still running, everything should be uploaded now.
-            if (allTasksDone) {
+            if(allTasksDone) {
                 break;
             }
 
             // Otherwise we need to wait for more work to come in
             newMainThreadWorkLock.lock();
             try {
-                while (doneTasksAtStartOfLoop == doneTasks) {
+                while(doneTasksAtStartOfLoop == doneTasks) {
                     newMainThreadWork.awaitUninterruptibly();
                 }
             } finally {
@@ -103,7 +103,7 @@ public abstract class Mixin_BlockOnChunkRebuilds implements ForceChunkLoadingHoo
         try {
             // MC will only allow one buffer resize per frame (presumably to avoid lag spikes), so we'll simply call
             // the method as often as there are buffers (there's only a fixed amount of 3, one per ChunkSectionLayer)
-            for (int i = 0; i < chunkUberBuffers.size(); i++) {
+            for(int i = 0; i < chunkUberBuffers.size(); i++) {
                 uploadTerrainBuffersToGpu();
             }
         } finally {

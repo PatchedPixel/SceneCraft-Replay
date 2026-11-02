@@ -53,8 +53,8 @@ public class RenderJob {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
         RenderJob renderJob = (RenderJob) o;
         return timeline.equals(renderJob.timeline) &&
                 settings.equals(renderJob.settings);
@@ -74,9 +74,9 @@ public class RenderJob {
     }
 
     public static List<RenderJob> readQueue(ReplayFile replayFile) throws IOException {
-        synchronized (replayFile) {
+        synchronized(replayFile) {
             Optional<InputStream> optIn = replayFile.get("renderQueue.json");
-            if (!optIn.isPresent()) {
+            if(!optIn.isPresent()) {
                 return new ArrayList<>();
             }
             try (InputStream in = optIn.get();
@@ -85,7 +85,7 @@ public class RenderJob {
                         .registerTypeAdapter(Timeline.class, new TimelineTypeAdapter())
                         .create()
                         .fromJson(reader, new TypeToken<List<RenderJob>>(){}.getType());
-                if (jobs == null) {
+                if(jobs == null) {
                     jobs = new ArrayList<>();
                 }
                 return jobs;
@@ -94,7 +94,7 @@ public class RenderJob {
     }
 
     public static void writeQueue(ReplayFile replayFile, List<RenderJob> renderQueue) throws IOException {
-        synchronized (replayFile) {
+        synchronized(replayFile) {
             try (OutputStream out = replayFile.write("renderQueue.json");
                  OutputStreamWriter writer = new OutputStreamWriter(out, StandardCharsets.UTF_8)) {
                 new GsonBuilder()

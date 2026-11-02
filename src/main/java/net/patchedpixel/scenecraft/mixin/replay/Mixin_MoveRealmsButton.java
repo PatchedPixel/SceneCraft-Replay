@@ -19,7 +19,7 @@ public abstract class Mixin_MoveRealmsButton {
     )
     private int adjustRealmsButton(int height) {
         String setting = SceneCraft.instance.getSettingsRegistry().get(Setting.MAIN_MENU_BUTTON);
-        if (MainMenuButtonPosition.valueOf(setting) == MainMenuButtonPosition.BIG) {
+        if(MainMenuButtonPosition.valueOf(setting) == MainMenuButtonPosition.BIG) {
             height -= 24 * 4;
         }
         return height;

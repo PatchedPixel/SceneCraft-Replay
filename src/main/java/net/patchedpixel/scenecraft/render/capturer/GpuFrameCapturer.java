@@ -63,7 +63,7 @@ public abstract class GpuFrameCapturer<F extends Frame, D extends CaptureData> i
     }
 
     protected RenderTarget frameBuffer() {
-        if (frameBuffer == null) {
+        if(frameBuffer == null) {
             frameBuffer = mc.gameRenderer.mainRenderTarget();
         }
         return frameBuffer;

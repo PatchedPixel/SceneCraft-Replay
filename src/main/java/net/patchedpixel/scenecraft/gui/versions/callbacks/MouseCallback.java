@@ -8,8 +8,8 @@ public interface MouseCallback {
             new MouseCallback() {
                 @Override
                 public boolean mouseDown(Click click) {
-                    for (MouseCallback listener : listeners) {
-                        if (listener.mouseDown(click)) {
+                    for(MouseCallback listener : listeners) {
+                        if(listener.mouseDown(click)) {
                             return true;
                         }
                     }
@@ -18,8 +18,8 @@ public interface MouseCallback {
 
                 @Override
                 public boolean mouseDrag(Click click, double dx, double dy) {
-                    for (MouseCallback listener : listeners) {
-                        if (listener.mouseDrag(click, dx, dy)) {
+                    for(MouseCallback listener : listeners) {
+                        if(listener.mouseDrag(click, dx, dy)) {
                             return true;
                         }
                     }
@@ -28,8 +28,8 @@ public interface MouseCallback {
 
                 @Override
                 public boolean mouseUp(Click click) {
-                    for (MouseCallback listener : listeners) {
-                        if (listener.mouseUp(click)) {
+                    for(MouseCallback listener : listeners) {
+                        if(listener.mouseUp(click)) {
                             return true;
                         }
                     }
@@ -38,8 +38,8 @@ public interface MouseCallback {
 
                 @Override
                 public boolean mouseScroll(double x, double y, double horizontal, double vertical) {
-                    for (MouseCallback listener : listeners) {
-                        if (listener.mouseScroll(x, y, horizontal, vertical)) {
+                    for(MouseCallback listener : listeners) {
+                        if(listener.mouseScroll(x, y, horizontal, vertical)) {
                             return true;
                         }
                     }

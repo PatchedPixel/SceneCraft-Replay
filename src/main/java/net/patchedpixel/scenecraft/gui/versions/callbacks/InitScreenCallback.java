@@ -9,7 +9,7 @@ import java.util.Collection;
 public interface InitScreenCallback {
     Event<InitScreenCallback> EVENT = Event.create((listeners) ->
             (screen, buttons) -> {
-                for (InitScreenCallback listener : listeners) {
+                for(InitScreenCallback listener : listeners) {
                     listener.initScreen(screen, buttons);
                 }
             }
@@ -20,7 +20,7 @@ public interface InitScreenCallback {
     interface Pre {
         Event<Pre> EVENT = Event.create((listeners) ->
                 (screen) -> {
-                    for (Pre listener : listeners) {
+                    for(Pre listener : listeners) {
                         listener.preInitScreen(screen);
                     }
                 }

@@ -70,11 +70,11 @@ public abstract class AbstractGuiSlider<T extends AbstractGuiSlider<T>> extends 
     @Override
     public boolean mouseClick(Click click) {
         Point pos = new Point(click);
-        if (getContainer() != null) {
+        if(getContainer() != null) {
             getContainer().convertFor(this, pos);
         }
 
-        if (isMouseHovering(pos) && isEnabled()) {
+        if(isMouseHovering(pos) && isEnabled()) {
             updateValue(pos);
             dragging = true;
             return true;
@@ -84,9 +84,9 @@ public abstract class AbstractGuiSlider<T extends AbstractGuiSlider<T>> extends 
 
     @Override
     public boolean mouseDrag(Click click) {
-        if (dragging) {
+        if(dragging) {
             Point pos = new Point(click);
-            if (getContainer() != null) {
+            if(getContainer() != null) {
                 getContainer().convertFor(this, pos);
             }
             updateValue(pos);
@@ -96,10 +96,10 @@ public abstract class AbstractGuiSlider<T extends AbstractGuiSlider<T>> extends 
 
     @Override
     public boolean mouseRelease(Click click) {
-        if (dragging) {
+        if(dragging) {
             dragging = false;
             Point pos = new Point(click);
-            if (getContainer() != null) {
+            if(getContainer() != null) {
                 getContainer().convertFor(this, pos);
             }
             updateValue(pos);
@@ -133,16 +133,16 @@ public abstract class AbstractGuiSlider<T extends AbstractGuiSlider<T>> extends 
 
         // Draw text
         int color = 0xe0e0e0;
-        if (!isEnabled()) {
+        if(!isEnabled()) {
             color = 0xa0a0a0;
-        } else if (isMouseHovering(new Point(renderInfo.mouseX, renderInfo.mouseY))) {
+        } else if(isMouseHovering(new Point(renderInfo.mouseX, renderInfo.mouseY))) {
             color = 0xffffa0;
         }
         renderer.drawCenteredString(width / 2, height / 2 - 4, color, text);
     }
 
     protected void updateValue(ReadablePoint position) {
-        if (getLastSize() == null) {
+        if(getLastSize() == null) {
             return;
         }
         int width = getLastSize().getWidth() - 8;
@@ -151,7 +151,7 @@ public abstract class AbstractGuiSlider<T extends AbstractGuiSlider<T>> extends 
     }
 
     public void onValueChanged() {
-        if (onValueChanged != null) {
+        if(onValueChanged != null) {
             onValueChanged.run();
         }
     }

@@ -41,7 +41,7 @@ public class SceneCraftRecorder implements Module {
     public void registerKeyBindings(KeyBindingRegistry registry) {
         registry.registerKeyBinding("scenecraft.input.marker", InputConstants.KEY_M, () -> {
             PacketListener packetListener = connectionEventHandler.getPacketListener();
-            if (packetListener != null) {
+            if(packetListener != null) {
                 packetListener.addMarker(null);
                 core.printInfoToChat("scenecraft.chat.addedmarker");
             }
@@ -84,8 +84,8 @@ public class SceneCraftRecorder implements Module {
 
     public void initiateRecording(Connection networkManager) {
         Channel channel = networkManager.channel();
-        if (channel.pipeline().get(ReplayHandler.PACKET_HANDLER_NAME) != null) return;
-        if (channel.hasAttr(ATTR_CHECKED)) return;
+        if(channel.pipeline().get(ReplayHandler.PACKET_HANDLER_NAME) != null) return;
+        if(channel.hasAttr(ATTR_CHECKED)) return;
         channel.attr(ATTR_CHECKED).set(null);
         connectionEventHandler.onConnectedToServerEvent(networkManager);
     }

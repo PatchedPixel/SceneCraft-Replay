@@ -40,7 +40,7 @@ public class StudioPacketStream extends AbstractPacketStream {
     protected PacketData nextInput() {
         try {
             return in.readPacket();
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -52,7 +52,7 @@ public class StudioPacketStream extends AbstractPacketStream {
     protected void cleanup() {
         try {
             in.close();
-        } catch (IOException e) {
+        } catch(IOException e) {
             LOGGER.error("Failed to close the replay input stream", e);
         }
     }

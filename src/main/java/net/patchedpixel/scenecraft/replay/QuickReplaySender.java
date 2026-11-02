@@ -64,7 +64,7 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
                 // Teleports are built with Minecraft's own packet class instead of hand-written bytes: the wire
                 // format of entity movement changes between 26.x builds, and one malformed packet makes the
                 // decoder keep leftover bytes that corrupt every packet after it.
-                if (packet.getType() == net.patchedpixel.scenecraft.scenestudio.protocol.PacketType.EntityTeleport) {
+                if(packet.getType() == net.patchedpixel.scenecraft.scenestudio.protocol.PacketType.EntityTeleport) {
                     try {
                         int entityId;
                         try (net.patchedpixel.scenecraft.scenestudio.protocol.Packet.Reader in = packet.reader()) {
@@ -83,7 +83,7 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
                                         java.util.Set.of(),
                                         false));
                         return;
-                    } catch (IOException e) {
+                    } catch(IOException e) {
                         LOGGER.error("Failed to build entity teleport packet", e);
                         packet.release();
                         return;
@@ -93,7 +93,7 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
                 // Convert SceneStudio-Netty buffer into MC-Netty buffer
                 ByteBuf byteBuf = packet.getBuf();
                 int size = byteBuf.readableBytes();
-                if (buf.length < size) {
+                if(buf.length < size) {
                     buf = new byte[size];
                 }
                 byteBuf.getBytes(byteBuf.readerIndex(), buf, 0, size);
@@ -128,7 +128,7 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
     }
 
     public ListenableFuture<Void> initialize(Consumer<Double> progress) {
-        if (initPromise != null) {
+        if(initPromise != null) {
             return initPromise;
         }
         SettableFuture<Void> promise = SettableFuture.create();
@@ -138,7 +138,7 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
                 long start = System.currentTimeMillis();
                 replay.load(progress);
                 LOGGER.info("Initialized quick replay sender in " + (System.currentTimeMillis() - start) + "ms");
-            } catch (Throwable e) {
+            } catch(Throwable e) {
                 LOGGER.error("Initializing quick replay sender:", e);
                 mod.getCore().runLaterWithoutLock(() -> {
                     mod.getCore().printWarningToChat("Error initializing quick replay sender: %s", e.getLocalizedMessage());
@@ -152,7 +152,7 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
     }
 
     private void ensureInitialized(Runnable body) {
-        if (initPromise == null) {
+        if(initPromise == null) {
             LOGGER.warn("QuickReplaySender used without prior initialization!", new Throwable());
             initialize(progress -> {});
         }
@@ -180,8 +180,8 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
 
     @Override
     public void setReplaySpeed(double factor) {
-        if (factor != 0) {
-            if (paused() && asyncMode) {
+        if(factor != 0) {
+            if(paused() && asyncMode) {
                 lastAsyncUpdateTime = System.currentTimeMillis();
             }
             this.replaySpeed = factor;
@@ -202,10 +202,10 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
 
     @Override
     public void setAsyncMode(boolean async) {
-        if (this.asyncMode == async) return;
+        if(this.asyncMode == async) return;
         ensureInitialized(() -> {
             this.asyncMode = async;
-            if (async) {
+            if(async) {
                 lastAsyncUpdateTime = System.currentTimeMillis();
             }
         });
@@ -225,7 +225,7 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
     private class EventHandler extends EventRegistrations {
         { on(PreTickCallback.EVENT, this::onTick); }
         private void onTick() {
-            if (!asyncMode || paused()) return;
+            if(!asyncMode || paused()) return;
 
             long now = System.currentTimeMillis();
             long realTimePassed = now - lastAsyncUpdateTime;
@@ -240,7 +240,7 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
         ensureInitialized(() -> {
             try {
                 replay.seek(replayTime);
-            } catch (IOException e) {
+            } catch(IOException e) {
                 e.printStackTrace();
             }
             currentTimeStamp = replayTime;

@@ -28,7 +28,7 @@ public abstract class MixinParticleManager {
             @Share("orgRotation") LocalRef<Quaternionf> orgRotationRef
     ) {
         EntityRendererHandler handler = ((EntityRendererHandler.IEntityRenderer) MCVer.getMinecraft().gameRenderer).sceneCraftRender_getHandler();
-        if (handler == null || !handler.omnidirectional) {
+        if(handler == null || !handler.omnidirectional) {
             return;
         }
 
@@ -51,7 +51,7 @@ public abstract class MixinParticleManager {
             @Share("orgRotation") LocalRef<Quaternionf> orgRotationRef
     ) {
         Quaternionf orgRotation = orgRotationRef.get();
-        if (orgRotation == null) {
+        if(orgRotation == null) {
             return;
         }
 

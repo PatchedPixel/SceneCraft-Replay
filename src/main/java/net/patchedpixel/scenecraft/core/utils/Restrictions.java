@@ -18,7 +18,7 @@ public class Restrictions {
 
     public String handle(ClientboundCustomPayloadPacket packet) {
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(((Payload) packet.payload()).bytes()));
-        while (buffer.isReadable()) {
+        while(buffer.isReadable()) {
             String name = buffer.readUtf(64);
             return name;
         }

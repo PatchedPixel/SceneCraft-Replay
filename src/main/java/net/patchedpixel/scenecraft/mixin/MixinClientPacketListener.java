@@ -35,14 +35,14 @@ public abstract class MixinClientPacketListener {
 
     @Inject(method = "handlePlayerInfoUpdate", at=@At("HEAD"))
     public void recordOwnJoin(ClientboundPlayerInfoUpdatePacket packet, CallbackInfo ci) {
-        if (!mcStatic.isSameThread()) return;
-        if (mcStatic.player == null) return;
+        if(!mcStatic.isSameThread()) return;
+        if(mcStatic.player == null) return;
 
         RecordingEventHandler handler = SceneCraftRecorder.instance.getConnectionEventHandler().getRecordingEventHandler();
-        if (handler != null && packet.actions().contains(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER)) {
-            for (ClientboundPlayerInfoUpdatePacket.Entry entry : packet.entries()) {
+        if(handler != null && packet.actions().contains(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER)) {
+            for(ClientboundPlayerInfoUpdatePacket.Entry entry : packet.entries()) {
                 UUID uuid = entry.profileId();
-                if (uuid.equals(mcStatic.player.getGameProfile().id()) && !this.playerInfoMap.containsKey(uuid)) {
+                if(uuid.equals(mcStatic.player.getGameProfile().id()) && !this.playerInfoMap.containsKey(uuid)) {
                     handler.spawnRecordingPlayer();
                 }
             }
@@ -52,23 +52,23 @@ public abstract class MixinClientPacketListener {
     @Inject(method = "handleRespawn", at=@At("RETURN"))
     public void recordOwnRespawn(ClientboundRespawnPacket packet, CallbackInfo ci) {
         RecordingEventHandler handler = SceneCraftRecorder.instance.getConnectionEventHandler().getRecordingEventHandler();
-        if (handler != null) {
+        if(handler != null) {
             handler.spawnRecordingPlayer();
         }
     }
 
     @ModifyVariable(method = { "handleTeleportEntity", "handleMoveEntity", "handleSetEntityPassengersPacket" }, at = @At("RETURN"), ordinal = 0)
     private Entity updatePositionIfNotTracked$0(Entity entity) {
-        if (entity != null) {
+        if(entity != null) {
             entity.getSelfAndPassengers().forEach(this::updatePositionIfNotTracked);
         }
         return entity;
     }
 
     private void updatePositionIfNotTracked(Entity entity) {
-        if (entity != null && entity.level() instanceof ClientLevel world) {
-            if (!world.tickingEntities.contains(entity)) {
-                if (entity.isLocalInstanceAuthoritative()) {
+        if(entity != null && entity.level() instanceof ClientLevel world) {
+            if(!world.tickingEntities.contains(entity)) {
+                if(entity.isLocalInstanceAuthoritative()) {
                     return;
                 }
 
@@ -76,12 +76,12 @@ public abstract class MixinClientPacketListener {
                 Vec3 prevPos;
                 do {
                     prevPos = entity.position();
-                    if (entity.isPassenger()) {
+                    if(entity.isPassenger()) {
                         entity.rideTick();
                     } else {
                         entity.tick();
                     }
-                } while (prevPos.distanceToSqr(entity.position()) > 0.0001 && ticks++ < 100);
+                } while(prevPos.distanceToSqr(entity.position()) > 0.0001 && ticks++ < 100);
             }
         }
     }

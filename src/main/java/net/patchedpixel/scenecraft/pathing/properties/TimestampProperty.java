@@ -31,7 +31,7 @@ public class TimestampProperty extends AbstractProperty<Integer> {
     @Override
     public void applyToGame(Integer value, @NonNull Object replayHandler) {
         ReplaySender replaySender = ((ReplayHandler) replayHandler).getReplaySender();
-        if (replaySender.isAsyncMode()) {
+        if(replaySender.isAsyncMode()) {
             replaySender.jumpToTime(value);
         } else {
             replaySender.sendPacketsTill(value);

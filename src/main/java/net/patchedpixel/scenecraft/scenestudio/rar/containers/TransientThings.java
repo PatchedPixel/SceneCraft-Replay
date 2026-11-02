@@ -69,9 +69,9 @@ public class TransientThings implements RandomAccessState {
         NetInput in = cache.seek(index);
         ListMultimap<Integer, TransientThing> thingSpawns = Multimaps.newListMultimap(this.thingSpawns, ArrayList::new);
         ListMultimap<Integer, TransientThing> thingDespawns = Multimaps.newListMultimap(this.thingDespawns, ArrayList::new);
-        things: while (true) {
+        things: while(true) {
             TransientThing trackedThing;
-            switch (in.readVarInt()) {
+            switch(in.readVarInt()) {
                 case 0: break things;
                 case 1: trackedThing = new Entity(registry, in); break;
                 case 2: trackedThing = new Chunk(registry, in); break;
@@ -85,7 +85,7 @@ public class TransientThings implements RandomAccessState {
 
     @Override
     public void unload(PacketSink sink, ReadableCache cache) throws IOException {
-        for (TransientThing activeThing : activeThings) {
+        for(TransientThing activeThing : activeThings) {
             activeThing.unload(sink, cache);
         }
         activeThings.clear();
@@ -96,21 +96,21 @@ public class TransientThings implements RandomAccessState {
     }
 
     private void computeActiveThings(int time) throws IOException {
-        if (time == activeThingsTime) {
+        if(time == activeThingsTime) {
             return; // our cache is up-to-date, nothing to do
         }
 
         // Slow path, this should almost never be required for normal operation
         // unless the client state is completely reset.
 
-        for (TransientThing activeThing : activeThings) {
+        for(TransientThing activeThing : activeThings) {
             activeThing.unload(Packet::release, cache);
         }
         activeThings.clear();
 
-        for (Collection<TransientThing> things : thingSpawns.subMap(-1, false, time, true).values()) {
-            for (TransientThing thing : things) {
-                if (thing.despawnTime > time) {
+        for(Collection<TransientThing> things : thingSpawns.subMap(-1, false, time, true).values()) {
+            for(TransientThing thing : things) {
+                if(thing.despawnTime > time) {
                     thing.load(Packet::release, cache);
                     activeThings.add(thing);
                 }
@@ -125,17 +125,17 @@ public class TransientThings implements RandomAccessState {
         computeActiveThings(currentTimeStamp);
 
         Iterator<TransientThing> activeIter = activeThings.iterator();
-        while (activeIter.hasNext()) {
+        while(activeIter.hasNext()) {
             TransientThing thing = activeIter.next();
-            if (thing.despawnTime <= targetTime) {
+            if(thing.despawnTime <= targetTime) {
                 thing.unload(sink, cache);
                 activeIter.remove();
             }
         }
 
-        for (Collection<TransientThing> things : thingSpawns.subMap(currentTimeStamp, false, targetTime, true).values()) {
-            for (TransientThing thing : things) {
-                if (thing.despawnTime > targetTime) {
+        for(Collection<TransientThing> things : thingSpawns.subMap(currentTimeStamp, false, targetTime, true).values()) {
+            for(TransientThing thing : things) {
+                if(thing.despawnTime > targetTime) {
                     thing.load(sink, cache);
                     activeThings.add(thing);
                 }
@@ -144,7 +144,7 @@ public class TransientThings implements RandomAccessState {
 
         activeThingsTime = targetTime;
 
-        for (TransientThing thing : activeThings) {
+        for(TransientThing thing : activeThings) {
             thing.play(sink, currentTimeStamp, targetTime);
         }
     }
@@ -154,17 +154,17 @@ public class TransientThings implements RandomAccessState {
         computeActiveThings(currentTimeStamp);
 
         Iterator<TransientThing> activeIter = activeThings.iterator();
-        while (activeIter.hasNext()) {
+        while(activeIter.hasNext()) {
             TransientThing thing = activeIter.next();
-            if (thing.spawnTime > targetTime) {
+            if(thing.spawnTime > targetTime) {
                 thing.unload(sink, cache);
                 activeIter.remove();
             }
         }
 
-        for (Collection<TransientThing> things : thingDespawns.subMap(targetTime, false, currentTimeStamp, true).values()) {
-            for (TransientThing thing : things) {
-                if (thing.spawnTime <= targetTime) {
+        for(Collection<TransientThing> things : thingDespawns.subMap(targetTime, false, currentTimeStamp, true).values()) {
+            for(TransientThing thing : things) {
+                if(thing.spawnTime <= targetTime) {
                     thing.load(sink, cache);
                     activeThings.add(thing);
                 }
@@ -173,7 +173,7 @@ public class TransientThings implements RandomAccessState {
 
         activeThingsTime = targetTime;
 
-        for (TransientThing thing : activeThings) {
+        for(TransientThing thing : activeThings) {
             thing.rewind(sink, currentTimeStamp, targetTime);
         }
     }
@@ -215,7 +215,7 @@ public class TransientThings implements RandomAccessState {
             thing.setSpawnTime(time);
 
             TransientThing.Builder prev = map.put(key, thing);
-            if (prev != null) {
+            if(prev != null) {
                 commitTransientThing(time, prev);
             }
 
@@ -236,7 +236,7 @@ public class TransientThings implements RandomAccessState {
 
         public Entity.Builder removeEntity(int time, int entityId) throws IOException {
             Entity.Builder entity = entities.remove(entityId);
-            if (entity != null) commitTransientThing(time, entity);
+            if(entity != null) commitTransientThing(time, entity);
             return entity;
         }
 
@@ -246,23 +246,23 @@ public class TransientThings implements RandomAccessState {
 
         public Chunk.Builder removeChunk(int time, long key) throws IOException {
             Chunk.Builder chunk = chunks.remove(key);
-            if (chunk != null) commitTransientThing(time, chunk);
+            if(chunk != null) commitTransientThing(time, chunk);
             return chunk;
         }
 
         public Weather.Builder removeWeather(int time) throws IOException {
             Weather.Builder weather = this.weather.remove(0);
-            if (weather != null) commitTransientThing(time, weather);
+            if(weather != null) commitTransientThing(time, weather);
             return weather;
         }
 
         private void commitTransientThing(int time, TransientThing.Builder thing) throws IOException {
             int id;
-            if (thing instanceof Entity.Builder) {
+            if(thing instanceof Entity.Builder) {
                 id = 1;
-            } else if (thing instanceof Chunk.Builder) {
+            } else if(thing instanceof Chunk.Builder) {
                 id = 2;
-            } else if (thing instanceof Weather.Builder) {
+            } else if(thing instanceof Weather.Builder) {
                 id = 3;
             } else {
                 throw new IllegalArgumentException("Unsupported type of thing: " + thing.getClass());
@@ -273,7 +273,7 @@ public class TransientThings implements RandomAccessState {
         }
 
         private void commitTransientThings(int time, Collection<? extends TransientThing.Builder> things) throws IOException {
-            for (TransientThing.Builder thing : things) {
+            for(TransientThing.Builder thing : things) {
                 commitTransientThing(time, thing);
             }
         }

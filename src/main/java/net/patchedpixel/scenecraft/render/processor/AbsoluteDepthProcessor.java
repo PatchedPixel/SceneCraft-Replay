@@ -22,7 +22,7 @@ public class AbsoluteDepthProcessor extends AbstractFrameProcessor<BitmapFrame, 
 
         FloatBuffer buffer = frame.getByteBuffer().asFloatBuffer();
         int len = buffer.remaining();
-        for (int i = 0; i < len; i++) {
+        for(int i = 0; i < len; i++) {
             float z = buffer.get(i);
             z = a / (b - c * (2 * z - 1));
             buffer.put(i, z);

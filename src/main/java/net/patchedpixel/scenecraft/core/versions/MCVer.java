@@ -41,7 +41,7 @@ public class MCVer {
     }
 
     public static State fromMc(ConnectionProtocol mcState) {
-        return switch (mcState) {
+        return switch(mcState) {
             case HANDSHAKING -> State.HANDSHAKE;
             case STATUS -> State.STATUS;
             case LOGIN -> State.LOGIN;
@@ -76,7 +76,7 @@ public class MCVer {
     public static boolean isOpenGlBackend() {
         try {
             return "OpenGL".equals(RenderSystem.getDevice().getDeviceInfo().backendName());
-        } catch (Throwable t) {
+        } catch(Throwable t) {
             return false;
         }
     }
@@ -107,8 +107,8 @@ public class MCVer {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if(this == o) return true;
+            if(o == null || getClass() != o.getClass()) return false;
             ScissorBounds that = (ScissorBounds) o;
             return x == that.x && y == that.y && width == that.width && height == that.height;
         }
@@ -161,22 +161,22 @@ public class MCVer {
 
     public static Optional<AbstractWidget> findButton(Iterable<? extends GuiEventListener> buttonList, @SuppressWarnings("unused") String text, @SuppressWarnings("unused") int id) {
         final Component message = Component.translatable(text);
-        for (GuiEventListener e : buttonList) {
-            if (e instanceof ContainerEventHandler) {
+        for(GuiEventListener e : buttonList) {
+            if(e instanceof ContainerEventHandler) {
                 Optional<AbstractWidget> button = findButton(((ContainerEventHandler) e).children(), text, id);
-                if (button.isPresent()) {
+                if(button.isPresent()) {
                     return button;
                 }
             }
-            if (!(e instanceof AbstractWidget)) {
+            if(!(e instanceof AbstractWidget)) {
                 continue;
             }
             AbstractWidget b = (AbstractWidget) e;
-            if (message.equals(b.getMessage())) {
+            if(message.equals(b.getMessage())) {
                 return Optional.of(b);
             }
             // Fuzzy match (copy does not include children)
-            if (b.getMessage() != null && b.getMessage().plainCopy().equals(message)) {
+            if(b.getMessage() != null && b.getMessage().plainCopy().equals(message)) {
                 return Optional.of(b);
             }
         }

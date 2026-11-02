@@ -90,7 +90,7 @@ public class MinecraftGuiRenderer implements GuiRenderer {
 
     @Override
     public void pushScissor(int x, int y, int width, int height) {
-        if (!scissorStack.isEmpty()) {
+        if(!scissorStack.isEmpty()) {
             context.disableScissor();
         }
         context.enableScissor(x, y, x + width, y + height);
@@ -101,7 +101,7 @@ public class MinecraftGuiRenderer implements GuiRenderer {
     public void popScissor() {
         scissorStack.remove(scissorStack.size() - 1);
         context.disableScissor();
-        if (!scissorStack.isEmpty()) {
+        if(!scissorStack.isEmpty()) {
             ScissorBounds prev = scissorStack.get(scissorStack.size() - 1);
             context.enableScissor(prev.x, prev.y, prev.x + prev.width, prev.y + prev.height);
         }
@@ -140,7 +140,7 @@ public class MinecraftGuiRenderer implements GuiRenderer {
 
     private void drawTexturedRect(int x1, int x2, int y1, int y2, float u1, float u2, float v1, float v2) {
         Identifier identifier;
-        if (boundTexture != null) {
+        if(boundTexture != null) {
             identifier = boundTexture;
         } else {
             identifier = Identifier.fromNamespaceAndPath(SceneCraft.MOD_ID, "__tmp_texture__");
@@ -152,7 +152,7 @@ public class MinecraftGuiRenderer implements GuiRenderer {
 
         context.blit(identifier, x1, y1, x2, y2, u1, u2, v1, v2);
 
-        if (boundTexture == null) {
+        if(boundTexture == null) {
             mc.getTextureManager().release(identifier);
         }
     }
@@ -200,7 +200,7 @@ public class MinecraftGuiRenderer implements GuiRenderer {
 
     @Override
     public void invertColors(int right, int bottom, int left, int top) {
-        if (left >= right || top >= bottom) return;
+        if(left >= right || top >= bottom) return;
 
         context.fill(RenderPipelines.GUI_TEXT_HIGHLIGHT, left, top, right, bottom, 0xff0000ff);
     }

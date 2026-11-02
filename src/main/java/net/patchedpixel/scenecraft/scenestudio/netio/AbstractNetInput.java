@@ -44,9 +44,9 @@ public abstract class AbstractNetInput implements NetInput {
         int value = 0;
         int size = 0;
         int b;
-        while (((b = readByte()) & 0x80) == 0x80) {
+        while(((b = readByte()) & 0x80) == 0x80) {
             value |= (b & 0x7F) << (size++ * 7);
-            if (size > 5) {
+            if(size > 5) {
                 throw new IOException("VarInt is too long (more than 5 bytes)");
             }
         }
@@ -63,9 +63,9 @@ public abstract class AbstractNetInput implements NetInput {
         long value = 0;
         int size = 0;
         int b;
-        while (((b = readByte()) & 0x80) == 0x80) {
+        while(((b = readByte()) & 0x80) == 0x80) {
             value |= (long) (b & 0x7F) << (size++ * 7);
-            if (size > 10) {
+            if(size > 10) {
                 throw new IOException("VarLong is too long (more than 10 bytes)");
             }
         }
@@ -84,7 +84,7 @@ public abstract class AbstractNetInput implements NetInput {
 
     @Override
     public byte[] readBytes(int length) throws IOException {
-        if (length < 0) {
+        if(length < 0) {
             throw new IOException("Negative array length: " + length);
         }
         byte[] result = new byte[length];
@@ -100,7 +100,7 @@ public abstract class AbstractNetInput implements NetInput {
     @Override
     public short[] readShorts(int length) throws IOException {
         short[] result = new short[length];
-        for (int i = 0; i < length; i++) {
+        for(int i = 0; i < length; i++) {
             result[i] = readShort();
         }
         return result;
@@ -109,7 +109,7 @@ public abstract class AbstractNetInput implements NetInput {
     @Override
     public int[] readInts(int length) throws IOException {
         int[] result = new int[length];
-        for (int i = 0; i < length; i++) {
+        for(int i = 0; i < length; i++) {
             result[i] = readInt();
         }
         return result;
@@ -117,11 +117,11 @@ public abstract class AbstractNetInput implements NetInput {
 
     @Override
     public long[] readLongs(int length) throws IOException {
-        if (length < 0) {
+        if(length < 0) {
             throw new IOException("Negative array length: " + length);
         }
         long[] result = new long[length];
-        for (int i = 0; i < length; i++) {
+        for(int i = 0; i < length; i++) {
             result[i] = readLong();
         }
         return result;

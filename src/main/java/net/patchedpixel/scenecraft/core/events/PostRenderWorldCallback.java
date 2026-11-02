@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.SubmitNodeStorage;
 public interface PostRenderWorldCallback {
     Event<PostRenderWorldCallback> EVENT = Event.create((listeners) ->
             (PoseStack matrixStack, SubmitNodeStorage submitNodeStorage) -> {
-                for (PostRenderWorldCallback listener : listeners) {
+                for(PostRenderWorldCallback listener : listeners) {
                     listener.postRenderWorld(matrixStack, submitNodeStorage);
                 }
             }

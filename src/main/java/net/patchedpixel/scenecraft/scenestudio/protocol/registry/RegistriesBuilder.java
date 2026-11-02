@@ -38,7 +38,7 @@ public class RegistriesBuilder {
     private Registries registries;
 
     public void readRegistriesPacket(Packet packet) throws IOException {
-        if (registries == null) registries = new Registries();
+        if(registries == null) registries = new Registries();
         PacketConfigRegistries.read(packet, registries);
     }
 
@@ -52,10 +52,10 @@ public class RegistriesBuilder {
 
     public Registries finish(Registries oldRegistries) {
         Registries result;
-        if (registries != null) {
+        if(registries != null) {
             result = registries;
             result.enabledPacks = enabledPacks;
-            if (enabledPacksData != null && registries.registriesMap != null) {
+            if(enabledPacksData != null && registries.registriesMap != null) {
                 mergeEnabledPacksIntoRegistry();
             }
         } else {
@@ -69,20 +69,20 @@ public class RegistriesBuilder {
     }
 
     private void mergeEnabledPacksIntoRegistry() {
-        for (Map.Entry<String, Map<String, Tag>> sourceRegistry : enabledPacksData.entrySet()) {
+        for(Map.Entry<String, Map<String, Tag>> sourceRegistry : enabledPacksData.entrySet()) {
             Map<String, Tag> sourceEntries = sourceRegistry.getValue();
             List<Pair<String, Tag>> targetEntries = registries.registriesMap.get(sourceRegistry.getKey());
-            if (targetEntries == null) {
+            if(targetEntries == null) {
                 continue;
             }
-            for (int i = 0; i < targetEntries.size(); i++) {
+            for(int i = 0; i < targetEntries.size(); i++) {
                 Pair<String, Tag> entry = targetEntries.get(i);
-                if (entry.getValue() != null) {
+                if(entry.getValue() != null) {
                     continue;
                 }
                 String id = entry.getKey();
                 Tag tag = sourceEntries.get(id);
-                if (tag == null) {
+                if(tag == null) {
                     continue;
                 }
                 targetEntries.set(i, Pair.of(id, tag));
@@ -91,7 +91,7 @@ public class RegistriesBuilder {
     }
 
     public Registries update(Packet packet, Registries registries) throws IOException {
-        switch (packet.getType()) {
+        switch(packet.getType()) {
             case ConfigSelectKnownPacks:
                 readKnownPacksPacket(packet);
                 return registries;
@@ -101,7 +101,7 @@ public class RegistriesBuilder {
             case ConfigFinish:
                 return finish(registries);
             case ConfigCustomPayload:
-                switch (PacketCustomPayload.getId(packet)) {
+                switch(PacketCustomPayload.getId(packet)) {
                     case PacketEnabledPacksData.ID:
                         readEnabledPacksDataPacket(packet);
                         return registries;

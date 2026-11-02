@@ -46,7 +46,7 @@ public final class Nbt {
      */
     public static Tag readNetwork(NetInput in) throws IOException {
         int type = in.readUnsignedByte();
-        if (type == 0) {
+        if(type == 0) {
             return null;
         }
         // readAnyTag expects to read the type net itself, so hand it back as the first byte of the stream
@@ -55,7 +55,7 @@ public final class Nbt {
 
             @Override
             public int read() throws IOException {
-                if (!typeSent) {
+                if(!typeSent) {
                     typeSent = true;
                     return type;
                 }
@@ -81,7 +81,7 @@ public final class Nbt {
      * @param tag The tag, null is written as the "end" tag
      */
     public static void writeNetwork(NetOutput out, Tag tag) throws IOException {
-        if (tag == null) {
+        if(tag == null) {
             out.writeByte(0);
             return;
         }
@@ -98,7 +98,7 @@ public final class Nbt {
      * @return The integer stored under the given key of a compound tag, or the default if absent or not a compound
      */
     public static int intOr(Tag compound, String key, int def) {
-        if (compound instanceof CompoundTag) {
+        if(compound instanceof CompoundTag) {
             return ((CompoundTag) compound).getIntOr(key, def);
         }
         return def;

@@ -53,7 +53,7 @@ public class SceneCraftRender extends EventRegistrations implements Module {
         File folder = new File(path.startsWith("./") ? core.getMinecraft().gameDirectory : null, path);
         try {
             FileUtils.forceMkdir(folder);
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw new ReportedException(CrashReport.forThrowable(e, "Cannot create video folder."));
         }
         return folder;
@@ -72,7 +72,7 @@ public class SceneCraftRender extends EventRegistrations implements Module {
         replayFile = replayHandler.getReplayFile();
         try {
             renderQueue.addAll(RenderJob.readQueue(replayFile));
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw new ReportedException(CrashReport.forThrowable(e, "Reading timeline"));
         }
     }
@@ -86,7 +86,7 @@ public class SceneCraftRender extends EventRegistrations implements Module {
     public void saveRenderQueue() {
         try {
             RenderJob.writeQueue(replayFile, renderQueue);
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
             VanillaGuiScreen screen = VanillaGuiScreen.wrap(getCore().getMinecraft().gui.screen());
             CrashReport report = CrashReport.forThrowable(e, "Reading timeline");

@@ -29,7 +29,7 @@ public class EXRWriter implements FrameConsumer<BitmapFrame> {
     public static FrameConsumer<BitmapFrame> create(Path outputFolder, boolean keepAlpha) {
         try {
             return new EXRWriter(outputFolder, keepAlpha);
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw new UncheckedIOException(e);
         }
     }
@@ -82,11 +82,11 @@ public class EXRWriter implements FrameConsumer<BitmapFrame> {
             memASCII("B", true, channelInfos.get(1).name());
             memASCII("G", true, channelInfos.get(2).name());
             memASCII("R", true, channelInfos.get(3).name());
-            for (int i = 0; i < numChannels; i++) {
+            for(int i = 0; i < numChannels; i++) {
                 pixelTypes.put(i, TINYEXR_PIXELTYPE_FLOAT);
                 requestedPixelTypes.put(i, TINYEXR_PIXELTYPE_HALF);
             }
-            if (depthFrame != null) {
+            if(depthFrame != null) {
                 memASCII("Z", true, channelInfos.get(4).name());
                 requestedPixelTypes.put(4, TINYEXR_PIXELTYPE_FLOAT);
             }
@@ -97,11 +97,11 @@ public class EXRWriter implements FrameConsumer<BitmapFrame> {
             image.images(imagePointers);
             FloatBuffer[] bgrChannels = new FloatBuffer[4];
             FloatBuffer depthChannel = null;
-            for (int i = 0; i < numChannels; i++) {
+            for(int i = 0; i < numChannels; i++) {
                 FloatBuffer channel = images.slice();
                 channel.position(width * height * i);
                 imagePointers.put(i, memAddress(channel));
-                if (i == 4) {
+                if(i == 4) {
                     depthChannel = channel;
                 } else {
                     bgrChannels[(i + 3) % 4] = channel;
@@ -110,25 +110,25 @@ public class EXRWriter implements FrameConsumer<BitmapFrame> {
 
             int alphaMask = keepAlpha ? 0 : 0xff;
 
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
+            for(int y = 0; y < height; y++) {
+                for(int x = 0; x < width; x++) {
                     bgrChannels[0].put(((int) bgra.get() & 0xff) / 255f); // b
                     bgrChannels[1].put(((int) bgra.get() & 0xff) / 255f); // g
                     bgrChannels[2].put(((int) bgra.get() & 0xff) / 255f); // r
                     bgrChannels[3].put(((int) bgra.get() & 0xff | alphaMask) / 255f); // a
                 }
             }
-            if (depthFrame != null && depthChannel != null) {
+            if(depthFrame != null && depthChannel != null) {
                 depthChannel.put(depthFrame.getByteBuffer().asFloatBuffer());
             }
 
             int ret = SaveEXRImageToFile(image, header, path.toString(), err);
-            if (ret != TINYEXR_SUCCESS) {
+            if(ret != TINYEXR_SUCCESS) {
                 String message = memASCII(err.get(0));
                 nFreeEXRErrorMessage(err.get(0));
                 throw new IOException(message);
             }
-        } catch (Throwable t) {
+        } catch(Throwable t) {
             MCVer.getMinecraft().delayCrash(CrashReport.forThrowable(t, "Exporting EXR frame"));
         } finally {
             memFree(images);

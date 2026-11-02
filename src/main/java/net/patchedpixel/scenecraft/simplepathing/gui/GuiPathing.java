@@ -75,10 +75,10 @@ public class GuiPathing {
         @Override
         public GuiElement getTooltip(RenderInfo renderInfo) {
             GuiTooltip tooltip = (GuiTooltip) super.getTooltip(renderInfo);
-            if (tooltip != null) {
-                if (player.isActive()) {
+            if(tooltip != null) {
+                if(player.isActive()) {
                     tooltip.setI18nText("scenecraft.gui.ingame.menu.pausepath");
-                } else if (InputConstants.isKeyDown(InputConstants.KEY_LCONTROL)) {
+                } else if(InputConstants.isKeyDown(InputConstants.KEY_LCONTROL)) {
                     tooltip.setI18nText("scenecraft.gui.ingame.menu.playpathfromstart");
                 } else {
                     tooltip.setI18nText("scenecraft.gui.ingame.menu.playpath");
@@ -109,16 +109,16 @@ public class GuiPathing {
         @Override
         public GuiElement getTooltip(RenderInfo renderInfo) {
             GuiTooltip tooltip = (GuiTooltip) super.getTooltip(renderInfo);
-            if (tooltip != null) {
+            if(tooltip != null) {
                 String label;
-                if (getSpriteUV().getY() == 40) { // Add keyframe
-                    if (getSpriteUV().getX() == 0) { // Position
+                if(getSpriteUV().getY() == 40) { // Add keyframe
+                    if(getSpriteUV().getX() == 0) { // Position
                         label = "scenecraft.gui.ingame.menu.addposkeyframe";
                     } else { // Spectator
                         label = "scenecraft.gui.ingame.menu.addspeckeyframe";
                     }
                 } else { // Remove keyframe
-                    if (getSpriteUV().getX() == 0) { // Position
+                    if(getSpriteUV().getX() == 0) { // Position
                         label = "scenecraft.gui.ingame.menu.removeposkeyframe";
                     } else { // Spectator
                         label = "scenecraft.gui.ingame.menu.removespeckeyframe";
@@ -134,9 +134,9 @@ public class GuiPathing {
         @Override
         public GuiElement getTooltip(RenderInfo renderInfo) {
             GuiTooltip tooltip = (GuiTooltip) super.getTooltip(renderInfo);
-            if (tooltip != null) {
+            if(tooltip != null) {
                 String label;
-                if (getSpriteUV().getY() == 80) { // Add time keyframe
+                if(getSpriteUV().getY() == 80) { // Add time keyframe
                     label = "scenecraft.gui.ingame.menu.addtimekeyframe";
                 } else { // Remove time keyframe
                     label = "scenecraft.gui.ingame.menu.removetimekeyframe";
@@ -150,7 +150,7 @@ public class GuiPathing {
     public final GuiKeyframeTimeline timeline = new GuiKeyframeTimeline(this){
         @Override
         public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
-            if (player.isActive()) {
+            if(player.isActive()) {
                 setCursorPosition((int) player.getTimePassed()).ensureCursorVisibleWithPadding();
             }
             super.draw(renderer, size, renderInfo);
@@ -247,7 +247,7 @@ public class GuiPathing {
         }).onClick(new Runnable() {
             @Override
             public void run() {
-                if (player.isActive()) {
+                if(player.isActive()) {
                     player.getFuture().cancel(false);
                 } else {
                     boolean ignoreTimeKeyframes = InputConstants.isKeyDown(InputConstants.KEY_LSHIFT);
@@ -256,7 +256,7 @@ public class GuiPathing {
                         GuiInfoPopup.open(overlay, err);
                         return null;
                     });
-                    if (timeline == null) return;
+                    if(timeline == null) return;
 
                     Path timePath = new SPTimeline(timeline).getTimePath();
                     timePath.setActive(!ignoreTimeKeyframes);
@@ -270,7 +270,7 @@ public class GuiPathing {
                     Futures.addCallback(future, new FutureCallback<Void>() {
                         @Override
                         public void onSuccess(@Nullable Void result) {
-                            if (future.isCancelled()) {
+                            if(future.isCancelled()) {
                                 core.printInfoToChat("scenecraft.chat.pathinterrupted");
                             } else {
                                 core.printInfoToChat("scenecraft.chat.pathfinished");
@@ -280,7 +280,7 @@ public class GuiPathing {
 
                         @Override
                         public void onFailure(Throwable t) {
-                            if (!(t instanceof CancellationException)) {
+                            if(!(t instanceof CancellationException)) {
                                 t.printStackTrace();
                             }
                             overlay.setCloseable(true);
@@ -295,12 +295,12 @@ public class GuiPathing {
             public int getX() {
                 SPPath keyframePath = mod.getSelectedPath();
                 long keyframeTime = mod.getSelectedTime();
-                if (keyframePath != SPPath.POSITION) {
+                if(keyframePath != SPPath.POSITION) {
                     // No keyframe or wrong path
                     keyframeTime = timeline.getCursorPosition();
                     keyframePath = mod.getCurrentTimeline().isPositionKeyframe(keyframeTime) ? SPPath.POSITION : null;
                 }
-                if (keyframePath != SPPath.POSITION) {
+                if(keyframePath != SPPath.POSITION) {
                     return replayHandler.isCameraView() ? 0 : 40;
                 } else {
                     return mod.getCurrentTimeline().isSpectatorKeyframe(keyframeTime) ? 40 : 0;
@@ -310,7 +310,7 @@ public class GuiPathing {
             @Override
             public int getY() {
                 SPPath keyframePath = mod.getSelectedPath();
-                if (keyframePath != SPPath.POSITION) {
+                if(keyframePath != SPPath.POSITION) {
                     // No keyframe selected but there might be one at exactly the position of the cursor
                     keyframePath = mod.getCurrentTimeline().isPositionKeyframe(timeline.getCursorPosition()) ? SPPath.POSITION : null;
                 }
@@ -337,7 +337,7 @@ public class GuiPathing {
             @Override
             public int getY() {
                 SPPath keyframePath = mod.getSelectedPath();
-                if (keyframePath != SPPath.TIME) {
+                if(keyframePath != SPPath.TIME) {
                     // No keyframe selected but there might be one at exactly the position of the cursor
                     keyframePath = mod.getCurrentTimeline().isTimeKeyframe(timeline.getCursorPosition()) ? SPPath.TIME : null;
                 }
@@ -369,12 +369,12 @@ public class GuiPathing {
     }
 
     private void abortPathPlayback() {
-        if (!player.isActive()) {
+        if(!player.isActive()) {
             return;
         }
 
         ListenableFuture<Void> future = player.getFuture();
-        if (!future.isDone() && !future.isCancelled()) {
+        if(!future.isDone() && !future.isCancelled()) {
             future.cancel(false);
         }
         // Tear down of the player might only happen the next tick after it was cancelled
@@ -392,7 +392,7 @@ public class GuiPathing {
             Futures.addCallback(gui.getFuture(), new FutureCallback<Timeline>() {
                 @Override
                 public void onSuccess(Timeline result) {
-                    if (result != null) {
+                    if(result != null) {
                         mod.setCurrentTimeline(new SPTimeline(result));
                     }
                 }
@@ -404,7 +404,7 @@ public class GuiPathing {
                 }
             }, Runnable::run);
             gui.display();
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
             core.printWarningToChat("Error loading timeline: " + e.getMessage());
         }
@@ -415,7 +415,7 @@ public class GuiPathing {
                 new GuiLabel().setI18nText("scenecraft.gui.clearcallback.title").setColor(Colors.BLACK)
         ).setYesI18nLabel("gui.yes").setNoI18nLabel("gui.no").onAccept(() -> {
             mod.clearCurrentTimeline();
-            if (entityTracker != null) {
+            if(entityTracker != null) {
                 mod.getCurrentTimeline().setEntityTracker(entityTracker);
             }
         });
@@ -424,20 +424,20 @@ public class GuiPathing {
     private int prevSpeed = -1;
     private int prevTime = -1;
     private void checkForAutoSync() {
-        if (!mod.keySyncTime.isAutoActivating()) {
+        if(!mod.keySyncTime.isAutoActivating()) {
             prevSpeed = -1;
             prevTime = -1;
             return;
         }
 
         int speed = overlay.speedSlider.getValue();
-        if (prevSpeed != speed && prevSpeed != -1) {
+        if(prevSpeed != speed && prevSpeed != -1) {
             syncTimeButtonPressed();
         }
         prevSpeed = speed;
 
         int time = replayHandler.getReplaySender().currentTimeStamp();
-        if (prevTime != time && prevTime != -1 && !player.isActive()) {
+        if(prevTime != time && prevTime != -1 && !player.isActive()) {
             syncTimeButtonPressed();
         }
         prevTime = time;
@@ -450,7 +450,7 @@ public class GuiPathing {
         Keyframe keyframe = mod.getCurrentTimeline().getTimePath().getKeyframes().stream()
                 .filter(it -> it.getTime() <= cursor).reduce((__, last) -> last)
                 .orElse(null);
-        if (keyframe != null) {
+        if(keyframe != null) {
             // Cursor position at the keyframe
             int keyframeCursor = (int) keyframe.getTime();
             // Replay time at the keyframe
@@ -476,24 +476,24 @@ public class GuiPathing {
 
         // Update cursor once
         Integer updatedCursor = computeSyncTime(cursor);
-        if (updatedCursor == null) {
+        if(updatedCursor == null) {
             return; // no keyframes before cursor, nothing we can do
         }
         cursor = updatedCursor;
 
         // Repeatedly update until we find a fix point
-        while (true) {
+        while(true) {
             updatedCursor = computeSyncTime(cursor);
-            if (updatedCursor == null) {
+            if(updatedCursor == null) {
                 // Cursor has gotten stuck before in front of all keyframes.
                 // Let's just use the last value we got, this shouldn't happen with ordinary timelines anyway.
                 break;
             }
-            if (updatedCursor == cursor) {
+            if(updatedCursor == cursor) {
                 // Found the fix point, we can stop now
                 break;
             }
-            if (updatedCursor < cursor) {
+            if(updatedCursor < cursor) {
                 // We've gone backwards, we'll likely get stuck in a loop, so abort the whole thing
                 return;
             }
@@ -508,7 +508,7 @@ public class GuiPathing {
     }
 
     public boolean deleteButtonPressed() {
-        if (mod.getSelectedPath() != null) {
+        if(mod.getSelectedPath() != null) {
             toggleKeyframe(mod.getSelectedPath(), false);
             return true;
         }
@@ -524,12 +524,12 @@ public class GuiPathing {
             try {
                 long start = System.currentTimeMillis();
                 tracker.load(p -> {
-                    if (entityTrackerLoadingProgress != null) {
+                    if(entityTrackerLoadingProgress != null) {
                         entityTrackerLoadingProgress.accept(p);
                     }
                 });
                 logger.info("Loaded entity tracker in " + (System.currentTimeMillis() - start) + "ms");
-            } catch (Throwable e) {
+            } catch(Throwable e) {
                 logger.error("Loading entity tracker:", e);
                 mod.getCore().runLater(() -> {
                     mod.getCore().printWarningToChat("Error loading entity tracker: %s", e.getLocalizedMessage());
@@ -548,7 +548,7 @@ public class GuiPathing {
         SPTimeline spTimeline = mod.getCurrentTimeline();
 
         String[] errors = validatePathsForPlayback(spTimeline, ignoreTimeKeyframes);
-        if (errors != null) {
+        if(errors != null) {
             return Result.err(errors);
         }
 
@@ -558,7 +558,7 @@ public class GuiPathing {
             Timeline timeline = serialization.deserialize(serialized).get("");
             timeline.getPaths().forEach(Path::updateAll);
             return Result.ok(timeline);
-        } catch (Throwable t) {
+        } catch(Throwable t) {
             error(LOGGER, replayHandler.getOverlay(), CrashReport.forThrowable(t, "Cloning timeline"), () -> {});
             return Result.err(null);
         }
@@ -568,19 +568,19 @@ public class GuiPathing {
         timeline.getTimeline().getPaths().forEach(Path::updateAll);
 
         // Make sure there are at least two position keyframes
-        if (timeline.getPositionPath().getSegments().isEmpty()) {
+        if(timeline.getPositionPath().getSegments().isEmpty()) {
             return new String[]{ "scenecraft.chat.morekeyframes" };
         }
 
-        if (ignoreTimeKeyframes) {
+        if(ignoreTimeKeyframes) {
             return null;
         }
 
         // Make sure time keyframes's values are monotonically increasing
         int lastTime = 0;
-        for (Keyframe keyframe : timeline.getTimePath().getKeyframes()) {
+        for(Keyframe keyframe : timeline.getTimePath().getKeyframes()) {
             int time = keyframe.getValue(TimestampProperty.PROPERTY).orElseThrow(IllegalStateException::new);
-            if (time < lastTime) {
+            if(time < lastTime) {
                 // We are going backwards in time
                 return new String[]{
                         "scenecraft.error.negativetime1",
@@ -592,7 +592,7 @@ public class GuiPathing {
         }
 
         // Make sure there are at least two time keyframes
-        if (timeline.getTimePath().getSegments().isEmpty()) {
+        if(timeline.getTimePath().getSegments().isEmpty()) {
             return new String[]{ "scenecraft.chat.morekeyframes" };
         }
 
@@ -604,7 +604,7 @@ public class GuiPathing {
     }
 
     public boolean loadEntityTracker(Runnable thenRun) {
-        if (entityTracker == null && !errorShown) {
+        if(entityTracker == null && !errorShown) {
             LOGGER.debug("Entity tracker not yet loaded, delaying...");
             LoadEntityTrackerPopup popup = new LoadEntityTrackerPopup(replayHandler.getOverlay());
             entityTrackerLoadingProgress = p -> popup.progressBar.setProgress(p.floatValue());
@@ -612,7 +612,7 @@ public class GuiPathing {
                 @Override
                 public void onSuccess(@Nullable Void result) {
                     popup.close();
-                    if (mod.getCurrentTimeline().getEntityTracker() == null) {
+                    if(mod.getCurrentTimeline().getEntityTracker() == null) {
                         mod.getCurrentTimeline().setEntityTracker(entityTracker);
                     }
                     thenRun.run();
@@ -620,7 +620,7 @@ public class GuiPathing {
 
                 @Override
                 public void onFailure(@Nonnull Throwable t) {
-                    if (!errorShown) {
+                    if(!errorShown) {
                         String message = "Failed to load entity tracker, spectator keyframes will be broken.";
                         GuiReplayOverlay overlay = replayHandler.getOverlay();
                         Utils.error(LOGGER, overlay, CrashReport.forThrowable(t, message), () -> {
@@ -635,7 +635,7 @@ public class GuiPathing {
             }, Runnable::run);
             return false;
         }
-        if (mod.getCurrentTimeline().getEntityTracker() == null) {
+        if(mod.getCurrentTimeline().getEntityTracker() == null) {
             mod.getCurrentTimeline().setEntityTracker(entityTracker);
         }
         return true;
@@ -648,25 +648,25 @@ public class GuiPathing {
      */
     public void toggleKeyframe(SPPath path, boolean neverSpectator) {
         LOGGER.debug("Updating keyframe on path {}" + path);
-        if (!loadEntityTracker(() -> toggleKeyframe(path, neverSpectator))) return;
+        if(!loadEntityTracker(() -> toggleKeyframe(path, neverSpectator))) return;
 
         int time = timeline.getCursorPosition();
         SPTimeline timeline = mod.getCurrentTimeline();
 
-        if (timeline.getPositionPath().getKeyframes().isEmpty() &&
+        if(timeline.getPositionPath().getKeyframes().isEmpty() &&
                 timeline.getTimePath().getKeyframes().isEmpty() &&
                 time > 1000) {
             String text = I18n.get("scenecraft.gui.ingame.first_keyframe_not_at_start_warning");
             GuiInfoPopup.open(overlay, text.split("\\\\n"));
         }
 
-        switch (path) {
+        switch(path) {
             case TIME:
-                if (mod.getSelectedPath() == path) {
+                if(mod.getSelectedPath() == path) {
                     LOGGER.debug("Selected keyframe is time keyframe -> removing keyframe");
                     timeline.removeTimeKeyframe(mod.getSelectedTime());
                     mod.setSelected(null, 0);
-                } else if (timeline.isTimeKeyframe(time)) {
+                } else if(timeline.isTimeKeyframe(time)) {
                     LOGGER.debug("Keyframe at cursor position is time keyframe -> removing keyframe");
                     timeline.removeTimeKeyframe(time);
                     mod.setSelected(null, 0);
@@ -677,11 +677,11 @@ public class GuiPathing {
                 }
                 break;
             case POSITION:
-                if (mod.getSelectedPath() == path) {
+                if(mod.getSelectedPath() == path) {
                     LOGGER.debug("Selected keyframe is position keyframe -> removing keyframe");
                     timeline.removePositionKeyframe(mod.getSelectedTime());
                     mod.setSelected(null, 0);
-                } else if (timeline.isPositionKeyframe(time)) {
+                } else if(timeline.isPositionKeyframe(time)) {
                     LOGGER.debug("Keyframe at cursor position is position keyframe -> removing keyframe");
                     timeline.removePositionKeyframe(time);
                     mod.setSelected(null, 0);
@@ -689,7 +689,7 @@ public class GuiPathing {
                     LOGGER.debug("No position keyframe found -> adding new keyframe");
                     CameraEntity camera = replayHandler.getCameraEntity();
                     int spectatedId = -1;
-                    if (!replayHandler.isCameraView() && !neverSpectator) {
+                    if(!replayHandler.isCameraView() && !neverSpectator) {
                         spectatedId = replayHandler.getOverlay().getMinecraft().getCameraEntity().getId();
                     }
                     timeline.addPositionKeyframe(time, camera.getX(), camera.getY(), camera.getZ(),
@@ -709,11 +709,11 @@ public class GuiPathing {
     }
 
     public void openEditKeyframePopup(SPPath path, long time) {
-        if (!loadEntityTracker(() -> openEditKeyframePopup(path, time))) return;
+        if(!loadEntityTracker(() -> openEditKeyframePopup(path, time))) return;
         Keyframe keyframe = mod.getCurrentTimeline().getKeyframe(path, time);
-        if (keyframe.getProperties().contains(SpectatorProperty.PROPERTY)) {
+        if(keyframe.getProperties().contains(SpectatorProperty.PROPERTY)) {
             new GuiEditKeyframe.Spectator(this, path, keyframe.getTime()).open();
-        } else if (keyframe.getProperties().contains(CameraProperties.POSITION)) {
+        } else if(keyframe.getProperties().contains(CameraProperties.POSITION)) {
             new GuiEditKeyframe.Position(this, path, keyframe.getTime()).open();
         } else {
             new GuiEditKeyframe.Time(this, path, keyframe.getTime()).open();

@@ -82,7 +82,7 @@ public abstract class RandomAccessReplay {
     protected abstract void dispatch(Packet packet);
 
     public void load(Consumer<Double> progress) throws IOException {
-        if (!tryLoadFromCache(progress)) {
+        if(!tryLoadFromCache(progress)) {
             double progressSplit = 0.9; // 90% of progress time for analysing, 10% for loading
             analyseReplay(d -> progress.accept(d * progressSplit));
             tryLoadFromCache(d -> progress.accept(d * (1 - progressSplit) + progressSplit));
@@ -93,13 +93,13 @@ public abstract class RandomAccessReplay {
         release();
 
         Optional<InputStream> cacheIndexOpt = replayFile.getCache(CACHE_INDEX_ENTRY);
-        if (!cacheIndexOpt.isPresent()) return false;
+        if(!cacheIndexOpt.isPresent()) return false;
         try (InputStream indexIn = cacheIndexOpt.get()) {
             Optional<InputStream> cacheOpt = replayFile.getCache(CACHE_ENTRY);
-            if (!cacheOpt.isPresent()) return false;
+            if(!cacheOpt.isPresent()) return false;
             try (InputStream cacheIn = cacheOpt.get()) {
                 Pair<Replay, ReadableCache> result = loadFromCache(cacheIn, indexIn, progress);
-                if (result == null) return false;
+                if(result == null) return false;
                 Replay replay = result.getLeft();
                 ReadableCache cache = result.getRight();
                 replay.load(Packet::release, cache);
@@ -107,7 +107,7 @@ public abstract class RandomAccessReplay {
                 this.cache = cache;
                 return true;
             }
-        } catch (EOFException e) {
+        } catch(EOFException e) {
             LOGGER.warn("Re-analysing replay due to premature EOF while loading the cache", e);
             return false;
         }
@@ -118,10 +118,10 @@ public abstract class RandomAccessReplay {
 
         NetInput cacheIn = new StreamNetInput(rawCacheIn);
         NetInput in = new StreamNetInput(rawIndexIn);
-        if (in.readVarInt() != CACHE_VERSION) return null; // Incompatible cache version
-        if (cacheIn.readVarInt() != CACHE_VERSION) return null; // Incompatible cache version
-        if (in.readVarInt() != registry.getProtocolVersion()) return null; // Cache of incompatible protocol version
-        if (cacheIn.readVarInt() != registry.getProtocolVersion()) return null; // Cache of incompatible protocol version
+        if(in.readVarInt() != CACHE_VERSION) return null; // Incompatible cache version
+        if(cacheIn.readVarInt() != CACHE_VERSION) return null; // Incompatible cache version
+        if(in.readVarInt() != registry.getProtocolVersion()) return null; // Cache of incompatible protocol version
+        if(cacheIn.readVarInt() != registry.getProtocolVersion()) return null; // Cache of incompatible protocol version
 
         Replay replay = new Replay(registry, in);
 
@@ -129,9 +129,9 @@ public abstract class RandomAccessReplay {
         LOGGER.info("Creating quick mode buffer of size: {}KB", size / 1024);
         ByteBuf buf = Unpooled.buffer(size);
         int read = 0;
-        while (true) {
+        while(true) {
             int len = buf.writeBytes(rawCacheIn, Math.min(size - read, 4096));
-            if (len <= 0) break;
+            if(len <= 0) break;
             read += len;
             progress.accept((double) read / size);
         }
@@ -165,10 +165,10 @@ public abstract class RandomAccessReplay {
     }
 
     public void release() {
-        if (state != null && cache != null) {
+        if(state != null && cache != null) {
             try {
                 state.unload(Packet::release, cache);
-            } catch (IOException e) {
+            } catch(IOException e) {
                 LOGGER.error("Failed to unload the replay state", e);
             }
             state = null;
@@ -183,7 +183,7 @@ public abstract class RandomAccessReplay {
     }
 
     public void seek(int targetTime) throws IOException {
-        if (targetTime > currentTimeStamp) {
+        if(targetTime > currentTimeStamp) {
             state.play(this::dispatch, currentTimeStamp, targetTime);
         } else {
             state.rewind(this::dispatch, currentTimeStamp, targetTime);

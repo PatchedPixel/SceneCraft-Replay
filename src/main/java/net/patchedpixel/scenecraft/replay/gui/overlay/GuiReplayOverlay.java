@@ -37,9 +37,9 @@ public class GuiReplayOverlay extends AbstractGuiOverlay<GuiReplayOverlay> {
         @Override
         public GuiElement getTooltip(RenderInfo renderInfo) {
             GuiTooltip tooltip = (GuiTooltip) super.getTooltip(renderInfo);
-            if (tooltip != null) {
+            if(tooltip != null) {
                 String label;
-                if (getSpriteUV().getY() == 0) { // Play button
+                if(getSpriteUV().getY() == 0) { // Play button
                     label = "scenecraft.gui.ingame.menu.unpause";
                 } else { // Pause button
                     label = "scenecraft.gui.ingame.menu.pause";
@@ -103,7 +103,7 @@ public class GuiReplayOverlay extends AbstractGuiOverlay<GuiReplayOverlay> {
             public void run() {
                 ReplaySender replaySender = replayHandler.getReplaySender();
                 // If currently paused
-                if (replaySender.paused()) {
+                if(replaySender.paused()) {
                     // then play
                     replaySender.setReplaySpeed(getSpeedSliderValue());
                 } else {
@@ -119,7 +119,7 @@ public class GuiReplayOverlay extends AbstractGuiOverlay<GuiReplayOverlay> {
                 double speed = getSpeedSliderValue();
                 speedSlider.setText(I18n.get("scenecraft.gui.speed") + ": " + speed + "x");
                 ReplaySender replaySender = replayHandler.getReplaySender();
-                if (!replaySender.paused()) {
+                if(!replaySender.paused()) {
                     replaySender.setReplaySpeed(speed);
                 }
             }
@@ -135,7 +135,7 @@ public class GuiReplayOverlay extends AbstractGuiOverlay<GuiReplayOverlay> {
 
     public double getSpeedSliderValue() {
         int value = speedSlider.getValue() + 1;
-        if (value <= 9) {
+        if(value <= 9) {
             return value / 10d;
         } else {
             return 1 + (0.25d * (value - 10));
@@ -144,8 +144,8 @@ public class GuiReplayOverlay extends AbstractGuiOverlay<GuiReplayOverlay> {
 
     @Override
     public void setVisible(boolean visible) {
-        if (isVisible() != visible) {
-            if (visible) {
+        if(isVisible() != visible) {
+            if(visible) {
                 eventHandler.register();
             } else {
                 eventHandler.unregister();
@@ -157,7 +157,7 @@ public class GuiReplayOverlay extends AbstractGuiOverlay<GuiReplayOverlay> {
     @Override
     public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
         // Do not render overlay if all hud, or this one specifically, is hidden and we're not in some popup
-        if ((getMinecraft().gui.hud.isHidden() || hidden) && isAllowUserInput()) {
+        if((getMinecraft().gui.hud.isHidden() || hidden) && isAllowUserInput()) {
             // Note that this only applies to when the mouse is visible, otherwise
             // the draw method isn't called in the first place
             return;
@@ -174,8 +174,8 @@ public class GuiReplayOverlay extends AbstractGuiOverlay<GuiReplayOverlay> {
         { on(KeyBindingEventCallback.EVENT, this::onKeyBindingEvent); }
         private void onKeyBindingEvent() {
             Options gameSettings = getMinecraft().options;
-            while (gameSettings.keyChat.consumeClick() || gameSettings.keyCommand.consumeClick()) {
-                if (!isMouseVisible()) {
+            while(gameSettings.keyChat.consumeClick() || gameSettings.keyCommand.consumeClick()) {
+                if(!isMouseVisible()) {
                     setMouseVisible(true);
                 }
             }
@@ -183,9 +183,9 @@ public class GuiReplayOverlay extends AbstractGuiOverlay<GuiReplayOverlay> {
 
         { on(KeyEventCallback.EVENT, this::onKeyInput); }
         private boolean onKeyInput(KeyInput keyInput, int action) {
-            if (action != KeyEventCallback.ACTION_PRESS) return false;
+            if(action != KeyEventCallback.ACTION_PRESS) return false;
             // Allow F1 to be used to hide the replay gui (e.g. for record with OBS)
-            if (isMouseVisible() && keyInput.key == InputConstants.KEY_F1) {
+            if(isMouseVisible() && keyInput.key == InputConstants.KEY_F1) {
                 hidden = !hidden;
                 return true;
             }

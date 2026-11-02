@@ -99,7 +99,7 @@ public class RecordingEventHandler extends EventRegistrations {
 
     { on(PreTickCallback.EVENT, this::onPlayerTick); }
     private void onPlayerTick() {
-        if (mc.player == null) return;
+        if(mc.player == null) return;
         LocalPlayer player = mc.player;
         try {
             boolean force = false;
@@ -123,12 +123,12 @@ public class RecordingEventHandler extends EventRegistrations {
             final double maxRelDist = 8.0 * TRACKED_POSITION_RESOLUTION;
 
             Packet packet = null;
-            if (force || Math.abs(dx) > maxRelDist || Math.abs(dy) > maxRelDist || Math.abs(dz) > maxRelDist) {
+            if(force || Math.abs(dx) > maxRelDist || Math.abs(dy) > maxRelDist || Math.abs(dz) > maxRelDist) {
                 packet = ClientboundEntityPositionSyncPacket.of(player);
                 lastX = player.getX();
                 lastY = player.getY();
                 lastZ = player.getZ();
-            } else if (++ticksSinceLastPosUpdate >= POS_UPDATE_FREQUENCY) {
+            } else if(++ticksSinceLastPosUpdate >= POS_UPDATE_FREQUENCY) {
                 ticksSinceLastPosUpdate = 0;
                 byte newYaw = (byte) ((int) (player.getYRot() * 256.0F / 360.0F));
                 byte newPitch = (byte) ((int) (player.getXRot() * 256.0F / 360.0F));
@@ -145,7 +145,7 @@ public class RecordingEventHandler extends EventRegistrations {
                 lastZ += (double) dz / TRACKED_POSITION_RESOLUTION;
             }
 
-            if (packet != null) {
+            if(packet != null) {
                 packetListener.save(packet);
             }
 
@@ -164,7 +164,7 @@ public class RecordingEventHandler extends EventRegistrations {
             //Animation Packets
             //Swing Animation
             net.minecraft.world.entity.LivingEntity.SwingDescription swing = player.getCurrentSwing();
-            if (swing != null && swing != lastSwing) {
+            if(swing != null && swing != lastSwing) {
                 // a new swing started (SwingDescription is re-created on every start)
                 packetListener.save(new net.minecraft.network.protocol.game.ClientboundSwingAnimationPacket(
                         player, swing.hand(), swing.animation()));
@@ -192,10 +192,10 @@ public class RecordingEventHandler extends EventRegistrations {
 			 */
 
             //Inventory Handling
-            for (EquipmentSlot slot : EquipmentSlot.values()) {
+            for(EquipmentSlot slot : EquipmentSlot.values()) {
                 ItemStack stack = player.getItemBySlot(slot);
                 int index = slot.ordinal();
-                if (!ItemStack.matches(playerItems.get(index), stack)) {
+                if(!ItemStack.matches(playerItems.get(index), stack)) {
                     // ItemStack has internal mutability, so we need to make a copy now if we want to compare its
                     // current state with future states (e.g. dropping on modern versions will set the count to zero).
                     stack = stack != null ? stack.copy() : null;
@@ -208,7 +208,7 @@ public class RecordingEventHandler extends EventRegistrations {
 
             Entity vehicle = player.getVehicle();
             int vehicleId = vehicle == null ? -1 : vehicle.getId();
-            if (lastRiding != vehicleId) {
+            if(lastRiding != vehicleId) {
                 lastRiding = vehicleId;
                 packetListener.save(new ClientboundSetEntityLinkPacket(
                         player,
@@ -229,7 +229,7 @@ public class RecordingEventHandler extends EventRegistrations {
 
     public void onBlockBreakAnim(int breakerId, BlockPos pos, int progress) {
         Player thePlayer = mc.player;
-        if (thePlayer != null && breakerId == thePlayer.getId()) {
+        if(thePlayer != null && breakerId == thePlayer.getId()) {
             packetListener.save(new ClientboundBlockDestructionPacket(breakerId,
                     pos,
                     progress));
@@ -238,9 +238,9 @@ public class RecordingEventHandler extends EventRegistrations {
 
     { on(PreRenderCallback.EVENT, this::checkForGamePaused); }
     private void checkForGamePaused() {
-        if (mc.hasSingleplayerServer()) {
+        if(mc.hasSingleplayerServer()) {
             IntegratedServer server =  mc.getSingleplayerServer();
-            if (server != null && server.isPaused()) {
+            if(server != null && server.isPaused()) {
                 packetListener.setServerWasPaused();
             }
         }

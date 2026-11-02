@@ -5,9 +5,9 @@ import net.patchedpixel.scenecraft.gui.utils.Event;
 public interface RenderHotbarCallback {
     Event<RenderHotbarCallback> EVENT = Event.create((listeners) ->
             () -> {
-                for (RenderHotbarCallback listener : listeners) {
+                for(RenderHotbarCallback listener : listeners) {
                     Boolean state = listener.shouldRenderHotbar();
-                    if (state != null) {
+                    if(state != null) {
                         return state;
                     }
                 }

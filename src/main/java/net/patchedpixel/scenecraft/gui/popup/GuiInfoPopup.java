@@ -39,7 +39,7 @@ import net.patchedpixel.scenecraft.gui.utils.geometry.Dimension;
 public class GuiInfoPopup extends AbstractGuiPopup<GuiInfoPopup> implements KeyHandler {
     public static GuiInfoPopup open(GuiContainer container, String...info) {
         GuiElement[] labels = new GuiElement[info.length];
-        for (int i = 0; i < info.length; i++) {
+        for(int i = 0; i < info.length; i++) {
             labels[i] = new GuiLabel().setI18nText(info[i]).setColor(Colors.BLACK);
         }
         return open(container, labels);
@@ -85,7 +85,7 @@ public class GuiInfoPopup extends AbstractGuiPopup<GuiInfoPopup> implements KeyH
 
     @Override
     public boolean handleKey(KeyInput keyInput) {
-        if (keyInput.isEscape()) {
+        if(keyInput.isEscape()) {
             closeButton.onClick(new Click(-1, -1, 0, keyInput.modifiers));
             return true;
         }

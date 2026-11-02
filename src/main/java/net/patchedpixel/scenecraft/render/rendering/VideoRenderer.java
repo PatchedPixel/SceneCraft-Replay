@@ -93,9 +93,9 @@ public class VideoRenderer implements RenderInfo {
         this.timeline = timeline;
         this.gui = new GuiVideoRenderer(this);
         FrameConsumer<BitmapFrame> frameConsumer;
-        if (settings.getEncodingPreset() == RenderSettings.EncodingPreset.EXR) {
+        if(settings.getEncodingPreset() == RenderSettings.EncodingPreset.EXR) {
             frameConsumer = EXRWriter.create(settings.getOutputFile().toPath(), settings.isIncludeAlphaChannel());
-        } else if (settings.getEncodingPreset() == RenderSettings.EncodingPreset.PNG) {
+        } else if(settings.getEncodingPreset() == RenderSettings.EncodingPreset.PNG) {
             frameConsumer = new PNGWriter(settings.getOutputFile().toPath(), settings.isIncludeAlphaChannel());
         } else {
             frameConsumer = new FFmpegWriter(this);
@@ -107,10 +107,10 @@ public class VideoRenderer implements RenderInfo {
             @Override
             public void consume(Map<Channel, BitmapFrame> channels) {
                 BitmapFrame bgra = channels.get(Channel.BRGA);
-                if (bgra != null) {
-                    synchronized (this) {
+                if(bgra != null) {
+                    synchronized(this) {
                         int frameId = bgra.getFrameId();
-                        if (lastFrameId < frameId) {
+                        if(lastFrameId < frameId) {
                             lastFrameId = frameId;
                             gui.updatePreview(bgra.getByteBuffer(), bgra.getSize());
                         }
@@ -131,7 +131,7 @@ public class VideoRenderer implements RenderInfo {
         };
         this.renderingPipeline = Pipelines.newPipeline(settings.getRenderMethod(), this, previewingFrameConsumer);
 
-        if (settings.isCameraPathExport()) {
+        if(settings.isCameraPathExport()) {
             this.cameraPathExporter = new CameraPathExporter(settings);
         } else {
             this.cameraPathExporter = null;
@@ -159,14 +159,14 @@ public class VideoRenderer implements RenderInfo {
         // and the one in the record correct as there's no reliable way to tell when the server ticks
         // or when we should be done with the interpolation of the entity
         Optional<Integer> optionalVideoStartTime = timeline.getValue(TimestampProperty.PROPERTY, 0);
-        if (optionalVideoStartTime.isPresent()) {
+        if(optionalVideoStartTime.isPresent()) {
             int videoStart = optionalVideoStartTime.get();
 
-            if (videoStart > 1000) {
+            if(videoStart > 1000) {
                 int replayTime = videoStart - 1000;
                 timer.tickDelta = 0;
                 timer.msPerTick = DEFAULT_MS_PER_TICK;
-                while (replayTime < videoStart) {
+                while(replayTime < videoStart) {
                     replayTime += 50;
                     replayHandler.getReplaySender().sendPacketsTill(replayTime);
                     tick();
@@ -176,11 +176,11 @@ public class VideoRenderer implements RenderInfo {
 
         renderingPipeline.run();
 
-        if (BlockableEventLoop.delayedCrash != null) {
+        if(BlockableEventLoop.delayedCrash != null) {
             throw new ReportedException(BlockableEventLoop.delayedCrash.get());
         }
 
-        if (settings.isInjectSphericalMetadata()) {
+        if(settings.isInjectSphericalMetadata()) {
             MetadataInjector.injectMetadata(settings.getRenderMethod(), settings.getOutputFile(),
                     settings.getTargetVideoWidth(), settings.getTargetVideoHeight(),
                     settings.getSphericalFovX(), settings.getSphericalFovY());
@@ -190,7 +190,7 @@ public class VideoRenderer implements RenderInfo {
 
         ReplayRenderCallback.Post.EVENT.invoker().afterRendering(this);
 
-        if (failureCause != null) {
+        if(failureCause != null) {
             throw failureCause;
         }
 
@@ -202,12 +202,12 @@ public class VideoRenderer implements RenderInfo {
         // because the jGui lib uses Minecraft's displayWidth and displayHeight values, update these temporarily
         guiWindow.bind();
 
-        if (!settings.isHighPerformance() || framesDone % fps == 0) {
-            while (drawGui() && paused) {
+        if(!settings.isHighPerformance() || framesDone % fps == 0) {
+            while(drawGui() && paused) {
                 try {
                     //noinspection BusyWait
                     Thread.sleep(50);
-                } catch (InterruptedException e) {
+                } catch(InterruptedException e) {
                     Thread.currentThread().interrupt();
                     break;
                 }
@@ -223,18 +223,18 @@ public class VideoRenderer implements RenderInfo {
 
         executeTaskQueue();
 
-        while (elapsedTicks-- > 0) {
+        while(elapsedTicks-- > 0) {
             tick();
         }
 
-        if (mc.level != null) {
+        if(mc.level != null) {
             mc.level.update();
         }
 
         // change Minecraft's display size back
         guiWindow.unbind();
 
-        if (cameraPathExporter != null) {
+        if(cameraPathExporter != null) {
             cameraPathExporter.recordFrame();
         }
 
@@ -252,19 +252,19 @@ public class VideoRenderer implements RenderInfo {
         timelinePlayerFuture = timelinePlayer.start(timeline);
 
         // FBOs are always used in 1.14+
-        if (mc.debugEntries.isOverlayVisible()) {
+        if(mc.debugEntries.isOverlayVisible()) {
             mc.debugEntries.setOverlayVisible(false);
             debugInfoWasShown = true;
         }
-        if (mc.mouseHandler.isMouseGrabbed()) {
+        if(mc.mouseHandler.isMouseGrabbed()) {
             mouseWasGrabbed = true;
         }
         mc.mouseHandler.releaseMouse();
 
         // Mute all sounds except GUI sounds (buttons, etc.)
         originalSoundLevels = new EnumMap<>(SoundSource.class);
-        for (SoundSource category : SoundSource.values()) {
-            if (category != SoundSource.MASTER) {
+        for(SoundSource category : SoundSource.values()) {
+            if(category != SoundSource.MASTER) {
                 originalSoundLevels.put(category, mc.options.getSoundSourceVolume(category));
                 mc.options.getSoundSourceOptionInstance(category).set((double) 0);
             }
@@ -273,21 +273,21 @@ public class VideoRenderer implements RenderInfo {
         fps = settings.getFramesPerSecond();
 
         long duration = 0;
-        for (Path path : timeline.getPaths()) {
-            if (!path.isActive()) continue;
+        for(Path path : timeline.getPaths()) {
+            if(!path.isActive()) continue;
 
             // Prepare path interpolations
             path.updateAll();
             // Find end time
             Collection<Keyframe> keyframes = path.getKeyframes();
-            if (!keyframes.isEmpty()) {
+            if(!keyframes.isEmpty()) {
                 duration = Math.max(duration, getLast(keyframes).getTime());
             }
         }
 
         totalFrames = (int) (duration*fps/1000);
 
-        if (cameraPathExporter != null) {
+        if(cameraPathExporter != null) {
             cameraPathExporter.setup(totalFrames);
         }
 
@@ -297,7 +297,7 @@ public class VideoRenderer implements RenderInfo {
     }
 
     private void finish() {
-        if (!timelinePlayerFuture.isDone()) {
+        if(!timelinePlayerFuture.isDone()) {
             timelinePlayerFuture.cancel(false);
         }
         // Tear down of the timeline player might only happen the next tick after it was cancelled
@@ -306,22 +306,22 @@ public class VideoRenderer implements RenderInfo {
         guiWindow.close();
 
         // FBOs are always used in 1.14+
-        if (debugInfoWasShown) {
+        if(debugInfoWasShown) {
             mc.debugEntries.setOverlayVisible(true);
         }
-        if (mouseWasGrabbed) {
+        if(mouseWasGrabbed) {
             mc.mouseHandler.grabMouse();
         }
-        for (Map.Entry<SoundSource, Float> entry : originalSoundLevels.entrySet()) {
+        for(Map.Entry<SoundSource, Float> entry : originalSoundLevels.entrySet()) {
             mc.options.getSoundSourceOptionInstance(entry.getKey()).set((double) entry.getValue());
         }
         mc.gui.setScreen(null);
         forceChunkLoadingHook.uninstall();
 
-        if (!hasFailed() && cameraPathExporter != null) {
+        if(!hasFailed() && cameraPathExporter != null) {
             try {
                 cameraPathExporter.finish();
-            } catch (IOException e) {
+            } catch(IOException e) {
                 setFailure(e);
             }
         }
@@ -329,10 +329,10 @@ public class VideoRenderer implements RenderInfo {
         mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvent.createVariableRangeEvent(SOUND_RENDER_SUCCESS), 1));
 
         try {
-            if (!hasFailed() && ffmpegWriter != null) {
+            if(!hasFailed() && ffmpegWriter != null) {
                 new GuiRenderingDone(SceneCraftRender.instance, ffmpegWriter.getVideoFile(), totalFrames, settings).display();
             }
-        } catch (FFmpegWriter.FFmpegStartupException e) {
+        } catch(FFmpegWriter.FFmpegStartupException e) {
             setFailure(e);
         }
 
@@ -341,21 +341,21 @@ public class VideoRenderer implements RenderInfo {
     }
 
     private void executeTaskQueue() {
-        while (true) {
-            while (mc.gui.overlay() != null) {
+        while(true) {
+            while(mc.gui.overlay() != null) {
                 drawGui();
                 ((MinecraftMethodAccessor) mc).sceneCraftExecuteTaskQueue();
 
                 // The SplashOverlay now only closes on `tick`, but there are no ticks while we're waiting,
                 // so we need to manually tick it to not get stuck.
                 Overlay overlay = mc.gui.overlay();
-                if (overlay != null) {
+                if(overlay != null) {
                     overlay.tick();
                 }
             }
 
             CompletableFuture<Void> resourceReloadFuture = mc.pendingReload;
-            if (resourceReloadFuture != null) {
+            if(resourceReloadFuture != null) {
                 mc.pendingReload = null;
                 mc.reloadResourcePacks().thenRun(() -> resourceReloadFuture.complete(null));
                 continue;
@@ -376,7 +376,7 @@ public class VideoRenderer implements RenderInfo {
     public boolean drawGui() {
         Window window = mc.getWindow();
         do {
-            if (window.shouldClose() || BlockableEventLoop.delayedCrash != null) {
+            if(window.shouldClose() || BlockableEventLoop.delayedCrash != null) {
                 return false;
             }
             MCVer.pollEvents();
@@ -410,7 +410,7 @@ public class VideoRenderer implements RenderInfo {
             windowRenderState.appropriateLineWidth = window.getAppropriateLineWidth();
             windowRenderState.isMinimized = window.isIconified();
 
-            if (mc.gui.overlay() != null) {
+            if(mc.gui.overlay() != null) {
                 Screen orgScreen = mc.gui.screen();
                 try {
                     mc.gui.screen = gui.toMinecraft();
@@ -439,12 +439,12 @@ public class VideoRenderer implements RenderInfo {
             guiWindow.flip();
             popMatrix();
 
-            if (mc.mouseHandler.isMouseGrabbed()) {
+            if(mc.mouseHandler.isMouseGrabbed()) {
                 mc.mouseHandler.releaseMouse();
             }
 
             return !hasFailed() && !cancelled;
-        } while (true);
+        } while(true);
     }
 
     public int getFramesDone() {
@@ -471,7 +471,7 @@ public class VideoRenderer implements RenderInfo {
     }
 
     public void cancel() {
-        if (ffmpegWriter != null) {
+        if(ffmpegWriter != null) {
             ffmpegWriter.abort();
         }
         this.cancelled = true;
@@ -483,7 +483,7 @@ public class VideoRenderer implements RenderInfo {
     }
 
     public synchronized void setFailure(Throwable cause) {
-        if (this.failureCause != null) {
+        if(this.failureCause != null) {
             LOGGER.error("Further failure during failed rendering: ", cause);
         } else {
             LOGGER.error("Failure during rendering: ", cause);
@@ -508,14 +508,14 @@ public class VideoRenderer implements RenderInfo {
     }
 
     public static String[] checkCompat(RenderSettings settings) {
-        if (ModList.get().isLoaded("sodium") && !FlawlessFrames.hasSodium()) {
+        if(ModList.get().isLoaded("sodium") && !FlawlessFrames.hasSodium()) {
             return new String[] {
                     "Rendering is not supported with your Sodium version.",
                     "It is missing support for the FREX Flawless Frames API.",
                     "Either use the Sodium build from replaymod.com or uninstall Sodium before rendering!",
             };
         }
-        if (settings.getRenderMethod() == RenderSettings.RenderMethod.ODS
+        if(settings.getRenderMethod() == RenderSettings.RenderMethod.ODS
                 && !ModList.get().isLoaded("iris")) {
             return new String[] {
                     "ODS export requires Iris to be installed for Minecraft 1.17 and above.",

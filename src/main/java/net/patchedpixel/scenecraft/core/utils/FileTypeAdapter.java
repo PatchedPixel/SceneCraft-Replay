@@ -17,7 +17,7 @@ public class FileTypeAdapter extends TypeAdapter<File> {
     @Override
     public File read(JsonReader in) throws IOException {
         String path;
-        if (in.peek() == JsonToken.BEGIN_OBJECT) {
+        if(in.peek() == JsonToken.BEGIN_OBJECT) {
             in.beginObject();
             in.nextName();
             path = in.nextString();

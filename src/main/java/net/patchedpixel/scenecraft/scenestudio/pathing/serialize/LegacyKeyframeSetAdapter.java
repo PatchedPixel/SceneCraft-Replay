@@ -64,7 +64,7 @@ public class LegacyKeyframeSetAdapter extends TypeAdapter<KeyframeSet[]> {
                             String jsonKeyframeTag = in.nextName();
                             if("value".equals(jsonKeyframeTag) || "position".equals(jsonKeyframeTag)) {
                                 SpectatorData spectatorData = new Gson().fromJson(in, SpectatorData.class);
-                                if (spectatorData.spectatedEntityID != null) {
+                                if(spectatorData.spectatedEntityID != null) {
                                     newKeyframe.value = spectatorData;
                                 } else {
                                     newKeyframe.value = new AdvancedPosition();

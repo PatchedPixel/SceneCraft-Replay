@@ -54,7 +54,7 @@ public class CameraProperties extends AbstractPropertyGroup {
             ReplayHandler handler = ((ReplayHandler) replayHandler);
             handler.spectateCamera();
             CameraEntity cameraEntity = handler.getCameraEntity();
-            if (cameraEntity != null) {
+            if(cameraEntity != null) {
                 cameraEntity.setCameraPosition(value.getLeft(), value.getMiddle(), value.getRight());
             }
         }
@@ -95,7 +95,7 @@ public class CameraProperties extends AbstractPropertyGroup {
             ReplayHandler handler = ((ReplayHandler) replayHandler);
             handler.spectateCamera();
             CameraEntity cameraEntity = handler.getCameraEntity();
-            if (cameraEntity != null) {
+            if(cameraEntity != null) {
                 cameraEntity.setCameraRotation(value.getLeft(), value.getMiddle(), value.getRight());
             }
         }

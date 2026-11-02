@@ -93,18 +93,18 @@ public final class Marker {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Marker)) return false;
+        if(this == o) return true;
+        if(!(o instanceof Marker)) return false;
 
         Marker marker = (Marker) o;
 
-        if (time != marker.time) return false;
-        if (Double.compare(marker.x, x) != 0) return false;
-        if (Double.compare(marker.y, y) != 0) return false;
-        if (Double.compare(marker.z, z) != 0) return false;
-        if (Float.compare(marker.yaw, yaw) != 0) return false;
-        if (Float.compare(marker.pitch, pitch) != 0) return false;
-        if (Float.compare(marker.roll, roll) != 0) return false;
+        if(time != marker.time) return false;
+        if(Double.compare(marker.x, x) != 0) return false;
+        if(Double.compare(marker.y, y) != 0) return false;
+        if(Double.compare(marker.z, z) != 0) return false;
+        if(Float.compare(marker.yaw, yaw) != 0) return false;
+        if(Float.compare(marker.pitch, pitch) != 0) return false;
+        if(Float.compare(marker.roll, roll) != 0) return false;
         return !(name != null ? !name.equals(marker.name) : marker.name != null);
     }
 

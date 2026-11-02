@@ -13,10 +13,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MixinOptionInstance {
     @Inject(method = "get", at = @At("HEAD"), cancellable = true)
     private void modifyGet(CallbackInfoReturnable<Object> cir) {
-        if (FullBrightness.getGamma()) {
+        if(FullBrightness.getGamma()) {
             Minecraft mc = MCVer.getMinecraft();
             OptionInstance<?> current = (OptionInstance<?>) (Object) this;
-            if (current == mc.options.gamma()) {
+            if(current == mc.options.gamma()) {
                 cir.setReturnValue(1000.0);
             }
         }

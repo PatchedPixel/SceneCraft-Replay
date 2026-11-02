@@ -32,15 +32,15 @@ public class PNGWriter implements FrameConsumer<BitmapFrame> {
         BitmapFrame bgraFrame = channels.get(Channel.BRGA);
         BitmapFrame depthFrame = channels.get(Channel.DEPTH);
         try {
-            if (bgraFrame != null) {
+            if(bgraFrame != null) {
                 withImage(bgraFrame, image ->
                         image.writePNG(outputFolder.resolve(bgraFrame.getFrameId() + ".png").toFile()));
             }
-            if (depthFrame != null) {
+            if(depthFrame != null) {
                 withImage(depthFrame, image ->
                         image.writePNG(outputFolder.resolve(depthFrame.getFrameId() + ".depth.png").toFile()));
             }
-        } catch (Throwable t) {
+        } catch(Throwable t) {
             MCVer.getMinecraft().delayCrash(CrashReport.forThrowable(t, "Exporting EXR frame"));
         } finally {
             channels.values().forEach(it -> ByteBufferPool.release(it.getByteBuffer()));
@@ -54,8 +54,8 @@ public class PNGWriter implements FrameConsumer<BitmapFrame> {
         int width = size.getWidth();
         int height = size.getHeight();
         try (Image image = new Image(width, height)) {
-            for (int y = 0; y < height; y++) {
-                for (int x = 0; x < width; x++) {
+            for(int y = 0; y < height; y++) {
+                for(int x = 0; x < width; x++) {
                     byte b = buffer.get();
                     byte g = buffer.get();
                     byte r = buffer.get();

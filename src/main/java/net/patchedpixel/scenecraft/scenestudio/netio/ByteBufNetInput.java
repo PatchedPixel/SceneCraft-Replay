@@ -61,7 +61,7 @@ public class ByteBufNetInput extends AbstractNetInput {
 
     @Override
     public int readBytes(byte[] dest, int offset, int length) throws IOException {
-        if (length > buf.readableBytes()) {
+        if(length > buf.readableBytes()) {
             throw new IOException("Tried to read " + length + " bytes but only " + buf.readableBytes() + " are available");
         }
         buf.readBytes(dest, offset, length);

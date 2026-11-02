@@ -47,7 +47,7 @@ public class DimensionTracker implements StreamFilter {
         Packet packet = data.getPacket();
         PacketType type = packet.getType();
 
-        switch (type) {
+        switch(type) {
             case ConfigCustomPayload:
             case ConfigSelectKnownPacks:
             case ConfigRegistries:

@@ -28,12 +28,12 @@ public class ScreenshotWriter implements FrameConsumer<BitmapFrame> {
         BitmapFrame frame = channels.get(Channel.BRGA);
 
         // skip the first frame, in which not all chunks are properly loaded
-        if (frame.getFrameId() == 0) return;
+        if(frame.getFrameId() == 0) return;
 
         final ReadableDimension frameSize = frame.getSize();
         try (Image img = new Image(frameSize.getWidth(), frameSize.getHeight())) {
-            for (int y = 0; y < frameSize.getHeight(); y++) {
-                for (int x = 0; x < frameSize.getWidth(); x++) {
+            for(int y = 0; y < frameSize.getHeight(); y++) {
+                for(int x = 0; x < frameSize.getWidth(); x++) {
                     byte b = frame.getByteBuffer().get();
                     byte g = frame.getByteBuffer().get();
                     byte r = frame.getByteBuffer().get();
@@ -44,11 +44,11 @@ public class ScreenshotWriter implements FrameConsumer<BitmapFrame> {
 
             outputFile.getParentFile().mkdirs();
             img.writePNG(outputFile);
-        } catch (OutOfMemoryError e) {
+        } catch(OutOfMemoryError e) {
             e.printStackTrace();
             CrashReport report = CrashReport.forThrowable(e, "Exporting frame");
             MCVer.getMinecraft().delayCrash(report);
-        } catch (Throwable t) {
+        } catch(Throwable t) {
             CrashReport report = CrashReport.forThrowable(t, "Exporting frame");
 
             SceneCraft.instance.runLater(() -> Utils.error(SceneCraftExtras.LOGGER,

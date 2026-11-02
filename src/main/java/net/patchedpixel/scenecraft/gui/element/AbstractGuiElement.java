@@ -67,14 +67,14 @@ public abstract class AbstractGuiElement<T extends AbstractGuiElement<T>> implem
 
     @Override
     public void layout(ReadableDimension size, RenderInfo renderInfo) {
-        if (size == null) {
-            if (getContainer() == null) {
+        if(size == null) {
+            if(getContainer() == null) {
                 throw new RuntimeException("Any top containers must implement layout(null, ...) themselves!");
             }
             getContainer().layout(size, renderInfo.layer(renderInfo.layer + getLayer()));
             return;
         }
-        if (renderInfo.layer == 0) {
+        if(renderInfo.layer == 0) {
             lastSize = size;
         }
     }
@@ -101,12 +101,12 @@ public abstract class AbstractGuiElement<T extends AbstractGuiElement<T>> implem
 
     @Override
     public GuiElement getTooltip(RenderInfo renderInfo) {
-        if (tooltip != null && lastSize != null) {
+        if(tooltip != null && lastSize != null) {
             Point mouse = new Point(renderInfo.mouseX, renderInfo.mouseY);
-            if (container != null) {
+            if(container != null) {
                 container.convertFor(this, mouse);
             }
-            if (mouse.getX() > 0
+            if(mouse.getX() > 0
                     && mouse.getY() > 0
                     && mouse.getX() < lastSize.getWidth()
                     && mouse.getY() < lastSize.getHeight()) {
@@ -148,12 +148,12 @@ public abstract class AbstractGuiElement<T extends AbstractGuiElement<T>> implem
     }
 
     public T setWidth(int width) {
-        if (minSize == null) {
+        if(minSize == null) {
             minSize = new Dimension(width, 0);
         } else {
             minSize.setWidth(width);
         }
-        if (maxSize == null) {
+        if(maxSize == null) {
             maxSize = new Dimension(width, Integer.MAX_VALUE);
         } else {
             maxSize.setWidth(width);
@@ -162,12 +162,12 @@ public abstract class AbstractGuiElement<T extends AbstractGuiElement<T>> implem
     }
 
     public T setHeight(int height) {
-        if (minSize == null) {
+        if(minSize == null) {
             minSize = new Dimension(0, height);
         } else {
             minSize.setHeight(height);
         }
-        if (maxSize == null) {
+        if(maxSize == null) {
             maxSize = new Dimension(Integer.MAX_VALUE, height);
         } else {
             maxSize.setHeight(height);
@@ -182,10 +182,10 @@ public abstract class AbstractGuiElement<T extends AbstractGuiElement<T>> implem
     @Override
     public ReadableDimension getMinSize() {
         ReadableDimension calcSize = calcMinSize();
-        if (minSize == null) {
+        if(minSize == null) {
             return calcSize;
         } else {
-            if (minSize.getWidth() >= calcSize.getWidth() && minSize.getHeight() >= calcSize.getHeight()) {
+            if(minSize.getWidth() >= calcSize.getWidth() && minSize.getHeight() >= calcSize.getHeight()) {
                 return minSize;
             } else {
                 return new Dimension(

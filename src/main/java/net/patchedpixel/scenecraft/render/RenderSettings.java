@@ -47,7 +47,7 @@ public class RenderSettings {
 
         public boolean isSupported() {
             // ODS is only implemented through an Iris shader pack, and Iris only exists for the OpenGL backend.
-            if (this == ODS) {
+            if(this == ODS) {
                 return ModList.get().isLoaded("iris") && MCVer.isOpenGlBackend();
             }
             return true;
@@ -293,7 +293,7 @@ public class RenderSettings {
     public String getVideoFilters() {
         StringBuilder filters = new StringBuilder();
 
-        if (antiAliasing != AntiAliasing.NONE) {
+        if(antiAliasing != AntiAliasing.NONE) {
             double factor = 1.0 / antiAliasing.getFactor();
             filters.append(String.format("-filter:v scale=iw*%1$s:ih*%1$s ", factor));
         }
@@ -306,12 +306,12 @@ public class RenderSettings {
     }
 
     private static String findFFmpeg() {
-        switch (Util.getPlatform()) {
+        switch(Util.getPlatform()) {
             case WINDOWS:
                 // Allow windows users to unpack the ffmpeg archive into a sub-folder of their .minecraft folder
                 File dotMinecraft = MCVer.getMinecraft().gameDirectory;
                 File inDotMinecraft = new File(dotMinecraft, "ffmpeg/bin/ffmpeg.exe");
-                if (inDotMinecraft.exists()) {
+                if(inDotMinecraft.exists()) {
                     LOGGER.debug("FFmpeg found in .minecraft/ffmpeg");
                     return inDotMinecraft.getAbsolutePath();
                 }
@@ -325,25 +325,25 @@ public class RenderSettings {
                     Files.walkFileTree(dotMinecraft.toPath(), new SimpleFileVisitor<Path>() {
                         @Override
                         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-                            if ("ffmpeg.exe".equals(file.getFileName().toString())) {
+                            if("ffmpeg.exe".equals(file.getFileName().toString())) {
                                 result[0] = file;
                                 return FileVisitResult.TERMINATE;
                             }
                             return super.visitFile(file, attrs);
                         }
                     });
-                    if (result[0] != null) {
+                    if(result[0] != null) {
                         return result[0].toAbsolutePath().toString();
                     }
-                } catch (IOException e) {
+                } catch(IOException e) {
                     LOGGER.debug("Error searching .minecraft for ffmpeg.exe:", e);
                 }
                 break;
             case OSX:
                 // The PATH doesn't seem to be set as expected on OSX, therefore we check some common locations ourselves
-                for (String path : new String[]{"/usr/local/bin/ffmpeg", "/usr/bin/ffmpeg"}) {
+                for(String path : new String[]{"/usr/local/bin/ffmpeg", "/usr/bin/ffmpeg"}) {
                     File file = new File(path);
-                    if (file.exists()) {
+                    if(file.exists()) {
                         LOGGER.debug("Found FFmpeg at {}", path);
                         return path;
                     } else {
@@ -352,10 +352,10 @@ public class RenderSettings {
                 }
                 // Homebrew doesn't seem to reliably symlink its installed binaries either
                 // and there's multiple locations for where Homebrew is.
-                for (String path : new String[]{"/usr/local", "/opt/homebrew"}) {
+                for(String path : new String[]{"/usr/local", "/opt/homebrew"}) {
                     File homebrewFolder = new File(path + "/Cellar/ffmpeg");
                     String[] homebrewVersions = homebrewFolder.list();
-                    if (homebrewVersions == null) {
+                    if(homebrewVersions == null) {
                         continue;
                     }
                     Optional<File> latestOpt = Arrays.stream(homebrewVersions)
@@ -365,7 +365,7 @@ public class RenderSettings {
                             .map(v -> new File(new File(homebrewFolder, v), "bin/ffmpeg")) // Convert to binary files
                             .filter(File::exists) // Filter invalid installations (missing executable)
                             .findFirst(); // Take first one
-                    if (latestOpt.isPresent()) {
+                    if(latestOpt.isPresent()) {
                         File latest = latestOpt.get();
                         LOGGER.debug("Found {} versions of FFmpeg installed with homebrew, chose {}",
                                 homebrewVersions.length, latest);

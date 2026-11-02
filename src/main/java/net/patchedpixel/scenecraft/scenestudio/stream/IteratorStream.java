@@ -47,12 +47,12 @@ public class IteratorStream implements PacketStream {
 
     @Override
     public void insert(PacketData packet) {
-        if (processing) {
+        if(processing) {
             added.add(packet);
         } else {
             iterator.add(packet);
         }
-        if (packet.getTime() > lastTimestamp) {
+        if(packet.getTime() > lastTimestamp) {
             lastTimestamp = packet.getTime();
         }
     }
@@ -96,30 +96,30 @@ public class IteratorStream implements PacketStream {
 
         PacketData next = iterator.next();
         boolean keep = true;
-        if ((filter.getFrom() == -1 || filter.getFrom() <= next.getTime())
+        if((filter.getFrom() == -1 || filter.getFrom() <= next.getTime())
                 && (filter.getTo() == -1 || filter.getFrom() >= next.getTime())) {
-            if (!filterActive) {
+            if(!filterActive) {
                 filter.getFilter().onStart(this);
                 filterActive = true;
             }
             keep = filter.getFilter().onPacket(this, next);
-        } else if (filterActive) {
+        } else if(filterActive) {
             filter.getFilter().onEnd(this, lastTimestamp);
             filterActive = false;
         }
-        if (!keep) {
+        if(!keep) {
             iterator.remove();
             next.getPacket().getBuf().release();
-            if (lastTimestamp == -1) {
+            if(lastTimestamp == -1) {
                 lastTimestamp = next.getTime();
             }
         } else {
-            if (next.getTime() > lastTimestamp) {
+            if(next.getTime() > lastTimestamp) {
                 lastTimestamp = next.getTime();
             }
         }
 
-        for (PacketData data : added) {
+        for(PacketData data : added) {
             iterator.add(data);
         }
         added.clear();
@@ -127,7 +127,7 @@ public class IteratorStream implements PacketStream {
     }
 
     public void processAll() throws IOException {
-        while (hasNext()) {
+        while(hasNext()) {
             processNext();
         }
 
@@ -141,7 +141,7 @@ public class IteratorStream implements PacketStream {
 
     @Override
     public List<PacketData> end() throws IOException {
-        if (filterActive) {
+        if(filterActive) {
             filterActive = false;
             filter.getFilter().onEnd(this, lastTimestamp);
         }

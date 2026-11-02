@@ -15,12 +15,12 @@ public class SettingsRegistry {
     }
 
     public void register(Class<?> settingsClass) {
-        for (Field field : settingsClass.getDeclaredFields()) {
-            if ((field.getModifiers() & (Modifier.STATIC | Modifier.PUBLIC)) != 0
+        for(Field field : settingsClass.getDeclaredFields()) {
+            if((field.getModifiers() & (Modifier.STATIC | Modifier.PUBLIC)) != 0
                     && SettingKey.class.isAssignableFrom(field.getType())) {
                 try {
                     register((SettingKey<?>) field.get(null));
-                } catch (IllegalAccessException e) {
+                } catch(IllegalAccessException e) {
                     e.printStackTrace();
                 }
             }
@@ -38,7 +38,7 @@ public class SettingsRegistry {
 
     @SuppressWarnings("unchecked")
     public <T> T get(SettingKey<T> key) {
-        if (!settings.containsKey(key)) {
+        if(!settings.containsKey(key)) {
             throw new IllegalArgumentException("Setting " + key + " unknown.");
         }
         return (T) settings.get(key);

@@ -35,7 +35,7 @@ public abstract class AbstractNetOutput implements NetOutput {
 
     @Override
     public void writeVarInt(int value) throws IOException {
-        while ((value & ~0x7F) != 0) {
+        while((value & ~0x7F) != 0) {
             writeByte((value & 0x7F) | 0x80);
             value >>>= 7;
         }
@@ -50,7 +50,7 @@ public abstract class AbstractNetOutput implements NetOutput {
 
     @Override
     public void writeVarLong(long value) throws IOException {
-        while ((value & ~0x7FL) != 0) {
+        while((value & ~0x7FL) != 0) {
             writeByte((int) ((value & 0x7F) | 0x80));
             value >>>= 7;
         }
@@ -74,21 +74,21 @@ public abstract class AbstractNetOutput implements NetOutput {
 
     @Override
     public void writeShorts(short[] values) throws IOException {
-        for (short value : values) {
+        for(short value : values) {
             writeShort(value);
         }
     }
 
     @Override
     public void writeInts(int[] values) throws IOException {
-        for (int value : values) {
+        for(int value : values) {
             writeInt(value);
         }
     }
 
     @Override
     public void writeLongs(long[] values) throws IOException {
-        for (long value : values) {
+        for(long value : values) {
             writeLong(value);
         }
     }

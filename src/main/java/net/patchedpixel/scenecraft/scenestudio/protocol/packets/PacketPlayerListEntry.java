@@ -63,8 +63,8 @@ public class PacketPlayerListEntry {
         public static EnumSet<Action> readSet(Packet.Reader in, List<Action> values) throws IOException {
             BitSet bitSet = BitSet.valueOf(in.readBytes((values.size() + 7) / 8));
             EnumSet<Action> set = EnumSet.noneOf(Action.class);
-            for (int i = 0; i < values.size(); i++) {
-                if (bitSet.get(i)) {
+            for(int i = 0; i < values.size(); i++) {
+                if(bitSet.get(i)) {
                     set.add(values.get(i));
                 }
             }
@@ -74,8 +74,8 @@ public class PacketPlayerListEntry {
 
         public static void writeSet(Packet.Writer out, Set<Action> actions, List<Action> values) throws IOException {
             BitSet bitSet = new BitSet();
-            for (int i = 0; i < values.size(); i++) {
-                if (actions.contains(values.get(i))) {
+            for(int i = 0; i < values.size(); i++) {
+                if(actions.contains(values.get(i))) {
                     bitSet.set(i);
                 }
             }
@@ -138,7 +138,7 @@ public class PacketPlayerListEntry {
 
     public static Set<Action> getActions(Packet packet) throws IOException {
         try (Packet.Reader in = packet.reader()) {
-            if (packet.getType() == PacketType.PlayerListEntryRemove) {
+            if(packet.getType() == PacketType.PlayerListEntryRemove) {
                 return Collections.singleton(Action.REMOVE);
             }
             return Action.readSet(in, Action.values(packet.getRegistry()));
@@ -148,25 +148,25 @@ public class PacketPlayerListEntry {
     public static List<PacketPlayerListEntry> read(Packet packet) throws IOException {
         try (Packet.Reader in = packet.reader()) {
             Set<Action> actions;
-            if (packet.getType() == PacketType.PlayerListEntryRemove) {
+            if(packet.getType() == PacketType.PlayerListEntryRemove) {
                 actions = Collections.singleton(Action.REMOVE);
             } else {
                 actions = Action.readSet(in, Action.values(packet.getRegistry()));
             }
             int count = in.readVarInt();
             List<PacketPlayerListEntry> result = new ArrayList<>(count);
-            for (int i = 0; i < count; i++) {
+            for(int i = 0; i < count; i++) {
                 PacketPlayerListEntry entry = new PacketPlayerListEntry();
                 entry.uuid = in.readUUID();
-                for (Action action : actions) {
-                    switch (action) {
+                for(Action action : actions) {
+                    switch(action) {
                         case ADD:
                             entry.name = in.readString();
                             entry.properties = in.readList(() -> Property.read(in));
 
                             break;
                         case CHAT_KEY:
-                            if (in.readBoolean()) {
+                            if(in.readBoolean()) {
                                 entry.sigData = SigData.read(packet, in);
                             }
                             break;
@@ -180,7 +180,7 @@ public class PacketPlayerListEntry {
                             entry.latency = in.readVarInt();
                             break;
                         case DISPLAY_NAME:
-                            if (in.readBoolean()) {
+                            if(in.readBoolean()) {
                                 entry.displayName = in.readText();
                             }
                             break;
@@ -209,7 +209,7 @@ public class PacketPlayerListEntry {
     }
 
     private static Packet write_1_8(PacketTypeRegistry registry, Set<Action> actions, List<PacketPlayerListEntry> entries) throws IOException {
-        if (actions.contains(Action.REMOVE)) {
+        if(actions.contains(Action.REMOVE)) {
             Packet packet = new Packet(registry, PacketType.PlayerListEntry);
             try (Packet.Writer out = packet.overwrite()) {
                 out.writeList(entries, entry -> out.writeUUID(entry.uuid));
@@ -221,17 +221,17 @@ public class PacketPlayerListEntry {
             Action.writeSet(out, actions, Action.values(registry));
 
             out.writeVarInt(entries.size());
-            for (PacketPlayerListEntry entry : entries) {
+            for(PacketPlayerListEntry entry : entries) {
                 out.writeUUID(entry.uuid);
-                for (Action action : actions) {
-                    switch (action) {
+                for(Action action : actions) {
+                    switch(action) {
                         case ADD:
                             out.writeString(entry.name);
                             out.writeList(entry.properties, it -> it.write(out));
 
                             break;
                         case CHAT_KEY:
-                            if (entry.sigData != null) {
+                            if(entry.sigData != null) {
                                 out.writeBoolean(true);
                                 entry.sigData.write(packet, out);
                             } else {
@@ -248,7 +248,7 @@ public class PacketPlayerListEntry {
                             out.writeVarInt(entry.latency);
                             break;
                         case DISPLAY_NAME:
-                            if (entry.displayName != null) {
+                            if(entry.displayName != null) {
                                 out.writeBoolean(true);
                                 out.writeText(entry.displayName);
                             } else {
@@ -272,9 +272,9 @@ public class PacketPlayerListEntry {
         Packet packet = new Packet(registry, PacketType.PlayerListEntry);
         try (Packet.Writer out = packet.overwrite()) {
             out.writeString(entry.name);
-            if (action == Action.ADD) {
+            if(action == Action.ADD) {
                 out.writeBoolean(true);
-            } else if (action == Action.REMOVE) {
+            } else if(action == Action.REMOVE) {
                 out.writeBoolean(false);
             } else {
                 throw new IllegalStateException("1.7 only supports ADD or REMOVE");

@@ -56,7 +56,7 @@ public abstract class AbstractTimelinePlayer extends EventRegistrations {
                 return input.getKeyframes();
             }
         })).iterator();
-        if (!iter.hasNext()) {
+        if(!iter.hasNext()) {
             lastTimestamp = 0;
         } else {
             lastTimestamp = new Ordering<Keyframe>() {
@@ -94,17 +94,17 @@ public abstract class AbstractTimelinePlayer extends EventRegistrations {
 
     { on(ReplayTimer.UpdatedCallback.EVENT, this::onTick); }
     public void onTick() {
-        if (future.isDone()) {
+        if(future.isDone()) {
             mc.deltaTracker = orgTimer;
             replayHandler.getReplaySender().setReplaySpeed(0);
-            if (wasAsyncMode) {
+            if(wasAsyncMode) {
                 replayHandler.getReplaySender().setAsyncMode(true);
             }
             unregister();
             return;
         }
         long time = getTimePassed();
-        if (time > lastTimestamp) {
+        if(time > lastTimestamp) {
             time = lastTimestamp;
         }
 
@@ -115,7 +115,7 @@ public abstract class AbstractTimelinePlayer extends EventRegistrations {
 
         // Update minecraft timer
         long replayTime = replayHandler.getReplaySender().currentTimeStamp();
-        if (lastTime == 0) {
+        if(lastTime == 0) {
             // First frame, no change yet
             lastTime = replayTime;
         }
@@ -123,7 +123,7 @@ public abstract class AbstractTimelinePlayer extends EventRegistrations {
         float previousTimeInTicks = lastTime / 50f;
         float passedTicks = timeInTicks - previousTimeInTicks;
         DeltaTracker renderTickCounter = mc.deltaTracker;
-        if (renderTickCounter instanceof ReplayTimer) {
+        if(renderTickCounter instanceof ReplayTimer) {
             ReplayTimer timer = (ReplayTimer) renderTickCounter;
             timer.tickDelta += passedTicks;
             timer.ticksThisFrame = (int) timer.tickDelta;
@@ -132,7 +132,7 @@ public abstract class AbstractTimelinePlayer extends EventRegistrations {
 
         lastTime = replayTime;
 
-        if (time >= lastTimestamp) {
+        if(time >= lastTimestamp) {
             settableFuture.set(null);
         }
     }

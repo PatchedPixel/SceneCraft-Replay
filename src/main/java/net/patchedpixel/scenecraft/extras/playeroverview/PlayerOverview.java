@@ -29,18 +29,18 @@ public class PlayerOverview extends EventRegistrations implements Extra {
         this.module = SceneCraftReplay.instance;
 
         mod.getKeyBindingRegistry().registerKeyBinding("scenecraft.input.playeroverview", InputConstants.KEY_B, () -> {
-            if (module.getReplayHandler() != null) {
+            if(module.getReplayHandler() != null) {
                 List<Player> players = mod.getMinecraft().level.players()
                         .stream()
                         .map(it -> (Player) it)
                         .filter(it -> !(it instanceof CameraEntity))
                         .collect(Collectors.toList());
-                if (!Utils.isCtrlDown()) {
+                if(!Utils.isCtrlDown()) {
                     // Hide all players that have an UUID v2 (commonly used for NPCs)
                     Iterator<Player> iter = players.iterator();
-                    while (iter.hasNext()) {
+                    while(iter.hasNext()) {
                         UUID uuid = iter.next().getGameProfile().id();
-                        if (uuid != null && uuid.version() == 2) {
+                        if(uuid != null && uuid.version() == 2) {
                             iter.remove();
                         }
                     }
@@ -57,7 +57,7 @@ public class PlayerOverview extends EventRegistrations implements Extra {
     }
 
     public void setHidden(UUID uuid, boolean hidden) {
-        if (hidden) {
+        if(hidden) {
             hiddenPlayers.add(uuid);
         } else {
             hiddenPlayers.remove(uuid);
@@ -67,7 +67,7 @@ public class PlayerOverview extends EventRegistrations implements Extra {
     { on(ReplayOpenedCallback.EVENT, this::onReplayOpen); }
     private void onReplayOpen(ReplayHandler replayHandler) throws IOException {
         Optional<Set<UUID>> savedData = replayHandler.getReplayFile().getInvisiblePlayers();
-        if (savedData.isPresent()) {
+        if(savedData.isPresent()) {
             hiddenPlayers.addAll(savedData.get());
             savingEnabled = true;
         } else {
@@ -95,10 +95,10 @@ public class PlayerOverview extends EventRegistrations implements Extra {
     }
 
     public void saveHiddenPlayers() {
-        if (savingEnabled) {
+        if(savingEnabled) {
             try {
                 module.getReplayHandler().getReplayFile().writeInvisiblePlayers(hiddenPlayers);
-            } catch (IOException e) {
+            } catch(IOException e) {
                 e.printStackTrace();
             }
         }

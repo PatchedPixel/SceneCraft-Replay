@@ -30,12 +30,12 @@ public abstract class MixinNetHandlerLoginClient {
     }
 
     private void initiateRecording(Packet<?> packet) {
-        if (SceneCraftRecorder.instance.getConnectionEventHandler().getPacketListener() != null) {
+        if(SceneCraftRecorder.instance.getConnectionEventHandler().getPacketListener() != null) {
             return; // already record
         }
         SceneCraftRecorder.instance.initiateRecording(this.connection);
         PacketListener packetListener = SceneCraftRecorder.instance.getConnectionEventHandler().getPacketListener();
-        if (packetListener != null) {
+        if(packetListener != null) {
             packetListener.save(packet);
         }
     }

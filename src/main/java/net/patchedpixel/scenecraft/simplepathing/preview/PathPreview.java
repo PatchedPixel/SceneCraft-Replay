@@ -13,7 +13,6 @@ import net.patchedpixel.scenecraft.simplepathing.Setting;
 
 public class PathPreview extends EventRegistrations {
     private final SceneCraftSimplePathing mod;
-
     private ReplayHandler replayHandler;
     private PathPreviewRenderer renderer;
 
@@ -21,7 +20,7 @@ public class PathPreview extends EventRegistrations {
         this.mod = mod;
 
         on(SettingsChangedCallback.EVENT, (registry, key) -> {
-            if (key == Setting.PATH_PREVIEW) {
+            if(key == Setting.PATH_PREVIEW) {
                 update();
             }
         });
@@ -46,13 +45,13 @@ public class PathPreview extends EventRegistrations {
     }
 
     private void update() {
-        if (mod.getCore().getSettingsRegistry().get(Setting.PATH_PREVIEW) && replayHandler != null) {
-            if (renderer == null) {
+        if(mod.getCore().getSettingsRegistry().get(Setting.PATH_PREVIEW) && replayHandler != null) {
+            if(renderer == null) {
                 renderer = new PathPreviewRenderer(mod, replayHandler);
                 renderer.register();
             }
         } else {
-            if (renderer != null) {
+            if(renderer != null) {
                 renderer.unregister();
                 renderer = null;
             }

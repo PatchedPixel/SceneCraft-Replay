@@ -78,8 +78,8 @@ public abstract class AbstractGuiColorPicker<T extends AbstractGuiColorPicker<T>
     @Override
     public void layout(ReadableDimension size, RenderInfo renderInfo) {
         super.layout(size, renderInfo);
-        if (size == null) return;
-        if (renderInfo.layer == 1) {
+        if(size == null) return;
+        if(renderInfo.layer == 1) {
             ReadableDimension offsetSize = new Dimension(PICKER_SIZE, PICKER_SIZE);
             picker.layout(offsetSize, renderInfo);
         }
@@ -88,7 +88,7 @@ public abstract class AbstractGuiColorPicker<T extends AbstractGuiColorPicker<T>
     @Override
     public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
         super.draw(renderer, size, renderInfo);
-        if (renderInfo.layer == 0) {
+        if(renderInfo.layer == 0) {
             int width = size.getWidth();
             int height = size.getHeight();
 
@@ -96,7 +96,7 @@ public abstract class AbstractGuiColorPicker<T extends AbstractGuiColorPicker<T>
             renderer.drawRect(0, 0, width, height, OUTLINE_COLOR);
             // Draw color
             renderer.drawRect(1, 1, width - 2, height - 2, color);
-        } else if (renderInfo.layer == 1) {
+        } else if(renderInfo.layer == 1) {
             ReadablePoint offsetPoint = new Point(0, size.getHeight());
             ReadableDimension offsetSize = new Dimension(PICKER_SIZE, PICKER_SIZE);
             OffsetGuiRenderer offsetRenderer = new OffsetGuiRenderer(renderer, offsetPoint, offsetSize);
@@ -110,11 +110,11 @@ public abstract class AbstractGuiColorPicker<T extends AbstractGuiColorPicker<T>
     }
 
     protected void getColorAtPosition(int x, int y, Color color) {
-        if (x < 0 || y < 0 || x >= PICKER_SIZE || y >= PICKER_SIZE) {
+        if(x < 0 || y < 0 || x >= PICKER_SIZE || y >= PICKER_SIZE) {
             throw new IndexOutOfBoundsException();
         }
 
-        if (x < 5) { // Grey
+        if(x < 5) { // Grey
             int intensity = 255 - y * 255 / PICKER_SIZE;
             color.setColor(intensity, intensity, intensity);
         } else { // Colored
@@ -149,7 +149,7 @@ public abstract class AbstractGuiColorPicker<T extends AbstractGuiColorPicker<T>
     }
 
     public void onSelection(Color oldColor) {
-        if (onSelection != null) {
+        if(onSelection != null) {
             onSelection.consume(oldColor);
         }
     }
@@ -157,12 +157,12 @@ public abstract class AbstractGuiColorPicker<T extends AbstractGuiColorPicker<T>
     @Override
     public boolean mouseClick(Click click) {
         Point pos = new Point(click);
-        if (getContainer() != null) {
+        if(getContainer() != null) {
             getContainer().convertFor(this, pos);
         }
 
-        if (isEnabled()) {
-            if (isMouseHovering(pos)) {
+        if(isEnabled()) {
+            if(isMouseHovering(pos)) {
                 setOpened(!isOpened());
                 return true;
             }
@@ -205,8 +205,8 @@ public abstract class AbstractGuiColorPicker<T extends AbstractGuiColorPicker<T>
         public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
             super.draw(renderer, size, renderInfo);
             Color color = new Color();
-            for (int x = 0; x < PICKER_SIZE; x++) {
-                for (int y = 0; y < PICKER_SIZE; y++) {
+            for(int x = 0; x < PICKER_SIZE; x++) {
+                for(int y = 0; y < PICKER_SIZE; y++) {
                     getColorAtPosition(x, y, color);
                     renderer.drawRect(x, y, 1, 1, color);
                 }
@@ -215,15 +215,15 @@ public abstract class AbstractGuiColorPicker<T extends AbstractGuiColorPicker<T>
 
         @Override
         public boolean mouseClick(Click click) {
-            if (isEnabled()) {
+            if(isEnabled()) {
                 Point pos = new Point(click);
                 AbstractGuiColorPicker parent = AbstractGuiColorPicker.this;
-                if (parent.getContainer() != null) {
+                if(parent.getContainer() != null) {
                     parent.getContainer().convertFor(parent, pos, 1);
                 }
                 pos.translate(0, -AbstractGuiColorPicker.this.getLastSize().getHeight());
 
-                if (isMouseHovering(pos)) {
+                if(isMouseHovering(pos)) {
                     Color oldColor = new Color(color);
                     getColorAtPosition(pos.getX(), pos.getY(), color);
                     dragging = true;
@@ -241,7 +241,7 @@ public abstract class AbstractGuiColorPicker<T extends AbstractGuiColorPicker<T>
 
         @Override
         public boolean mouseRelease(Click click) {
-            if (dragging) {
+            if(dragging) {
                 dragging = false;
                 return true;
             }

@@ -46,14 +46,14 @@ public class Registries {
     }
 
     public Entry getEntry(String registryName, String entryName) {
-        if (registriesMap == null) {
+        if(registriesMap == null) {
             return null;
         }
         List<Pair<String, Tag>> registry = registriesMap.get(registryName);
-        if (registry == null) return null;
+        if(registry == null) return null;
         int id = 0;
-        for (Pair<String, Tag> entry : registry) {
-            if (entry.getKey().equals(entryName)) {
+        for(Pair<String, Tag> entry : registry) {
+            if(entry.getKey().equals(entryName)) {
                 return new Entry(id, entry.getKey(), entry.getValue());
             }
             id++;
@@ -62,20 +62,20 @@ public class Registries {
     }
 
     public Entry getEntry(String registryName, int entryId) {
-        if (registriesMap == null) {
+        if(registriesMap == null) {
             return null;
         }
         List<Pair<String, Tag>> registry = registriesMap.get(registryName);
-        if (registry == null) return null;
-        if (entryId < 0 || entryId >= registry.size()) return null;
+        if(registry == null) return null;
+        if(entryId < 0 || entryId >= registry.size()) return null;
         Pair<String, Tag> entry = registry.get(entryId);
         return new Entry(entryId, entry.getKey(), entry.getValue());
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
         Registries that = (Registries) o;
         return Objects.equals(registriesMap, that.registriesMap)
                 && Objects.equals(enabledPacks, that.enabledPacks);
@@ -88,11 +88,11 @@ public class Registries {
 
     public void writeInternal(PacketTypeRegistry registry, NetOutput out) throws IOException {
         Map<String, List<Pair<String, Tag>>> registriesMap = this.registriesMap;
-        if (registriesMap == null) {
+        if(registriesMap == null) {
             registriesMap = Collections.emptyMap();
         }
         List<VersionedIdentifier> enabledPacks = this.enabledPacks;
-        if (enabledPacks == null) {
+        if(enabledPacks == null) {
             enabledPacks = Collections.emptyList();
         }
         Packet.Writer.writeList(registry, out, new ArrayList<>(registriesMap.entrySet()), registryEntry -> {
@@ -100,7 +100,7 @@ public class Registries {
             Packet.Writer.writeList(registry, out, registryEntry.getValue(), entry -> {
                 out.writeString(entry.getKey());
                 Tag value = entry.getValue();
-                if (value != null) {
+                if(value != null) {
                     out.writeBoolean(true);
                     Packet.Writer.writeNBT(registry, out, value);
                 } else {
@@ -140,7 +140,7 @@ public class Registries {
         }
 
         public CompoundTag asCompoundOrEmpty() {
-            if (value instanceof CompoundTag) {
+            if(value instanceof CompoundTag) {
                 return (CompoundTag) value;
             } else {
                 return new CompoundTag();

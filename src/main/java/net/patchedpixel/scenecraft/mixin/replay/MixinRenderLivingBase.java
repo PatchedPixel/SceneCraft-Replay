@@ -22,7 +22,7 @@ public abstract class MixinRenderLivingBase {
             CallbackInfoReturnable<Boolean> ci
     ) {
         Player thePlayer = getMinecraft().player;
-        if (thePlayer instanceof CameraEntity && entity.isInvisible()) {
+        if(thePlayer instanceof CameraEntity && entity.isInvisible()) {
             ci.setReturnValue(false);
         }
     }

@@ -15,7 +15,7 @@ public class Mixin_AddIrisOdsShaderUniforms {
     @ModifyVariable(method = "generalCommonUniforms", at = @At("HEAD"), argsOnly = true)
     private static UniformHolder addSceneCraftOdsUniforms(UniformHolder uniforms) {
         IrisODSFrameCapturer ods = IrisODSFrameCapturer.INSTANCE;
-        if (ods != null) {
+        if(ods != null) {
             uniforms.uniform1b(UniformUpdateFrequency.PER_FRAME, "leftEye", ods::isLeftEye);
             uniforms.uniform1i(UniformUpdateFrequency.PER_FRAME, "direction", ods::getDirection);
         }

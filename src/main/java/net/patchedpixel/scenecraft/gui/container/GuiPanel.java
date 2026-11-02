@@ -42,10 +42,10 @@ public class GuiPanel extends AbstractGuiContainer<GuiPanel> {
 
     GuiPanel(Layout layout, int width , int height, Map<GuiElement, LayoutData> withElements) {
         setLayout(layout);
-        if (width != 0 || height != 0) {
+        if(width != 0 || height != 0) {
             setSize(width, height);
         }
-        for (Map.Entry<GuiElement, LayoutData> e : withElements.entrySet()) {
+        for(Map.Entry<GuiElement, LayoutData> e : withElements.entrySet()) {
             addElements(e.getValue(), e.getKey());
         }
     }
@@ -85,7 +85,7 @@ public class GuiPanel extends AbstractGuiContainer<GuiPanel> {
         }
 
         public GuiPanelBuilder with(GuiElement withKey, LayoutData withValue) {
-            if (this.withElements$key == null) {
+            if(this.withElements$key == null) {
                 this.withElements$key = new ArrayList<GuiElement>();
                 this.withElements$value = new ArrayList<LayoutData>();
             }
@@ -95,11 +95,11 @@ public class GuiPanel extends AbstractGuiContainer<GuiPanel> {
         }
 
         public GuiPanelBuilder withElements(Map<? extends GuiElement, ? extends LayoutData> withElements) {
-            if (this.withElements$key == null) {
+            if(this.withElements$key == null) {
                 this.withElements$key = new ArrayList<GuiElement>();
                 this.withElements$value = new ArrayList<LayoutData>();
             }
-            for (final Map.Entry<? extends GuiElement, ? extends LayoutData> entry : withElements.entrySet()) {
+            for(final Map.Entry<? extends GuiElement, ? extends LayoutData> entry : withElements.entrySet()) {
                 this.withElements$key.add(entry.getKey());
                 this.withElements$value.add(entry.getValue());
             }
@@ -107,7 +107,7 @@ public class GuiPanel extends AbstractGuiContainer<GuiPanel> {
         }
 
         public GuiPanelBuilder clearWithElements() {
-            if (this.withElements$key != null) {
+            if(this.withElements$key != null) {
                 this.withElements$key.clear();
                 this.withElements$value.clear();
             }
@@ -116,7 +116,7 @@ public class GuiPanel extends AbstractGuiContainer<GuiPanel> {
 
         public GuiPanel build() {
             Map<GuiElement, LayoutData> withElements;
-            switch (this.withElements$key == null ? 0 : this.withElements$key.size()) {
+            switch(this.withElements$key == null ? 0 : this.withElements$key.size()) {
                 case 0:
                     withElements = java.util.Collections.emptyMap();
                     break;
@@ -125,7 +125,7 @@ public class GuiPanel extends AbstractGuiContainer<GuiPanel> {
                     break;
                 default:
                     withElements = new java.util.LinkedHashMap<GuiElement, LayoutData>(this.withElements$key.size() < 1073741824 ? 1 + this.withElements$key.size() + (this.withElements$key.size() - 3) / 3 : Integer.MAX_VALUE);
-                    for (int $i = 0; $i < this.withElements$key.size(); $i++)
+                    for(int $i = 0; $i < this.withElements$key.size(); $i++)
                         withElements.put(this.withElements$key.get($i), (LayoutData) this.withElements$value.get($i));
                     withElements = java.util.Collections.unmodifiableMap(withElements);
             }

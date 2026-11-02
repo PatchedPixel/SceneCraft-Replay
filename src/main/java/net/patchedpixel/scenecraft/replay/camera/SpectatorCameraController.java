@@ -19,16 +19,16 @@ public class SpectatorCameraController implements CameraController {
     @Override
     public void update(float partialTicksPassed) {
         Minecraft mc = getMinecraft();
-        if (mc.options.keyShift.consumeClick()) {
+        if(mc.options.keyShift.consumeClick()) {
             SceneCraftReplay.instance.getReplayHandler().spectateCamera();
         }
 
         // Soak up all remaining key presses
-        for (KeyMapping binding : Arrays.asList(mc.options.keyAttack, mc.options.keyUse,
+        for(KeyMapping binding : Arrays.asList(mc.options.keyAttack, mc.options.keyUse,
                 mc.options.keyJump, mc.options.keyShift, mc.options.keyUp,
                 mc.options.keyDown, mc.options.keyLeft, mc.options.keyRight)) {
             //noinspection StatementWithEmptyBody
-            while (binding.consumeClick());
+            while(binding.consumeClick());
         }
 
         // Prevent mouse movement
@@ -38,7 +38,7 @@ public class SpectatorCameraController implements CameraController {
         // This is necessary as some rendering code for the hand doesn't respect the view entity
         // and always uses mc.thePlayer
         Entity view = mc.getCameraEntity();
-        if (view != null && view != camera) {
+        if(view != null && view != camera) {
             camera.setCameraPosRot(mc.getCameraEntity());
         }
     }

@@ -41,7 +41,7 @@ final class VanillaPacketIds {
      * @return The packet ids by vanilla packet name (the path of the packet type net) for the given state
      */
     static Map<String, Integer> forState(State state) {
-        switch (state) {
+        switch(state) {
             case LOGIN:
                 return collect(LoginProtocols.CLIENTBOUND_TEMPLATE.details());
             case CONFIGURATION:

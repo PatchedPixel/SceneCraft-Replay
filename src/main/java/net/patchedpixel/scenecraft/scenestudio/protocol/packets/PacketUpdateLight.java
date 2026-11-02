@@ -36,7 +36,7 @@ public class PacketUpdateLight {
     private Data data;
 
     public static PacketUpdateLight read(Packet packet) throws IOException {
-        if (packet.getType() != PacketType.UpdateLight) {
+        if(packet.getType() != PacketType.UpdateLight) {
             throw new IllegalArgumentException("Can only read packets of type UpdateLight.");
         }
         PacketUpdateLight updateLight = new PacketUpdateLight();
@@ -105,18 +105,18 @@ public class PacketUpdateLight {
         int blockSections = Math.max(blockLightMask.length(), emptyBlockLightMask.length());
 
         int skyLightsSent = in.readVarInt();
-        if (skyLightMask.cardinality() != skyLightsSent) {
+        if(skyLightMask.cardinality() != skyLightsSent) {
             throw new IOException("Expected " + skyLightMask.cardinality() + " sky light sections but got " + skyLightsSent);
         }
 
         data.skyLight = new ArrayList<>(skySections);
-        for (int i = 0; i < skySections; i++) {
-            if (skyLightMask.get(i)) {
-                if (in.readVarInt() != 2048) {
+        for(int i = 0; i < skySections; i++) {
+            if(skyLightMask.get(i)) {
+                if(in.readVarInt() != 2048) {
                     throw new IOException("Expected sky light byte array to be of length 2048");
                 }
                 data.skyLight.add(in.readBytes(2048)); // 2048 bytes read = 4096 entries
-            } else if (emptySkyLightMask.get(i)) {
+            } else if(emptySkyLightMask.get(i)) {
                 data.skyLight.add(new byte[2048]);
             } else {
                 data.skyLight.add(null);
@@ -124,18 +124,18 @@ public class PacketUpdateLight {
         }
 
         int blockLightsSent = in.readVarInt();
-        if (blockLightMask.cardinality() != blockLightsSent) {
+        if(blockLightMask.cardinality() != blockLightsSent) {
             throw new IOException("Expected " + blockLightMask.cardinality() + " block light sections but got " + blockLightsSent);
         }
 
         data.blockLight = new ArrayList<>(blockSections);
-        for (int i = 0; i < blockSections; i++) {
-            if (blockLightMask.get(i)) {
-                if (in.readVarInt() != 2048) {
+        for(int i = 0; i < blockSections; i++) {
+            if(blockLightMask.get(i)) {
+                if(in.readVarInt() != 2048) {
                     throw new IOException("Expected block light byte array to be of length 2048");
                 }
                 data.blockLight.add(in.readBytes(2048)); // 2048 bytes read = 4096 entries
-            } else if (emptyBlockLightMask.get(i)) {
+            } else if(emptyBlockLightMask.get(i)) {
                 data.blockLight.add(new byte[2048]);
             } else {
                 data.blockLight.add(null);
@@ -159,10 +159,10 @@ public class PacketUpdateLight {
         List<byte[]> skyLights = new ArrayList<>();
         List<byte[]> blockLights = new ArrayList<>();
 
-        for (int i = 0; i < data.skyLight.size(); i++) {
+        for(int i = 0; i < data.skyLight.size(); i++) {
             byte[] skyLight = data.skyLight.get(i);
-            if (skyLight != null) {
-                if (Arrays.equals(EMPTY, skyLight)) {
+            if(skyLight != null) {
+                if(Arrays.equals(EMPTY, skyLight)) {
                     emptySkyLightMask.set(i);
                 } else {
                     skyLightMask.set(i);
@@ -170,10 +170,10 @@ public class PacketUpdateLight {
                 }
             }
         }
-        for (int i = 0; i < data.blockLight.size(); i++) {
+        for(int i = 0; i < data.blockLight.size(); i++) {
             byte[] blockLight = data.blockLight.get(i);
-            if (blockLight != null) {
-                if (Arrays.equals(EMPTY, blockLight)) {
+            if(blockLight != null) {
+                if(Arrays.equals(EMPTY, blockLight)) {
                     emptyBlockLightMask.set(i);
                 } else {
                     blockLightMask.set(i);
@@ -189,14 +189,14 @@ public class PacketUpdateLight {
 
         out.writeVarInt(skyLights.size()); // dunno why Minecraft feels the need to send these
 
-        for (byte[] bytes : skyLights) {
+        for(byte[] bytes : skyLights) {
             out.writeVarInt(2048); // dunno why Minecraft feels the need to send these
             out.writeBytes(bytes);
         }
 
         out.writeVarInt(blockLights.size()); // dunno why Minecraft feels the need to send these
 
-        for (byte[] bytes : blockLights) {
+        for(byte[] bytes : blockLights) {
             out.writeVarInt(2048); // dunno why Minecraft feels the need to send these
             out.writeBytes(bytes);
         }

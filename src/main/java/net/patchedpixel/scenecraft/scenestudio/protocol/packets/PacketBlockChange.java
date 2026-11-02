@@ -90,7 +90,7 @@ public class PacketBlockChange {
     }
 
     public static List<PacketBlockChange> readSingleOrBulk(Packet packet) throws IOException {
-        if (packet.getType() == PacketType.BlockChange) {
+        if(packet.getType() == PacketType.BlockChange) {
             return Collections.singletonList(read(packet));
         } else {
             return readBulk(packet);

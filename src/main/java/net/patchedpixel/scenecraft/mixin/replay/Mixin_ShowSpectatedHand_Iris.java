@@ -24,7 +24,7 @@ public abstract class Mixin_ShowSpectatedHand_Iris {
     )
     private GameType getGameMode(MultiPlayerGameMode interactionManager) {
         LocalPlayer camera = getMinecraft().player;
-        if (camera instanceof CameraEntity) {
+        if(camera instanceof CameraEntity) {
             // alternative doesn't really matter, the caller only checks for equality to SPECTATOR
             return camera.isSpectator() ? GameType.SPECTATOR : GameType.SURVIVAL;
         }

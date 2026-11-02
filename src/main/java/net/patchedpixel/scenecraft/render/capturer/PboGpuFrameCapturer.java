@@ -47,11 +47,11 @@ public abstract class PboGpuFrameCapturer<F extends Frame, D extends Enum<D> & C
     private F readFromPbo(ByteBuffer pboBuffer, int bytesPerPixel, boolean swapRB) {
         GpuFrame[] frames = new GpuFrame[data.length];
         int frameBufferSize = getFrameWidth() * getFrameHeight() * bytesPerPixel;
-        for (int i = 0; i < frames.length; i++) {
+        for(int i = 0; i < frames.length; i++) {
             ByteBuffer frameBuffer = ByteBufferPool.allocate(frameBufferSize);
             pboBuffer.limit(pboBuffer.position() + frameBufferSize);
-            if (swapRB) {
-                for (int j = 0; j < frameBufferSize; j += 4) {
+            if(swapRB) {
+                for(int j = 0; j < frameBufferSize; j += 4) {
                     byte r = pboBuffer.get();
                     byte g = pboBuffer.get();
                     byte b = pboBuffer.get();
@@ -74,21 +74,21 @@ public abstract class PboGpuFrameCapturer<F extends Frame, D extends Enum<D> & C
     public Map<Channel, F> process() {
         Map<Channel, F> channels = null;
 
-        if (framesDone > 1) {
+        if(framesDone > 1) {
             // Read pbo to memory
             try (GpuBufferSlice.MappedView view = pbo.map(true, false)) {
                 channels = new HashMap<>();
                 channels.put(Channel.BRGA, readFromPbo(view.data(), 4, true));
-                if (withDepth) {
+                if(withDepth) {
                     channels.put(Channel.DEPTH, readFromPbo(view.data(), 4, false));
                 }
             }
         }
 
-        if (framesDone < renderInfo.getTotalFrames()) {
+        if(framesDone < renderInfo.getTotalFrames()) {
             renderInfo.updateForNextFrame();
             // Then fill it again
-            for (D data : this.data) {
+            for(D data : this.data) {
                 renderFrame(framesDone, data);
             }
         } else {
@@ -105,7 +105,7 @@ public abstract class PboGpuFrameCapturer<F extends Frame, D extends Enum<D> & C
         int offset = captureData.ordinal() * getFrameWidth() * getFrameHeight() * 4;
         CommandEncoder cmd = RenderSystem.getDevice().createCommandEncoder();
         cmd.copyTextureToBuffer(frameBuffer().getColorTexture(), pbo, offset, () -> {}, 0);
-        if (withDepth) {
+        if(withDepth) {
             offset += data.length * getFrameWidth() * getFrameHeight() * 4;
             cmd.copyTextureToBuffer(frameBuffer().getDepthTexture(), pbo, offset, () -> {}, 0);
         }

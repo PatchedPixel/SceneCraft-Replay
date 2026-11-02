@@ -34,7 +34,7 @@ public abstract class AbstractProperty<T> implements Property<T> {
         this.propertyGroup = propertyGroup;
         this.initialValue = initialValue;
 
-        if (propertyGroup != null) {
+        if(propertyGroup != null) {
             propertyGroup.getProperties().add(this);
         }
     }

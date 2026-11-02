@@ -41,7 +41,7 @@ public class StringUtils {
             String b = "";
             for(String sp : split) {
                 b += sp + " ";
-                if (fontRenderer.width(b.trim()) > maxWidth) {
+                if(fontRenderer.width(b.trim()) > maxWidth) {
                     b = b.substring(0, b.trim().length() - (sp.length()));
                     break;
                 }

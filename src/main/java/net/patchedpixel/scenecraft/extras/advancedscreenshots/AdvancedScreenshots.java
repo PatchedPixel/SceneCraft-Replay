@@ -13,7 +13,7 @@ public class AdvancedScreenshots implements Extra {
 
     private static AdvancedScreenshots instance; { instance = this; }
     public static void take() {
-        if (instance != null) {
+        if(instance != null) {
             instance.takeScreenshot();
         }
     }

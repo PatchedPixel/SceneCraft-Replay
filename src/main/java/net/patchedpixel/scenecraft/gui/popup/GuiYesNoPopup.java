@@ -108,7 +108,7 @@ public class GuiYesNoPopup extends AbstractGuiPopup<GuiYesNoPopup> implements Ke
 
     @Override
     public boolean handleKey(KeyInput keyInput) {
-        if (keyInput.isEscape()) {
+        if(keyInput.isEscape()) {
             noButton.onClick(new Click(-1, -1, 0, keyInput.modifiers));
             return true;
         }

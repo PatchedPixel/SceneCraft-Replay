@@ -47,14 +47,14 @@ public abstract class MixinGameRenderer implements EntityRendererHandler.IEntity
     @Inject(method = "mainRenderTarget", at = @At("HEAD"), cancellable = true)
     private void useGuiFramebuffer(CallbackInfoReturnable<RenderTarget> ci) {
         RenderTarget delegate = this.framebufferDelegate;
-        if (delegate != null) {
+        if(delegate != null) {
             ci.setReturnValue(delegate);
         }
     }
 
     @Inject(method = "renderItemInHand", at = @At("HEAD"), cancellable = true)
     private void preRenderHand(CallbackInfo ci) {
-        if (PreRenderHandCallback.EVENT.invoker().preRenderHand()) {
+        if(PreRenderHandCallback.EVENT.invoker().preRenderHand()) {
             ci.cancel();
         }
     }
@@ -86,7 +86,7 @@ public abstract class MixinGameRenderer implements EntityRendererHandler.IEntity
     )
     private GameType getGameMode(MultiPlayerGameMode interactionManager) {
         LocalPlayer camera = getMinecraft().player;
-        if (camera instanceof CameraEntity) {
+        if(camera instanceof CameraEntity) {
             return camera.isSpectator() ? GameType.SPECTATOR : GameType.SURVIVAL;
         }
         return interactionManager.getPlayerMode();

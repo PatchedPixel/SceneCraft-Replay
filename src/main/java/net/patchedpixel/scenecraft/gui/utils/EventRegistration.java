@@ -21,7 +21,7 @@ public class EventRegistration<T> {
     }
 
     public void register() {
-        if (registered) {
+        if(registered) {
             throw new IllegalStateException();
         }
 
@@ -30,7 +30,7 @@ public class EventRegistration<T> {
     }
 
     public void unregister() {
-        if (!registered) {
+        if(!registered) {
             throw new IllegalStateException();
         }
 

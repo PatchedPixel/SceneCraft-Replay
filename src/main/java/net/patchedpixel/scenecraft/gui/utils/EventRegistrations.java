@@ -16,13 +16,13 @@ public class EventRegistrations {
     }
 
     public void register() {
-        for (EventRegistration<?> registration : registrations) {
+        for(EventRegistration<?> registration : registrations) {
             registration.register();
         }
     }
 
     public void unregister() {
-        for (EventRegistration<?> registration : registrations) {
+        for(EventRegistration<?> registration : registrations) {
             registration.unregister();
         }
     }

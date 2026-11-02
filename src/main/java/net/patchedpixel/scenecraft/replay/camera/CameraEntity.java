@@ -109,7 +109,7 @@ public class CameraEntity
         );
         setUUID(CAMERA_UUID);
         eventHandler.register();
-        if (SceneCraftReplay.instance.getReplayHandler().getSpectatedUUID() == null) {
+        if(SceneCraftReplay.instance.getReplayHandler().getSpectatedUUID() == null) {
             cameraController = SceneCraftReplay.instance.createCameraController(this);
         } else {
             cameraController = new SpectatorCameraController(this);
@@ -179,7 +179,7 @@ public class CameraEntity
      * @param to The entity whose position to copy
      */
     public void setCameraPosRot(Entity to) {
-        if (to == this) return;
+        if(to == this) return;
         float yOffset = 0;
         this.xo = to.xo;
         this.yo = to.yo + yOffset;
@@ -199,7 +199,7 @@ public class CameraEntity
     @Override
     public float getViewYRot(float tickDelta) {
         Entity view = this.minecraft.getCameraEntity();
-        if (view != null && view != this) {
+        if(view != null && view != this) {
             return this.yRotO + (this.getYRot() - this.yRotO) * tickDelta;
         }
         return super.getViewYRot(tickDelta);
@@ -208,7 +208,7 @@ public class CameraEntity
     @Override
     public float getViewXRot(float tickDelta) {
         Entity view = this.minecraft.getCameraEntity();
-        if (view != null && view != this) {
+        if(view != null && view != this) {
             return this.xRotO + (this.getXRot() - this.xRotO) * tickDelta;
         }
         return super.getViewXRot(tickDelta);
@@ -226,7 +226,7 @@ public class CameraEntity
     public void tick() {
         Entity view =
             this.minecraft.getCameraEntity();
-        if (view != null) {
+        if(view != null) {
             // Make sure we're always spectating the right entity
             // This is important if the spectated player respawns as their
             // entity is recreated, and we have to spectate a new entity
@@ -234,16 +234,16 @@ public class CameraEntity
             // FIXME remap bug: Pattern doesn't work when these two are inlined
             Level cameraWorld = this.level();
             Level viewWorld = view.level();
-            if (spectating != null && (view.getUUID() != spectating
+            if(spectating != null && (view.getUUID() != spectating
                     || viewWorld != cameraWorld)
                     || cameraWorld.getEntity(view.getId()) != view) {
-                if (spectating == null) {
+                if(spectating == null) {
                     // Entity (non-player) died, stop spectating
                     SceneCraftReplay.instance.getReplayHandler().spectateEntity(this);
                     return;
                 }
                 view = cameraWorld.getPlayerByUUID(spectating);
-                if (view != null) {
+                if(view != null) {
                     this.minecraft.setCameraEntity(view);
                 } else {
                     this.minecraft.setCameraEntity(this);
@@ -252,7 +252,7 @@ public class CameraEntity
             }
             // Move camera to their position so when we exit the first person view
             // we don't jump back to where we entered it
-            if (view != this) {
+            if(view != this) {
                 setCameraPosRot(view);
             }
         }
@@ -261,7 +261,7 @@ public class CameraEntity
     @Override
     public void resetPos() {
         // Make sure our world is up-to-date in case of world changes
-        if (this.minecraft.level != null) {
+        if(this.minecraft.level != null) {
             // FIXME cannot use Patters because `setWorld` is `protected` in 1.20
             this.setLevel(this.minecraft.level);
         }
@@ -270,7 +270,7 @@ public class CameraEntity
 
     @Override
     public void setRot(float yaw, float pitch) {
-        if (this.minecraft.getCameraEntity() == this) {
+        if(this.minecraft.getCameraEntity() == this) {
             // Only update camera rotation when the camera is the view
             super.setRot(yaw, pitch);
         }
@@ -300,7 +300,7 @@ public class CameraEntity
 
     private boolean falseUnlessSpectating(Function<Entity, Boolean> property) {
         Entity view = this.minecraft.getCameraEntity();
-        if (view != null && view != this) {
+        if(view != null && view != this) {
             return property.apply(view);
         }
         return false;
@@ -335,7 +335,7 @@ public class CameraEntity
     @Override
     public float getFieldOfViewModifier(boolean firstPerson, float fovEffectScale) {
         Entity view = this.minecraft.getCameraEntity();
-        if (view != this && view instanceof AbstractClientPlayer) {
+        if(view != this && view instanceof AbstractClientPlayer) {
             return ((AbstractClientPlayer) view).getFieldOfViewModifier(firstPerson, fovEffectScale);
         }
         return 1;
@@ -344,7 +344,7 @@ public class CameraEntity
     @Override
     public boolean isInvisible() {
         Entity view = this.minecraft.getCameraEntity();
-        if (view != this) {
+        if(view != this) {
             return view.isInvisible();
         }
         return super.isInvisible();
@@ -353,7 +353,7 @@ public class CameraEntity
     @Override
     public PlayerSkin getSkin() {
         Entity view = this.minecraft.getCameraEntity();
-        if (view != this && view instanceof ClientAvatarEntity) {
+        if(view != this && view instanceof ClientAvatarEntity) {
             return ((ClientAvatarEntity) view).getSkin();
         }
         return super.getSkin();
@@ -362,7 +362,7 @@ public class CameraEntity
     @Override
     public boolean isModelPartShown(PlayerModelPart modelPart) {
         Entity view = this.minecraft.getCameraEntity();
-        if (view != this && view instanceof Avatar) {
+        if(view != this && view instanceof Avatar) {
             return ((Avatar) view).isModelPartShown(modelPart);
         }
         return super.isModelPartShown(modelPart);
@@ -371,7 +371,7 @@ public class CameraEntity
     @Override
     public HumanoidArm getMainArm() {
         Entity view = this.minecraft.getCameraEntity();
-        if (view != this && view instanceof Player) {
+        if(view != this && view instanceof Player) {
             return ((Player) view).getMainArm();
         }
         return super.getMainArm();
@@ -380,7 +380,7 @@ public class CameraEntity
     @Override
     public float getSwingAnimation(float renderPartialTicks) {
         Entity view = this.minecraft.getCameraEntity();
-        if (view != this && view instanceof Player) {
+        if(view != this && view instanceof Player) {
             return ((Player) view).getSwingAnimation(renderPartialTicks);
         }
         return 0;
@@ -389,7 +389,7 @@ public class CameraEntity
     @Override
     public net.minecraft.world.entity.LivingEntity.SwingDescription getCurrentSwing() {
         Entity view = this.minecraft.getCameraEntity();
-        if (view != this && view instanceof Player) {
+        if(view != this && view instanceof Player) {
             return ((Player) view).getCurrentSwing();
         }
         return null;
@@ -398,7 +398,7 @@ public class CameraEntity
     @Override
     public float getCurrentItemAttackStrengthDelay() {
         Entity view = this.minecraft.getCameraEntity();
-        if (view != this && view instanceof Player) {
+        if(view != this && view instanceof Player) {
             return ((Player) view).getCurrentItemAttackStrengthDelay();
         }
         return 1;
@@ -407,7 +407,7 @@ public class CameraEntity
     @Override
     public float getAttackStrengthScale(float adjustTicks) {
         Entity view = this.minecraft.getCameraEntity();
-        if (view != this && view instanceof Player) {
+        if(view != this && view instanceof Player) {
             return ((Player) view).getAttackStrengthScale(adjustTicks);
         }
         // Default to 1 as to not render the cooldown indicator (renders for < 1)
@@ -417,7 +417,7 @@ public class CameraEntity
     @Override
     public InteractionHand getUsedItemHand() {
         Entity view = this.minecraft.getCameraEntity();
-        if (view != this && view instanceof Player) {
+        if(view != this && view instanceof Player) {
             return ((Player) view).getUsedItemHand();
         }
         return super.getUsedItemHand();
@@ -426,7 +426,7 @@ public class CameraEntity
     @Override
     public boolean isUsingItem() {
         Entity view = this.minecraft.getCameraEntity();
-        if (view != this && view instanceof Player) {
+        if(view != this && view instanceof Player) {
             return ((Player) view).isUsingItem();
         }
         return super.isUsingItem();
@@ -442,7 +442,7 @@ public class CameraEntity
         HitResult result = super.pick(maxDistance, tickDelta, fluids);
 
         // Make sure we can never look at blocks (-> no outline)
-        if (result instanceof BlockHitResult) {
+        if(result instanceof BlockHitResult) {
             BlockHitResult blockResult = (BlockHitResult) result;
             result = BlockHitResult.miss(result.getLocation(), blockResult.getDirection(), blockResult.getBlockPos());
         }
@@ -453,15 +453,15 @@ public class CameraEntity
     @Override
     public void remove(RemovalReason reason) {
         super.remove(reason);
-        if (eventHandler != null) {
+        if(eventHandler != null) {
             eventHandler.unregister();
             eventHandler = null;
         }
     }
 
     private void update() {
-        if (MCVer.getMinecraft().level != this.level()) {
-            if (eventHandler != null) {
+        if(MCVer.getMinecraft().level != this.level()) {
+            if(eventHandler != null) {
                 eventHandler.unregister();
                 eventHandler = null;
             }
@@ -476,10 +476,10 @@ public class CameraEntity
         handleInputEvents();
 
         Map<String, KeyBindingRegistry.Binding> keyBindings = SceneCraft.instance.getKeyBindingRegistry().getBindings();
-        if (keyBindings.get("scenecraft.input.rollclockwise").keyBinding.isDown()) {
+        if(keyBindings.get("scenecraft.input.rollclockwise").keyBinding.isDown()) {
             roll += Utils.isCtrlDown() ? 0.2 : 1;
         }
-        if (keyBindings.get("scenecraft.input.rollcounterclockwise").keyBinding.isDown()) {
+        if(keyBindings.get("scenecraft.input.rollcounterclockwise").keyBinding.isDown()) {
             roll -= Utils.isCtrlDown() ? 0.2 : 1;
         }
 
@@ -507,13 +507,13 @@ public class CameraEntity
     }
 
     private void handleInputEvents() {
-        if (this.minecraft.options.keyAttack.consumeClick() || this.minecraft.options.keyUse.consumeClick()) {
-            if (this.minecraft.gui.screen() == null && canSpectate(this.minecraft.crosshairPickEntity)) {
+        if(this.minecraft.options.keyAttack.consumeClick() || this.minecraft.options.keyUse.consumeClick()) {
+            if(this.minecraft.gui.screen() == null && canSpectate(this.minecraft.crosshairPickEntity)) {
                 SceneCraftReplay.instance.getReplayHandler().spectateEntity(
                         this.minecraft.crosshairPickEntity);
                 // Make sure we don't exit right away
                 //noinspection StatementWithEmptyBody
-                while (this.minecraft.options.keyShift.consumeClick());
+                while(this.minecraft.options.keyShift.consumeClick());
             }
         }
     }
@@ -532,10 +532,10 @@ public class CameraEntity
     }
 
     private static float wrapDegreesTo(float value, float towardsValue) {
-        while (towardsValue - value < -180) {
+        while(towardsValue - value < -180) {
             value -= 360;
         }
-        while (towardsValue - value >= 180) {
+        while(towardsValue - value >= 180) {
             value += 360;
         }
         return value;
@@ -581,8 +581,8 @@ public class CameraEntity
 
         { on(SettingsChangedCallback.EVENT, this::onSettingsChanged); }
         private void onSettingsChanged(SettingsRegistry registry, SettingsRegistry.SettingKey<?> key) {
-            if (key == Setting.CAMERA) {
-                if (SceneCraftReplay.instance.getReplayHandler().getSpectatedUUID() == null) {
+            if(key == Setting.CAMERA) {
+                if(SceneCraftReplay.instance.getReplayHandler().getSpectatedUUID() == null) {
                     cameraController = SceneCraftReplay.instance.createCameraController(CameraEntity.this);
                 } else {
                     cameraController = new SpectatorCameraController(CameraEntity.this);
@@ -594,12 +594,12 @@ public class CameraEntity
         private boolean onRenderHand() {
             // Unless we are spectating another player, don't render our hand
             Entity view = mc.getCameraEntity();
-            if (view == CameraEntity.this || !(view instanceof Player)) {
+            if(view == CameraEntity.this || !(view instanceof Player)) {
                 return true; // cancel hand rendering
             } else {
                 Player player = (Player) view;
                 // When the spectated player has changed, force equip their items to prevent the equip animation
-                if (lastHandRendered != player) {
+                if(lastHandRendered != player) {
                     lastHandRendered = player;
 
                     FirstPersonHandsAndItems acc = mc.player.firstPersonHandsAndItems();

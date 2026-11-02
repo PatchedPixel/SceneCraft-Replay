@@ -5,7 +5,7 @@ import net.patchedpixel.scenecraft.gui.utils.Event;
 public interface PreRenderCallback {
     Event<PreRenderCallback> EVENT = Event.create((listeners) ->
             () -> {
-                for (PreRenderCallback listener : listeners) {
+                for(PreRenderCallback listener : listeners) {
                     listener.preRender();
                 }
             }

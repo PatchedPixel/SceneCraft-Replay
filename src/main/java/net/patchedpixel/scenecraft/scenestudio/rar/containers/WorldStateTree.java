@@ -63,7 +63,7 @@ public class WorldStateTree extends StateTree<World> {
 
     @Override
     public void unload(PacketSink sink, ReadableCache cache) throws IOException {
-        if (activeWorld != null) {
+        if(activeWorld != null) {
             activeWorld.unload(sink, cache);
             activeWorld = null;
         }
@@ -81,19 +81,19 @@ public class WorldStateTree extends StateTree<World> {
     }
 
     private void ensureActiveWorld(World world) throws IOException {
-        if (world == activeWorld) {
+        if(world == activeWorld) {
             return; // our cache is up-to-date, nothing to do
         }
 
         // Slow path, this should almost never be required for normal operation
         // unless the client state is completely reset.
 
-        if (activeWorld != null) {
+        if(activeWorld != null) {
             activeWorld.unload(Packet::release, cache);
             activeWorld = null;
         }
 
-        if (world != null) {
+        if(world != null) {
             world.load(Packet::release, cache);
             activeWorld = world;
         }
@@ -106,40 +106,40 @@ public class WorldStateTree extends StateTree<World> {
         Map.Entry<Integer, World> targetEntry = map.floorEntry(targetTime);
         World previousWorld = previousEntry != null ? previousEntry.getValue() : null;
         World targetWorld = targetEntry != null ? targetEntry.getValue() : null;
-        if (previousWorld == null && targetWorld == null) {
+        if(previousWorld == null && targetWorld == null) {
             return null;
         }
 
         ensureActiveWorld(previousWorld);
 
-        if (previousWorld == targetWorld) {
+        if(previousWorld == targetWorld) {
             return targetWorld;
         } else {
-            if (previousWorld != null) {
+            if(previousWorld != null) {
                 previousWorld.unload(sink, cache);
             }
 
             activeWorld = targetWorld;
 
-            if (targetWorld != null) {
+            if(targetWorld != null) {
                 List<Packet> featuresChanged;
                 // Need to check if any features need changing between the previous world and the current one.
                 // If so, we definitely need to go through the config phase.
                 featuresChanged = new ArrayList<>();
                 replay.features.playOrRewind(featuresChanged::add, previousEntry != null ? previousEntry.getKey() : -1, targetEntry.getKey());
 
-                if (previousWorld == null || !previousWorld.info.equals(targetWorld.info) || !featuresChanged.isEmpty()) {
+                if(previousWorld == null || !previousWorld.info.equals(targetWorld.info) || !featuresChanged.isEmpty()) {
                     boolean isRespawnSufficient = previousWorld != null && previousWorld.info.isRespawnSufficient(targetWorld.info);
 
                     // On first join or on certain changes that require it, we need to re-enter configuration phase
                     boolean registriesChanged = previousWorld == null || !previousWorld.info.registries.equals(targetWorld.info.registries);
-                    if (registriesChanged || !featuresChanged.isEmpty()) {
+                    if(registriesChanged || !featuresChanged.isEmpty()) {
                         // Enter config phase
                         PacketTypeRegistry configRegistry = registry.withState(State.CONFIGURATION);
                         sink.accept(new Packet(registry, PacketType.Reconfigure));
 
                         // Update game registries
-                        if (registriesChanged) {
+                        if(registriesChanged) {
                             sink.accept(PacketConfigSelectKnownPacks.write(configRegistry, targetWorld.info.registries.enabledPacks));
 
                             PacketConfigRegistries.write(configRegistry, targetWorld.info.registries).forEach(sink);
@@ -154,7 +154,7 @@ public class WorldStateTree extends StateTree<World> {
                         }
 
                         // Update feature flags
-                        if (!featuresChanged.isEmpty()) {
+                        if(!featuresChanged.isEmpty()) {
                             featuresChanged.forEach(sink);
                         }
 
@@ -165,7 +165,7 @@ public class WorldStateTree extends StateTree<World> {
 
                     // On first join or on significant changes, we need to send another full JoinGame packet
                     // which is more complicated than just a respawn packet.
-                    if (!isRespawnSufficient) {
+                    if(!isRespawnSufficient) {
                         // We need to send a JoinGame packet to update the client. Followed by a player pos look packet
                         // to get rid of the Loading Terrain screen.
                         PacketJoinGame joinGame = targetWorld.info.toPacketJoinGame();
@@ -204,7 +204,7 @@ public class WorldStateTree extends StateTree<World> {
     @Override
     public void play(PacketSink sink, int currentTimeStamp, int targetTime) throws IOException {
         World world = getWorldOrSwitch(sink, currentTimeStamp, targetTime);
-        if (world != null) {
+        if(world != null) {
             world.play(sink, currentTimeStamp, targetTime);
         }
     }
@@ -212,7 +212,7 @@ public class WorldStateTree extends StateTree<World> {
     @Override
     public void rewind(PacketSink sink, int currentTimeStamp, int targetTime) throws IOException {
         World world = getWorldOrSwitch(sink, currentTimeStamp, targetTime);
-        if (world != null) {
+        if(world != null) {
             world.rewind(sink, currentTimeStamp, targetTime);
         }
     }
@@ -253,7 +253,7 @@ public class WorldStateTree extends StateTree<World> {
                 ByteBuf buf = Unpooled.buffer();
                 try {
                     world.build(new ByteBufNetOutput(buf), 0);
-                } catch (IOException e) {
+                } catch(IOException e) {
                     throw new RuntimeException(e);
                 }
                 buf.release();

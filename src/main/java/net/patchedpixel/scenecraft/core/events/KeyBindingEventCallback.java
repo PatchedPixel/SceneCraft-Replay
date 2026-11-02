@@ -5,7 +5,7 @@ import net.patchedpixel.scenecraft.gui.utils.Event;
 public interface KeyBindingEventCallback {
     Event<KeyBindingEventCallback> EVENT = Event.create((listeners) ->
             () -> {
-                for (KeyBindingEventCallback listener : listeners) {
+                for(KeyBindingEventCallback listener : listeners) {
                     listener.onKeybindingEvent();
                 }
             }

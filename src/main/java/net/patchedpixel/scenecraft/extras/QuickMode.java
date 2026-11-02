@@ -21,7 +21,7 @@ public class QuickMode extends EventRegistrations implements Extra {
 
         mod.getKeyBindingRegistry().registerKeyBinding("scenecraft.input.quickmode", InputConstants.KEY_Q, () -> {
             ReplayHandler replayHandler = module.getReplayHandler();
-            if (replayHandler == null) {
+            if(replayHandler == null) {
                 return;
             }
             replayHandler.getReplaySender().setSyncModeAndWait();
@@ -43,7 +43,7 @@ public class QuickMode extends EventRegistrations implements Extra {
     }
 
     private void updateIndicator(GuiReplayOverlay overlay, boolean enabled) {
-        if (enabled) {
+        if(enabled) {
             overlay.statusIndicatorPanel.addElements(new HorizontalLayout.Data(1), indicator);
         } else {
             overlay.statusIndicatorPanel.removeElement(indicator);

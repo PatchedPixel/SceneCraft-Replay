@@ -65,15 +65,15 @@ public class PacketUtils {
      */
     public static Location updateLocation(Location loc, Packet packet) throws IOException {
         Location spawnLocation = SpawnEntity.getLocation(packet);
-        if (spawnLocation != null) {
+        if(spawnLocation != null) {
             return spawnLocation;
         }
 
-        switch (packet.getType()) {
+        switch(packet.getType()) {
             case EntityPosition:
             case EntityRotation:
             case EntityPositionRotation:
-                if (loc == null) {
+                if(loc == null) {
                     loc = Location.NULL;
                 }
                 Triple<DPosition, Pair<Float, Float>, Boolean> movement = PacketEntityMovement.getMovement(packet);
@@ -82,7 +82,7 @@ public class PacketUtils {
                 double x = loc.getX();
                 double y = loc.getY();
                 double z = loc.getZ();
-                if (deltaPos != null) {
+                if(deltaPos != null) {
                     x += deltaPos.getX();
                     y += deltaPos.getY();
                     z += deltaPos.getZ();

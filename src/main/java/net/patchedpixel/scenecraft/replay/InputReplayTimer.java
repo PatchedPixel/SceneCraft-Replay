@@ -18,8 +18,8 @@ public class InputReplayTimer {
 
         // If we are in a replay, we have to manually process key and mouse events as the
         // tick speed may vary or there may not be any ticks at all (when the replay is paused)
-        if (mod.getReplayHandler() != null && mc.level != null && mc.player != null) {
-            if (mc.gui.screen() == null || ((ScreenExt) mc.gui.screen()).doesPassEvents()) {
+        if(mod.getReplayHandler() != null && mc.level != null && mc.player != null) {
+            if(mc.gui.screen() == null || ((ScreenExt) mc.gui.screen()).doesPassEvents()) {
                 MCVer.pumpEvents();
                 MCVer.processKeyBinds();
             }
@@ -27,30 +27,30 @@ public class InputReplayTimer {
 
             // As of 1.18.2, this screen always stays open for at least two seconds, and requires ticking to close.
             // Thanks, but we'll have none of that (at least while in a replay).
-            if (mc.gui.screen() instanceof LevelLoadingScreen) {
+            if(mc.gui.screen() instanceof LevelLoadingScreen) {
                 mc.gui.screen().onClose();
             }
             // The SplashOverlay now only closes on `tick`, but there are no ticks while the replay is paused.
             // so we need to manually tick it to not get stuck.
             Overlay overlay = mc.gui.overlay();
-            if (overlay != null) {
+            if(overlay != null) {
                 overlay.tick();
             }
         }
     }
 
     public static void handleScroll(int wheel) {
-        if (wheel != 0) {
+        if(wheel != 0) {
             ReplayHandler replayHandler = SceneCraftReplay.instance.getReplayHandler();
-            if (replayHandler != null) {
+            if(replayHandler != null) {
                 CameraEntity cameraEntity = replayHandler.getCameraEntity();
-                if (cameraEntity != null) {
+                if(cameraEntity != null) {
                     CameraController controller = cameraEntity.getCameraController();
-                    while (wheel > 0) {
+                    while(wheel > 0) {
                         controller.increaseSpeed();
                         wheel--;
                     }
-                    while (wheel < 0) {
+                    while(wheel < 0) {
                         controller.decreaseSpeed();
                         wheel++;
                     }

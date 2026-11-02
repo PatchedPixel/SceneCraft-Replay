@@ -63,18 +63,18 @@ public abstract class AbstractGuiScreen<T extends AbstractGuiScreen<T>> extends 
 
     @Override
     public void layout(ReadableDimension size, RenderInfo renderInfo) {
-        if (size == null) {
+        if(size == null) {
             size = screenSize;
         }
-        if (renderInfo.layer == 0) {
-            if (title != null) {
+        if(renderInfo.layer == 0) {
+            if(title != null) {
                 title.layout(title.getMinSize(), renderInfo);
             }
         }
         super.layout(size, renderInfo);
-        if (renderInfo.layer == getMaxLayer()) {
+        if(renderInfo.layer == getMaxLayer()) {
             final GuiElement tooltip = forEach(GuiElement.class, e -> e.getTooltip(renderInfo));
-            if (tooltip != null) {
+            if(tooltip != null) {
                 tooltip.layout(tooltip.getMinSize(), renderInfo);
             }
         }
@@ -82,8 +82,8 @@ public abstract class AbstractGuiScreen<T extends AbstractGuiScreen<T>> extends 
 
     @Override
     public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
-        if (renderInfo.layer == 0) {
-            switch (background) {
+        if(renderInfo.layer == 0) {
+            switch(background) {
                 case NONE:
                     break;
                 case DEFAULT:
@@ -97,7 +97,7 @@ public abstract class AbstractGuiScreen<T extends AbstractGuiScreen<T>> extends 
                     // Handled by override in MinecraftGuiScreen
                     break;
             }
-            if (title != null) {
+            if(title != null) {
                 ReadableDimension titleSize = title.getMinSize();
                 int x = screenSize.getWidth() / 2 - titleSize.getWidth() / 2;
                 OffsetGuiRenderer eRenderer = new OffsetGuiRenderer(renderer, new Point(x, 10), new Dimension(0, 0));
@@ -105,17 +105,17 @@ public abstract class AbstractGuiScreen<T extends AbstractGuiScreen<T>> extends 
             }
         }
         super.draw(renderer, size, renderInfo);
-        if (renderInfo.layer == getMaxLayer()) {
+        if(renderInfo.layer == getMaxLayer()) {
             final GuiElement tooltip = forEach(GuiElement.class, e -> e.getTooltip(renderInfo));
-            if (tooltip != null) {
+            if(tooltip != null) {
                 final ReadableDimension tooltipSize = tooltip.getMinSize();
                 int x, y;
-                if (renderInfo.mouseX + 8 + tooltipSize.getWidth() < screenSize.getWidth()) {
+                if(renderInfo.mouseX + 8 + tooltipSize.getWidth() < screenSize.getWidth()) {
                     x = renderInfo.mouseX + 8;
                 } else {
                     x = screenSize.getWidth() - tooltipSize.getWidth() - 1;
                 }
-                if (renderInfo.mouseY + 8 + tooltipSize.getHeight() < screenSize.getHeight()) {
+                if(renderInfo.mouseY + 8 + tooltipSize.getHeight() < screenSize.getHeight()) {
                     y = renderInfo.mouseY + 8;
                 } else {
                     y = screenSize.getHeight() - tooltipSize.getHeight() - 1;
@@ -124,7 +124,7 @@ public abstract class AbstractGuiScreen<T extends AbstractGuiScreen<T>> extends 
                 try {
                     OffsetGuiRenderer eRenderer = new OffsetGuiRenderer(renderer, position, tooltipSize);
                     tooltip.draw(eRenderer, tooltipSize, renderInfo);
-                } catch (Exception ex) {
+                } catch(Exception ex) {
                     CrashReport crashReport = CrashReport.forThrowable(ex, "Rendering Gui Tooltip");
                     renderInfo.addTo(crashReport);
                     CrashReportCategory category = crashReport.addCategory("Gui container details");
@@ -199,7 +199,7 @@ public abstract class AbstractGuiScreen<T extends AbstractGuiScreen<T>> extends 
 
         @Override
         public void extractBackground(GuiGraphicsExtractor drawContext, int mouseX, int mouseY, float partialTicks) {
-            switch (background) {
+            switch(background) {
                 case NONE -> {}
                 case DEFAULT -> super.extractBackground(drawContext, mouseX, mouseY, partialTicks);
                 case TRANSPARENT -> {} // handled in AbstractGuiScreen.draw
@@ -215,11 +215,11 @@ public abstract class AbstractGuiScreen<T extends AbstractGuiScreen<T>> extends 
         public void extractRenderState(GuiGraphicsExtractor stack, int mouseX, int mouseY, float partialTicks) {
             int layers = getMaxLayer();
             RenderInfo renderInfo = new RenderInfo(partialTicks, mouseX, mouseY, 0);
-            for (int layer = 0; layer <= layers; layer++) {
+            for(int layer = 0; layer <= layers; layer++) {
                 layout(screenSize, renderInfo.layer(layer));
             }
             MinecraftGuiRenderer renderer = new MinecraftGuiRenderer(stack);
-            for (int layer = 0; layer <= layers; layer++) {
+            for(int layer = 0; layer <= layers; layer++) {
                 draw(renderer, screenSize, renderInfo.layer(layer));
             }
         }
@@ -227,8 +227,8 @@ public abstract class AbstractGuiScreen<T extends AbstractGuiScreen<T>> extends 
         @Override
         public boolean keyPressed(net.minecraft.client.input.KeyEvent mcKeyInput) {
             KeyInput keyInput = new KeyInput(mcKeyInput);
-            if (!invokeHandlers(KeyHandler.class, e -> e.handleKey(keyInput))) {
-                if (suppressVanillaKeys) {
+            if(!invokeHandlers(KeyHandler.class, e -> e.handleKey(keyInput))) {
+                if(suppressVanillaKeys) {
                     return false;
                 }
                 return super.keyPressed(mcKeyInput);
@@ -239,8 +239,8 @@ public abstract class AbstractGuiScreen<T extends AbstractGuiScreen<T>> extends 
         @Override
         public boolean charTyped(net.minecraft.client.input.CharacterEvent mcCharInput) {
             CharInput charInput = new CharInput(mcCharInput);
-            if (!invokeHandlers(CharHandler.class, e -> e.handleChar(charInput))) {
-                if (suppressVanillaKeys) {
+            if(!invokeHandlers(CharHandler.class, e -> e.handleChar(charInput))) {
+                if(suppressVanillaKeys) {
                     return false;
                 }
                 return super.charTyped(mcCharInput);
@@ -288,7 +288,7 @@ public abstract class AbstractGuiScreen<T extends AbstractGuiScreen<T>> extends 
 
         @Override
         public void onClose() {
-            if (!AbstractGuiScreen.this.handleClose()) {
+            if(!AbstractGuiScreen.this.handleClose()) {
                 super.onClose();
             }
         }
@@ -297,7 +297,7 @@ public abstract class AbstractGuiScreen<T extends AbstractGuiScreen<T>> extends 
         public void removed() {
             // Unfocus everything so the game stops SDL text input for fields that were still being edited
             invokeAll(Focusable.class, focusable -> {
-                if (focusable.isFocused()) {
+                if(focusable.isFocused()) {
                     focusable.setFocused(false);
                 }
             });

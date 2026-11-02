@@ -69,7 +69,7 @@ public abstract class AbstractGuiScrollable<T extends AbstractGuiScrollable<T>> 
     @Override
     public void convertFor(GuiElement element, Point point, int relativeLayer) {
         super.convertFor(element, point, relativeLayer);
-        if (relativeLayer > 0 || (point.getX() > 0 && point.getX() < lastRenderSize.getWidth()
+        if(relativeLayer > 0 || (point.getX() > 0 && point.getX() < lastRenderSize.getWidth()
                  && point.getY() > 0 && point.getY() < lastRenderSize.getHeight())) {
             point.translate(offsetX, offsetY);
         } else {
@@ -79,7 +79,7 @@ public abstract class AbstractGuiScrollable<T extends AbstractGuiScrollable<T>> 
 
     @Override
     public void layout(ReadableDimension size, RenderInfo renderInfo) {
-        if (size != null) {
+        if(size != null) {
             int width = size.getWidth();
             int height = size.getHeight();
             lastRenderSize = size;
@@ -112,14 +112,14 @@ public abstract class AbstractGuiScrollable<T extends AbstractGuiScrollable<T>> 
     @Override
     public boolean scroll(ReadablePoint mousePosition, int dWheel) {
         Point mouse = new Point(mousePosition);
-        if (getContainer() != null) {
+        if(getContainer() != null) {
             getContainer().convertFor(this, mouse);
         }
-        if (mouse.getX() > 0 && mouse.getY() > 0
+        if(mouse.getX() > 0 && mouse.getY() > 0
                 && mouse.getX() < lastRenderSize.getWidth() && mouse.getY() < lastRenderSize.getHeight()) {
             // Reduce scrolling speed but make sure it is never rounded to 0
             dWheel = (int) Math.copySign(Math.ceil(Math.abs(dWheel) / 4.0), dWheel);
-            if (scrollDirection == Direction.HORIZONTAL) {
+            if(scrollDirection == Direction.HORIZONTAL) {
                 scrollX(dWheel);
             } else {
                 scrollY(dWheel);

@@ -15,19 +15,19 @@ public class ByteBufferPool {
 
     public static synchronized ByteBuffer allocate(int size) {
         List<SoftReference<ByteBuffer>> available = bufferPool.get(size);
-        if (available != null) {
+        if(available != null) {
             Iterator<SoftReference<ByteBuffer>> iter = available.iterator();
             try {
-                while (iter.hasNext()) {
+                while(iter.hasNext()) {
                     SoftReference<ByteBuffer> reference = iter.next();
                     ByteBuffer buffer = reference.get();
                     iter.remove();
-                    if (buffer != null) {
+                    if(buffer != null) {
                         return buffer;
                     }
                 }
             } finally {
-                if (!iter.hasNext()) {
+                if(!iter.hasNext()) {
                     bufferPool.remove(size);
                 }
             }
@@ -39,7 +39,7 @@ public class ByteBufferPool {
         buffer.clear();
         int size = buffer.capacity();
         List<SoftReference<ByteBuffer>> available = bufferPool.get(size);
-        if (available == null) {
+        if(available == null) {
             available = new LinkedList<>();
             bufferPool.put(size, available);
         }

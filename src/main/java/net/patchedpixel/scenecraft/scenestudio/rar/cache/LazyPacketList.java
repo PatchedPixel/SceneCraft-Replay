@@ -43,7 +43,7 @@ public class LazyPacketList {
 
     public void read(PacketSink sink, ReadableCache cache) throws IOException {
         NetInput in = cache.seek(index);
-        for (int i = in.readVarInt(); i > 0; i--) {
+        for(int i = in.readVarInt(); i > 0; i--) {
             sink.accept(readCompressedPacket(registry, in));
         }
     }
@@ -60,7 +60,7 @@ public class LazyPacketList {
 
             NetOutput out = cache.write();
             out.writeVarInt(list.size());
-            for (Packet packet : list) {
+            for(Packet packet : list) {
                 writeCompressedPacket(out, packet);
                 packet.release();
             }

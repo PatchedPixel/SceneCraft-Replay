@@ -56,7 +56,7 @@ public class HorizontalLayout implements Layout {
         int x = 0;
         int spacing = 0;
         Map<GuiElement, Pair<ReadablePoint, ReadableDimension>> map = new LinkedHashMap<>();
-        for (Map.Entry<GuiElement, LayoutData> entry : container.getElements().entrySet()) {
+        for(Map.Entry<GuiElement, LayoutData> entry : container.getElements().entrySet()) {
             x += spacing;
             spacing = this.spacing;
 
@@ -71,12 +71,12 @@ public class HorizontalLayout implements Layout {
             map.put(element, Pair.<ReadablePoint, ReadableDimension>of(new Point(x, y), elementSize));
             x += elementSize.getWidth();
         }
-        if (alignment != Alignment.LEFT) {
+        if(alignment != Alignment.LEFT) {
             int remaining = size.getWidth() - x;
-            if (alignment == Alignment.CENTER) {
+            if(alignment == Alignment.CENTER) {
                 remaining /= 2;
             }
-            for (Pair<ReadablePoint, ReadableDimension> pair : map.values()) {
+            for(Pair<ReadablePoint, ReadableDimension> pair : map.values()) {
                 ((Point) pair.getLeft()).translate(remaining, 0);
             }
         }
@@ -88,14 +88,14 @@ public class HorizontalLayout implements Layout {
         int maxHeight = 0;
         int width = 0;
         int spacing = 0;
-        for (Map.Entry<GuiElement, LayoutData> entry : container.getElements().entrySet()) {
+        for(Map.Entry<GuiElement, LayoutData> entry : container.getElements().entrySet()) {
             width += spacing;
             spacing = this.spacing;
 
             GuiElement element = entry.getKey();
             ReadableDimension minSize = element.getMinSize();
             int height = minSize.getHeight();
-            if (height > maxHeight) {
+            if(height > maxHeight) {
                 maxHeight = height;
             }
             width += minSize.getWidth();
@@ -133,8 +133,8 @@ public class HorizontalLayout implements Layout {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if(this == o) return true;
+            if(o == null || getClass() != o.getClass()) return false;
             Data data = (Data) o;
             return Double.compare(data.alignment, alignment) == 0;
         }

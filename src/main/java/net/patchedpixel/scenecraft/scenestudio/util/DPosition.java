@@ -45,13 +45,13 @@ public class DPosition {
     }
 
     public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof DPosition)) return false;
+        if(o == this) return true;
+        if(!(o instanceof DPosition)) return false;
         final DPosition other = (DPosition) o;
-        if (!other.canEqual(this)) return false;
-        if (Double.compare(this.x, other.x) != 0) return false;
-        if (Double.compare(this.y, other.y) != 0) return false;
-        if (Double.compare(this.z, other.z) != 0) return false;
+        if(!other.canEqual(this)) return false;
+        if(Double.compare(this.x, other.x) != 0) return false;
+        if(Double.compare(this.y, other.y) != 0) return false;
+        if(Double.compare(this.z, other.z) != 0) return false;
         return true;
     }
 

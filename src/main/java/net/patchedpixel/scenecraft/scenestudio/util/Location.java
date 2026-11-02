@@ -75,15 +75,15 @@ public class Location {
     }
 
     public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof Location)) return false;
+        if(o == this) return true;
+        if(!(o instanceof Location)) return false;
         final Location other = (Location) o;
-        if (!other.canEqual(this)) return false;
-        if (Double.compare(this.x, other.x) != 0) return false;
-        if (Double.compare(this.y, other.y) != 0) return false;
-        if (Double.compare(this.z, other.z) != 0) return false;
-        if (Float.compare(this.yaw, other.yaw) != 0) return false;
-        if (Float.compare(this.pitch, other.pitch) != 0) return false;
+        if(!other.canEqual(this)) return false;
+        if(Double.compare(this.x, other.x) != 0) return false;
+        if(Double.compare(this.y, other.y) != 0) return false;
+        if(Double.compare(this.z, other.z) != 0) return false;
+        if(Float.compare(this.yaw, other.yaw) != 0) return false;
+        if(Float.compare(this.pitch, other.pitch) != 0) return false;
         return true;
     }
 

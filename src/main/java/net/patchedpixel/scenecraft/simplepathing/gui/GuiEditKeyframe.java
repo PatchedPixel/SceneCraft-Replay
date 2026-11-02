@@ -105,10 +105,10 @@ public abstract class GuiEditKeyframe<T extends GuiEditKeyframe<T>> extends Abst
         saveButton.onClick(() -> {
             Change change = save();
             long newTime = (timeMinField.getInteger() * 60 + timeSecField.getInteger()) * 1000 + timeMSecField.getInteger();
-            if (newTime != time) {
+            if(newTime != time) {
                 change = CombinedChange.createFromApplied(change,
                         gui.getMod().getCurrentTimeline().moveKeyframe(path, time, newTime));
-                if (gui.getMod().getSelectedPath() == path && gui.getMod().getSelectedTime() == time) {
+                if(gui.getMod().getSelectedPath() == path && gui.getMod().getSelectedTime() == time) {
                     gui.getMod().setSelected(path, newTime);
                 }
             }
@@ -119,10 +119,10 @@ public abstract class GuiEditKeyframe<T extends GuiEditKeyframe<T>> extends Abst
 
     private boolean canSave() {
         long newTime = (timeMinField.getInteger() * 60 + timeSecField.getInteger()) * 1000 + timeMSecField.getInteger();
-        if (newTime < 0 || newTime > guiPathing.timeline.getLength()) {
+        if(newTime < 0 || newTime > guiPathing.timeline.getLength()) {
             return false;
         }
-        if (newTime != keyframe.getTime() && path.getKeyframe(newTime) != null) {
+        if(newTime != keyframe.getTime() && path.getKeyframe(newTime) != null) {
             return false;
         }
         return true;
@@ -130,7 +130,7 @@ public abstract class GuiEditKeyframe<T extends GuiEditKeyframe<T>> extends Abst
 
     @Override
     public boolean handleKey(KeyInput keyInput) {
-        if (keyInput.isEscape()) {
+        if(keyInput.isEscape()) {
             cancelButton.onClick(new Click(-1, -1, 0, keyInput.modifiers));
             return true;
         }
@@ -257,12 +257,12 @@ public abstract class GuiEditKeyframe<T extends GuiEditKeyframe<T>> extends Abst
                     xField.getDouble(), yField.getDouble(), zField.getDouble(),
                     yawField.getFloat(), pitchField.getFloat(), rollField.getFloat()
             );
-            if (interpolationPanel.getSettingsPanel() == null) {
+            if(interpolationPanel.getSettingsPanel() == null) {
                 // The last keyframe doesn't have interpolator settings because there is no segment following it
                 return positionChange;
             }
             Interpolator interpolator = interpolationPanel.getSettingsPanel().createInterpolator();
-            if (interpolationPanel.getInterpolatorType() == InterpolatorType.DEFAULT) {
+            if(interpolationPanel.getInterpolatorType() == InterpolatorType.DEFAULT) {
                 return CombinedChange.createFromApplied(positionChange, timeline.setInterpolatorToDefault(time),
                         timeline.setDefaultInterpolator(interpolator));
             } else {
@@ -289,7 +289,7 @@ public abstract class GuiEditKeyframe<T extends GuiEditKeyframe<T>> extends Abst
                         .onSelection(i -> setSettingsPanel(dropdown.getSelectedValue()));
 
                 // set hover tooltips
-                for (Map.Entry<InterpolatorType, IGuiClickable> e : dropdown.getDropdownEntries().entrySet()) {
+                for(Map.Entry<InterpolatorType, IGuiClickable> e : dropdown.getDropdownEntries().entrySet()) {
                     e.getValue().setTooltip(new GuiTooltip().setI18nText(e.getKey().getI18nDescription()));
                 }
 
@@ -302,16 +302,16 @@ public abstract class GuiEditKeyframe<T extends GuiEditKeyframe<T>> extends Abst
 
                 Optional<PathSegment> segment = path.getSegments().stream()
                         .filter(s -> s.getStartKeyframe() == keyframe).findFirst();
-                if (segment.isPresent()) {
+                if(segment.isPresent()) {
                     Interpolator interpolator = segment.get().getInterpolator();
                     InterpolatorType type = InterpolatorType.fromClass(interpolator.getClass());
-                    if (keyframe.getValue(ExplicitInterpolationProperty.PROPERTY).isPresent()) {
+                    if(keyframe.getValue(ExplicitInterpolationProperty.PROPERTY).isPresent()) {
                         dropdown.setSelected(type); // trigger the callback once to display settings panel
                     } else {
                         setSettingsPanel(InterpolatorType.DEFAULT);
                         type = InterpolatorType.DEFAULT;
                     }
-                    if (getInterpolatorTypeNoDefault(type).getInterpolatorClass().isInstance(interpolator)) {
+                    if(getInterpolatorTypeNoDefault(type).getInterpolatorClass().isInstance(interpolator)) {
                         //noinspection unchecked
                         settingsPanel.loadSettings(interpolator);
                     }
@@ -328,7 +328,7 @@ public abstract class GuiEditKeyframe<T extends GuiEditKeyframe<T>> extends Abst
             public void setSettingsPanel(InterpolatorType type) {
                 removeElement(this.settingsPanel);
 
-                switch (getInterpolatorTypeNoDefault(type)) {
+                switch(getInterpolatorTypeNoDefault(type)) {
                     case CATMULL_ROM:
                         settingsPanel = new CatmullRomSettingsPanel();
                         break;
@@ -344,7 +344,7 @@ public abstract class GuiEditKeyframe<T extends GuiEditKeyframe<T>> extends Abst
             }
 
             protected InterpolatorType getInterpolatorTypeNoDefault(InterpolatorType interpolatorType) {
-                if (interpolatorType == InterpolatorType.DEFAULT || interpolatorType == null) {
+                if(interpolatorType == InterpolatorType.DEFAULT || interpolatorType == null) {
                     InterpolatorType defaultType = InterpolatorType.fromString(
                             guiPathing.getMod().getCore().getSettingsRegistry().get(Setting.DEFAULT_INTERPOLATION));
                     return defaultType;

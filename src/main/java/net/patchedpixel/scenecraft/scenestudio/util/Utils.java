@@ -50,7 +50,7 @@ public class Utils {
         int b1 = in.read();
         int b2 = in.read();
         int b3 = in.read();
-        if ((b0 | b1 | b2 | b3) < 0) {
+        if((b0 | b1 | b2 | b3) < 0) {
             return -1;
         }
         return b0 << 24 | b1 << 16 | b2 << 8 | b3;
@@ -76,8 +76,8 @@ public class Utils {
      * @return {@code true} if this array contains only {@code null} entries
      */
     public static boolean containsOnlyNull(Object[] array) {
-        for (Object o : array) {
-            if (o != null) {
+        for(Object o : array) {
+            if(o != null) {
                 return false;
             }
         }
@@ -94,10 +94,10 @@ public class Utils {
      * @return The value within max and min
      */
     public static long within(long i, long min, long max) {
-        if (i > max) {
+        if(i > max) {
             return max;
         }
-        if (i < min) {
+        if(i < min) {
             return min;
         }
         return i;
@@ -121,7 +121,7 @@ public class Utils {
 
             @Override
             public int read() throws IOException {
-                if (closed) {
+                if(closed) {
                     return -1;
                 }
                 return source.read();
@@ -129,7 +129,7 @@ public class Utils {
 
             @Override
             public int read(byte[] b, int off, int len) throws IOException {
-                if (closed) {
+                if(closed) {
                     return -1;
                 }
                 return source.read(b, off, len);
@@ -142,7 +142,7 @@ public class Utils {
 
             @Override
             public long skip(long n) throws IOException {
-                if (closed) {
+                if(closed) {
                     return 0;
                 }
                 return source.skip(n);
@@ -165,7 +165,7 @@ public class Utils {
 
             @Override
             public int read(byte[] b) throws IOException {
-                if (closed) {
+                if(closed) {
                     return -1;
                 }
                 return source.read(b);
@@ -176,14 +176,14 @@ public class Utils {
     public static void copy(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];
         int read;
-        while ((read = in.read(buffer)) > -1) {
+        while((read = in.read(buffer)) > -1) {
             out.write(buffer, 0, read);
         }
         in.close();
     }
 
     public static ByteBuf readRetainedSlice(NetInput in, int len) throws IOException {
-        if (in instanceof ByteBufExtNetInput) {
+        if(in instanceof ByteBufExtNetInput) {
             ByteBuf inBuf = ((ByteBufExtNetInput) in).getBuf();
             return inBuf.readRetainedSlice(len);
         }
@@ -191,7 +191,7 @@ public class Utils {
     }
 
     public static void writeBytes(NetOutput out, ByteBuf buf) throws IOException {
-        if (out instanceof ByteBufExtNetOutput) {
+        if(out instanceof ByteBufExtNetOutput) {
             ByteBuf outBuf = ((ByteBufExtNetOutput) out).getBuf();
             outBuf.writeBytes(buf);
             return;
@@ -207,7 +207,7 @@ public class Utils {
         try {
             int prefix = in.readVarInt();
             int len = prefix >> 1;
-            if ((prefix & 1) == 1) {
+            if((prefix & 1) == 1) {
                 int fullLen = in.readVarInt();
                 byteBuf = Unpooled.buffer(fullLen);
 
@@ -223,9 +223,9 @@ public class Utils {
             int stateId = id >> 24;
             int packetId = id & 0x00ffffff;
             return new Packet(registry.withState(State.values()[4 - stateId]), packetId, byteBuf.retain());
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw e;
-        } catch (Exception e) {
+        } catch(Exception e) {
             throw new RuntimeException(e);
         } finally {
             ReferenceCountUtil.release(byteBuf);
@@ -247,7 +247,7 @@ public class Utils {
             deflater.setInput(byteBuf.array(), byteBuf.arrayOffset() + byteBuf.readerIndex(), size);
             deflater.finish();
             int compressedSize = 0;
-            while (!deflater.finished() && compressedSize < size) {
+            while(!deflater.finished() && compressedSize < size) {
                 compressedSize += deflater.deflate(
                         byteBuf.array(),
                         byteBuf.arrayOffset() + byteBuf.writerIndex() + compressedSize,
@@ -255,7 +255,7 @@ public class Utils {
                 );
             }
 
-            if (compressedSize < size) {
+            if(compressedSize < size) {
                 byteBuf.readerIndex(rawIndex + size);
                 byteBuf.writerIndex(rawIndex + size + compressedSize);
                 out.writeVarInt(compressedSize << 1 | 1);
@@ -266,9 +266,9 @@ public class Utils {
                 out.writeVarInt(size << 1);
             }
             writeBytes(out, byteBuf);
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw e;
-        } catch (Exception e) {
+        } catch(Exception e) {
             throw new RuntimeException(e);
         } finally {
             ReferenceCountUtil.release(byteBuf);

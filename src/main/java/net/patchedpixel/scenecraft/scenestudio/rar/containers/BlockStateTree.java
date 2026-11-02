@@ -50,7 +50,7 @@ public class BlockStateTree extends DiffStateTree<Collection<BlockStateTree.Bloc
     protected Collection<BlockChange> read(NetInput in) throws IOException {
         List<BlockChange> list = new LinkedList<>(); // LinkedList to allow .descendingIterator
 
-        for (int j = in.readVarInt(); j > 0; j--) {
+        for(int j = in.readVarInt(); j > 0; j--) {
             list.add(new BlockChange(
                     Packet.Reader.readPosition(registry, in),
                     in.readVarInt(),
@@ -67,14 +67,14 @@ public class BlockStateTree extends DiffStateTree<Collection<BlockStateTree.Bloc
 
     @Override
     protected void play(PacketSink sink, Collection<BlockChange> value) throws IOException {
-        for (BlockChange change : value) {
+        for(BlockChange change : value) {
             sink.accept(new PacketBlockChange(change.pos, change.to).write(registry));
         }
     }
 
     @Override
     protected void rewind(PacketSink sink, Collection<BlockChange> value) throws IOException {
-        for (Iterator<BlockChange> it = ((LinkedList<BlockChange>) value).descendingIterator(); it.hasNext(); ) {
+        for(Iterator<BlockChange> it = ((LinkedList<BlockChange>) value).descendingIterator(); it.hasNext(); ) {
             BlockChange update = it.next();
             sink.accept(PacketBlockChange.write(registry, update.pos, update.from));
         }
@@ -92,7 +92,7 @@ public class BlockStateTree extends DiffStateTree<Collection<BlockStateTree.Bloc
             this.currentBlockState = new PacketChunkData.PalettedStorage[dimensionType.getSections()];
 
             PacketChunkData.Chunk[] chunks = column.chunks;
-            for (int i = 0; i < currentBlockState.length; i++) {
+            for(int i = 0; i < currentBlockState.length; i++) {
                 currentBlockState[i] = i >= chunks.length || chunks[i] == null
                         ? new PacketChunkData.PalettedStorage(PaletteType.BLOCKS, registry)
                         : chunks[i].blocks.copy();
@@ -102,7 +102,7 @@ public class BlockStateTree extends DiffStateTree<Collection<BlockStateTree.Bloc
         public void update(int time, PacketBlockChange record) {
             IPosition pos = record.getPosition();
             int sectionIndex = dimensionType.sectionYToIndex(pos.getY() >> 4);
-            if (sectionIndex < 0 || sectionIndex >= currentBlockState.length) {
+            if(sectionIndex < 0 || sectionIndex >= currentBlockState.length) {
                 return; // the server will send these if you try to place blocks outside the allowed range
             }
             PacketChunkData.PalettedStorage blockStorage = currentBlockState[sectionIndex];
@@ -116,20 +116,20 @@ public class BlockStateTree extends DiffStateTree<Collection<BlockStateTree.Bloc
         public void update(int time, PacketChunkData.Column column) {
             int sectionY = dimensionType.getMinY();
             int sectionIndex = 0;
-            for (PacketChunkData.Chunk section : column.chunks) {
-                if (section == null) {
+            for(PacketChunkData.Chunk section : column.chunks) {
+                if(section == null) {
                     sectionY++;
                     sectionIndex++;
                     continue;
                 }
                 PacketChunkData.PalettedStorage toBlocks = section.blocks;
                 PacketChunkData.PalettedStorage fromBlocks = currentBlockState[sectionIndex];
-                for (int y = 0; y < 16; y++) {
-                    for (int z = 0; z < 16; z++) {
-                        for (int x = 0; x < 16; x++) {
+                for(int y = 0; y < 16; y++) {
+                    for(int z = 0; z < 16; z++) {
+                        for(int x = 0; x < 16; x++) {
                             int fromState = fromBlocks.get(x, y, z);
                             int toState = toBlocks.get(x, y, z);
-                            if (fromState != toState) {
+                            if(fromState != toState) {
                                 IPosition pos = new IPosition(column.x << 4 | x, sectionY << 4 | y, column.z << 4 | z);
                                 blocks.put(time, new BlockChange(pos, fromState, toState));
                             }
@@ -146,7 +146,7 @@ public class BlockStateTree extends DiffStateTree<Collection<BlockStateTree.Bloc
         @Override
         protected void write(NetOutput out, Collection<BlockChange> value, int time) throws IOException {
             out.writeVarInt(value.size());
-            for (BlockChange blockChange : value) {
+            for(BlockChange blockChange : value) {
                 Packet.Writer.writePosition(registry, out, blockChange.pos);
                 out.writeVarInt(blockChange.from);
                 out.writeVarInt(blockChange.to);

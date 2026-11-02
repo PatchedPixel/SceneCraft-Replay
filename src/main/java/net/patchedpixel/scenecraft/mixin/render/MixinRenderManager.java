@@ -22,7 +22,7 @@ public abstract class MixinRenderManager {
             @Local(argsOnly = true) LocalRef<CameraRenderState> cameraRenderStateRef
     ) {
         EntityRendererHandler handler = ((EntityRendererHandler.IEntityRenderer) MCVer.getMinecraft().gameRenderer).sceneCraftRender_getHandler();
-        if (handler == null || !handler.omnidirectional) {
+        if(handler == null || !handler.omnidirectional) {
             return;
         }
 

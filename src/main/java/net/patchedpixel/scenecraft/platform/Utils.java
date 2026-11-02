@@ -71,7 +71,7 @@ public class Utils {
         Image thumbnail;
         try {
             thumbnail = Image.read(getResourceAsStream("/assets/scenecraft/logo.png"));
-        } catch (Exception e) {
+        } catch(Exception e) {
             thumbnail = new Image(1, 1);
             e.printStackTrace();
         }
@@ -108,7 +108,7 @@ public class Utils {
             ctx.init(null, trustManagerFactory.getTrustManagers(), null);
             SSL_CONTEXT = ctx;
             SSL_SOCKET_FACTORY = ctx.getSocketFactory();
-        } catch (IOException | CertificateException | KeyStoreException | NoSuchAlgorithmException | KeyManagementException e) {
+        } catch(IOException | CertificateException | KeyStoreException | NoSuchAlgorithmException | KeyManagementException e) {
             throw new RuntimeException(e);
         }
     }
@@ -133,7 +133,7 @@ public class Utils {
         float w = (float) width / bounds.getWidth();
         float h = (float) height / bounds.getHeight();
 
-        if (w > h) {
+        if(w > h) {
             height = (int) (height / w);
             width = (int) (width / w);
         } else {
@@ -148,7 +148,7 @@ public class Utils {
 
     public static Path replayNameToPath(Path folder, String replayName) {
         // If we can, prefer directly using the replay name as the file name
-        if (isUsable(folder, replayName + ".mcpr")) {
+        if(isUsable(folder, replayName + ".mcpr")) {
             return folder.resolve(replayName + ".mcpr");
         } else {
             // otherwise, fall back to percent encoding
@@ -160,35 +160,35 @@ public class Utils {
      * Checks whether a given file name is actually usable with the file system / operating system at the given folder.
      */
     private static boolean isUsable(Path folder, String fileName) {
-        if (fileName.contains(folder.getFileSystem().getSeparator())) {
+        if(fileName.contains(folder.getFileSystem().getSeparator())) {
             return false; // file name contains the name separator, definitely not usable
         }
 
         Path path;
         try {
             path = folder.resolve(fileName);
-        } catch (InvalidPathException e) {
+        } catch(InvalidPathException e) {
             return false; // file name contains invalid characters, definitely not usable
         }
-        if (Files.exists(path)) {
+        if(Files.exists(path)) {
             return true; // if it already exits, it's definitely usable
         }
 
         // Otherwise, there's no sure way to know, so we just gotta try
         try (OutputStream outputStream = Files.newOutputStream(path, StandardOpenOption.CREATE_NEW)) {
             outputStream.flush();
-        } catch (IOException e) {
+        } catch(IOException e) {
             return false;
         }
 
         // Looking good, but now we gotta clean up that mess (and Anti-Virus / Cloud Sync are know to lock them)
         int attempts = 0;
-        while (true) {
+        while(true) {
             try {
                 Files.delete(path);
                 return true;
-            } catch (IOException e) {
-                if (attempts++ > 100) {
+            } catch(IOException e) {
+                if(attempts++ > 100) {
                     LOGGER.warn("Repeatedly failed to clean up temporary test file at " + path + ": ", e);
                     return false; // while we were able to use it, it's taken now and we can't get it back
                 }
@@ -200,9 +200,9 @@ public class Utils {
         String baseName = FilenameUtils.getBaseName(fileName);
         try {
             return URLDecoder.decode(baseName, Charsets.UTF_8.name());
-        } catch (IllegalArgumentException e) {
+        } catch(IllegalArgumentException e) {
             return baseName;
-        } catch (UnsupportedEncodingException e) {
+        } catch(UnsupportedEncodingException e) {
             throw Throwables.propagate(e);
         }
     }
@@ -220,13 +220,13 @@ public class Utils {
         logger.error(crashReportStr);
 
         // Try to save the crash report
-        if (crashReport.getSaveFile() == null) {
+        if(crashReport.getSaveFile() == null) {
             try {
                 File folder = new File(getMinecraft().gameDirectory, "crash-reports");
                 File file = new File(folder, "crash-" + (new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")).format(new Date()) + "-client.txt");
                 logger.debug("Saving crash report to file: {}", file);
                 crashReport.saveToFile(file.toPath(), ReportType.CRASH);
-            } catch (Throwable t) {
+            } catch(Throwable t) {
                 logger.error("Saving crash report file:", t);
             }
         } else {
@@ -237,7 +237,7 @@ public class Utils {
         GuiCrashReportPopup popup = new GuiCrashReportPopup(container, crashReportStr);
         popup.onClosed(() -> {
             logger.trace("Crash report popup closed");
-            if (onClose != null) {
+            if(onClose != null) {
                 onClose.run();
             }
         });

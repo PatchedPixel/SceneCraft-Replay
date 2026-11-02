@@ -73,31 +73,31 @@ public class VirtualWindow implements Closeable {
     private boolean surfaceIsInvalid;
     private boolean windowSurfaceNeedsReconfiguring;
     public void flip() {
-        if (framebufferWidth == 0 || framebufferHeight == 0) {
+        if(framebufferWidth == 0 || framebufferHeight == 0) {
             return;
         }
 
         GpuSurface windowSurface = mc.windowSurface();
 
-        if (windowSurfaceNeedsReconfiguring || windowSurface.isSuboptimal() && !surfaceIsInvalid) {
+        if(windowSurfaceNeedsReconfiguring || windowSurface.isSuboptimal() && !surfaceIsInvalid) {
             GpuSurface.PresentMode presentMode = GpuSurface.PresentMode.getSupportedVsyncMode(windowSurface.supportedPresentModes(), mc.options.enableVsync().get());
             GpuSurface.Configuration config = new GpuSurface.Configuration(framebufferWidth, framebufferHeight, presentMode);
             try {
                 windowSurface.configure(config);
                 this.surfaceIsInvalid = false;
-            } catch (SurfaceException e) {
+            } catch(SurfaceException e) {
                 LOGGER.warn("Couldn't configure surface to {}: {}", config, e);
                 this.surfaceIsInvalid = true;
             }
         }
 
-        if (surfaceIsInvalid || window.isIconified()) {
+        if(surfaceIsInvalid || window.isIconified()) {
             return;
         }
 
         try {
             windowSurface.acquireNextTexture();
-        } catch (SurfaceException e) {
+        } catch(SurfaceException e) {
             LOGGER.warn("Couldn't acquire next surface texture with config {}: {}", windowSurface.currentConfiguration(), e);
             this.surfaceIsInvalid = true;
             this.windowSurfaceNeedsReconfiguring = true;
@@ -113,13 +113,13 @@ public class VirtualWindow implements Closeable {
      * Updates the size of the window's framebuffer. Must only be called while this window is bound.
      */
     public void onResolutionChanged(int newWidth, int newHeight) {
-        if (newWidth == 0 || newHeight == 0) {
+        if(newWidth == 0 || newHeight == 0) {
             // These can be zero on Windows if minimized.
             // Creating zero-sized framebuffers however will throw an error, so we never want to switch to zero values.
             return;
         }
 
-        if (framebufferWidth == newWidth && framebufferHeight == newHeight) {
+        if(framebufferWidth == newWidth && framebufferHeight == newHeight) {
             return; // size is unchanged, nothing to do
         }
 
@@ -131,7 +131,7 @@ public class VirtualWindow implements Closeable {
         );
 
         applyScaleFactor();
-        if (mc.gui.screen() != null) {
+        if(mc.gui.screen() != null) {
             mc.gui.screen().resize(window.getGuiScaledWidth(), window.getGuiScaledHeight());
         }
     }

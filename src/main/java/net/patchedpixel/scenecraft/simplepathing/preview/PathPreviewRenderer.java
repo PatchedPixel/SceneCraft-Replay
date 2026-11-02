@@ -57,20 +57,20 @@ public class PathPreviewRenderer extends EventRegistrations {
     { on(PostRenderWorldCallback.EVENT, this::renderCameraPath); }
     private void renderCameraPath(PoseStack matrixStack, SubmitNodeStorage submitNodeStorage) {
         this.submitNodeStorage = submitNodeStorage;
-        if (((EntityRendererHandler.IEntityRenderer) mc.gameRenderer).sceneCraftRender_getHandler() != null) return;
-        if (!replayHandler.getReplaySender().isAsyncMode() || mc.gui.hud.isHidden()) return;
+        if(((EntityRendererHandler.IEntityRenderer) mc.gameRenderer).sceneCraftRender_getHandler() != null) return;
+        if(!replayHandler.getReplaySender().isAsyncMode() || mc.gui.hud.isHidden()) return;
 
         Entity view = mc.getCameraEntity();
-        if (view == null) return;
+        if(view == null) return;
 
         GuiPathing guiPathing = mod.getGuiPathing();
-        if (guiPathing == null) return;
+        if(guiPathing == null) return;
         EntityPositionTracker entityTracker = guiPathing.getEntityTracker();
 
         SPTimeline timeline = mod.getCurrentTimeline();
-        if (timeline == null) return;
+        if(timeline == null) return;
         Path path = timeline.getPositionPath();
-        if (path.getKeyframes().isEmpty()) return;
+        if(path.getKeyframes().isEmpty()) return;
         Path timePath = timeline.getTimePath();
 
         path.update();
@@ -85,29 +85,29 @@ public class PathPreviewRenderer extends EventRegistrations {
         );
 
         try {
-            for (PathSegment segment : path.getSegments()) {
+            for(PathSegment segment : path.getSegments()) {
                 Interpolator interpolator = segment.getInterpolator();
                 Keyframe start = segment.getStartKeyframe();
                 Keyframe end = segment.getEndKeyframe();
                 long diff = (int) (end.getTime() - start.getTime());
 
                 boolean spectator = interpolator.getKeyframeProperties().contains(SpectatorProperty.PROPERTY);
-                if (spectator && entityTracker == null) {
+                if(spectator && entityTracker == null) {
                     continue; // Cannot render spectator positions when entity tracker is not yet loaded
                 }
                 // Spectator segments have 20 lines per second (at least 10) whereas normal segments have a fixed 100
                 long steps = spectator ? Math.max(diff / 50, 10) : 100;
                 Vector3f prevPos = null;
-                for (int i = 0; i <= steps; i++) {
+                for(int i = 0; i <= steps; i++) {
                     long time = start.getTime() + diff * i / steps;
-                    if (spectator) {
+                    if(spectator) {
                         Optional<Integer> entityId = path.getValue(SpectatorProperty.PROPERTY, time);
                         Optional<Integer> replayTime = timePath.getValue(TimestampProperty.PROPERTY, time);
-                        if (entityId.isPresent() && replayTime.isPresent()) {
+                        if(entityId.isPresent() && replayTime.isPresent()) {
                             Location loc = entityTracker.getEntityPositionAtTimestamp(entityId.get(), replayTime.get());
-                            if (loc != null) {
+                            if(loc != null) {
                                 Vector3f pos = loc2Vec(loc);
-                                if (prevPos != null) {
+                                if(prevPos != null) {
                                     drawConnection(matrixStack, viewPos, prevPos, pos, 0x0000ffff, renderDistanceSquared);
                                 }
                                 prevPos = pos;
@@ -116,9 +116,9 @@ public class PathPreviewRenderer extends EventRegistrations {
                         }
                     } else {
                         Optional<Vector3f> optPos = path.getValue(CameraProperties.POSITION, time).map(this::tripleD2Vec);
-                        if (optPos.isPresent()) {
+                        if(optPos.isPresent()) {
                             Vector3f pos = optPos.get();
-                            if (prevPos != null) {
+                            if(prevPos != null) {
                                 double distance = Math.sqrt(distanceSquared(prevPos, pos));
                                 double speed = Math.min(distance / (diff / steps), FASTEST_PATH_SPEED);
                                 double speedFraction = speed / FASTEST_PATH_SPEED;
@@ -143,13 +143,13 @@ public class PathPreviewRenderer extends EventRegistrations {
 
             int time = guiPathing.timeline.getCursorPosition();
             Optional<Integer> entityId = path.getValue(SpectatorProperty.PROPERTY, time);
-            if (entityId.isPresent()) {
+            if(entityId.isPresent()) {
                 // Spectating an entity
-                if (entityTracker != null) {
+                if(entityTracker != null) {
                     Optional<Integer> replayTime = timePath.getValue(TimestampProperty.PROPERTY, time);
-                    if (replayTime.isPresent()) {
+                    if(replayTime.isPresent()) {
                         Location loc = entityTracker.getEntityPositionAtTimestamp(entityId.get(), replayTime.get());
-                        if (loc != null) {
+                        if(loc != null) {
                             drawCamera(matrixStack, viewPos, loc2Vec(loc), new Vector3f(loc.getYaw(), loc.getPitch(), 0f));
                         }
                     }
@@ -158,7 +158,7 @@ public class PathPreviewRenderer extends EventRegistrations {
                 // Normal camera path
                 Optional<Vector3f> cameraPos = path.getValue(CameraProperties.POSITION, time).map(this::tripleD2Vec);
                 Optional<Vector3f> cameraRot = path.getValue(CameraProperties.ROTATION, time).map(this::tripleF2Vec);
-                if (cameraPos.isPresent() && cameraRot.isPresent()) {
+                if(cameraPos.isPresent() && cameraRot.isPresent()) {
                     drawCamera(matrixStack, viewPos, cameraPos.get(), cameraRot.get());
                 }
             }
@@ -192,8 +192,8 @@ public class PathPreviewRenderer extends EventRegistrations {
     }
 
     private void drawConnection(PoseStack stack, Vector3f view, Vector3f pos1, Vector3f pos2, int color, int renderDistanceSquared) {
-        if (distanceSquared(view, pos1) > renderDistanceSquared) return;
-        if (distanceSquared(view, pos2) > renderDistanceSquared) return;
+        if(distanceSquared(view, pos1) > renderDistanceSquared) return;
+        if(distanceSquared(view, pos2) > renderDistanceSquared) return;
 
         submitNodeStorage.order(1).submitCustomGeometry(stack, RenderTypes.LINES, (pose, buffer) -> {
 

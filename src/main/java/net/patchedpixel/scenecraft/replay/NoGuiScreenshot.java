@@ -42,7 +42,7 @@ public class NoGuiScreenshot {
     public static ListenableFuture<NoGuiScreenshot> take(final Minecraft mc, final int width, final int height) {
         final SettableFuture<NoGuiScreenshot> future = SettableFuture.create();
         Runnable runnable = () -> {
-            if (future.isCancelled()) {
+            if(future.isCancelled()) {
                 return;
             }
 
@@ -53,18 +53,18 @@ public class NoGuiScreenshot {
             final Screen orgScreen = mc.gui.screen();
             try {
                 mc.gui.screen = null;
-                if (!guiHidden) mc.gui.hud.toggle();
+                if(!guiHidden) mc.gui.hud.toggle();
 
                 mc.gameRenderer.update(mc.getDeltaTracker());
                 mc.gameRenderer.extract(mc.getDeltaTracker(), true);
                 mc.gameRenderer.render();
-            } catch (Throwable t) {
+            } catch(Throwable t) {
                 future.setException(t);
                 return;
             } finally {
                 // Reset GUI settings
                 mc.gui.screen = orgScreen;
-                if (!guiHidden) mc.gui.hud.toggle();
+                if(!guiHidden) mc.gui.hud.toggle();
             }
 
             // The frame without GUI has been rendered
@@ -80,8 +80,8 @@ public class NoGuiScreenshot {
                     fence.awaitCompletion(Long.MAX_VALUE);
                     try (GpuBufferSlice.MappedView readView = gpuBuffer.map(true, false)) {
                         NativeImage nativeImage = new NativeImage(frameWidth, frameHeight, false);
-                        for (int y = 0; y < frameHeight; ++y) {
-                            for (int x = 0; x < frameWidth; ++x) {
+                        for(int y = 0; y < frameHeight; ++y) {
+                            for(int x = 0; x < frameWidth; ++x) {
                                 int color = readView.data().getInt((x + y * frameWidth) * 4);
                                 nativeImage.setPixelABGR(x, frameHeight - y - 1, 0xff000000 | color);
                             }
@@ -102,7 +102,7 @@ public class NoGuiScreenshot {
 
                 // Finish
                 future.set(new NoGuiScreenshot(image, width, height));
-            } catch (Throwable t) {
+            } catch(Throwable t) {
                 future.setException(t);
             }
         };

@@ -36,12 +36,12 @@ public class ResourcePackRecorder {
             // Check whether it is already known
             String hash = Hashing.sha1().hashBytes(bytes).toString();
             boolean doWrite = false; // Whether we are the first and have to write it
-            synchronized (replayFile) { // Need to read, modify and write the resource pack index atomically
+            synchronized(replayFile) { // Need to read, modify and write the resource pack index atomically
                 Map<Integer, String> index = replayFile.getResourcePackIndex();
-                if (index == null) {
+                if(index == null) {
                     index = new HashMap<>();
                 }
-                if (!index.containsValue(hash)) {
+                if(!index.containsValue(hash)) {
                     // Hash is unknown, we have to write the resource pack ourselves
                     doWrite = true;
                 }
@@ -49,12 +49,12 @@ public class ResourcePackRecorder {
                 index.put(requestId, hash);
                 replayFile.writeResourcePackIndex(index);
             }
-            if (doWrite) {
+            if(doWrite) {
                 try (OutputStream out = replayFile.writeResourcePack(hash)) {
                     out.write(bytes);
                 }
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             logger.warn("Failed to save resource pack.", e);
         }
     }
@@ -69,7 +69,7 @@ public class ResourcePackRecorder {
 
     public void recordResourcePack(Path file, UUID uuid) {
         Integer id = mcIdToReplayId.get(uuid);
-        if (id == null) {
+        if(id == null) {
             logger.warn("Got resource pack download for unexpected uuid " + uuid + " at " + file);
             return;
         }

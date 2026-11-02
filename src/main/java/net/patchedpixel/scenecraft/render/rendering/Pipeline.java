@@ -51,7 +51,7 @@ public class Pipeline<R extends Frame, P extends Frame> implements Runnable {
                     public boolean offer(Runnable runnable) {
                         try {
                             put(runnable);
-                        } catch (InterruptedException e) {
+                        } catch(InterruptedException e) {
                             Thread.currentThread().interrupt();
                             return false;
                         }
@@ -60,13 +60,13 @@ public class Pipeline<R extends Frame, P extends Frame> implements Runnable {
                 }, new ThreadPoolExecutor.DiscardPolicy());
 
         Minecraft mc = MCVer.getMinecraft();
-        while (!capturer.isDone() && !abort) {
-            if (mc.getWindow().shouldClose() || BlockableEventLoop.delayedCrash != null) {
+        while(!capturer.isDone() && !abort) {
+            if(mc.getWindow().shouldClose() || BlockableEventLoop.delayedCrash != null) {
                 processService.shutdown();
                 return;
             }
             Map<Channel, R> rawFrame = capturer.process();
-            if (rawFrame != null) {
+            if(rawFrame != null) {
                 processService.submit(new ProcessTask(rawFrame));
             }
         }
@@ -74,7 +74,7 @@ public class Pipeline<R extends Frame, P extends Frame> implements Runnable {
         processService.shutdown();
         try {
             processService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        } catch (InterruptedException e) {
+        } catch(InterruptedException e) {
             Thread.currentThread().interrupt();
         }
 
@@ -83,7 +83,7 @@ public class Pipeline<R extends Frame, P extends Frame> implements Runnable {
             capturer.close();
             processor.close();
             consumer.close();
-        } catch (Throwable t) {
+        } catch(Throwable t) {
             CrashReport crashReport = CrashReport.forThrowable(t, "Cleaning up rendering pipeline");
             throw new ReportedException(crashReport);
         }
@@ -104,18 +104,18 @@ public class Pipeline<R extends Frame, P extends Frame> implements Runnable {
         public void run() {
             try {
                 Map<Channel, P> processedChannels = new HashMap<>();
-                for (Map.Entry<Channel, R> entry : rawChannels.entrySet()) {
+                for(Map.Entry<Channel, R> entry : rawChannels.entrySet()) {
                     P processedFrame = processor.process(entry.getValue());
-                    if (entry.getKey() == Channel.DEPTH && processedFrame instanceof BitmapFrame) {
+                    if(entry.getKey() == Channel.DEPTH && processedFrame instanceof BitmapFrame) {
                         depthProcessor.process((BitmapFrame) processedFrame);
                     }
                     processedChannels.put(entry.getKey(), processedFrame);
                 }
-                if (processedChannels.isEmpty()) {
+                if(processedChannels.isEmpty()) {
                     return;
                 }
                 consumer.consume(processedChannels);
-            } catch (Throwable t) {
+            } catch(Throwable t) {
                 CrashReport crashReport = CrashReport.forThrowable(t, "Processing frame");
                 MCVer.getMinecraft().delayCrash(crashReport);
             }
@@ -134,15 +134,15 @@ public class Pipeline<R extends Frame, P extends Frame> implements Runnable {
 
         @Override
         public void consume(Map<Channel, P> channels) {
-            if (inner.isParallelCapable()) {
+            if(inner.isParallelCapable()) {
                 inner.consume(channels);
             } else {
                 int frameId = channels.values().iterator().next().getFrameId();
-                synchronized (lock) {
-                    while (nextFrame != frameId) {
+                synchronized(lock) {
+                    while(nextFrame != frameId) {
                         try {
                             lock.wait();
-                        } catch (InterruptedException e) {
+                        } catch(InterruptedException e) {
                             Thread.currentThread().interrupt();
                         }
                     }

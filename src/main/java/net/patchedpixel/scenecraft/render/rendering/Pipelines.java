@@ -20,7 +20,7 @@ import net.patchedpixel.scenecraft.render.processor.StereoscopicToBitmapProcesso
 
 public class Pipelines {
     public static Pipeline newPipeline(RenderSettings.RenderMethod method, RenderInfo renderInfo, FrameConsumer<BitmapFrame> consumer) {
-        switch (method) {
+        switch(method) {
             case DEFAULT:
                 return newDefaultPipeline(renderInfo, consumer);
             case STEREOSCOPIC:
@@ -78,7 +78,7 @@ public class Pipelines {
         ODSToBitmapProcessor processor = new ODSToBitmapProcessor(settings.getVideoWidth(),
                 settings.getVideoHeight(), settings.getSphericalFovX());
 
-        if (!RenderSettings.RenderMethod.ODS.isSupported()) {
+        if(!RenderSettings.RenderMethod.ODS.isSupported()) {
             throw new UnsupportedOperationException("ODS rendering requires Iris on the OpenGL backend");
         }
         FrameCapturer<ODSGpuFrame> capturer =

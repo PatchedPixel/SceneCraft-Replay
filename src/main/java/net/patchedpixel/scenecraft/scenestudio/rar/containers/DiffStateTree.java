@@ -34,14 +34,14 @@ public abstract class DiffStateTree<T> extends StateTree<T> implements RandomAcc
 
     @Override
     public void play(PacketSink sink, int currentTimeStamp, int targetTime) throws IOException {
-        for (T update : map.subMap(currentTimeStamp, false, targetTime, true).values()) {
+        for(T update : map.subMap(currentTimeStamp, false, targetTime, true).values()) {
             play(sink, update);
         }
     }
 
     @Override
     public void rewind(PacketSink sink, int currentTimeStamp, int targetTime) throws IOException {
-        for (T update : map.subMap(targetTime, false, currentTimeStamp, true).descendingMap().values()) {
+        for(T update : map.subMap(targetTime, false, currentTimeStamp, true).descendingMap().values()) {
             rewind(sink, update);
         }
     }

@@ -32,16 +32,16 @@ public class Mixin_ContextualKeyBindings {
     @Inject(method = "resetMapping", at = @At("HEAD"))
     private static void preContextualKeyBindings(CallbackInfo ci) {
         SceneCraft mod = SceneCraft.instance;
-        if (mod == null) {
+        if(mod == null) {
             return;
         }
 
         Set<KeyMapping> onlyInReplay = mod.getKeyBindingRegistry().getOnlyInReplay();
-        if (SceneCraftReplay.instance.getReplayHandler() != null) {
+        if(SceneCraftReplay.instance.getReplayHandler() != null) {
             // In replay, remove any conflicting key bindings, so that ours are guaranteed in
             keyBindings().removeIf(keyBinding -> {
-                for (KeyMapping exclusiveBinding : onlyInReplay) {
-                    if (keyBinding.same(exclusiveBinding) && keyBinding != exclusiveBinding) {
+                for(KeyMapping exclusiveBinding : onlyInReplay) {
+                    if(keyBinding.same(exclusiveBinding) && keyBinding != exclusiveBinding) {
                         temporarilyRemoved.add(keyBinding);
                         return true;
                     }
@@ -52,7 +52,7 @@ public class Mixin_ContextualKeyBindings {
         } else {
             // Not in a replay, remove all replay-exclusive keybindings
             keyBindings().removeIf(keyBinding -> {
-                if (onlyInReplay.contains(keyBinding)) {
+                if(onlyInReplay.contains(keyBinding)) {
                     temporarilyRemoved.add(keyBinding);
                     return true;
                 }
@@ -64,7 +64,7 @@ public class Mixin_ContextualKeyBindings {
 
     @Inject(method = "resetMapping", at = @At("RETURN"))
     private static void postContextualKeyBindings(CallbackInfo ci) {
-        for (KeyMapping keyBinding : temporarilyRemoved) {
+        for(KeyMapping keyBinding : temporarilyRemoved) {
             Mixin_ContextualKeyBindings.ALL.put(keyBinding.getName(), keyBinding);
         }
 

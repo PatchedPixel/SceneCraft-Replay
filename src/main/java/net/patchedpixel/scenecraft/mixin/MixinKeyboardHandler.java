@@ -28,7 +28,7 @@ public class MixinKeyboardHandler {
     @Inject(method = "keyPress", at = @At(value = "INVOKE", target = ON_KEY_PRESSED), cancellable = true)
     private void beforeKeyBindingTick(long window, int action, KeyEvent mcKeyInput, CallbackInfo ci) {
         KeyInput keyInput = new KeyInput(mcKeyInput);
-        if (KeyEventCallback.EVENT.invoker().onKeyEvent(keyInput, action)) {
+        if(KeyEventCallback.EVENT.invoker().onKeyEvent(keyInput, action)) {
             ci.cancel();
         }
     }
@@ -40,7 +40,7 @@ public class MixinKeyboardHandler {
 
     @WrapOperation(method = "keyPress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;keyPressed(Lnet/minecraft/client/input/KeyEvent;)Z"))
     private boolean keyPressed(Screen screen, KeyEvent mcKeyInput, Operation<Boolean> original) {
-        if (KeyboardCallback.EVENT.invoker().keyPressed(new KeyInput(mcKeyInput))) {
+        if(KeyboardCallback.EVENT.invoker().keyPressed(new KeyInput(mcKeyInput))) {
             return true;
         }
         return original.call(screen, mcKeyInput);
@@ -52,7 +52,7 @@ public class MixinKeyboardHandler {
             slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=keyPressed event handler"))
     )
     private Screen doesScreenPassEvents(Screen screen) {
-        if (screen instanceof ScreenExt ext && ext.doesPassEvents()) {
+        if(screen instanceof ScreenExt ext && ext.doesPassEvents()) {
             screen = null;
         }
 
@@ -62,7 +62,7 @@ public class MixinKeyboardHandler {
     @WrapOperation(method = "keyPress", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;keyReleased(Lnet/minecraft/client/input/KeyEvent;)Z"))
     private boolean keyReleased(Screen screen, KeyEvent mcKeyInput, Operation<Boolean> original) {
         boolean consumed = KeyboardCallback.EVENT.invoker().keyReleased(new KeyInput(mcKeyInput)) || original.call(screen, mcKeyInput);
-        if (consumed && screen instanceof ScreenExt ext && ext.doesPassEvents()) {
+        if(consumed && screen instanceof ScreenExt ext && ext.doesPassEvents()) {
             KeyMapping.set(InputConstants.getKey(mcKeyInput), false);
         }
         return consumed;
@@ -70,7 +70,7 @@ public class MixinKeyboardHandler {
 
     @WrapOperation(method = "charTyped", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;charTyped(Lnet/minecraft/client/input/CharacterEvent;)Z"))
     private boolean charTyped(Screen screen, CharacterEvent mcCharInput, Operation<Boolean> original) {
-        if (KeyboardCallback.EVENT.invoker().charTyped(new CharInput(mcCharInput))) {
+        if(KeyboardCallback.EVENT.invoker().charTyped(new CharInput(mcCharInput))) {
             return true;
         }
         return original.call(screen, mcCharInput);

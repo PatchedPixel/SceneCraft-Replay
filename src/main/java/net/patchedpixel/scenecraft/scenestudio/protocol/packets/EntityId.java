@@ -28,7 +28,7 @@ import java.util.List;
 
 public class EntityId {
     public static List<Integer> getEntityIds(Packet packet) throws IOException {
-        switch (packet.getType()) {
+        switch(packet.getType()) {
             case EntityCollectItem: try (Packet.Reader in = packet.reader()) {
                 return Arrays.asList(in.readVarInt(), in.readVarInt());
             }
@@ -39,7 +39,7 @@ public class EntityId {
                 int len = in.readVarInt();
                 List<Integer> result = new ArrayList<>(len + 1);
                 result.add(entityId);
-                for (int i = 0; i < len; i++) {
+                for(int i = 0; i < len; i++) {
                     result.add(in.readVarInt());
                 }
                 return result;
@@ -52,7 +52,7 @@ public class EntityId {
             }
             default:
                 Integer entityId = getEntityId(packet);
-                if (entityId != null) {
+                if(entityId != null) {
                     return Collections.singletonList(entityId);
                 } else {
                     return Collections.emptyList();
@@ -61,7 +61,7 @@ public class EntityId {
     }
 
     public static Integer getEntityId(Packet packet) throws IOException {
-        switch (packet.getType()) {
+        switch(packet.getType()) {
             case OpenHorseWindow: try (Packet.Reader in = packet.reader()) {
                 in.readByte();
                 in.readVarInt();

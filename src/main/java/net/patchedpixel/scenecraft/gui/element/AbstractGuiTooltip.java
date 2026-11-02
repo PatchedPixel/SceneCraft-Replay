@@ -65,7 +65,7 @@ public abstract class AbstractGuiTooltip<T extends AbstractGuiTooltip<T>> extend
 
         Font fontRenderer = MCVer.getFontRenderer();
         int y = LINE_SPACING + 1;
-        for (String line : text) {
+        for(String line : text) {
             renderer.drawString(LINE_SPACING + 1, y, color, line, true);
             y += fontRenderer.lineHeight + LINE_SPACING;
         }
@@ -76,9 +76,9 @@ public abstract class AbstractGuiTooltip<T extends AbstractGuiTooltip<T>> extend
         Font fontRenderer = MCVer.getFontRenderer();
         int height = 1 + LINE_SPACING + text.length * (fontRenderer.lineHeight + LINE_SPACING);
         int width = 0;
-        for (String line : text) {
+        for(String line : text) {
             int w = fontRenderer.width(line);
-            if (w > width) {
+            if(w > width) {
                 width = w;
             }
         }

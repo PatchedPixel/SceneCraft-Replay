@@ -9,8 +9,8 @@ public interface KeyboardCallback {
             new KeyboardCallback() {
                 @Override
                 public boolean keyPressed(KeyInput keyInput) {
-                    for (KeyboardCallback listener : listeners) {
-                        if (listener.keyPressed(keyInput)) {
+                    for(KeyboardCallback listener : listeners) {
+                        if(listener.keyPressed(keyInput)) {
                             return true;
                         }
                     }
@@ -19,8 +19,8 @@ public interface KeyboardCallback {
 
                 @Override
                 public boolean keyReleased(KeyInput keyInput) {
-                    for (KeyboardCallback listener : listeners) {
-                        if (listener.keyReleased(keyInput)) {
+                    for(KeyboardCallback listener : listeners) {
+                        if(listener.keyReleased(keyInput)) {
                             return true;
                         }
                     }
@@ -29,8 +29,8 @@ public interface KeyboardCallback {
 
                 @Override
                 public boolean charTyped(CharInput charInput) {
-                    for (KeyboardCallback listener : listeners) {
-                        if (listener.charTyped(charInput)) {
+                    for(KeyboardCallback listener : listeners) {
+                        if(listener.charTyped(charInput)) {
                             return true;
                         }
                     }

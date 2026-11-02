@@ -29,7 +29,7 @@ public class GuiHandler extends EventRegistrations {
 
     { on(InitScreenCallback.EVENT, (screen, buttons) -> onGuiInit(screen)); }
     private void onGuiInit(net.minecraft.client.gui.screens.Screen gui) {
-        if (gui instanceof SelectWorldScreen || gui instanceof JoinMultiplayerScreen) {
+        if(gui instanceof SelectWorldScreen || gui instanceof JoinMultiplayerScreen) {
             boolean sp = gui instanceof SelectWorldScreen;
             SettingsRegistry settingsRegistry = mod.getSettingsRegistry();
             Setting<Boolean> setting = sp ? Setting.RECORD_SINGLEPLAYER : Setting.RECORD_SERVER;
@@ -52,7 +52,7 @@ public class GuiHandler extends EventRegistrations {
             }).addElements(null, recordingCheckbox);
         }
 
-        if (gui instanceof ManageServerScreen) {
+        if(gui instanceof ManageServerScreen) {
             VanillaGuiScreen vanillaGui = VanillaGuiScreen.wrap(gui);
             GuiButton replayButton = new GuiReplayButton().onClick(() -> {
                 ServerData serverInfo = ((ManageServerScreen) gui).serverData;

@@ -119,7 +119,7 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
 
         setBackgroundColor(Colors.DARK_TRANSPARENT);
 
-        for (RenderJob renderJob : jobs) {
+        for(RenderJob renderJob : jobs) {
             LOGGER.trace("Adding {} to job queue list", renderJob);
             list.getListPanel().addElements(null, new Entry(renderJob));
         }
@@ -133,7 +133,7 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
         });
 
         removeButton.onClick(() -> {
-            for (Entry entry : selectedEntries) {
+            for(Entry entry : selectedEntries) {
                 LOGGER.trace("Remove button clicked for {}", entry.job);
                 list.getListPanel().removeElement(entry);
                 jobs.remove(entry.job);
@@ -146,12 +146,12 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
         renderButton.onClick(() -> {
             LOGGER.trace("Render button clicked");
             List<RenderJob> renderQueue = new ArrayList<>();
-            if (selectedEntries.isEmpty()) {
+            if(selectedEntries.isEmpty()) {
                 renderQueue.addAll(jobs);
             } else {
                 Set<RenderJob> selectedJobs = selectedEntries.stream().map(it -> it.job).collect(Collectors.toSet());
-                for (RenderJob job : jobs) {
-                    if (selectedJobs.contains(job)) {
+                for(RenderJob job : jobs) {
+                    if(selectedJobs.contains(job)) {
                         renderQueue.add(job);
                     }
                 }
@@ -169,16 +169,16 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
         mc.gui.setScreen(null);
         // Start rendering
         int jobsDone = 0;
-        for (RenderJob renderJob : queue) {
+        for(RenderJob renderJob : queue) {
             LOGGER.info("Starting render job {}", renderJob);
             try {
                 VideoRenderer videoRenderer = new VideoRenderer(renderJob.getSettings(), replayHandler, renderJob.getTimeline());
                 videoRenderer.renderVideo();
-            } catch (FFmpegWriter.NoFFmpegException e) {
+            } catch(FFmpegWriter.NoFFmpegException e) {
                 LOGGER.error("Rendering video:", e);
                 mc.gui.setScreen(new GuiNoFfmpeg(container::display).toMinecraft());
                 return;
-            } catch (FFmpegWriter.FFmpegStartupException e) {
+            } catch(FFmpegWriter.FFmpegStartupException e) {
                 int jobsToSkip = jobsDone;
                 GuiExportFailed.tryToRecover(e, newSettings -> {
                     // Update current job with fixed ffmpeg arguments
@@ -187,7 +187,7 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
                     SceneCraft.instance.runLaterWithoutLock(() -> processQueue(container, replayHandler, Iterables.skip(queue, jobsToSkip), done));
                 });
                 return;
-            } catch (Throwable t) {
+            } catch(Throwable t) {
                 Utils.error(LOGGER, container, CrashReport.forThrowable(t, "Rendering video"), () -> {});
                 container.display(); // Re-show the queue popup and the new error popup
                 return;
@@ -203,7 +203,7 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
             Iterator<Pair<File, List<RenderJob>>> queue,
             Runnable done
     ) {
-        if (!queue.hasNext()) {
+        if(!queue.hasNext()) {
             done.run();
             return;
         }
@@ -215,13 +215,13 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
         try {
             replayFile = mod.getCore().files.open(next.getKey().toPath());
             replayHandler = mod.startReplay(replayFile, false, false);
-        } catch (IOException e) {
+        } catch(IOException e) {
             Utils.error(LOGGER, container, CrashReport.forThrowable(e, "Opening replay"), () -> {});
             container.display(); // Re-show the queue popup and the new error popup
             IOUtils.closeQuietly(replayFile);
             return;
         }
-        if (replayHandler == null) {
+        if(replayHandler == null) {
             LOGGER.warn("Replay failed to open (missing mods?), skipping..");
             IOUtils.closeQuietly(replayFile);
             processMultipleReplays(container, mod, queue, done);
@@ -231,11 +231,11 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
 
         Minecraft mc = mod.getCore().getMinecraft();
         int jumpTo = 1000;
-        while (mc.level == null && jumpTo < replayHandler.getReplayDuration()) {
+        while(mc.level == null && jumpTo < replayHandler.getReplayDuration()) {
             replaySender.sendPacketsTill(jumpTo);
             jumpTo += 1000;
         }
-        if (mc.level == null) {
+        if(mc.level == null) {
             LOGGER.warn("Replay failed to load world (corrupted?), skipping..");
             IOUtils.closeQuietly(replayFile);
             processMultipleReplays(container, mod, queue, done);
@@ -245,7 +245,7 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
         processQueue(container, replayHandler, next.getValue(), () -> {
             try {
                 replayHandler.endReplay();
-            } catch (IOException e) {
+            } catch(IOException e) {
                 Utils.error(LOGGER, container, CrashReport.forThrowable(e, "Closing replay"), () -> {});
                 container.display(); // Re-show the queue popup and the new error popup
                 return;
@@ -265,7 +265,7 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
     public GuiRenderSettings addJob(Timeline timeline) {
         return new GuiRenderSettings(container, replayHandler, timeline) {
             {
-                if (!jobs.isEmpty()) {
+                if(!jobs.isEmpty()) {
                     buttonPanel.removeElement(renderButton);
                 }
                 queueButton.onClick(click -> {
@@ -282,7 +282,7 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
 
                     // Need to close the inner popup before we can open the outer one
                     close();
-                    if (!opened) {
+                    if(!opened) {
                         GuiRenderQueue.this.open();
                     }
                 });
@@ -291,7 +291,7 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
             @Override
             public void close() {
                 super.close();
-                if (!opened && jobs.isEmpty()) {
+                if(!opened && jobs.isEmpty()) {
                     GuiRenderQueue.this.close();
                 }
             }
@@ -300,7 +300,7 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
 
     @Override
     public void open() {
-        if (jobs.isEmpty() && timelineSupplier != null) {
+        if(jobs.isEmpty() && timelineSupplier != null) {
             addButtonClicked().ifErr(lines ->
                     GuiInfoPopup.open(container, lines).onClosed(this::close));
             return;
@@ -312,7 +312,7 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
 
     @Override
     protected void close() {
-        if (opened) {
+        if(opened) {
             super.close();
         }
         opened = false;
@@ -332,17 +332,17 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
         renderButton.setI18nLabel("scenecraft.gui.renderqueue.render" + (selected > 0 ? "selected" : "all"));
 
         String[] compatError = VideoRenderer.checkCompat(jobs.stream().map(RenderJob::getSettings));
-        if (compatError != null) {
+        if(compatError != null) {
             renderButton.setDisabled().setTooltip(new GuiTooltip().setText(compatError));
         }
     }
 
     @Override
     public boolean handleKey(KeyInput keyInput) {
-        if (keyInput.hasCtrl() && keyInput.key == InputConstants.KEY_A) {
-            if (selectedEntries.size() < list.getListPanel().getChildren().size()) {
-                for (GuiElement<?> child : list.getListPanel().getChildren()) {
-                    if (child instanceof Entry) {
+        if(keyInput.hasCtrl() && keyInput.key == InputConstants.KEY_A) {
+            if(selectedEntries.size() < list.getListPanel().getChildren().size()) {
+                for(GuiElement<?> child : list.getListPanel().getChildren()) {
+                    if(child instanceof Entry) {
                         selectedEntries.add((Entry) child);
                     }
                 }
@@ -378,10 +378,10 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
 
         @Override
         protected void onClick(Click click) {
-            if (!click.hasCtrl()) {
+            if(!click.hasCtrl()) {
                 selectedEntries.clear();
             }
-            if (selectedEntries.contains(this)) {
+            if(selectedEntries.contains(this)) {
                 selectedEntries.remove(this);
             } else {
                 selectedEntries.add(this);
@@ -391,7 +391,7 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
 
         @Override
         public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
-            if (selectedEntries.contains(this)) {
+            if(selectedEntries.contains(this)) {
                 renderer.drawRect(0, 0, size.getWidth(), size.getHeight(), Colors.BLACK);
                 renderer.drawRect(0, 0, 2, size.getHeight(), Colors.WHITE);
             }

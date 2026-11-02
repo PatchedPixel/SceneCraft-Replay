@@ -63,11 +63,11 @@ public final class PacketData implements Cloneable {
     }
 
     public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof PacketData)) return false;
+        if(o == this) return true;
+        if(!(o instanceof PacketData)) return false;
         final PacketData other = (PacketData) o;
-        if (this.time != other.time) return false;
-        if (!Objects.equals(this.packet, other.packet)) return false;
+        if(this.time != other.time) return false;
+        if(!Objects.equals(this.packet, other.packet)) return false;
         return true;
     }
 

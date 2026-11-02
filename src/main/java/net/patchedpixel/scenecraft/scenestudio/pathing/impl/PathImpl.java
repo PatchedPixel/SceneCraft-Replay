@@ -67,10 +67,10 @@ public class PathImpl implements Path {
     private void update(boolean force) {
         Interpolator interpolator = null;
         Map<PropertyPart, InterpolationParameters> parameters = new HashMap<>();
-        for (PathSegment segment : segments) {
-            if (segment.getInterpolator() != interpolator) {
+        for(PathSegment segment : segments) {
+            if(segment.getInterpolator() != interpolator) {
                 interpolator = segment.getInterpolator();
-                if (force || interpolator.isDirty()) {
+                if(force || interpolator.isDirty()) {
                     parameters = interpolator.bake(parameters);
                 }
             }
@@ -80,10 +80,10 @@ public class PathImpl implements Path {
     @Override
     public <T> Optional<T> getValue(Property<T> property, long time) {
         PathSegment segment = getSegment(time);
-        if (segment != null) {
+        if(segment != null) {
             Interpolator interpolator = segment.getInterpolator();
-            if (interpolator != null) {
-                if (interpolator.getKeyframeProperties().contains(property)) {
+            if(interpolator != null) {
+                if(interpolator.getKeyframeProperties().contains(property)) {
                     return interpolator.getValue(property, time);
                 }
             }
@@ -105,13 +105,13 @@ public class PathImpl implements Path {
 
     @Override
     public void insert(Keyframe keyframe) {
-        if (keyframes.containsKey(keyframe.getTime())) {
+        if(keyframes.containsKey(keyframe.getTime())) {
             throw new IllegalStateException("A keyframe at " + keyframe.getTime() + " already exists.");
         }
         keyframes.put(keyframe.getTime(), keyframe);
 
-        if (segments.isEmpty()) {
-            if (keyframes.size() >= 2) {
+        if(segments.isEmpty()) {
+            if(keyframes.size() >= 2) {
                 Iterator<Keyframe> iter = keyframes.values().iterator();
                 segments.add(new PathSegmentImpl(this, iter.next(), iter.next()));
             }
@@ -120,14 +120,14 @@ public class PathImpl implements Path {
 
         ListIterator<PathSegment> iter = segments.listIterator();
         PathSegment next = iter.next();
-        if (keyframe.getTime() < next.getStartKeyframe().getTime()) {
+        if(keyframe.getTime() < next.getStartKeyframe().getTime()) {
             iter.previous();
             iter.add(new PathSegmentImpl(this, keyframe, next.getStartKeyframe(), next.getInterpolator()));
             return;
         }
 
-        while (true) {
-            if (next.getStartKeyframe().getTime() <= keyframe.getTime()
+        while(true) {
+            if(next.getStartKeyframe().getTime() <= keyframe.getTime()
                     && next.getEndKeyframe().getTime() >= keyframe.getTime()) {
                 iter.remove();
                 iter.add(new PathSegmentImpl(this, next.getStartKeyframe(), keyframe, next.getInterpolator()));
@@ -135,7 +135,7 @@ public class PathImpl implements Path {
                 next.setInterpolator(null);
                 return;
             }
-            if (iter.hasNext()) {
+            if(iter.hasNext()) {
                 next = iter.next();
             } else {
                 iter.add(new PathSegmentImpl(this, next.getEndKeyframe(), keyframe, next.getInterpolator()));
@@ -146,13 +146,13 @@ public class PathImpl implements Path {
 
     @Override
     public void remove(Keyframe keyframe, boolean useFirstInterpolator) {
-        if (keyframes.get(keyframe.getTime()) != keyframe) {
+        if(keyframes.get(keyframe.getTime()) != keyframe) {
             throw new IllegalArgumentException("The keyframe " + keyframe + " is not part of this path.");
         }
         keyframes.remove(keyframe.getTime());
 
-        if (segments.size() < 2) {
-            for (PathSegment segment : segments) {
+        if(segments.size() < 2) {
+            for(PathSegment segment : segments) {
                 segment.setInterpolator(null);
             }
             segments.clear();
@@ -160,11 +160,11 @@ public class PathImpl implements Path {
         }
 
         ListIterator<PathSegment> iter = segments.listIterator();
-        while (iter.hasNext()) {
+        while(iter.hasNext()) {
             PathSegment next = iter.next();
-            if (next.getEndKeyframe() == keyframe) {
+            if(next.getEndKeyframe() == keyframe) {
                 iter.remove();
-                if (iter.hasNext()) {
+                if(iter.hasNext()) {
                     PathSegment next2 = iter.next();
                     iter.remove();
                     iter.add(new PathSegmentImpl(this, next.getStartKeyframe(), next2.getEndKeyframe(),
@@ -174,7 +174,7 @@ public class PathImpl implements Path {
                 next.setInterpolator(null);
                 return;
             }
-            if (next.getStartKeyframe() == keyframe) {
+            if(next.getStartKeyframe() == keyframe) {
                 next.setInterpolator(null);
                 iter.remove();
                 return;
@@ -194,8 +194,8 @@ public class PathImpl implements Path {
     }
 
     private PathSegment getSegment(long time) {
-        for (PathSegment segment : segments) {
-            if (segment.getStartKeyframe().getTime() <= time && segment.getEndKeyframe().getTime() >= time) {
+        for(PathSegment segment : segments) {
+            if(segment.getStartKeyframe().getTime() <= time && segment.getEndKeyframe().getTime() >= time) {
                 return segment;
             }
         }

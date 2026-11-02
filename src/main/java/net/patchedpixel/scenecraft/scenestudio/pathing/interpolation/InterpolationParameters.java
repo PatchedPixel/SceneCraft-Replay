@@ -63,8 +63,8 @@ public class InterpolationParameters {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof InterpolationParameters)) return false;
+        if(this == o) return true;
+        if(!(o instanceof InterpolationParameters)) return false;
         InterpolationParameters that = (InterpolationParameters) o;
         return Double.compare(value, that.value) == 0
                 && Double.compare(velocity, that.velocity) == 0

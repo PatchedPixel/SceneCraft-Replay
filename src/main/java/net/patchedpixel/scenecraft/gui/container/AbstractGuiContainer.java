@@ -86,14 +86,14 @@ public abstract class AbstractGuiContainer<T extends AbstractGuiContainer<T>>
 
     @Override
     public void convertFor(GuiElement element, Point point, int relativeLayer) {
-        if (layedOutElements == null || !layedOutElements.containsKey(element)) {
+        if(layedOutElements == null || !layedOutElements.containsKey(element)) {
             layout(null, new RenderInfo(0, 0, 0, relativeLayer));
         }
         checkState(layedOutElements != null, "Cannot convert position unless rendered at least once.");
         Pair<ReadablePoint, ReadableDimension> pair = layedOutElements.get(element);
         checkState(pair != null, "Element " + element + " not part of " + this);
         ReadablePoint pos = pair.getKey();
-        if (getContainer() != null) {
+        if(getContainer() != null) {
             getContainer().convertFor(this, point, relativeLayer + getLayer());
         }
         point.translate(-pos.getX(), -pos.getY());
@@ -111,10 +111,10 @@ public abstract class AbstractGuiContainer<T extends AbstractGuiContainer<T>>
 
     @Override
     public T addElements(LayoutData layoutData, GuiElement... elements) {
-        if (layoutData == null) {
+        if(layoutData == null) {
             layoutData = LayoutData.NONE;
         }
-        for (GuiElement element : elements) {
+        for(GuiElement element : elements) {
             this.elements.put(element, layoutData);
             element.setContainer(this);
         }
@@ -123,9 +123,9 @@ public abstract class AbstractGuiContainer<T extends AbstractGuiContainer<T>>
 
     @Override
     public T removeElement(GuiElement element) {
-        if (elements.remove(element) != null) {
+        if(elements.remove(element) != null) {
             element.setContainer(null);
-            if (layedOutElements != null) {
+            if(layedOutElements != null) {
                 layedOutElements.remove(element);
             }
         }
@@ -135,10 +135,10 @@ public abstract class AbstractGuiContainer<T extends AbstractGuiContainer<T>>
     @Override
     public void layout(ReadableDimension size, RenderInfo renderInfo) {
         super.layout(size, renderInfo);
-        if (size == null) return;
+        if(size == null) return;
         try {
             layedOutElements = layout.layOut(this, size);
-        } catch (Exception ex) {
+        } catch(Exception ex) {
             CrashReport crashReport = CrashReport.forThrowable(ex, "Gui Layout");
             renderInfo.addTo(crashReport);
             CrashReportCategory category = crashReport.addCategory("Gui container details");
@@ -146,14 +146,14 @@ public abstract class AbstractGuiContainer<T extends AbstractGuiContainer<T>>
             MCVer.addDetail(category, "Layout", layout::toString);
             throw new ReportedException(crashReport);
         }
-        for (final Map.Entry<GuiElement, Pair<ReadablePoint, ReadableDimension>> e : layedOutElements.entrySet()) {
+        for(final Map.Entry<GuiElement, Pair<ReadablePoint, ReadableDimension>> e : layedOutElements.entrySet()) {
             GuiElement element = e.getKey();
-            if (element instanceof ComposedGuiElement) {
-                if (((ComposedGuiElement) element).getMaxLayer() < renderInfo.layer) {
+            if(element instanceof ComposedGuiElement) {
+                if(((ComposedGuiElement) element).getMaxLayer() < renderInfo.layer) {
                     continue;
                 }
             } else {
-                if (element.getLayer() != renderInfo.layer) {
+                if(element.getLayer() != renderInfo.layer) {
                     continue;
                 }
             }
@@ -167,19 +167,19 @@ public abstract class AbstractGuiContainer<T extends AbstractGuiContainer<T>>
     @Override
     public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
         super.draw(renderer, size, renderInfo);
-        if (backgroundColor != null && renderInfo.getLayer() == 0) {
+        if(backgroundColor != null && renderInfo.getLayer() == 0) {
             renderer.drawRect(0, 0, size.getWidth(), size.getHeight(), backgroundColor);
         }
-        for (final Map.Entry<GuiElement, Pair<ReadablePoint, ReadableDimension>> e : layedOutElements.entrySet()) {
+        for(final Map.Entry<GuiElement, Pair<ReadablePoint, ReadableDimension>> e : layedOutElements.entrySet()) {
             GuiElement element = e.getKey();
             boolean strict;
-            if (element instanceof ComposedGuiElement) {
-                if (((ComposedGuiElement) element).getMaxLayer() < renderInfo.layer) {
+            if(element instanceof ComposedGuiElement) {
+                if(((ComposedGuiElement) element).getMaxLayer() < renderInfo.layer) {
                     continue;
                 }
                 strict = renderInfo.layer == 0;
             } else {
-                if (element.getLayer() != renderInfo.layer) {
+                if(element.getLayer() != renderInfo.layer) {
                     continue;
                 }
                 strict = true;
@@ -192,7 +192,7 @@ public abstract class AbstractGuiContainer<T extends AbstractGuiContainer<T>>
                 e.getKey().draw(eRenderer, eSize, renderInfo.offsetMouse(ePosition.getX(), ePosition.getY())
                         .layer(renderInfo.getLayer() - e.getKey().getLayer()));
                 eRenderer.stopUsing();
-            } catch (Exception ex) {
+            } catch(Exception ex) {
                 CrashReport crashReport = CrashReport.forThrowable(ex, "Rendering Gui");
                 renderInfo.addTo(crashReport);
                 CrashReportCategory category = crashReport.addCategory("Gui container details");
@@ -204,7 +204,7 @@ public abstract class AbstractGuiContainer<T extends AbstractGuiContainer<T>>
                 MCVer.addDetail(category, "Element", () -> e.getKey().toString());
                 MCVer.addDetail(category, "Position", ePosition::toString);
                 MCVer.addDetail(category, "Size", eSize::toString);
-                if (e.getKey() instanceof GuiContainer) {
+                if(e.getKey() instanceof GuiContainer) {
                     MCVer.addDetail(category, "Layout", () -> ((GuiContainer) e.getKey()).getLayout().toString());
                 }
                 throw new ReportedException(crashReport);
@@ -223,7 +223,7 @@ public abstract class AbstractGuiContainer<T extends AbstractGuiContainer<T>>
             @SuppressWarnings("unchecked")
             @Override
             public int compare(GuiElement o1, GuiElement o2) {
-                if (o1 instanceof Comparable && o2 instanceof Comparable) {
+                if(o1 instanceof Comparable && o2 instanceof Comparable) {
                     return ((Comparable) o1).compareTo(o2);
                 }
                 return o1.hashCode() - o2.hashCode();

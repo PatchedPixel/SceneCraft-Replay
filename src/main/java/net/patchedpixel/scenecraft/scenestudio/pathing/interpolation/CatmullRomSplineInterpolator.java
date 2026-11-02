@@ -42,7 +42,7 @@ public class CatmullRomSplineInterpolator extends AbstractInterpolator {
 
     private void addToMap(Property property, Keyframe keyframe) {
         Set<Keyframe> set = framesToProperty.get(property);
-        if (set == null) {
+        if(set == null) {
             framesToProperty.put(property, set = new LinkedHashSet<>());
         }
         set.add(keyframe);
@@ -52,12 +52,12 @@ public class CatmullRomSplineInterpolator extends AbstractInterpolator {
     @Override
     protected Map<PropertyPart, InterpolationParameters> bakeInterpolation(Map<PropertyPart, InterpolationParameters> parameters) {
         framesToProperty.clear();
-        for (PathSegment segment : getSegments()) {
-            for (Property property : getKeyframeProperties()) {
-                if (segment.getStartKeyframe().getValue(property).isPresent()) {
+        for(PathSegment segment : getSegments()) {
+            for(Property property : getKeyframeProperties()) {
+                if(segment.getStartKeyframe().getValue(property).isPresent()) {
                     addToMap(property, segment.getStartKeyframe());
                 }
-                if (segment.getEndKeyframe().getValue(property).isPresent()) {
+                if(segment.getEndKeyframe().getValue(property).isPresent()) {
                     addToMap(property, segment.getEndKeyframe());
                 }
             }
@@ -67,8 +67,8 @@ public class CatmullRomSplineInterpolator extends AbstractInterpolator {
 
         Map<PropertyPart, InterpolationParameters> lastParameters = new HashMap<>();
 
-        for (Property<?> property : getKeyframeProperties()) {
-            for (PropertyPart<?> part : property.getParts()) {
+        for(Property<?> property : getKeyframeProperties()) {
+            for(PropertyPart<?> part : property.getParts()) {
                 Polynomial[] polynomials = cubicPolynomials.get(part);
                 Polynomial last = polynomials[polynomials.length - 1];
 
@@ -85,17 +85,17 @@ public class CatmullRomSplineInterpolator extends AbstractInterpolator {
 
     // http://steve.hollasch.net/cgindex/curves/catmull-rom.html
     protected void calcPolynomials() {
-        for (Map.Entry<Property<?>, Set<Keyframe>> e : framesToProperty.entrySet()) {
+        for(Map.Entry<Property<?>, Set<Keyframe>> e : framesToProperty.entrySet()) {
             Property<?> property = e.getKey();
             Set<Keyframe> keyframes = e.getValue();
 
-            for (PropertyPart<?> part : property.getParts()) {
-                if (!part.isInterpolatable()) continue;
+            for(PropertyPart<?> part : property.getParts()) {
+                if(!part.isInterpolatable()) continue;
 
                 List<Double> values = new ArrayList<>();
 
-                if (Double.isNaN(part.getUpperBound())) {
-                    for (Keyframe k : keyframes) {
+                if(Double.isNaN(part.getUpperBound())) {
+                    for(Keyframe k : keyframes) {
                         values.add(getValueAsDouble(k, part));
                     }
                 } else {
@@ -107,18 +107,18 @@ public class CatmullRomSplineInterpolator extends AbstractInterpolator {
                     Double lastValue = null;
                     Integer offset = null;
 
-                    while (it.hasNext()) {
+                    while(it.hasNext()) {
                         Keyframe keyframe = it.next();
                         double value = mod(getValueAsDouble(keyframe, part), bound);
 
-                        if (lastValue == null) {
+                        if(lastValue == null) {
                             lastValue = value;
                             offset = (int) Math.floor(value / bound);
                         }
 
-                        if (Math.abs(value - lastValue) > halfBound) {
+                        if(Math.abs(value - lastValue) > halfBound) {
                             // We can wrap around to get to the new value quicker
-                            if (lastValue < halfBound) {
+                            if(lastValue < halfBound) {
                                 offset--; // Wrap around the bottom
                             } else {
                                 offset++; // Wrap around the top
@@ -132,19 +132,19 @@ public class CatmullRomSplineInterpolator extends AbstractInterpolator {
 
                 Polynomial[] polynomials = new Polynomial[values.size()-1];
 
-                for (int i=0; i<values.size()-1; i++) {
+                for(int i=0; i<values.size()-1; i++) {
                     double p0, p1, p2, p3;
 
                     p1 = values.get(i);
                     p2 = values.get(i+1);
 
-                    if (i > 0) {
+                    if(i > 0) {
                         p0 = values.get(i-1);
                     } else {
                         p0 = p1;
                     }
 
-                    if (i < keyframes.size() - 2) {
+                    if(i < keyframes.size() - 2) {
                         p3 = values.get(i+2);
                     } else {
                         p3 = p2;
@@ -182,7 +182,7 @@ public class CatmullRomSplineInterpolator extends AbstractInterpolator {
     @Override
     public <T> Optional<T> getValue(Property<T> property, long time) {
         Set<Keyframe> kfSet = framesToProperty.get(property);
-        if (kfSet == null) {
+        if(kfSet == null) {
             return Optional.empty();
         }
 
@@ -190,21 +190,21 @@ public class CatmullRomSplineInterpolator extends AbstractInterpolator {
         long timeBefore = -1, timeAfter = -1;
         int index = 0;
         int i = 0;
-        for (Keyframe keyframe : kfSet) {
-            if (keyframe.getTime() == time) {
+        for(Keyframe keyframe : kfSet) {
+            if(keyframe.getTime() == time) {
                 return keyframe.getValue(property);
-            } else if (keyframe.getTime() < time) {
+            } else if(keyframe.getTime() < time) {
                 index = i;
                 timeBefore = keyframe.getTime();
                 valueBefore = keyframe.getValue(property).get();
-            } else if (keyframe.getTime() > time) {
+            } else if(keyframe.getTime() > time) {
                 timeAfter = keyframe.getTime();
                 break;
             }
             i++;
         }
 
-        if (timeBefore == -1 || timeAfter == -1) {
+        if(timeBefore == -1 || timeAfter == -1) {
             return Optional.empty();
         }
 
@@ -212,8 +212,8 @@ public class CatmullRomSplineInterpolator extends AbstractInterpolator {
 
         T interpolated = valueBefore;
 
-        for (PropertyPart<T> part : property.getParts()) {
-            if (!part.isInterpolatable()) continue;
+        for(PropertyPart<T> part : property.getParts()) {
+            if(!part.isInterpolatable()) continue;
 
             Polynomial[] polynomials = cubicPolynomials.get(part);
             interpolated = part.fromDouble(interpolated, polynomials[index].eval(fraction));

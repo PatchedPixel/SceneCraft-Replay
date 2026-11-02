@@ -13,7 +13,7 @@ public class MixinRenderItem {
     @Redirect(method = "setupGlintTexturing", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Util;getMillis()J"))
     private static long getEnchantmentTime() {
         ReplayHandler replayHandler = SceneCraftReplay.instance.getReplayHandler();
-        if (replayHandler != null) {
+        if(replayHandler != null) {
             return replayHandler.getReplaySender().currentTimeStamp();
         }
         return Util.getMillis();

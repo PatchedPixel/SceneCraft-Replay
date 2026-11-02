@@ -17,7 +17,7 @@ public abstract class MixinGuiSpectator {
             CallbackInfo ci
     ) {
         // Prevent spectator gui from opening while in a replay
-        if (getMinecraft().player instanceof CameraEntity) {
+        if(getMinecraft().player instanceof CameraEntity) {
             ci.cancel();
         }
     }

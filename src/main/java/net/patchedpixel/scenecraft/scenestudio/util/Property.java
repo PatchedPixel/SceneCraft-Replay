@@ -38,7 +38,7 @@ public class Property {
         String name = in.readString();
         String value = in.readString();
         String signature = null;
-        if (in.readBoolean()) {
+        if(in.readBoolean()) {
             signature = in.readString();
         }
         return new Property(name, value, signature);
@@ -47,7 +47,7 @@ public class Property {
     public void write(Packet.Writer out) throws IOException {
         out.writeString(name);
         out.writeString(value);
-        if (signature != null) {
+        if(signature != null) {
             out.writeBoolean(true);
             out.writeString(signature);
         } else {

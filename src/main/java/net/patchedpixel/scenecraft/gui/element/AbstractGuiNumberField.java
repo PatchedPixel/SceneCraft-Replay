@@ -56,7 +56,7 @@ public abstract class AbstractGuiNumberField<T extends AbstractGuiNumberField<T>
 
     @Override
     public T setText(String text) {
-        if (!isTextValid(text, !validateOnFocusChange)) {
+        if(!isTextValid(text, !validateOnFocusChange)) {
             throw new IllegalArgumentException(text + " is not a valid number!");
         }
         return super.setText(text);
@@ -74,19 +74,19 @@ public abstract class AbstractGuiNumberField<T extends AbstractGuiNumberField<T>
 
     private boolean isTextValid(String text, boolean validateRange) {
         // Allow empty text to be equal to 0
-        if (validateOnFocusChange && isSemiZero(text)) {
+        if(validateOnFocusChange && isSemiZero(text)) {
             // but only if 0 is in range
             return !validateRange || valueInRange(0);
         }
         try {
-            if (precision == 0) {
+            if(precision == 0) {
                 int val = Integer.parseInt(text);
                 return !validateRange || valueInRange(val);
             } else {
                 double val = Double.parseDouble(text);
                 return !validateRange || (valueInRange(val) && precisionPattern.matcher(text).matches());
             }
-        } catch (NumberFormatException e) {
+        } catch(NumberFormatException e) {
             return false;
         }
     }
@@ -97,7 +97,7 @@ public abstract class AbstractGuiNumberField<T extends AbstractGuiNumberField<T>
 
     @Override
     protected void onTextChanged(String from) {
-        if (isTextValid(getText(), !validateOnFocusChange)) {
+        if(isTextValid(getText(), !validateOnFocusChange)) {
             super.onTextChanged(from);
         } else {
             setText(from);
@@ -106,7 +106,7 @@ public abstract class AbstractGuiNumberField<T extends AbstractGuiNumberField<T>
 
     @Override
     public byte getByte() {
-        if (validateOnFocusChange && isSemiZero(getText())) {
+        if(validateOnFocusChange && isSemiZero(getText())) {
             return 0;
         }
         return Byte.parseByte(getText());
@@ -114,7 +114,7 @@ public abstract class AbstractGuiNumberField<T extends AbstractGuiNumberField<T>
 
     @Override
     public short getShort() {
-        if (validateOnFocusChange && isSemiZero(getText())) {
+        if(validateOnFocusChange && isSemiZero(getText())) {
             return 0;
         }
         return Short.parseShort(getText());
@@ -122,7 +122,7 @@ public abstract class AbstractGuiNumberField<T extends AbstractGuiNumberField<T>
 
     @Override
     public int getInteger() {
-        if (validateOnFocusChange && isSemiZero(getText())) {
+        if(validateOnFocusChange && isSemiZero(getText())) {
             return 0;
         }
         return Integer.parseInt(getText());
@@ -130,7 +130,7 @@ public abstract class AbstractGuiNumberField<T extends AbstractGuiNumberField<T>
 
     @Override
     public long getLong() {
-        if (validateOnFocusChange && isSemiZero(getText())) {
+        if(validateOnFocusChange && isSemiZero(getText())) {
             return 0;
         }
         return Long.parseLong(getText());
@@ -138,7 +138,7 @@ public abstract class AbstractGuiNumberField<T extends AbstractGuiNumberField<T>
 
     @Override
     public float getFloat() {
-        if (validateOnFocusChange && isSemiZero(getText())) {
+        if(validateOnFocusChange && isSemiZero(getText())) {
             return 0;
         }
         return Float.parseFloat(getText());
@@ -146,7 +146,7 @@ public abstract class AbstractGuiNumberField<T extends AbstractGuiNumberField<T>
 
     @Override
     public double getDouble() {
-        if (validateOnFocusChange && isSemiZero(getText())) {
+        if(validateOnFocusChange && isSemiZero(getText())) {
             return 0;
         }
         return Double.parseDouble(getText());
@@ -196,10 +196,10 @@ public abstract class AbstractGuiNumberField<T extends AbstractGuiNumberField<T>
 
     private double clampToBounds() {
         double d = getDouble();
-        if (getMinValue() != null && d < getMinValue()) {
+        if(getMinValue() != null && d < getMinValue()) {
             return getMinValue();
         }
-        if (getMaxValue() != null && d > getMaxValue()) {
+        if(getMaxValue() != null && d > getMaxValue()) {
             return getMaxValue();
         }
         return d;

@@ -15,12 +15,12 @@ public class ModCompat {
         public ModInfoDifference(Collection<ModInfo> requiredList) {
             Collection<ModInfo> installedList = getInstalledNetworkMods();
             REQUIRED:
-            for (ModInfo required : requiredList) {
+            for(ModInfo required : requiredList) {
                 if("neoforge".equals(required.getId())) continue;
-                for (ModInfo installed : installedList) {
-                    if (required.getId().equals(installed.getId())) {
+                for(ModInfo installed : installedList) {
+                    if(required.getId().equals(installed.getId())) {
                         // Mod is installed, check if versions match
-                        if (Objects.equals(required.getVersion(), installed.getVersion())) {
+                        if(Objects.equals(required.getVersion(), installed.getVersion())) {
                             // Mod found and version match
                             continue REQUIRED;
                         } else {

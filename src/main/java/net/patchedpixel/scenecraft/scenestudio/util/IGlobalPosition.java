@@ -42,8 +42,8 @@ public class IGlobalPosition {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
         IGlobalPosition that = (IGlobalPosition) o;
         return dimension.equals(that.dimension) && position.equals(that.position);
     }

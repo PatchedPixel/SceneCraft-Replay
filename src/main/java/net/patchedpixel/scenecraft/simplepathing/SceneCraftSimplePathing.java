@@ -38,25 +38,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SceneCraftSimplePathing extends EventRegistrations implements Module {
     { instance = this; }
     public static SceneCraftSimplePathing instance;
+    private final SceneCraft core;
 
-    private SceneCraft core;
     public KeyBindingRegistry.Binding keyPositionKeyframe;
     public KeyBindingRegistry.Binding keyTimeKeyframe;
     public KeyBindingRegistry.Binding keySyncTime;
-
     public static Logger LOGGER = LogManager.getLogger();
-
     private GuiPathing guiPathing;
-    private PathPreview pathPreview = new PathPreview(this);
+    private final PathPreview pathPreview = new PathPreview(this);
 
     public SceneCraftSimplePathing(SceneCraft core) {
         this.core = core;
-
         core.getSettingsRegistry().register(Setting.class);
-
         on(SettingsChangedCallback.EVENT, (registry, key) -> {
-            if (key == Setting.DEFAULT_INTERPOLATION) {
-                if (currentTimeline != null && guiPathing != null) {
+            if(key == Setting.DEFAULT_INTERPOLATION) {
+                if(currentTimeline != null && guiPathing != null) {
                     updateDefaultInterpolatorType();
                 }
             }
@@ -84,13 +80,13 @@ public class SceneCraftSimplePathing extends EventRegistrations implements Modul
     public void registerKeyBindings(KeyBindingRegistry registry) {
         pathPreview.registerKeyBindings(registry);
         core.getKeyBindingRegistry().registerKeyBinding("scenecraft.input.keyframerepository", InputConstants.KEY_X, () -> {
-            if (guiPathing != null) guiPathing.keyframeRepoButtonPressed();
+            if(guiPathing != null) guiPathing.keyframeRepoButtonPressed();
         }, true);
         core.getKeyBindingRegistry().registerKeyBinding("scenecraft.input.clearkeyframes", InputConstants.KEY_C, () -> {
-            if (guiPathing != null) guiPathing.clearKeyframesButtonPressed();
+            if(guiPathing != null) guiPathing.clearKeyframesButtonPressed();
         }, true);
         keySyncTime = core.getKeyBindingRegistry().registerRepeatedKeyBinding("scenecraft.input.synctimeline", InputConstants.KEY_V, () -> {
-            if (guiPathing != null) guiPathing.syncTimeButtonPressed();
+            if(guiPathing != null) guiPathing.syncTimeButtonPressed();
         }, true);
         SettingsRegistry settingsRegistry = core.getSettingsRegistry();
         keySyncTime.registerAutoActivationSupport(settingsRegistry.get(Setting.AUTO_SYNC), active -> {
@@ -100,29 +96,29 @@ public class SceneCraftSimplePathing extends EventRegistrations implements Modul
         core.getKeyBindingRegistry().registerRaw(InputConstants.KEY_DELETE, keyInput ->
                 guiPathing != null && guiPathing.deleteButtonPressed());
         keyPositionKeyframe = core.getKeyBindingRegistry().registerKeyBinding("scenecraft.input.positionkeyframe", InputConstants.KEY_I, () -> {
-            if (guiPathing != null) guiPathing.toggleKeyframe(SPPath.POSITION, false);
+            if(guiPathing != null) guiPathing.toggleKeyframe(SPPath.POSITION, false);
         }, true);
         core.getKeyBindingRegistry().registerKeyBinding("scenecraft.input.positiononlykeyframe", 0, () -> {
-            if (guiPathing != null) guiPathing.toggleKeyframe(SPPath.POSITION, true);
+            if(guiPathing != null) guiPathing.toggleKeyframe(SPPath.POSITION, true);
         }, true);
         keyTimeKeyframe = core.getKeyBindingRegistry().registerKeyBinding("scenecraft.input.timekeyframe", InputConstants.KEY_O, () -> {
-            if (guiPathing != null) guiPathing.toggleKeyframe(SPPath.TIME, false);
+            if(guiPathing != null) guiPathing.toggleKeyframe(SPPath.TIME, false);
         }, true);
         core.getKeyBindingRegistry().registerKeyBinding("scenecraft.input.bothkeyframes", 0, () -> {
-            if (guiPathing != null) {
+            if(guiPathing != null) {
                 guiPathing.toggleKeyframe(SPPath.TIME, false);
                 guiPathing.toggleKeyframe(SPPath.POSITION, false);
             }
         }, true);
         core.getKeyBindingRegistry().registerRaw(InputConstants.KEY_Z, keyInput -> {
-            if (keyInput.hasCtrl() && currentTimeline != null) {
+            if(keyInput.hasCtrl() && currentTimeline != null) {
                 Timeline timeline = currentTimeline.getTimeline();
-                if (keyInput.hasShift()) {
-                    if (timeline.peekRedoStack() != null) {
+                if(keyInput.hasShift()) {
+                    if(timeline.peekRedoStack() != null) {
                         timeline.redoLastChange();
                     }
                 } else {
-                    if (timeline.peekUndoStack() != null) {
+                    if(timeline.peekUndoStack() != null) {
                         timeline.undoLastChange();
                     }
                 }
@@ -131,9 +127,9 @@ public class SceneCraftSimplePathing extends EventRegistrations implements Modul
             return false;
         });
         core.getKeyBindingRegistry().registerRaw(InputConstants.KEY_Y, keyInput -> {
-            if (keyInput.hasCtrl() && currentTimeline != null) {
+            if(keyInput.hasCtrl() && currentTimeline != null) {
                 Timeline timeline = currentTimeline.getTimeline();
-                if (timeline.peekRedoStack() != null) {
+                if(timeline.peekRedoStack() != null) {
                     timeline.redoLastChange();
                 }
                 return true;
@@ -146,15 +142,15 @@ public class SceneCraftSimplePathing extends EventRegistrations implements Modul
     private void onReplayOpened(ReplayHandler replayHandler) {
         ReplayFile replayFile = replayHandler.getReplayFile();
         try {
-            synchronized (replayFile) {
+            synchronized(replayFile) {
                 Timeline timeline = replayFile.getTimelines(new SPTimeline()).get("");
-                if (timeline != null) {
+                if(timeline != null) {
                     setCurrentTimeline(new SPTimeline(timeline), false);
                 } else {
                     setCurrentTimeline(new SPTimeline(), false);
                 }
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw new ReportedException(CrashReport.forThrowable(e, "Reading timeline"));
         }
 
@@ -165,7 +161,7 @@ public class SceneCraftSimplePathing extends EventRegistrations implements Modul
             @Override
             public void run() {
                 maybeSaveTimeline(replayFile);
-                if (guiPathing != null) {
+                if(guiPathing != null) {
                     core.runLater(this);
                 }
             }
@@ -177,7 +173,7 @@ public class SceneCraftSimplePathing extends EventRegistrations implements Modul
         saveService.shutdown();
         try {
             saveService.awaitTermination(1, TimeUnit.MINUTES);
-        } catch (InterruptedException e) {
+        } catch(InterruptedException e) {
             Thread.currentThread().interrupt();
         }
         saveService = null;
@@ -200,7 +196,7 @@ public class SceneCraftSimplePathing extends EventRegistrations implements Modul
     private long selectedTime;
 
     public SPPath getSelectedPath() {
-        if (getReplayOverlay().timeline.getSelectedMarker() != null) {
+        if(getReplayOverlay().timeline.getSelectedMarker() != null) {
             selectedPath = null;
             selectedTime = 0;
         }
@@ -218,7 +214,7 @@ public class SceneCraftSimplePathing extends EventRegistrations implements Modul
     public void setSelected(SPPath path, long time) {
         selectedPath = path;
         selectedTime = time;
-        if (selectedPath != null) {
+        if(selectedPath != null) {
             getReplayOverlay().timeline.setSelectedMarker(null);
         }
     }
@@ -230,7 +226,7 @@ public class SceneCraftSimplePathing extends EventRegistrations implements Modul
     private void setCurrentTimeline(SPTimeline newTimeline, boolean save) {
         selectedPath = null;
         currentTimeline = newTimeline;
-        if (!save) {
+        if(!save) {
             lastTimeline = newTimeline;
             lastChange = newTimeline.getTimeline().peekUndoStack();
         }
@@ -265,14 +261,14 @@ public class SceneCraftSimplePathing extends EventRegistrations implements Modul
     private Change lastChange;
     private void maybeSaveTimeline(ReplayFile replayFile) {
         SPTimeline spTimeline = currentTimeline;
-        if (spTimeline == null || saveService == null) {
+        if(spTimeline == null || saveService == null) {
             lastTimeline = null;
             lastChange = null;
             return;
         }
 
         Change latestChange = spTimeline.getTimeline().peekUndoStack();
-        if (spTimeline == lastTimeline && latestChange == lastChange) {
+        if(spTimeline == lastTimeline && latestChange == lastChange) {
             return;
         }
         lastTimeline = spTimeline;
@@ -284,26 +280,26 @@ public class SceneCraftSimplePathing extends EventRegistrations implements Modul
             TimelineSerialization serialization = new TimelineSerialization(spTimeline, null);
             String serialized = serialization.serialize(Collections.singletonMap("", spTimeline.getTimeline()));
             timeline = serialization.deserialize(serialized).get("");
-        } catch (Throwable t) {
+        } catch(Throwable t) {
             CrashReport report = CrashReport.forThrowable(t, "Cloning timeline");
             throw new ReportedException(report);
         }
 
         int id = lastSaveId.incrementAndGet();
         saveService.submit(() -> {
-            if (lastSaveId.get() != id) {
+            if(lastSaveId.get() != id) {
                 return; // Another job has been scheduled, it will do the hard work.
             }
             try {
                 saveTimeline(replayFile, spTimeline, timeline);
-            } catch (IOException e) {
+            } catch(IOException e) {
                 LOGGER.error("Auto-saving timeline:", e);
             }
         });
     }
 
     private void saveTimeline(ReplayFile replayFile, PathingRegistry pathingRegistry, Timeline timeline) throws IOException {
-        synchronized (replayFile) {
+        synchronized(replayFile) {
             Map<String, Timeline> timelineMap = replayFile.getTimelines(pathingRegistry);
             timelineMap.put("", timeline);
             replayFile.writeTimelines(pathingRegistry, timelineMap);

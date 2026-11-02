@@ -31,7 +31,7 @@ public abstract class MixinHud {
 
     @Inject(method = "extractRenderState", at = @At("HEAD"), cancellable = true)
     private void sceneCraftRender_skipHudDuringRender(CallbackInfo ci) {
-        if (((EntityRendererHandler.IEntityRenderer) MCVer.getMinecraft().gameRenderer).sceneCraftRender_getHandler() != null) {
+        if(((EntityRendererHandler.IEntityRenderer) MCVer.getMinecraft().gameRenderer).sceneCraftRender_getHandler() != null) {
             ci.cancel();
         }
     }
@@ -39,7 +39,7 @@ public abstract class MixinHud {
     @Inject(method = "canRenderCrosshairForSpectator", at = @At("HEAD"), cancellable = true)
     private void shouldRenderSpectatorCrosshair(CallbackInfoReturnable<Boolean> ci) {
         Boolean state = RenderSpectatorCrosshairCallback.EVENT.invoker().shouldRenderSpectatorCrosshair();
-        if (state != null) {
+        if(state != null) {
             ci.setReturnValue(state);
         }
     }
@@ -47,7 +47,7 @@ public abstract class MixinHud {
     @Inject(method = "extractItemHotbar", at = @At("HEAD"), cancellable = true)
     private void shouldRenderHotbar(CallbackInfo ci) {
         Boolean state = RenderHotbarCallback.EVENT.invoker().shouldRenderHotbar();
-        if (state == Boolean.FALSE) {
+        if(state == Boolean.FALSE) {
             ci.cancel();
         }
     }

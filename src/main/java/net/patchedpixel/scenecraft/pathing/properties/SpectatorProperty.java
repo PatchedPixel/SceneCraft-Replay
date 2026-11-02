@@ -33,7 +33,7 @@ public class SpectatorProperty extends AbstractProperty<Integer> {
     public void applyToGame(Integer value, Object replayHandler) {
         ReplayHandler handler = ((ReplayHandler) replayHandler);
         CameraEntity cameraEntity = handler.getCameraEntity();
-        if (cameraEntity == null) return;
+        if(cameraEntity == null) return;
         Level world = cameraEntity.level();
         // Lookup entity by net, returns null if an entity with the net does not exists
         Entity target = world.getEntity(value);

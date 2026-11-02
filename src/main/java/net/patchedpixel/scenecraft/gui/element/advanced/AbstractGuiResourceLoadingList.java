@@ -84,7 +84,7 @@ public abstract class AbstractGuiResourceLoadingList
     public void tick() {
         loadingElement.setText(LOADING_TEXT[tick++ / 5 % LOADING_TEXT.length]);
         Runnable resource;
-        while ((resource = resourcesQueue.poll()) != null) {
+        while((resource = resourcesQueue.poll()) != null) {
             resource.run();
         }
     }
@@ -92,11 +92,11 @@ public abstract class AbstractGuiResourceLoadingList
     @Override
     public void load() {
         // Stop current loading
-        if (loaderThread != null) {
+        if(loaderThread != null) {
             loaderThread.interrupt();
             try {
                 loaderThread.join();
-            } catch (InterruptedException e) {
+            } catch(InterruptedException e) {
                 Thread.currentThread().interrupt();
                 return;
             }
@@ -104,7 +104,7 @@ public abstract class AbstractGuiResourceLoadingList
 
         // Clear list
         resourcesQueue.clear();
-        for (GuiElement element : new ArrayList<>(resourcesPanel.getChildren())) {
+        for(GuiElement element : new ArrayList<>(resourcesPanel.getChildren())) {
             resourcesPanel.removeElement(element);
         }
         selected.clear();
@@ -152,13 +152,13 @@ public abstract class AbstractGuiResourceLoadingList
     }
 
     public void onSelectionChanged() {
-        if (onSelectionChanged != null) {
+        if(onSelectionChanged != null) {
             onSelectionChanged.run();
         }
     }
 
     public void onSelectionDoubleClicked() {
-        if (onSelectionDoubleClicked != null) {
+        if(onSelectionDoubleClicked != null) {
             onSelectionDoubleClicked.run();
         }
     }
@@ -175,7 +175,7 @@ public abstract class AbstractGuiResourceLoadingList
 
     public List<U> getSelected() {
         List<U> selectedResources = new ArrayList<>(selected.size());
-        for (Element element : selected) {
+        for(Element element : selected) {
             selectedResources.add(element.resource);
         }
         return selectedResources;
@@ -183,15 +183,15 @@ public abstract class AbstractGuiResourceLoadingList
 
     @Override
     public boolean handleKey(KeyInput keyInput) {
-        if (keyInput.hasCtrl() && keyInput.keycode == InputConstants.KEYCODE_A) {
+        if(keyInput.hasCtrl() && keyInput.keycode == InputConstants.KEYCODE_A) {
             List<Element> all = new ArrayList<>();
-            for (GuiElement<?> child : getListPanel().getChildren()) {
-                if (child instanceof AbstractGuiResourceLoadingList.Element) {
+            for(GuiElement<?> child : getListPanel().getChildren()) {
+                if(child instanceof AbstractGuiResourceLoadingList.Element) {
                     //noinspection unchecked
                     all.add((Element) child);
                 }
             }
-            if (selected.size() < all.size()) {
+            if(selected.size() < all.size()) {
                 selected.clear();
                 selected.addAll(all);
             } else {
@@ -226,7 +226,7 @@ public abstract class AbstractGuiResourceLoadingList
 
         @Override
         public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
-            if (renderInfo.layer == 0 && selected.contains(this)) {
+            if(renderInfo.layer == 0 && selected.contains(this)) {
                 // Draw selection
                 int w = size.getWidth();
                 int h = size.getHeight();
@@ -245,16 +245,16 @@ public abstract class AbstractGuiResourceLoadingList
         public boolean mouseClick(Click click) {
             Point point = new Point(click);
             getContainer().convertFor(this, point);
-            if (point.getX() > 0 && point.getX() < getLastSize().getWidth()
+            if(point.getX() > 0 && point.getX() < getLastSize().getWidth()
                     && point.getY() > 0 && point.getY() < getLastSize().getHeight()) {
-                if (click.hasCtrl()) {
-                    if (selected.contains(this)) {
+                if(click.hasCtrl()) {
+                    if(selected.contains(this)) {
                         selected.remove(this);
                     } else {
                         selected.add(this);
                     }
                     onSelectionChanged();
-                } else if (selected.contains(this) && System.currentTimeMillis() - selectedLastClickTime < DOUBLE_CLICK_INTERVAL) {
+                } else if(selected.contains(this) && System.currentTimeMillis() - selectedLastClickTime < DOUBLE_CLICK_INTERVAL) {
                     onSelectionDoubleClicked();
                 } else {
                     selected.clear();

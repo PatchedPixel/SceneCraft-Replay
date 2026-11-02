@@ -46,9 +46,7 @@ public class SceneCraft implements net.patchedpixel.scenecraft.core.Module, Sche
     private final SchedulerImpl scheduler = new SchedulerImpl();
     private final KeyBindingRegistry keyBindingRegistry = new KeyBindingRegistry();
     private final SettingsRegistry settingsRegistry = new SettingsRegistry();
-    {
-        settingsRegistry.register(Setting.class);
-    }
+    { settingsRegistry.register(Setting.class); }
 
     { instance = this; }
     public static SceneCraft instance;
@@ -64,7 +62,7 @@ public class SceneCraft implements net.patchedpixel.scenecraft.core.Module, Sche
 
         I18n.setI18n(net.minecraft.client.resources.language.I18n::get);
 
-        // Register all RM modules
+        // Register all modules
         modules.add(this);
         modules.add(new SceneCraftRecorder(this));
         SceneCraftReplay replayModule = new SceneCraftReplay(this);
@@ -156,11 +154,11 @@ public class SceneCraft implements net.patchedpixel.scenecraft.core.Module, Sche
     }
 
     private void printToChat(boolean warning, String message, Object... args) {
-        if (!mc.isSameThread()) {
+        if(!mc.isSameThread()) {
             runLater(() -> printToChat(warning, message, args));
             return;
         }
-        if (getSettingsRegistry().get(Setting.NOTIFICATIONS)) {
+        if(getSettingsRegistry().get(Setting.NOTIFICATIONS)) {
             // Some nostalgia: "§8[§6Replay Mod§8]§r Your message goes here"
             Style coloredDarkGray = Style.EMPTY.withColor(ChatFormatting.DARK_GRAY);
             Style coloredGold = Style.EMPTY.withColor(ChatFormatting.GOLD);
@@ -170,7 +168,7 @@ public class SceneCraft implements net.patchedpixel.scenecraft.core.Module, Sche
                     .append(Component.literal("] "))
                     .append(Component.translatable(message, args).setStyle(alert));
             // Send message to chat GUI
-            // The ingame GUI is initialized at startup, therefore this is possible before the client is connected
+            // The in game GUI is initialized at startup, therefore this is possible before the client is connected
             mc.gui.hud.getChat().addClientSystemMessage(text);
         }
     }

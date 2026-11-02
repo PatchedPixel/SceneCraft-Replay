@@ -36,9 +36,9 @@ public abstract class MixinLevelRenderer {
     )
     private void chromaKeyingSky(FramePass pass, Runnable task, Operation<Void> original) {
         EntityRendererHandler handler = ((EntityRendererHandler.IEntityRenderer) MCVer.getMinecraft().gameRenderer).sceneCraftRender_getHandler();
-        if (handler != null) {
+        if(handler != null) {
             ReadableColor color = handler.getSettings().getChromaKeyingColor();
-            if (color != null) {
+            if(color != null) {
                 original.call(pass, (Runnable) () -> RenderSystem.getDevice().createCommandEncoder().clearColorTexture(
                         MCVer.getMinecraft().gameRenderer.mainRenderTarget().getColorTexture(),
                         new org.joml.Vector4f(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1f)
@@ -52,7 +52,7 @@ public abstract class MixinLevelRenderer {
     @Inject(method = "submitHitOutline", at = @At("HEAD"), cancellable = true)
     private void sceneCraftRender_drawSelectionBox(CallbackInfo ci) {
         EntityRendererHandler handler = ((EntityRendererHandler.IEntityRenderer) this.gameRenderer).sceneCraftRender_getHandler();
-        if (handler != null) {
+        if(handler != null) {
             ci.cancel();
         }
     }

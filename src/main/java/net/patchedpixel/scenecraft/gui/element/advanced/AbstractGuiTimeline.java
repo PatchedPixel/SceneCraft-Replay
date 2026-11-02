@@ -108,7 +108,7 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
         Utils.drawDynamicRect(renderer, width, height, TEXTURE_X, TEXTURE_Y, TEXTURE_WIDTH, TEXTURE_HEIGHT,
                 BORDER_TOP + 1, BORDER_BOTTOM, BORDER_LEFT + 1, BORDER_RIGHT);
 
-        if (drawMarkers) {
+        if(drawMarkers) {
             drawMarkers(renderer, size);
         }
 
@@ -123,7 +123,7 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
      * @param size Size of the drawable area
      */
     protected void drawTimelineCursor(GuiRenderer renderer, ReadableDimension size) {
-        if (!drawCursor) return;
+        if(!drawCursor) return;
         int height = size.getHeight();
         renderer.bindTexture(TEXTURE);
 
@@ -136,7 +136,7 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
         // Pin
         renderer.drawTexturedRect(cursorX - 2, BORDER_TOP - 1, 64, 0, 5, 4);
         // Needle
-        for (int y = BORDER_TOP - 1; y < height - BORDER_BOTTOM; y += 11) {
+        for(int y = BORDER_TOP - 1; y < height - BORDER_BOTTOM; y += 11) {
             int segmentHeight = Math.min(11, height - BORDER_BOTTOM - y);
             renderer.drawTexturedRect(cursorX - 2, y, 64, 4, 5, segmentHeight);
         }
@@ -147,8 +147,8 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
         int markerInterval = getMarkerInterval();
         int smallInterval = Math.max(markerInterval / 5, 1);
         int time = offset / markerInterval * markerInterval;
-        while (time <= offset + visibleLength) {
-            if (time >= offset) {
+        while(time <= offset + visibleLength) {
+            if(time >= offset) {
                 drawMarker(renderer, size, time, time % markerInterval == 0);
             }
             time += smallInterval;
@@ -172,7 +172,7 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
      * @return The time or -1 if the mouse isn't on the timeline
      */
     protected int getTimeAt(int mouseX, int mouseY) {
-        if (getLastSize() == null) {
+        if(getLastSize() == null) {
             return -1;
         }
         Point mouse = new Point(mouseX, mouseY);
@@ -180,7 +180,7 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
         mouseX = mouse.getX();
         mouseY = mouse.getY();
 
-        if (mouseX < 0 || mouseY < 0
+        if(mouseX < 0 || mouseY < 0
                 || mouseX > size.getWidth() || mouseY > size.getHeight()) {
             return -1;
         }
@@ -193,7 +193,7 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
     }
 
     public void onClick(int time) {
-        if (onClick != null) {
+        if(onClick != null) {
             onClick.run(time);
         }
     }
@@ -235,9 +235,9 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
 
     public T ensureCursorVisible(int padding) {
         int visibleLength = (int) (length * zoom);
-        if (cursorPosition - padding < offset) {
+        if(cursorPosition - padding < offset) {
             setOffset(cursorPosition - padding);
-        } else if (cursorPosition + padding > offset + visibleLength) {
+        } else if(cursorPosition + padding > offset + visibleLength) {
             setOffset(cursorPosition + padding - visibleLength);
         }
         return getThis();
@@ -276,7 +276,7 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
     @Override
     public boolean mouseClick(Click click) {
         int time = getTimeAt(click.x, click.y);
-        if (time != -1) {
+        if(time != -1) {
             onClick(time);
             return true;
         }
@@ -301,7 +301,7 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
 
     @Override
     public int getMarkerInterval() {
-        if (size == null) {
+        if(size == null) {
             return length;
         }
         int width = size.getWidth() - BORDER_LEFT - BORDER_RIGHT; // Width of the drawn timeline
@@ -314,8 +314,8 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
         final int H = 60*M;
         final int[] snapTo = {S, 2*S, 5*S, 10*S, 15*S, 20*S, 30*S, M, 2*M, 5*M, 10*M, 15*M, 30*M, H, 2*H, 5*H, 10*H};
         // Find next greater snap
-        for (int snap : snapTo) {
-            if (snap > minInterval) {
+        for(int snap : snapTo) {
+            if(snap > minInterval) {
                 return snap;
             }
         }
@@ -338,7 +338,7 @@ public abstract class AbstractGuiTimeline<T extends AbstractGuiTimeline<T>> exte
      */
     private void checkOffset() {
         int visibleLength = (int) (length * zoom);
-        if (visibleLength + offset > length) {
+        if(visibleLength + offset > length) {
             offset = length - visibleLength;
         }
     }

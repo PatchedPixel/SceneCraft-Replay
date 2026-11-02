@@ -80,13 +80,13 @@ public interface PacketStream {
         }
 
         public boolean equals(Object o) {
-            if (o == this) return true;
-            if (!(o instanceof FilterInfo)) return false;
+            if(o == this) return true;
+            if(!(o instanceof FilterInfo)) return false;
             final FilterInfo other = (FilterInfo) o;
-            if (!other.canEqual(this)) return false;
-            if (!Objects.equals(this.filter, other.filter)) return false;
-            if (this.from != other.from) return false;
-            if (this.to != other.to) return false;
+            if(!other.canEqual(this)) return false;
+            if(!Objects.equals(this.filter, other.filter)) return false;
+            if(this.from != other.from) return false;
+            if(this.to != other.to) return false;
             return true;
         }
 

@@ -57,7 +57,7 @@ public class PropertyParts {
 
         @Override
         public double toDouble(Triple<Double, Double, Double> value) {
-            switch (element) {
+            switch(element) {
                 case LEFT: return value.getLeft();
                 case MIDDLE: return value.getMiddle();
                 case RIGHT: return value.getRight();
@@ -67,7 +67,7 @@ public class PropertyParts {
 
         @Override
         public Triple<Double, Double, Double> fromDouble(Triple<Double, Double, Double> value, double d) {
-            switch (element) {
+            switch(element) {
                 case LEFT: return Triple.of(d, value.getMiddle(), value.getRight());
                 case MIDDLE: return Triple.of(value.getLeft(), d, value.getRight());
                 case RIGHT: return Triple.of(value.getLeft(), value.getMiddle(), d);
@@ -90,7 +90,7 @@ public class PropertyParts {
 
         @Override
         public double toDouble(Triple<Float, Float, Float> value) {
-            switch (element) {
+            switch(element) {
                 case LEFT: return value.getLeft();
                 case MIDDLE: return value.getMiddle();
                 case RIGHT: return value.getRight();
@@ -100,7 +100,7 @@ public class PropertyParts {
 
         @Override
         public Triple<Float, Float, Float> fromDouble(Triple<Float, Float, Float> value, double d) {
-            switch (element) {
+            switch(element) {
                 case LEFT: return Triple.of((float) d, value.getMiddle(), value.getRight());
                 case MIDDLE: return Triple.of(value.getLeft(), (float) d, value.getRight());
                 case RIGHT: return Triple.of(value.getLeft(), value.getMiddle(), (float) d);

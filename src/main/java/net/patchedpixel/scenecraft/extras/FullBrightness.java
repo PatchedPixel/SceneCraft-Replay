@@ -49,7 +49,7 @@ public class FullBrightness extends EventRegistrations implements Extra {
                 refreshGamma();
                 mod.getMinecraft().gameRenderer.tick();
                 ReplayHandler replayHandler = module.getReplayHandler();
-                if (replayHandler != null) {
+                if(replayHandler != null) {
                     updateIndicator(replayHandler.getOverlay());
                 }
             }
@@ -60,8 +60,8 @@ public class FullBrightness extends EventRegistrations implements Extra {
 
     public Type getType() {
         String str = core.getSettingsRegistry().get(Setting.FULL_BRIGHTNESS);
-        for (Type type : Type.values()) {
-            if (type.toString().equals(str)) {
+        for(Type type : Type.values()) {
+            if(type.toString().equals(str)) {
                 return type;
             }
         }
@@ -71,10 +71,10 @@ public class FullBrightness extends EventRegistrations implements Extra {
     { on(PreRenderCallback.EVENT, this::preRender); }
     private void preRender() {
         refreshGamma();
-        if (active && module.getReplayHandler() != null) {
+        if(active && module.getReplayHandler() != null) {
             Type type = getType();
-            if (type == Type.NightVision || type == Type.Both) {
-                if (mc.player != null) {
+            if(type == Type.NightVision || type == Type.Both) {
+                if(mc.player != null) {
                     mc.player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION
                             , Integer.MAX_VALUE));
                 }
@@ -84,10 +84,10 @@ public class FullBrightness extends EventRegistrations implements Extra {
 
     { on(PostRenderCallback.EVENT, this::postRender); }
     private void postRender() {
-        if (active && module.getReplayHandler() != null) {
+        if(active && module.getReplayHandler() != null) {
             Type type = getType();
-            if (type == Type.NightVision || type == Type.Both) {
-                if (mc.player != null) {
+            if(type == Type.NightVision || type == Type.Both) {
+                if(mc.player != null) {
                     mc.player.removeEffect(MobEffects.NIGHT_VISION
                     );
                 }
@@ -97,7 +97,7 @@ public class FullBrightness extends EventRegistrations implements Extra {
 
     { on(ReplayOpenedCallback.EVENT, replayHandler -> updateIndicator(replayHandler.getOverlay())); }
     private void updateIndicator(GuiReplayOverlay overlay) {
-        if (active) {
+        if(active) {
             overlay.statusIndicatorPanel.addElements(new HorizontalLayout.Data(1), indicator);
         } else {
             overlay.statusIndicatorPanel.removeElement(indicator);

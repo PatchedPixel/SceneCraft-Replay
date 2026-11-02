@@ -53,8 +53,8 @@ public class KeyBindingRegistry extends EventRegistrations {
 
     private Binding registerKeyBinding(String name, int keyCode, boolean onlyInRepay) {
         Binding binding = bindings.get(name);
-        if (binding == null) {
-            if (keyCode <= 0) {
+        if(binding == null) {
+            if(keyCode <= 0) {
                 keyCode = InputConstants.UNKNOWN.getValue();
             }
             Identifier id = identifier(MOD_ID, name.substring(LEGACY_KEY_PREFIX.length()));
@@ -63,10 +63,10 @@ public class KeyBindingRegistry extends EventRegistrations {
             pendingMappings.add(keyBinding);
             binding = new Binding(name, keyBinding);
             bindings.put(name, binding);
-            if (onlyInRepay) {
+            if(onlyInRepay) {
                 this.onlyInReplay.add(keyBinding);
             }
-        } else if (!onlyInRepay) {
+        } else if(!onlyInRepay) {
             this.onlyInReplay.remove(binding.keyBinding);
         }
         return binding;
@@ -92,8 +92,8 @@ public class KeyBindingRegistry extends EventRegistrations {
     { on(PreRenderCallback.EVENT, this::handleRepeatedKeyBindings); }
 
     public void handleRepeatedKeyBindings() {
-        for (Binding binding : bindings.values()) {
-            if (binding.keyBinding.isDown()) {
+        for(Binding binding : bindings.values()) {
+            if(binding.keyBinding.isDown()) {
                 invokeKeyBindingHandlers(binding, binding.repeatedHandlers);
             }
         }
@@ -101,8 +101,8 @@ public class KeyBindingRegistry extends EventRegistrations {
 
     { on(KeyBindingEventCallback.EVENT, this::handleKeyBindings); }
     private void handleKeyBindings() {
-        for (Binding binding : bindings.values()) {
-            while (binding.keyBinding.consumeClick()) {
+        for(Binding binding : bindings.values()) {
+            while(binding.keyBinding.consumeClick()) {
                 invokeKeyBindingHandlers(binding, binding.handlers);
                 invokeKeyBindingHandlers(binding, binding.repeatedHandlers);
             }
@@ -110,10 +110,10 @@ public class KeyBindingRegistry extends EventRegistrations {
     }
 
     private void invokeKeyBindingHandlers(Binding binding, Collection<Runnable> handlers) {
-        for (final Runnable runnable : handlers) {
+        for(final Runnable runnable : handlers) {
             try {
                 runnable.run();
-            } catch (Throwable cause) {
+            } catch(Throwable cause) {
                 CrashReport crashReport = CrashReport.forThrowable(cause, "Handling Key Binding");
                 CrashReportCategory category = crashReport.addCategory("Key Binding");
                 category.setDetail("Key Binding", () -> binding.name);
@@ -125,13 +125,13 @@ public class KeyBindingRegistry extends EventRegistrations {
 
     { on(KeyEventCallback.EVENT, this::handleRaw); }
     private boolean handleRaw(KeyInput keyInput, int action) {
-        if (action != KeyEventCallback.ACTION_PRESS) return false;
-        for (final Function<KeyInput, Boolean> handler : rawHandlers.get(keyInput.key)) {
+        if(action != KeyEventCallback.ACTION_PRESS) return false;
+        for(final Function<KeyInput, Boolean> handler : rawHandlers.get(keyInput.key)) {
             try {
-                if (handler.apply(keyInput)) {
+                if(handler.apply(keyInput)) {
                     return true;
                 }
-            } catch (Throwable cause) {
+            } catch(Throwable cause) {
                 CrashReport crashReport = CrashReport.forThrowable(cause, "Handling Raw Key Binding");
                 CrashReportCategory category = crashReport.addCategory("Key Binding");
                 category.setDetail("Key Code", () -> "" + keyInput.key);
@@ -158,7 +158,7 @@ public class KeyBindingRegistry extends EventRegistrations {
         public String getBoundKey() {
             try {
                 return keyBinding.getTranslatedKeyMessage().getString();
-            } catch (ArrayIndexOutOfBoundsException e) {
+            } catch(ArrayIndexOutOfBoundsException e) {
                 // Apparently windows likes to press strange keys, see https://www.replaymod.com/forum/thread/55
                 return "Unknown";
             }
@@ -187,7 +187,7 @@ public class KeyBindingRegistry extends EventRegistrations {
         }
 
         public void setAutoActivating(boolean active) {
-            if (this.autoActivation == active) {
+            if(this.autoActivation == active) {
                 return;
             }
             this.autoActivation = active;

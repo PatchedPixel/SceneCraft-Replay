@@ -38,9 +38,9 @@ public interface ComposedGuiElement<T extends ComposedGuiElement<T>> extends Gui
 
     default <C, R> R forEach(BiFunction<ComposedGuiElement<?>, Integer, R> recurse) {
         int maxLayer = getMaxLayer();
-        for (int i = maxLayer; i >= 0; i--) {
+        for(int i = maxLayer; i >= 0; i--) {
             R result = recurse.apply(this, i);
-            if (result != null) {
+            if(result != null) {
                 return result;
             }
         }

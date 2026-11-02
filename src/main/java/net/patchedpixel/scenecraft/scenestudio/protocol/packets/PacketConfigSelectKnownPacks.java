@@ -35,7 +35,7 @@ public class PacketConfigSelectKnownPacks {
     }
 
     public static Packet write(PacketTypeRegistry registry, List<VersionedIdentifier> packs) throws IOException {
-        if (packs == null) packs = Collections.emptyList();
+        if(packs == null) packs = Collections.emptyList();
 
         Packet packet = new Packet(registry, PacketType.ConfigSelectKnownPacks);
         try (Packet.Writer writer = packet.overwrite()) {

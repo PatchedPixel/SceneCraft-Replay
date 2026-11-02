@@ -27,14 +27,14 @@ public abstract class MixinMultiPlayerGameMode {
 
     @Inject(method = "isSpectator", at=@At("HEAD"), cancellable = true)
     private void sceneCraftReplay_isSpectator(CallbackInfoReturnable<Boolean> ci) {
-        if (this.minecraft.player instanceof CameraEntity) {
+        if(this.minecraft.player instanceof CameraEntity) {
             ci.setReturnValue(this.minecraft.player.isSpectator());
         }
     }
 
     @Inject(method = "createPlayer(Lnet/minecraft/client/multiplayer/ClientLevel;Lnet/minecraft/stats/StatsCounter;Lnet/minecraft/client/ClientRecipeBook;Lnet/minecraft/world/entity/player/Input;ZLnet/minecraft/client/player/ItemActivation;)Lnet/minecraft/client/player/LocalPlayer;", at=@At("HEAD"), cancellable = true)
     private void sceneCraftReplay_createReplayCamera(ClientLevel worldIn, StatsCounter statisticsManager, ClientRecipeBook recipeBookClient, Input playerInput, boolean lastSprinting, ItemActivation itemActivation, CallbackInfoReturnable<LocalPlayer> ci) {
-        if (SceneCraftReplay.instance.getReplayHandler() != null) {
+        if(SceneCraftReplay.instance.getReplayHandler() != null) {
             ci.setReturnValue(new CameraEntity(this.minecraft, worldIn, this.connection, statisticsManager, recipeBookClient, itemActivation));
             ci.cancel();
         }

@@ -240,9 +240,9 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
      */
     @Override
     public void setAsyncMode(boolean asyncMode) {
-        if (this.asyncMode == asyncMode) return;
+        if(this.asyncMode == asyncMode) return;
         this.asyncMode = asyncMode;
-        if (asyncMode) {
+        if(asyncMode) {
             this.terminate = false;
             new Thread(asyncSender, "scenecraft-async-sender").start();
         } else {
@@ -262,7 +262,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
      */
     @Override
     public void setSyncModeAndWait() {
-        if (!this.asyncMode) return;
+        if(!this.asyncMode) return;
         this.asyncMode = false;
         this.terminate = true;
         // This will wait for the worker thread to leave the synchronized code part
@@ -276,7 +276,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
      */
     @Override
     public int currentTimeStamp() {
-        if (asyncMode && !paused()) {
+        if(asyncMode && !paused()) {
             return (int) ((System.currentTimeMillis() - realTimeStart) * realTimeStartSpeed);
         } else {
             return lastTimeStamp;
@@ -287,7 +287,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
      * Terminate this replay sender.
      */
     public void terminateReplay() {
-        if (terminate) {
+        if(terminate) {
             return;
         }
         terminate = true;
@@ -322,37 +322,37 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
             return;
         }
 
-        if (msg instanceof Packet<?> p) {
+        if(msg instanceof Packet<?> p) {
             try {
                 p = processPacket(p);
-                if (p != null) {
+                if(p != null) {
                     super.channelRead(ctx, p);
                 }
 
                 maybeRemoveDeadEntities(p);
 
-                if (p instanceof ClientboundLevelChunkWithLightPacket) {
+                if(p instanceof ClientboundLevelChunkWithLightPacket) {
                     Runnable doLightUpdates = () -> {
                         ClientLevel world = mc.level;
-                        if (world != null) {
+                        if(world != null) {
                             MutableBoolean done = new MutableBoolean();
                             world.queueLightUpdate(done::setTrue);
-                            while (!done.booleanValue()) {
+                            while(!done.booleanValue()) {
                                 world.pollLightUpdates();
                             }
                             LevelLightEngine provider = world.getChunkSource().getLightEngine();
-                            while (provider.hasLightWork()) {
+                            while(provider.hasLightWork()) {
                                 provider.runLightUpdates();
                             }
                         }
                     };
-                    if (mc.isSameThread()) {
+                    if(mc.isSameThread()) {
                         doLightUpdates.run();
                     } else {
                         mc.schedule(doLightUpdates);
                     }
                 }
-            } catch (Exception e) {
+            } catch(Exception e) {
                 // We'd rather not have a failure parsing one packet screw up the whole replay process
                 e.printStackTrace();
             }
@@ -364,13 +364,13 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
     // Therefore we have to remove all loaded, dead entities manually if we are in sync mode.
     // We do this after every SpawnX packet and after the destroy entities packet.
     private void maybeRemoveDeadEntities(Packet<?> packet) {
-        if (asyncMode) {
+        if(asyncMode) {
             return; // MC should have enough time to tick
         }
 
         boolean relevantPacket = packet instanceof ClientboundAddEntityPacket
                 || packet instanceof ClientboundRemoveEntitiesPacket;
-        if (!relevantPacket) {
+        if(!relevantPacket) {
             return; // don't want to do it too often, only when there's likely to be a dead entity
         }
 
@@ -385,27 +385,27 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
      * @return The processed packet or {@code null} if no packet shall be sent
      */
     protected Packet<?> processPacket(Packet<?> p) throws Exception {
-        if (p instanceof ClientboundSetBorderLerpSizePacket || p instanceof ClientboundInitializeBorderPacket) {
+        if(p instanceof ClientboundSetBorderLerpSizePacket || p instanceof ClientboundInitializeBorderPacket) {
             BORDER_PACKET_TIMES.put(p, sendingTimeStamp);
         }
-        if (p instanceof ClientboundLoginFinishedPacket) {
+        if(p instanceof ClientboundLoginFinishedPacket) {
             registry = registry.withLoginSuccess();
             return p;
         }
-        if (p instanceof ClientboundFinishConfigurationPacket) {
+        if(p instanceof ClientboundFinishConfigurationPacket) {
             registry = registry.withState(State.PLAY);
             return p;
         }
-        if (p instanceof ClientboundStartConfigurationPacket) {
+        if(p instanceof ClientboundStartConfigurationPacket) {
             registry = registry.withState(State.CONFIGURATION);
             hasWorldLoaded = false;
             return p;
         }
 
-        if (p instanceof ClientboundCustomPayloadPacket packet) {
-            if (Restrictions.PLUGIN_CHANNEL.equals(packet.payload().type().id())) {
+        if(p instanceof ClientboundCustomPayloadPacket packet) {
+            if(Restrictions.PLUGIN_CHANNEL.equals(packet.payload().type().id())) {
                 final String unknown = replayHandler.getRestrictions().handle(packet);
-                if (unknown == null) {
+                if(unknown == null) {
                     return null;
                 } else {
                     // Failed to parse options, make sure that under no circumstances further packets are parsed
@@ -414,7 +414,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
                     SceneCraft.instance.runLater(() -> {
                         try {
                             replayHandler.endReplay();
-                        } catch (IOException e) {
+                        } catch(IOException e) {
                             e.printStackTrace();
                         }
                         mc.gui.setScreen(new AlertScreen(
@@ -426,10 +426,10 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
                 }
             }
         }
-        if (p instanceof ClientboundDisconnectPacket) {
+        if(p instanceof ClientboundDisconnectPacket) {
             Component reason = ((ClientboundDisconnectPacket) p).reason();
             String message = reason.getString();
-            if ("Please update to view this replay.".equals(message)) {
+            if("Please update to view this replay.".equals(message)) {
                 // This version of the mod supports replay restrictions so we are allowed
                 // to remove this packet.
                 return null;
@@ -438,11 +438,11 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
 
         if(BAD_PACKETS.contains(p.getClass())) return null;
 
-        if (p instanceof ClientboundCustomPayloadPacket packet) {
+        if(p instanceof ClientboundCustomPayloadPacket packet) {
             Identifier channelName = packet.payload().type().id();
             String channelNameStr = channelName.toString();
 
-            if (channelNameStr.startsWith("voicechat:")) {
+            if(channelNameStr.startsWith("voicechat:")) {
                 // The recorded Simple Voice Chat handshake (secret, player state, ...) belongs to a live server session.
                 // Replaying it makes the voice chat client try to connect to the original server.
                 return null;
@@ -451,14 +451,14 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
 
         if(p instanceof ClientboundResourcePackPushPacket packet) {
             String url = packet.url();
-            if (url.startsWith("replay://")) {
+            if(url.startsWith("replay://")) {
                 int id = Integer.parseInt(url.substring("replay://".length()));
                 Map<Integer, String> index = replayFile.getResourcePackIndex();
-                if (index != null) {
+                if(index != null) {
                     String hash = index.get(id);
-                    if (hash != null) {
+                    if(hash != null) {
                         File file = new File(tempResourcePackFolder, hash + ".zip");
-                        if (!file.exists()) {
+                        if(!file.exists()) {
                             IOUtils.copy(replayFile.getResourcePack(hash).get(), new FileOutputStream(file));
                         }
                         schedulePacketHandler(() -> mc.getDownloadedPackSource().pushLocalPack(packet.id(), file.toPath()));
@@ -502,14 +502,14 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
             if(!hasWorldLoaded) hasWorldLoaded = true;
 
             SceneCraft.instance.runLater(() -> {
-                if (mc.gui.screen() instanceof LevelLoadingScreen) {
+                if(mc.gui.screen() instanceof LevelLoadingScreen) {
                     // Close the world loading screen manually in case we swallow the packet
                     mc.gui.setScreen(null);
                 }
             });
 
-            for (Relative relative : ppl.relatives()) {
-                if (relative == Relative.X || relative == Relative.Y || relative == Relative.Z) {
+            for(Relative relative : ppl.relatives()) {
+                if(relative == Relative.X || relative == Relative.Y || relative == Relative.Z) {
                     return null; // At least one of the coordinates is relative, so we don't care
                 }
             }
@@ -520,13 +520,13 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
                 public void run() {
                     // FIXME: world shouldn't ever be null at this point, now that we use the packet queue
                     //        probably fine to remove on the next non-patch version (don't want to break stuff now)
-                    if (mc.level == null || !mc.isSameThread()) {
+                    if(mc.level == null || !mc.isSameThread()) {
                         SceneCraft.instance.runLater(this);
                         return;
                     }
 
                     CameraEntity cent = replayHandler.getCameraEntity();
-                    if (!allowMovement && !((Math.abs(cent.getX() - ppl.change().position().x) > TP_DISTANCE_LIMIT) ||
+                    if(!allowMovement && !((Math.abs(cent.getX() - ppl.change().position().x) > TP_DISTANCE_LIMIT) ||
                             (Math.abs(cent.getZ() - ppl.change().position().z) > TP_DISTANCE_LIMIT))) {
                         return;
                     } else {
@@ -549,7 +549,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
             // The following values are to control sky color (e.g. if thunderstorm)
             // 7 - Fade value
             // 8 - Fade time
-            if (!Arrays.asList(
+            if(!Arrays.asList(
                     ClientboundGameEventPacket.START_RAINING,
                     ClientboundGameEventPacket.STOP_RAINING,
                     ClientboundGameEventPacket.RAIN_LEVEL_CHANGE,
@@ -559,13 +559,13 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
             }
         }
 
-        if (p instanceof ClientboundSystemChatPacket || p instanceof ClientboundPlayerChatPacket || p instanceof ClientboundDisguisedChatPacket) {
-            if (!SceneCraftReplay.instance.getCore().getSettingsRegistry().get(Setting.SHOW_CHAT)) {
+        if(p instanceof ClientboundSystemChatPacket || p instanceof ClientboundPlayerChatPacket || p instanceof ClientboundDisguisedChatPacket) {
+            if(!SceneCraftReplay.instance.getCore().getSettingsRegistry().get(Setting.SHOW_CHAT)) {
                 return null;
             }
         }
 
-        if (asyncMode) {
+        if(asyncMode) {
             return processPacketAsync(p);
         } else {
             Packet<?> fp = p;
@@ -607,7 +607,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
      */
     @Override
     public void setReplaySpeed(final double d) {
-        if (d != 0) {
+        if(d != 0) {
             this.replaySpeed = d;
             this.realTimeStartSpeed = d;
             this.realTimeStart = System.currentTimeMillis() - (long) (lastTimeStamp / d);
@@ -647,28 +647,28 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
         public void run() {
             try {
                 REPLAY_LOOP:
-                while (!terminate) {
-                    synchronized (FullReplaySender.this) {
-                        if (replayIn == null) {
+                while(!terminate) {
+                    synchronized(FullReplaySender.this) {
+                        if(replayIn == null) {
                             replayIn = replayFile.getPacketData(getPacketTypeRegistry(State.LOGIN));
                         }
                         // Packet loop
-                        while (true) {
+                        while(true) {
                             try {
                                 // When playback is paused and the world has loaded (we don't want any dirt-screens) we sleep
-                                while (paused() && hasWorldLoaded && !inBundle) {
+                                while(paused() && hasWorldLoaded && !inBundle) {
                                     // Unless we are going to terminate, restart or jump
-                                    if (terminate || startFromBeginning || desiredTimeStamp != -1) {
+                                    if(terminate || startFromBeginning || desiredTimeStamp != -1) {
                                         break;
                                     }
                                     Thread.sleep(10);
                                 }
 
-                                if (terminate && !inBundle) {
+                                if(terminate && !inBundle) {
                                     break REPLAY_LOOP;
                                 }
 
-                                if (startFromBeginning) {
+                                if(startFromBeginning) {
                                     // In case we need to restart from the beginning
                                     // break out of the loop sending all packets which will
                                     // cause the replay to be restarted by the outer loop
@@ -676,7 +676,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
                                 }
 
                                 // Read the next packet if we don't already have one
-                                if (nextPacket == null) {
+                                if(nextPacket == null) {
                                     nextPacket = new PacketData(replayIn);
                                 }
 
@@ -684,18 +684,18 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
 
                                 // If we aren't jumping and the world has already been loaded (no dirt-screens) then wait
                                 // the required amount to get proper packet timing
-                                if (!isHurrying() && hasWorldLoaded && !inBundle) {
+                                if(!isHurrying() && hasWorldLoaded && !inBundle) {
                                     // Timestamp of when the next packet should be sent
                                     long expectedTime = realTimeStart + (long) (nextTimeStamp / replaySpeed);
                                     long now = System.currentTimeMillis();
                                     // If the packet should not yet be sent, wait a bit
-                                    if (expectedTime > now) {
+                                    if(expectedTime > now) {
                                         Thread.sleep(expectedTime - now);
                                     }
                                 }
 
                                 // Process packet
-                                if (nextPacket.type == PacketType.Bundle) inBundle = !inBundle;
+                                if(nextPacket.type == PacketType.Bundle) inBundle = !inBundle;
                                 sendingTimeStamp = nextTimeStamp;
                                 channel.pipeline().fireChannelRead(Unpooled.wrappedBuffer(nextPacket.bytes));
                                 nextPacket = null;
@@ -707,14 +707,14 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
                                 // enabled.
                                 // Might be safe to do the same on older versions too, but I'd rather not poke the
                                 // monster that is Forge networking.
-                                while (!channel.config().isAutoRead()) {
+                                while(!channel.config().isAutoRead()) {
                                     Thread.sleep(0, 100_000);
                                 }
 
                                 // In case we finished jumping
                                 // We need to check that we aren't planing to restart so we don't accidentally run this
                                 // code before we actually restarted
-                                if (isHurrying() && lastTimeStamp > desiredTimeStamp && !startFromBeginning) {
+                                if(isHurrying() && lastTimeStamp > desiredTimeStamp && !startFromBeginning) {
                                     desiredTimeStamp = -1;
 
                                     replayHandler.moveCameraToTargetPosition();
@@ -722,20 +722,20 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
                                     // Pause after jumping (this will also reset realTimeStart accordingly)
                                     setReplaySpeed(0);
                                 }
-                            } catch (EOFException eof) {
+                            } catch(EOFException eof) {
                                 // Reached end of file
                                 // Pause the replay which will cause it to freeze before getting restarted
                                 setReplaySpeed(0);
                                 // Then wait until the user tells us to continue
-                                while (paused() && hasWorldLoaded && desiredTimeStamp == -1 && !terminate) {
+                                while(paused() && hasWorldLoaded && desiredTimeStamp == -1 && !terminate) {
                                     Thread.sleep(10);
                                 }
 
-                                if (terminate) {
+                                if(terminate) {
                                     break REPLAY_LOOP;
                                 }
                                 break;
-                            } catch (IOException e) {
+                            } catch(IOException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -748,14 +748,14 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
                         startFromBeginning = false;
                         nextPacket = null;
                         realTimeStart = System.currentTimeMillis();
-                        if (replayIn != null) {
+                        if(replayIn != null) {
                             replayIn.close();
                             replayIn = null;
                         }
                         SceneCraft.instance.runSync(replayHandler::restartedReplay);
                     }
                 }
-            } catch (Exception e) {
+            } catch(Exception e) {
                 e.printStackTrace();
             }
         }
@@ -802,7 +802,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
 
             if(p instanceof ClientboundAddEntityPacket) {
                 ClientboundAddEntityPacket pso = (ClientboundAddEntityPacket)p;
-                if (pso.getType() == EntityTypes.FIREWORK_ROCKET) return null;
+                if(pso.getType() == EntityTypes.FIREWORK_ROCKET) return null;
             }
         }
         return p;
@@ -836,14 +836,14 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
         });
 
         // Drain the task queue while we are sending (in case a mod blocks the io thread waiting for the main thread)
-        while (!doneSending.get()) {
+        while(!doneSending.get()) {
             executeTaskQueue();
 
             // Wait until the sender thread has made progress
             try {
                 //noinspection BusyWait
                 Thread.sleep(0, 100_000);
-            } catch (InterruptedException e) {
+            } catch(InterruptedException e) {
                 Thread.currentThread().interrupt();
                 return;
             }
@@ -855,15 +855,15 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
 
     private void doSendPacketsTill(int timestamp) {
         try {
-            synchronized (this) {
-                if (timestamp == lastTimeStamp) { // Do nothing if we're already there
+            synchronized(this) {
+                if(timestamp == lastTimeStamp) { // Do nothing if we're already there
                     return;
                 }
-                if (timestamp < lastTimeStamp) { // Restart the replay if we need to go backwards in time
+                if(timestamp < lastTimeStamp) { // Restart the replay if we need to go backwards in time
                     hasWorldLoaded = false;
                     inBundle = false;
                     lastTimeStamp = 0;
-                    if (replayIn != null) {
+                    if(replayIn != null) {
                         replayIn.close();
                         replayIn = null;
                     }
@@ -873,14 +873,14 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
                     SceneCraft.instance.runSync(replayHandler::restartedReplay);
                 }
 
-                if (replayIn == null) {
+                if(replayIn == null) {
                     replayIn = replayFile.getPacketData(getPacketTypeRegistry(State.LOGIN));
                 }
 
-                while (true) { // Send packets
+                while(true) { // Send packets
                     try {
                         PacketData pd;
-                        if (nextPacket != null) {
+                        if(nextPacket != null) {
                             // If there is still a packet left from before, use it first
                             pd = nextPacket;
                             nextPacket = null;
@@ -890,14 +890,14 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
                         }
 
                         int nextTimeStamp = pd.timestamp;
-                        if (nextTimeStamp > timestamp && !inBundle) {
+                        if(nextTimeStamp > timestamp && !inBundle) {
                             // We are done sending all packets
                             nextPacket = pd;
                             break;
                         }
 
                         // Process packet
-                        if (pd.type == PacketType.Bundle) inBundle = !inBundle;
+                        if(pd.type == PacketType.Bundle) inBundle = !inBundle;
                         sendingTimeStamp = nextTimeStamp;
                         channel.pipeline().fireChannelRead(Unpooled.wrappedBuffer(pd.bytes));
 
@@ -906,15 +906,15 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
                         // enabled.
                         // Might be safe to do the same on older versions too, but I'd rather not poke the
                         // monster that is Forge networking.
-                        while (!channel.config().isAutoRead()) {
+                        while(!channel.config().isAutoRead()) {
                             Thread.sleep(0, 100_000);
                         }
-                    } catch (EOFException eof) {
+                    } catch(EOFException eof) {
                         // Shit! We hit the end before finishing our job! What shall we do now?
                         // well, let's just pretend we're done...
                         replayIn = null;
                         break;
-                    } catch (IOException e) {
+                    } catch(IOException e) {
                         e.printStackTrace();
                     }
                 }
@@ -923,7 +923,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
                 realTimeStart = System.currentTimeMillis() - (long) (timestamp / replaySpeed);
                 lastTimeStamp = timestamp;
             }
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }
@@ -938,7 +938,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
      * Note that the packet handler queue has different behavior than the standard SceneCraft queue.
      */
     private void schedulePacketHandler(Runnable runnable) {
-        if (mc.isSameThread()) {
+        if(mc.isSameThread()) {
             runnable.run();
         } else {
             mc.packetProcessor().scheduleIfPossible(channel.pipeline().get(Connection.class).getPacketListener(), new Packet<>() {
@@ -955,7 +955,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
     }
 
     protected void processPacketSync(Packet<?> p) {
-        if (p instanceof ClientboundForgetLevelChunkPacket packet) {
+        if(p instanceof ClientboundForgetLevelChunkPacket packet) {
             int x = packet.pos().x();
             int z = packet.pos().z();
             // If the chunk is getting unloaded, we will have to forcefully update the position of all entities
@@ -971,15 +971,15 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
             ClientLevel world = mc.level;
             ChunkSource chunkProvider = world.getChunkSource();
             LevelChunk chunk = chunkProvider.getChunkNow(x, z);
-            if (chunk != null) {
+            if(chunk != null) {
                 List<Entity> entitiesInChunk = new ArrayList<>();
                 // Gather all entities in that chunk
-                for (Entity entity : mc.level.entitiesForRendering()) {
-                    if (entity.chunkPosition().equals(chunk.getPos())) {
+                for(Entity entity : mc.level.entitiesForRendering()) {
+                    if(entity.chunkPosition().equals(chunk.getPos())) {
                         entitiesInChunk.add(entity);
                     }
                 }
-                for (Entity entity : entitiesInChunk) {
+                for(Entity entity : entitiesInChunk) {
                     // Skip interpolation of position updates coming from server
                     // (See: newX in EntityLivingBase or otherPlayerMPX in EntityOtherPlayerMP)
                     forcePositionForVehicleAndSelf(entity);
@@ -993,7 +993,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
 
     private void forcePositionForVehicleAndSelf(Entity entity) {
         Entity vehicle = entity.getVehicle();
-        if (vehicle != null) {
+        if(vehicle != null) {
             forcePositionForVehicleAndSelf(vehicle);
         }
 
@@ -1003,12 +1003,12 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
         Vec3 prevPos;
         do {
             prevPos = entity.position();
-            if (vehicle != null) {
+            if(vehicle != null) {
                 entity.rideTick();
             } else {
                 entity.tick();
             }
-        } while (prevPos.distanceToSqr(entity.position()) > 0.0001 && ticks++ < 100);
+        } while(prevPos.distanceToSqr(entity.position()) > 0.0001 && ticks++ < 100);
     }
 
     private static final class PacketData {
@@ -1021,7 +1021,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
 
         PacketData(ReplayInputStream in) throws IOException {
             net.patchedpixel.scenecraft.scenestudio.PacketData data = in.readPacket();
-            if (data == null) {
+            if(data == null) {
                 throw new EOFException();
             }
             timestamp = (int) data.getTime();
@@ -1029,14 +1029,14 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
             type = packet.getType();
             // Workaround for ReplayMod 2.7.16-17 saving the LoginSuccess packet with an incorrect packet net
             // A fake one will have been sythesized by ReplayStudo, so we can simply drop the broken one.
-            if (packet.getId() == -1) {
+            if(packet.getId() == -1) {
                 bytes = new byte[0];
                 return;
             }
             // We need to re-encode SceneStudio packets, so we can later decode them as NMS packets
             // The main reason we aren't reading them as NMS packets is that SceneStudio has its own
             // (version independent) packet representation which also handles the cache/squash filters.
-            synchronized (byteBuf) {
+            synchronized(byteBuf) {
                 byteBuf.markReaderIndex(); // Mark the current reader and writer index (should be at start)
                 byteBuf.markWriterIndex();
 

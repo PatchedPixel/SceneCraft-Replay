@@ -17,12 +17,12 @@ public class GuiHandler extends EventRegistrations {
     { on(InitScreenCallback.EVENT, (vanillaGuiScreen, buttonList) -> injectIntoReplayViewer(vanillaGuiScreen)); }
     public void injectIntoReplayViewer(net.minecraft.client.gui.screens.Screen vanillaGuiScreen) {
         AbstractGuiScreen guiScreen = GuiScreen.from(vanillaGuiScreen);
-        if (!(guiScreen instanceof GuiReplayViewer)) {
+        if(!(guiScreen instanceof GuiReplayViewer)) {
             return;
         }
         final GuiReplayViewer replayViewer = (GuiReplayViewer) guiScreen;
         // Inject Edit button
-        if (!replayViewer.editorButton.getChildren().isEmpty()) return;
+        if(!replayViewer.editorButton.getChildren().isEmpty()) return;
         replayViewer.replaySpecificButtons.add(new GuiButton(replayViewer.editorButton).onClick(() -> {
             try {
                 new GuiEditReplay(replayViewer, replayViewer.list.getSelected().get(0).file.toPath()) {
@@ -32,7 +32,7 @@ public class GuiHandler extends EventRegistrations {
                         replayViewer.list.load();
                     }
                 }.open();
-            } catch (IOException e) {
+            } catch(IOException e) {
                 Utils.error(SceneCraftEditor.LOGGER, replayViewer, CrashReport.forThrowable(e, "Opening replay editor"), () -> {});
             }
         }).setSize(73, 20).setI18nLabel("scenecraft.gui.edit").setDisabled());

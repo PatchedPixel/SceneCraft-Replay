@@ -37,12 +37,12 @@ public abstract class PolynomialSplineInterpolator extends AbstractInterpolator 
     @Override
     protected Map<PropertyPart, InterpolationParameters> bakeInterpolation(Map<PropertyPart, InterpolationParameters> parameters) {
         framesToProperty.clear();
-        for (PathSegment segment : getSegments()) {
-            for (Property property : getKeyframeProperties()) {
-                if (segment.getStartKeyframe().getValue(property).isPresent()) {
+        for(PathSegment segment : getSegments()) {
+            for(Property property : getKeyframeProperties()) {
+                if(segment.getStartKeyframe().getValue(property).isPresent()) {
                     addToMap(framesToProperty, property, segment.getStartKeyframe());
                 }
-                if (segment.getEndKeyframe().getValue(property).isPresent()) {
+                if(segment.getEndKeyframe().getValue(property).isPresent()) {
                     addToMap(framesToProperty, property, segment.getEndKeyframe());
                 }
             }
@@ -50,7 +50,7 @@ public abstract class PolynomialSplineInterpolator extends AbstractInterpolator 
 
         polynomials.clear();
         parameters = new HashMap<>(parameters);
-        for (Map.Entry<Property<?>, Set<Keyframe>> entry : framesToProperty.entrySet()) {
+        for(Map.Entry<Property<?>, Set<Keyframe>> entry : framesToProperty.entrySet()) {
             prepareProperty(entry.getKey(), entry.getValue(), parameters);
         }
 
@@ -58,12 +58,12 @@ public abstract class PolynomialSplineInterpolator extends AbstractInterpolator 
     }
 
     private <U> void prepareProperty(Property<U> property, Set<Keyframe> keyframes, Map<PropertyPart, InterpolationParameters> parameters) {
-        for (PropertyPart<U> part : property.getParts()) {
-            if (part.isInterpolatable()) {
+        for(PropertyPart<U> part : property.getParts()) {
+            if(part.isInterpolatable()) {
                 double[] time = new double[keyframes.size()];
                 double[] values = new double[keyframes.size()];
                 int i = 0;
-                for (Keyframe keyframe : keyframes) {
+                for(Keyframe keyframe : keyframes) {
                     time[i] = keyframe.getTime();
                     values[i++] = part.toDouble(keyframe.getValue(property).get());
                 }
@@ -82,7 +82,7 @@ public abstract class PolynomialSplineInterpolator extends AbstractInterpolator 
 
     private void addToMap(Map<Property<?>, Set<Keyframe>> map, Property property, Keyframe keyframe) {
         Set<Keyframe> set = map.get(property);
-        if (set == null) {
+        if(set == null) {
             map.put(property, set = new LinkedHashSet<>());
         }
         set.add(keyframe);
@@ -91,25 +91,25 @@ public abstract class PolynomialSplineInterpolator extends AbstractInterpolator 
     protected <U> Polynomials calcPolynomials(PropertyPart<U> part, double[] xs, double[] ys, InterpolationParameters params) {
         int unknowns = degree + 1;
         int num = xs.length - 1;
-        if (num == 0) {
+        if(num == 0) {
             return new Polynomials(0, new Polynomial[]{new Polynomial(new double[]{ys[0]})});
         }
 
-        for (int i = 0; i < xs.length; i++) {
+        for(int i = 0; i < xs.length; i++) {
             xs[i] /= 1000;
         }
 
         double yOffset;
-        if (Double.isNaN(part.getUpperBound())) {
+        if(Double.isNaN(part.getUpperBound())) {
             double total = 0;
-            for (double y : ys) {
+            for(double y : ys) {
                 total += y;
             }
             yOffset = total / ys.length;
-            for (int i = 0; i < ys.length; i++) {
+            for(int i = 0; i < ys.length; i++) {
                 ys[i] -= yOffset;
             }
-            if (params != null) {
+            if(params != null) {
                 params = new InterpolationParameters(params.getValue() - yOffset,
                         params.getVelocity(), params.getAcceleration());
             }
@@ -119,11 +119,11 @@ public abstract class PolynomialSplineInterpolator extends AbstractInterpolator 
             double firstValue = params != null ? params.getValue() : ys[0];
             int offset = (int) Math.floor(firstValue / bound);
             double lastValue = mod(firstValue, bound);
-            for (int i = 1; i < ys.length; i++) {
+            for(int i = 1; i < ys.length; i++) {
                 double value = mod(ys[i], bound);
-                if (Math.abs(value - lastValue) > halfBound) {
+                if(Math.abs(value - lastValue) > halfBound) {
                     // We can wrap around to get to the new value quicker
-                    if (lastValue < halfBound) {
+                    if(lastValue < halfBound) {
                         offset--; // Wrap around the bottom
                     } else {
                         offset++; // Wrap around the top
@@ -143,9 +143,9 @@ public abstract class PolynomialSplineInterpolator extends AbstractInterpolator 
         solveMatrix(matrix);
 
         Polynomial[] polynomials = new Polynomial[num];
-        for (int i = 0; i < num; i++) {
+        for(int i = 0; i < num; i++) {
             double[] coefficients = new double[degree + 1];
-            for (int j = 0; j <= degree; j++) {
+            for(int j = 0; j <= degree; j++) {
                 coefficients[j] = matrix[i * unknowns + j][num * unknowns];
             }
             polynomials[i] = new Polynomial(coefficients);
@@ -161,10 +161,10 @@ public abstract class PolynomialSplineInterpolator extends AbstractInterpolator 
     protected abstract void fillMatrix(double[][] matrix, double[] xs, double[] ys, int num, InterpolationParameters params);
 
     protected static void solveMatrix(double[][] matrix) {
-        for (int i = 0; i < matrix.length; i++) {
-            if (matrix[i][i] == 0) {
-                for (int j = i + 1; j < matrix.length; j++) {
-                    if (matrix[j][i] != 0) {
+        for(int i = 0; i < matrix.length; i++) {
+            if(matrix[i][i] == 0) {
+                for(int j = i + 1; j < matrix.length; j++) {
+                    if(matrix[j][i] != 0) {
                         double[] s = matrix[j];
                         matrix[j] = matrix[i];
                         matrix[i] = s;
@@ -173,25 +173,25 @@ public abstract class PolynomialSplineInterpolator extends AbstractInterpolator 
                 }
             }
             double factor = matrix[i][i];
-            if (factor != 1) {
+            if(factor != 1) {
                 matrix[i][i] = 1;
-                for (int j = i + 1; j < matrix[i].length; j++) {
+                for(int j = i + 1; j < matrix[i].length; j++) {
                     matrix[i][j] /= factor;
                 }
             }
-            for (int j = i + 1; j < matrix.length; j++) {
+            for(int j = i + 1; j < matrix.length; j++) {
                 factor = matrix[j][i];
-                if (factor != 0) {
+                if(factor != 0) {
                     matrix[j][i] = 0;
-                    for (int k = i + 1; k < matrix[j].length; k++) {
+                    for(int k = i + 1; k < matrix[j].length; k++) {
                         matrix[j][k] = matrix[j][k] - matrix[i][k] * factor;
                     }
                 }
             }
         }
-        for (int i = matrix.length - 1; i >= 0; i--) {
-            for (int j = i - 1; j >= 0; j--) {
-                if (matrix[j][i] != 0) {
+        for(int i = matrix.length - 1; i >= 0; i--) {
+            for(int j = i - 1; j >= 0; j--) {
+                if(matrix[j][i] != 0) {
                     int k = matrix[j].length - 1;
                     matrix[j][k] -= matrix[j][i] / matrix[i][i] * matrix[i][k];
                     matrix[j][i] = 0;
@@ -203,32 +203,32 @@ public abstract class PolynomialSplineInterpolator extends AbstractInterpolator 
     @Override
     public <T> Optional<T> getValue(Property<T> property, long time) {
         Set<Keyframe> kfSet = framesToProperty.get(property);
-        if (kfSet == null) {
+        if(kfSet == null) {
             return Optional.empty();
         }
         Keyframe kfBefore = null, kfAfter = null;
         int index = 0;
-        for (Keyframe keyframe : kfSet) {
-            if (keyframe.getTime() == time) {
+        for(Keyframe keyframe : kfSet) {
+            if(keyframe.getTime() == time) {
                 return keyframe.getValue(property);
-            } else if (keyframe.getTime() < time) {
+            } else if(keyframe.getTime() < time) {
                 kfBefore = keyframe;
-            } else if (keyframe.getTime() > time) {
+            } else if(keyframe.getTime() > time) {
                 kfAfter = keyframe;
                 index--;
                 break;
             }
             index++;
         }
-        if (kfBefore == null || kfAfter == null) {
+        if(kfBefore == null || kfAfter == null) {
             return Optional.empty();
         }
 
         T interpolated = kfBefore.getValue(property).get();
-        for (PropertyPart<T> part : property.getParts()) {
-            if (part.isInterpolatable()) {
+        for(PropertyPart<T> part : property.getParts()) {
+            if(part.isInterpolatable()) {
                 double value = polynomials.get(part).eval(time, index);
-                if (!Double.isNaN(part.getUpperBound())) {
+                if(!Double.isNaN(part.getUpperBound())) {
                     value = mod(value, part.getUpperBound());
                 }
                 interpolated = part.fromDouble(interpolated, value);
@@ -260,18 +260,18 @@ public abstract class PolynomialSplineInterpolator extends AbstractInterpolator 
 
         public double eval(double at) {
             double val = 0;
-            for (double coefficient : coefficients) {
+            for(double coefficient : coefficients) {
                 val = val * at + coefficient;
             }
             return val;
         }
 
         public Polynomial derivative() {
-            if (coefficients.length == 0) {
+            if(coefficients.length == 0) {
                 return this;
             }
             Polynomial derived = new Polynomial(new double[coefficients.length - 1]);
-            for (int i = 0; i < coefficients.length - 1; i++) {
+            for(int i = 0; i < coefficients.length - 1; i++) {
                 derived.coefficients[i] = coefficients[i] * (coefficients.length - 1 - i);
             }
             return derived;

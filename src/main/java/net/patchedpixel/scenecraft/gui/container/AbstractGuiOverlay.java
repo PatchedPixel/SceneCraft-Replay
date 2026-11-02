@@ -65,8 +65,8 @@ public abstract class AbstractGuiOverlay<T extends AbstractGuiOverlay<T>> extend
     }
 
     public void setVisible(boolean visible) {
-        if (this.visible != visible) {
-            if (visible) {
+        if(this.visible != visible) {
+            if(visible) {
                 invokeAll(Loadable.class, Loadable::load);
                 eventHandler.register();
             } else {
@@ -115,13 +115,13 @@ public abstract class AbstractGuiOverlay<T extends AbstractGuiOverlay<T>> extend
 
     private void updateUserInputGui() {
         Minecraft mc = getMinecraft();
-        if (visible) {
-            if (mouseVisible) {
-                if (mc.gui.screen() == null) {
+        if(visible) {
+            if(mouseVisible) {
+                if(mc.gui.screen() == null) {
                     mc.gui.setScreen(userInputGuiScreen);
                 }
             } else {
-                if (mc.gui.screen() == userInputGuiScreen) {
+                if(mc.gui.screen() == userInputGuiScreen) {
                     mc.gui.setScreen(null);
                 }
             }
@@ -130,13 +130,13 @@ public abstract class AbstractGuiOverlay<T extends AbstractGuiOverlay<T>> extend
 
     @Override
     public void layout(ReadableDimension size, RenderInfo renderInfo) {
-        if (size == null) {
+        if(size == null) {
             size = screenSize;
         }
         super.layout(size, renderInfo);
-        if (mouseVisible && renderInfo.layer == getMaxLayer()) {
+        if(mouseVisible && renderInfo.layer == getMaxLayer()) {
             final GuiElement tooltip = forEach(GuiElement.class, e -> e.getTooltip(renderInfo));
-            if (tooltip != null) {
+            if(tooltip != null) {
                 tooltip.layout(tooltip.getMinSize(), renderInfo);
             }
         }
@@ -145,17 +145,17 @@ public abstract class AbstractGuiOverlay<T extends AbstractGuiOverlay<T>> extend
     @Override
     public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
         super.draw(renderer, size, renderInfo);
-        if (mouseVisible && renderInfo.layer == getMaxLayer()) {
+        if(mouseVisible && renderInfo.layer == getMaxLayer()) {
             final GuiElement tooltip = forEach(GuiElement.class, e -> e.getTooltip(renderInfo));
-            if (tooltip != null) {
+            if(tooltip != null) {
                 final ReadableDimension tooltipSize = tooltip.getMinSize();
                 int x, y;
-                if (renderInfo.mouseX + 8 + tooltipSize.getWidth() < screenSize.getWidth()) {
+                if(renderInfo.mouseX + 8 + tooltipSize.getWidth() < screenSize.getWidth()) {
                     x = renderInfo.mouseX + 8;
                 } else {
                     x = screenSize.getWidth() - tooltipSize.getWidth() - 1;
                 }
-                if (renderInfo.mouseY + 8 + tooltipSize.getHeight() < screenSize.getHeight()) {
+                if(renderInfo.mouseY + 8 + tooltipSize.getHeight() < screenSize.getHeight()) {
                     y = renderInfo.mouseY + 8;
                 } else {
                     y = screenSize.getHeight() - tooltipSize.getHeight() - 1;
@@ -164,7 +164,7 @@ public abstract class AbstractGuiOverlay<T extends AbstractGuiOverlay<T>> extend
                 try {
                     OffsetGuiRenderer eRenderer = new OffsetGuiRenderer(renderer, position, tooltipSize);
                     tooltip.draw(eRenderer, tooltipSize, renderInfo);
-                } catch (Exception ex) {
+                } catch(Exception ex) {
                     CrashReport crashReport = CrashReport.forThrowable(ex, "Rendering Gui Tooltip");
                     renderInfo.addTo(crashReport);
                     CrashReportCategory category = crashReport.addCategory("Gui container details");
@@ -200,17 +200,17 @@ public abstract class AbstractGuiOverlay<T extends AbstractGuiOverlay<T>> extend
             updateRenderer();
             int layers = getMaxLayer();
             int mouseX = -1, mouseY = -1;
-            if (mouseVisible) {
+            if(mouseVisible) {
                 Point mouse = MouseUtils.getMousePos();
                 mouseX = mouse.getX();
                 mouseY = mouse.getY();
             }
             RenderInfo renderInfo = new RenderInfo(partialTicks, mouseX, mouseY, 0);
-            for (int layer = 0; layer <= layers; layer++) {
+            for(int layer = 0; layer <= layers; layer++) {
                 layout(screenSize, renderInfo.layer(layer));
             }
             MinecraftGuiRenderer renderer = new MinecraftGuiRenderer(stack);
-            for (int layer = 0; layer <= layers; layer++) {
+            for(int layer = 0; layer <= layers; layer++) {
                 draw(renderer, screenSize, renderInfo.layer(layer));
             }
         }
@@ -221,7 +221,7 @@ public abstract class AbstractGuiOverlay<T extends AbstractGuiOverlay<T>> extend
             Minecraft mc = getMinecraft();
             Window
                     res = MCVer.newScaledResolution(mc);
-            if (screenSize == null
+            if(screenSize == null
                     || screenSize.getWidth() != res.getGuiScaledWidth()
                     || screenSize.getHeight() != res.getGuiScaledHeight()) {
                 screenSize = new Dimension(res.getGuiScaledWidth(), res.getGuiScaledHeight());
@@ -251,7 +251,7 @@ public abstract class AbstractGuiOverlay<T extends AbstractGuiOverlay<T>> extend
         @Override
         public boolean keyPressed(net.minecraft.client.input.KeyEvent mcKeyInput) {
             KeyInput keyInput = new KeyInput(mcKeyInput);
-            if (!invokeHandlers(KeyHandler.class, e -> e.handleKey(keyInput))) {
+            if(!invokeHandlers(KeyHandler.class, e -> e.handleKey(keyInput))) {
                 return super.keyPressed(mcKeyInput);
             }
             return true;
@@ -260,7 +260,7 @@ public abstract class AbstractGuiOverlay<T extends AbstractGuiOverlay<T>> extend
         @Override
         public boolean charTyped(net.minecraft.client.input.CharacterEvent mcCharInput) {
             CharInput charInput = new CharInput(mcCharInput);
-            if (!invokeHandlers(CharHandler.class, e -> e.handleChar(charInput))) {
+            if(!invokeHandlers(CharHandler.class, e -> e.handleChar(charInput))) {
                 return super.charTyped(mcCharInput);
             }
             return true;
@@ -306,14 +306,14 @@ public abstract class AbstractGuiOverlay<T extends AbstractGuiOverlay<T>> extend
 
         @Override
         public void onClose() {
-            if (closeable) {
+            if(closeable) {
                 super.onClose();
             }
         }
 
         @Override
         public void removed() {
-            if (closeable) {
+            if(closeable) {
                 mouseVisible = false;
             }
         }

@@ -241,8 +241,8 @@ public class World implements RandomAccessState {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if(this == o) return true;
+            if(o == null || getClass() != o.getClass()) return false;
             Info info = (Info) o;
             return seed == info.seed
                     && difficulty == info.difficulty

@@ -36,7 +36,7 @@ public class RemoveFilter implements StreamFilter {
 
     @Override
     public void init(Studio studio, JsonObject config) {
-        if (config.has("type")) {
+        if(config.has("type")) {
             String name = config.get("type").getAsString();
             PacketType type = PacketType.valueOf(name);
             filter = (d) -> d.getPacket().getType() == type;

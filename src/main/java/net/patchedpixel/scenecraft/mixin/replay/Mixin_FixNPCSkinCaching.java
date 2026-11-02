@@ -28,15 +28,15 @@ public abstract class Mixin_FixNPCSkinCaching {
 
         // To reduce the chance of incompatibility with custom player entities, we only do this for the vanilla MP one.
         //noinspection ConstantConditions
-        if (!(((Object) this) instanceof RemotePlayer)) return;
+        if(!(((Object) this) instanceof RemotePlayer)) return;
 
         // To get the player list entry, we need to be connected (we usually are, but better be safe than sorry)
-        if (MCVer.getMinecraft().getConnection() == null) return;
+        if(MCVer.getMinecraft().getConnection() == null) return;
 
         // And we catch any exceptions, so if there is still something, it's hopefully not fatal
         try {
             this.getPlayerInfo();
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }

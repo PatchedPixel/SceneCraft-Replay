@@ -33,7 +33,7 @@ public class EquirectangularToBitmapProcessor extends AbstractFrameProcessor<Cub
         height = outputHeight;
 
         int fullWidth;
-        if (sphericalFovX < 360) {
+        if(sphericalFovX < 360) {
             fullWidth = Math.round(width * 360 / (float) sphericalFovX);
         } else {
             fullWidth = width;
@@ -50,20 +50,20 @@ public class EquirectangularToBitmapProcessor extends AbstractFrameProcessor<Cub
         int xOffset = (fullWidth - width) / 2;
         int yOffset = (fullHeight - height) / 2;
 
-        for (int x = 0; x < width; x++) {
+        for(int x = 0; x < width; x++) {
             // get x position relative to the full projection
             int i = xOffset + x;
 
             double yaw = PI * 2 * i / fullWidth;
             int piQuarter = 8 * i / fullWidth - 4;
             byte target;
-            if (piQuarter < -3) {
+            if(piQuarter < -3) {
                 target = IMAGE_BACK;
-            } else if (piQuarter < -1) {
+            } else if(piQuarter < -1) {
                 target = IMAGE_LEFT;
-            } else if (piQuarter < 1) {
+            } else if(piQuarter < 1) {
                 target = IMAGE_FRONT;
-            } else if (piQuarter < 3) {
+            } else if(piQuarter < 3) {
                 target = IMAGE_RIGHT;
             } else {
                 target = IMAGE_BACK;
@@ -71,7 +71,7 @@ public class EquirectangularToBitmapProcessor extends AbstractFrameProcessor<Cub
             double fYaw = (yaw + PI / 4) % (PI / 2) - PI / 4;
             double d = 1 / Math.cos(fYaw);
             double gcXN = (Math.tan(fYaw) + 1) / 2;
-            for (int y = 0; y < height; y++) {
+            for(int y = 0; y < height; y++) {
                 // get y position relative to the full projection
                 int j = yOffset + y;
 
@@ -80,13 +80,13 @@ public class EquirectangularToBitmapProcessor extends AbstractFrameProcessor<Cub
                 double pitch = PI * j / fullHeight - PI / 2;
                 double cYN = (Math.tan(pitch) * d + 1) / 2;
 
-                if (cYN >= 1) {
+                if(cYN >= 1) {
                     double pd = Math.tan(PI/2 - pitch);
                     cXN = (-Math.sin(yaw) * pd + 1) / 2;
                     cYN = (Math.cos(yaw) * pd + 1) / 2;
                     pt = IMAGE_BOTTOM;
                 }
-                if (cYN < 0) {
+                if(cYN < 0) {
                     double pd = Math.tan(PI/2 - pitch);
                     cXN = (Math.sin(yaw) * pd + 1) / 2;
                     cYN = (Math.cos(yaw) * pd + 1) / 2;
@@ -116,11 +116,11 @@ public class EquirectangularToBitmapProcessor extends AbstractFrameProcessor<Cub
         byte[] pixel = new byte[bpp];
         byte[] image;
         int[] imageX, imageY;
-        for (int y = 0; y < height; y++) {
+        for(int y = 0; y < height; y++) {
             image = this.image[y];
             imageX = this.imageX[y];
             imageY = this.imageY[y];
-            for (int x = 0; x < width; x++) {
+            for(int x = 0; x < width; x++) {
                 ByteBuffer source = images[image[x]];
                 source.position((imageX[x] + imageY[x] * frameSize) * bpp);
                 source.get(pixel);

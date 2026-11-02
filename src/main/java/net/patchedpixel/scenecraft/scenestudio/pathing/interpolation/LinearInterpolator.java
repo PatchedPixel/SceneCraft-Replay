@@ -30,7 +30,7 @@ public class LinearInterpolator extends AbstractInterpolator {
 
     private void addToMap(Property property, Keyframe keyframe) {
         Set<Keyframe> set = framesToProperty.get(property);
-        if (set == null) {
+        if(set == null) {
             framesToProperty.put(property, set = new LinkedHashSet<>());
         }
         set.add(keyframe);
@@ -40,12 +40,12 @@ public class LinearInterpolator extends AbstractInterpolator {
     @Override
     protected Map<PropertyPart, InterpolationParameters> bakeInterpolation(Map<PropertyPart, InterpolationParameters> parameters) {
         framesToProperty.clear();
-        for (PathSegment segment : getSegments()) {
-            for (Property property : getKeyframeProperties()) {
-                if (segment.getStartKeyframe().getValue(property).isPresent()) {
+        for(PathSegment segment : getSegments()) {
+            for(Property property : getKeyframeProperties()) {
+                if(segment.getStartKeyframe().getValue(property).isPresent()) {
                     addToMap(property, segment.getStartKeyframe());
                 }
-                if (segment.getEndKeyframe().getValue(property).isPresent()) {
+                if(segment.getEndKeyframe().getValue(property).isPresent()) {
                     addToMap(property, segment.getEndKeyframe());
                 }
             }
@@ -53,11 +53,11 @@ public class LinearInterpolator extends AbstractInterpolator {
 
         Keyframe lastKeyframe = getSegments().get(getSegments().size() - 1).getEndKeyframe();
         Map<PropertyPart, InterpolationParameters> lastParameters = new HashMap<>();
-        for (Property<?> property : getKeyframeProperties()) {
+        for(Property<?> property : getKeyframeProperties()) {
             Optional optionalValue = lastKeyframe.getValue(property);
-            if (optionalValue.isPresent()) {
+            if(optionalValue.isPresent()) {
                 Object value = optionalValue.get();
-                for (PropertyPart part : property.getParts()) {
+                for(PropertyPart part : property.getParts()) {
                     lastParameters.put(part, new InterpolationParameters(part.toDouble(value), 1, 0));
                 }
             }
@@ -68,21 +68,21 @@ public class LinearInterpolator extends AbstractInterpolator {
     @Override
     public <T> Optional<T> getValue(Property<T> property, long time) {
         Set<Keyframe> kfSet = framesToProperty.get(property);
-        if (kfSet == null) {
+        if(kfSet == null) {
             return Optional.empty();
         }
         Keyframe kfBefore = null, kfAfter = null;
-        for (Keyframe keyframe : kfSet) {
-            if (keyframe.getTime() == time) {
+        for(Keyframe keyframe : kfSet) {
+            if(keyframe.getTime() == time) {
                 return keyframe.getValue(property);
-            } else if (keyframe.getTime() < time) {
+            } else if(keyframe.getTime() < time) {
                 kfBefore = keyframe;
-            } else if (keyframe.getTime() > time) {
+            } else if(keyframe.getTime() > time) {
                 kfAfter = keyframe;
                 break;
             }
         }
-        if (kfBefore == null || kfAfter == null) {
+        if(kfBefore == null || kfAfter == null) {
             return Optional.empty();
         }
 
@@ -91,17 +91,17 @@ public class LinearInterpolator extends AbstractInterpolator {
         double fraction = (time - kfBefore.getTime()) / (double) (kfAfter.getTime() - kfBefore.getTime());
 
         T interpolated = valueBefore;
-        for (PropertyPart<T> part : property.getParts()) {
-            if (part.isInterpolatable()) {
+        for(PropertyPart<T> part : property.getParts()) {
+            if(part.isInterpolatable()) {
                 double before = part.toDouble(valueBefore);
                 double after = part.toDouble(valueAfter);
                 double bound = part.getUpperBound();
-                if (!Double.isNaN(bound)) {
+                if(!Double.isNaN(bound)) {
                     before = mod(before, bound);
                     after = mod(after, bound);
-                    if (Math.abs(after - before) > bound / 2) {
+                    if(Math.abs(after - before) > bound / 2) {
                         // Wrapping around is quicker
-                        if (before < bound / 2) {
+                        if(before < bound / 2) {
                             after -= bound;
                         } else {
                             after += bound;
@@ -109,7 +109,7 @@ public class LinearInterpolator extends AbstractInterpolator {
                     }
                 }
                 double value = (after - before) * fraction + before;
-                if (!Double.isNaN(bound)) {
+                if(!Double.isNaN(bound)) {
                     value = mod(value, bound);
                 }
                 interpolated = part.fromDouble(interpolated, value);

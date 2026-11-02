@@ -63,13 +63,13 @@ public class FFmpegWriter implements FrameConsumer<BitmapFrame> {
             cmdline = new ArrayList<>();
             cmdline.add(executable.replace('/', File.separatorChar).replace('\\', File.separatorChar));
             cmdline.addAll(splitArguments(commandArgs));
-        } catch (IllegalArgumentException e) {
+        } catch(IllegalArgumentException e) {
             LOGGER.error("Failed to parse ffmpeg command line:", e);
             throw new FFmpegStartupException(settings, e.getLocalizedMessage());
         }
         try {
             process = new ProcessBuilder(cmdline).directory(outputFolder).start();
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw new NoFFmpegException(e);
         }
         File exportLogFile = new File(MCVer.getMinecraft().gameDirectory, "export.log");
@@ -85,19 +85,19 @@ public class FFmpegWriter implements FrameConsumer<BitmapFrame> {
         StringBuilder current = new StringBuilder();
         char quote = 0;
         boolean lastQuoted = false;
-        for (int i = 0; i < line.length(); i++) {
+        for(int i = 0; i < line.length(); i++) {
             char c = line.charAt(i);
-            if (quote != 0) {
-                if (c == quote) {
+            if(quote != 0) {
+                if(c == quote) {
                     quote = 0;
                 } else {
                     current.append(c);
                 }
-            } else if (c == '\'' || c == '"') {
+            } else if(c == '\'' || c == '"') {
                 quote = c;
                 lastQuoted = true;
-            } else if (Character.isWhitespace(c)) {
-                if (lastQuoted || !current.isEmpty()) {
+            } else if(Character.isWhitespace(c)) {
+                if(lastQuoted || !current.isEmpty()) {
                     result.add(current.toString());
                     current.setLength(0);
                     lastQuoted = false;
@@ -106,10 +106,10 @@ public class FFmpegWriter implements FrameConsumer<BitmapFrame> {
                 current.append(c);
             }
         }
-        if (quote != 0) {
+        if(quote != 0) {
             throw new IllegalArgumentException("Unbalanced quotes in " + line);
         }
-        if (lastQuoted || !current.isEmpty()) {
+        if(lastQuoted || !current.isEmpty()) {
             result.add(current.toString());
         }
         return result;
@@ -126,17 +126,17 @@ public class FFmpegWriter implements FrameConsumer<BitmapFrame> {
                 process.exitValue();
                 break;
             } catch(IllegalThreadStateException ex) {
-                if (rem > 0) {
+                if(rem > 0) {
                     try {
                         Thread.sleep(Math.min(TimeUnit.NANOSECONDS.toMillis(rem) + 1, 100));
-                    } catch (InterruptedException e) {
+                    } catch(InterruptedException e) {
                         Thread.currentThread().interrupt();
                         break;
                     }
                 }
             }
             rem = TimeUnit.SECONDS.toNanos(30) - (System.nanoTime() - startTime);
-        } while (rem > 0);
+        } while(rem > 0);
 
         process.destroy();
     }
@@ -147,8 +147,8 @@ public class FFmpegWriter implements FrameConsumer<BitmapFrame> {
         try {
             checkSize(frame.getSize());
             channel.write(frame.getByteBuffer());
-        } catch (Throwable t) {
-            if (aborted) {
+        } catch(Throwable t) {
+            if(aborted) {
                 return;
             }
             try {
@@ -156,7 +156,7 @@ public class FFmpegWriter implements FrameConsumer<BitmapFrame> {
                 // or at some later point (ffmpeg won't print the output file until the first frame
                 // has been written to stdin, so we can't already check for invalid args in <init>).
                 getVideoFile();
-            } catch (FFmpegStartupException e) {
+            } catch(FFmpegStartupException e) {
                 // Possibly invalid ffmpeg arguments
                 renderer.setFailure(e);
                 return;
@@ -191,8 +191,8 @@ public class FFmpegWriter implements FrameConsumer<BitmapFrame> {
 
     public File getVideoFile() throws FFmpegStartupException {
         String log = ffmpegLog.toString();
-        for (String line : log.split("\n")) {
-            if (line.startsWith("Output #0")) {
+        for(String line : log.split("\n")) {
+            if(line.startsWith("Output #0")) {
                 String fileName = line.substring(line.indexOf(", to '") + 6, line.lastIndexOf('\''));
                 return new File(settings.getOutputFile().getParentFile(), fileName);
             }

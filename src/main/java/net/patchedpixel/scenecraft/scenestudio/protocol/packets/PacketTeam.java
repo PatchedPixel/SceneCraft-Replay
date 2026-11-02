@@ -54,11 +54,11 @@ public class PacketTeam {
         try (Packet.Reader in = packet.reader()) {
             in.readString(); // name
             Action action = Action.values()[in.readByte()];
-            if (action != Action.CREATE && action != Action.ADD_PLAYER && action != Action.REMOVE_PLAYER) {
+            if(action != Action.CREATE && action != Action.ADD_PLAYER && action != Action.REMOVE_PLAYER) {
                 return Collections.emptyList();
             }
 
-            if (action == Action.CREATE) {
+            if(action == Action.CREATE) {
                 skipTeamInfo(packet, in);
             }
 
@@ -66,7 +66,7 @@ public class PacketTeam {
             count = in.readVarInt();
 
             List<String> result = new ArrayList<>(count);
-            for (int i = 0; i < count; i++) {
+            for(int i = 0; i < count; i++) {
                 result.add(in.readString());
             }
             return result;
@@ -80,7 +80,7 @@ public class PacketTeam {
         in.readVarInt(); // name tag visibility
         in.readVarInt(); // collision rule
 
-        if (in.readBoolean()) {
+        if(in.readBoolean()) {
             in.readVarInt(); // color
         }
         in.readText(); // prefix
@@ -104,7 +104,7 @@ public class PacketTeam {
 
             out.writeVarInt(players.size());
 
-            for (String player : players) {
+            for(String player : players) {
                 out.writeString(player);
             }
         }
@@ -126,7 +126,7 @@ public class PacketTeam {
             out.writeByte(action.ordinal());
             out.writeVarInt(players.size());
 
-            for (String player : players) {
+            for(String player : players) {
                 out.writeString(player);
             }
         }

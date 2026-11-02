@@ -61,7 +61,7 @@ public class MetadataInjector {
                                       int videoWidth, int videoHeight,
                                       int sphericalFovX, int sphericalFovY) {
         String xmlString;
-        switch (renderMethod) {
+        switch(renderMethod) {
             case EQUIRECTANGULAR:
                 xmlString = XML_MONO_METADATA;
                 break;
@@ -80,11 +80,11 @@ public class MetadataInjector {
 
     private static Dimension getOriginalDimensions(int videoWidth, int videoHeight,
                                                    int sphericalFovX, int sphericalFovY) {
-        if (sphericalFovX < 360) {
+        if(sphericalFovX < 360) {
             videoWidth = Math.round(videoWidth * 360 / (float) sphericalFovX);
         }
 
-        if (sphericalFovY < 180) {
+        if(sphericalFovY < 180) {
             videoHeight = Math.round(videoHeight * 180 / (float) sphericalFovY);
         }
 
@@ -140,7 +140,7 @@ public class MetadataInjector {
     }
 
     private static Box getBoxByName(BasicContainer container, String boxName) {
-        for (Box box : container.getBoxes()) {
+        for(Box box : container.getBoxes()) {
             if(box.getType().equals(boxName)) return box;
         }
 

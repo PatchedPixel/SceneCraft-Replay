@@ -98,7 +98,7 @@ public class PacketJoinGame {
 
         int count = in.readVarInt();
         this.dimensions = new ArrayList<>(count);
-        for (int i = 0; i < count; i++) {
+        for(int i = 0; i < count; i++) {
             this.dimensions.add(in.readString());
         }
 
@@ -124,7 +124,7 @@ public class PacketJoinGame {
         this.debugWorld = in.readBoolean();
         this.flatWorld = in.readBoolean();
 
-        if (in.readBoolean()) {
+        if(in.readBoolean()) {
             this.lastDeathPosition = in.readGlobalPosition();
         }
 
@@ -151,7 +151,7 @@ public class PacketJoinGame {
         out.writeBoolean(this.hardcore);
 
         out.writeVarInt(this.dimensions.size());
-        for (String dimension : this.dimensions) {
+        for(String dimension : this.dimensions) {
             out.writeString(dimension);
         }
 
@@ -177,7 +177,7 @@ public class PacketJoinGame {
         out.writeBoolean(this.debugWorld);
         out.writeBoolean(this.flatWorld);
 
-        if (this.lastDeathPosition != null) {
+        if(this.lastDeathPosition != null) {
             out.writeBoolean(true);
             out.writeGlobalPosition(this.lastDeathPosition);
         } else {

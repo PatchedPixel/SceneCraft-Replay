@@ -26,33 +26,33 @@ public class SceneCraftCompat implements Module {
 
     public static synchronized void hideModHud() {
         minimapHide = true;
-        if (!isLoaded("voicechat") || voicechatChanged) {
+        if(!isLoaded("voicechat") || voicechatChanged) {
             return;
         }
         try {
             voicechatOriginalHidden = VoicechatClient.CLIENT_CONFIG.hideIcons.get();
-            if (voicechatOriginalHidden) {
+            if(voicechatOriginalHidden) {
                 return; // user already hides them, nothing to change or restore
             }
             installHook();
             writeMarker(voicechatOriginalHidden);
             voicechatChanged = true;
             VoicechatClient.CLIENT_CONFIG.hideIcons.set(true);
-        } catch (Throwable t) {
+        } catch(Throwable t) {
             LOGGER.warn("Could not hide Simple Voice Chat icons", t);
         }
     }
 
     public static synchronized void showModHud() {
         minimapHide = false;
-        if (!voicechatChanged) {
+        if(!voicechatChanged) {
             return;
         }
         try {
             VoicechatClient.CLIENT_CONFIG.hideIcons.set(voicechatOriginalHidden);
             voicechatChanged = false;
             deleteMarker();
-        } catch (Throwable t) {
+        } catch(Throwable t) {
             LOGGER.warn("Could not restore Simple Voice Chat icons", t);
         }
     }
@@ -62,16 +62,16 @@ public class SceneCraftCompat implements Module {
      * Safe to call repeatedly; does nothing in the common case.
      */
     public static synchronized void recoverStaleHud() {
-        if (voicechatChanged || !isLoaded("voicechat")) {
+        if(voicechatChanged || !isLoaded("voicechat")) {
             return;
         }
         try {
-            if (Files.exists(markerPath())) {
+            if(Files.exists(markerPath())) {
                 VoicechatClient.CLIENT_CONFIG.hideIcons.set(readMarker());
                 deleteMarker();
                 LOGGER.info("Restored Simple Voice Chat icons left hidden by an earlier replay session");
             }
-        } catch (Throwable t) {
+        } catch(Throwable t) {
             LOGGER.debug("Voice chat not ready for HUD recovery yet", t);
         }
     }
@@ -79,18 +79,18 @@ public class SceneCraftCompat implements Module {
     private static boolean isLoaded(String modId) {
         try {
             return ModList.get() != null && ModList.get().isLoaded(modId);
-        } catch (Throwable t) {
+        } catch(Throwable t) {
             return false;
         }
     }
 
     private static void installHook() {
-        if (hooked) return;
+        if(hooked) return;
         hooked = true;
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 showModHud();
-            } catch (Throwable ignored) {
+            } catch(Throwable ignored) {
             }
         }, "scenecraft-hud-restore"));
     }
@@ -102,7 +102,7 @@ public class SceneCraftCompat implements Module {
     private static void writeMarker(boolean originalHidden) {
         try {
             Files.writeString(markerPath(), "originalHidden=" + originalHidden + "\n");
-        } catch (Exception e) {
+        } catch(Exception e) {
             LOGGER.warn("Could not write HUD marker", e);
         }
     }
@@ -110,7 +110,7 @@ public class SceneCraftCompat implements Module {
     private static boolean readMarker() {
         try {
             return Files.readString(markerPath()).contains("originalHidden=true");
-        } catch (Exception e) {
+        } catch(Exception e) {
             return false;
         }
     }
@@ -118,7 +118,7 @@ public class SceneCraftCompat implements Module {
     private static void deleteMarker() {
         try {
             Files.deleteIfExists(markerPath());
-        } catch (Exception e) {
+        } catch(Exception e) {
             LOGGER.warn("Could not delete HUD marker", e);
         }
     }

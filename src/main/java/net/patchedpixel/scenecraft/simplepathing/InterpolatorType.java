@@ -42,15 +42,15 @@ public enum InterpolatorType {
     }
 
     public static InterpolatorType fromString(String string) {
-        for (InterpolatorType t : values()) {
-            if (t.getI18nName().equals(string)) return t;
+        for(InterpolatorType t : values()) {
+            if(t.getI18nName().equals(string)) return t;
         }
         return CATMULL_ROM; //the default
     }
 
     public static InterpolatorType fromClass(Class<? extends Interpolator> cls) {
-        for (InterpolatorType type : values()) {
-            if (cls.equals(type.getInterpolatorClass())) {
+        for(InterpolatorType type : values()) {
+            if(cls.equals(type.getInterpolatorClass())) {
                 return type;
             }
         }

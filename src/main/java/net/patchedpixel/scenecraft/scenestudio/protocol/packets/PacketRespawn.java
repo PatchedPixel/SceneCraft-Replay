@@ -64,7 +64,7 @@ public class PacketRespawn {
         this.flatWorld = in.readBoolean();
         // Now at the end of the packet
 
-        if (in.readBoolean()) {
+        if(in.readBoolean()) {
             this.lastDeathPosition = in.readGlobalPosition();
         }
 
@@ -98,7 +98,7 @@ public class PacketRespawn {
         out.writeBoolean(this.flatWorld);
         // Now at the end of the packet
 
-        if (this.lastDeathPosition != null) {
+        if(this.lastDeathPosition != null) {
             out.writeBoolean(true);
             out.writeGlobalPosition(this.lastDeathPosition);
         } else {
@@ -110,8 +110,8 @@ public class PacketRespawn {
         out.writeVarInt(this.seaLevel);
 
         int flags = 0;
-        if (this.keepPlayerAttributes) flags |= 0x01;
-        if (this.keepPlayerDataTracker) flags |= 0x02;
+        if(this.keepPlayerAttributes) flags |= 0x01;
+        if(this.keepPlayerDataTracker) flags |= 0x02;
         out.writeByte(flags);
     }
 }

@@ -37,7 +37,7 @@ public class Image implements AutoCloseable {
 
     @Override
     public void close() {
-        if (inner != null) {
+        if(inner != null) {
             inner = null;
             cleanable.clean();
         }
@@ -84,7 +84,7 @@ public class Image implements AutoCloseable {
                 image.writePNG(out);
                 file.writeThumbBytes(out.toByteArray());
                 converted[0] = true;
-            } catch (IOException e) {
+            } catch(IOException e) {
                 image.close();
                 throw e;
             }
@@ -120,7 +120,7 @@ public class Image implements AutoCloseable {
         try {
             writePNG(out);
             return ImageIO.read(new ByteArrayInputStream(out.toByteArray()));
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw new RuntimeException(e);
         }
     }

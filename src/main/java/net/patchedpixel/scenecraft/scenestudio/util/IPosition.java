@@ -48,8 +48,8 @@ public class IPosition {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
         IPosition iPosition = (IPosition) o;
         return x == iPosition.x &&
                 y == iPosition.y &&

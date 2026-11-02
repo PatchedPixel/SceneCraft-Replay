@@ -70,11 +70,11 @@ public class RestoreReplayGui extends AbstractGuiScreen<RestoreReplayGui> {
             try {
                 File tmp = new File(file.getParentFile(), file.getName() + ".tmp");
                 File deleted = new File(file.getParentFile(), file.getName() + ".del");
-                if (deleted.exists()) {
+                if(deleted.exists()) {
                     FileUtils.deleteDirectory(deleted);
                 }
                 Files.move(tmp, deleted);
-            } catch (IOException e) {
+            } catch(IOException e) {
                 e.printStackTrace();
             }
             parent.display();
@@ -103,7 +103,7 @@ public class RestoreReplayGui extends AbstractGuiScreen<RestoreReplayGui> {
             core.runLater(() -> core.getBackgroundProcesses().addProcess(savingProcess));
             try {
                 tryRecover(progressBar::setProgress);
-            } catch (IOException e) {
+            } catch(IOException e) {
                 LOGGER.error("Recovering replay file:", e);
                 CrashReport crashReport = CrashReport.forThrowable(e, "Recovering replay file");
                 core.runLater(() -> Utils.error(LOGGER, VanillaGuiScreen.wrap(getMinecraft().gui.screen()), crashReport, () -> {}));
@@ -120,17 +120,17 @@ public class RestoreReplayGui extends AbstractGuiScreen<RestoreReplayGui> {
         replayFile.save();
         progress.accept(0.4f);
         ReplayMetaData metaData = replayFile.getMetaData();
-        if (metaData != null && metaData.getDuration() == 0) {
+        if(metaData != null && metaData.getDuration() == 0) {
             // Try to restore replay duration
             // We need to re-write the packet data in case there are any incomplete packets dangling at the end
             try (ReplayInputStream in = replayFile.getPacketData(MCVer.getPacketTypeRegistry(State.LOGIN));
                  ReplayOutputStream out = replayFile.writePacketData()) {
-                while (true) {
+                while(true) {
                     // To prevent failing at un-parsable packets and to support recovery in minimal mode,
                     // we do not use the ReplayIn/OutputStream methods but instead parse the packets ourselves.
                     int time = readInt(in);
                     int length = readInt(in);
-                    if (time == -1 || length == -1) {
+                    if(time == -1 || length == -1) {
                         break;
                     }
                     byte[] buf = new byte[length];
@@ -144,7 +144,7 @@ public class RestoreReplayGui extends AbstractGuiScreen<RestoreReplayGui> {
                     writeInt(out, length);
                     out.write(buf);
                 }
-            } catch (Throwable t) {
+            } catch(Throwable t) {
                 t.printStackTrace();
             }
             // Write back the actual duration

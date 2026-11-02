@@ -20,7 +20,7 @@ public class StreamPipe extends Thread {
     public void run() {
         try {
             IOUtils.copy(in, out);
-        } catch (IOException ignored) {
+        } catch(IOException ignored) {
             // We don't care
             // Note: Once we use this for something important, we should probably care!
         }

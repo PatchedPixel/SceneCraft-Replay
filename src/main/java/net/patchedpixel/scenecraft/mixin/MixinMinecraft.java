@@ -90,7 +90,7 @@ public abstract class MixinMinecraft extends ReentrantBlockableEventLoop<Runnabl
             )
     )
     private Screen doesScreenPassEvents(Screen screen) {
-        if (screen instanceof ScreenExt ext && ext.doesPassEvents()) {
+        if(screen instanceof ScreenExt ext && ext.doesPassEvents()) {
             return null;
         }
 
@@ -100,7 +100,7 @@ public abstract class MixinMinecraft extends ReentrantBlockableEventLoop<Runnabl
     @Inject(method = "resizeGui", at = @At("HEAD"), cancellable = true)
     private void suppressResizeDuringRender(CallbackInfo ci) {
         VirtualWindow delegate = this.windowDelegate;
-        if (delegate != null && delegate.isBound()) {
+        if(delegate != null && delegate.isBound()) {
             Window window = ((Minecraft) (Object) this).getWindow();
             delegate.onResolutionChanged(window.getWidth(), window.getHeight());
             ci.cancel();
@@ -110,11 +110,11 @@ public abstract class MixinMinecraft extends ReentrantBlockableEventLoop<Runnabl
     @Inject(method = "handleGlobalKeyPress", at = @At("HEAD"), cancellable = true)
     private void scenecraft$noFriendsHotkeyInReplay(InputConstants.Key key, boolean controlDown, CallbackInfoReturnable<Boolean> cir) {
         SceneCraftReplay replay = SceneCraftReplay.instance;
-        if (replay == null || replay.getReplayHandler() == null) {
+        if(replay == null || replay.getReplayHandler() == null) {
             return;
         }
         Minecraft mc = (Minecraft) (Object) this;
-        if (mc.options.keyFriends.matches(key)) {
+        if(mc.options.keyFriends.matches(key)) {
             cir.setReturnValue(false);
         }
     }

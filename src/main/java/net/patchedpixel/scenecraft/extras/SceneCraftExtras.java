@@ -35,12 +35,12 @@ public class SceneCraftExtras implements Module {
 
     @Override
     public void initClient() {
-        for (Class<? extends Extra> cls : builtin) {
+        for(Class<? extends Extra> cls : builtin) {
             try {
                 Extra extra = cls.newInstance();
                 extra.register(SceneCraft.instance);
                 instances.put(cls, extra);
-            } catch (Throwable t) {
+            } catch(Throwable t) {
                 LOGGER.warn("Failed to load extra " + cls.getName() + ": ", t);
             }
         }

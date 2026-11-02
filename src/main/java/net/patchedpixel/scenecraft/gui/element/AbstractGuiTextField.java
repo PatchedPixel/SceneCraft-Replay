@@ -93,7 +93,7 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
 
     @Override
     public T setText(String text) {
-        if (text.length() > maxLength) {
+        if(text.length() > maxLength) {
             text = text.substring(0, maxLength);
         }
         this.text = text;
@@ -110,7 +110,7 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
     public T setMaxLength(int maxLength) {
         Preconditions.checkArgument(maxLength >= 0, "maxLength must not be negative");
         this.maxLength = maxLength;
-        if (text.length() > maxLength) {
+        if(text.length() > maxLength) {
             setText(text);
         }
         return getThis();
@@ -144,7 +144,7 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
 
     @Override
     public String deleteSelectedText() {
-        if (cursorPos == selectionPos) {
+        if(cursorPos == selectionPos) {
             return ""; // Nothing selected
         }
         int from = getSelectionFrom();
@@ -161,14 +161,14 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
         String line = text.substring(currentOffset, cursorPos);
         Font fontRenderer = MCVer.getFontRenderer();
         int currentWidth = fontRenderer.width(line);
-        if (currentWidth > size.getWidth() - 2*BORDER) {
+        if(currentWidth > size.getWidth() - 2*BORDER) {
             currentOffset = cursorPos - fontRenderer.plainSubstrByWidth(line, size.getWidth() - 2*BORDER, true).length();
         }
     }
 
     @Override
     public T writeText(String append) {
-        for (char c : append.toCharArray()) {
+        for(char c : append.toCharArray()) {
             writeChar(c);
         }
         return getThis();
@@ -176,13 +176,13 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
 
     @Override
     public T writeChar(char c) {
-        if (!CharInput.isValidChar(c)) {
+        if(!CharInput.isValidChar(c)) {
             return getThis();
         }
 
         deleteSelectedText();
 
-        if (text.length() >= maxLength) {
+        if(text.length() >= maxLength) {
             return getThis();
         }
 
@@ -194,7 +194,7 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
 
     @Override
     public T deleteNextChar() {
-        if (cursorPos < text.length()) {
+        if(cursorPos < text.length()) {
             text = text.substring(0, cursorPos) + text.substring(cursorPos + 1);
         }
         selectionPos = cursorPos;
@@ -210,13 +210,13 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
     protected int getNextWordLength() {
         int length = 0;
         boolean inWord = true;
-        for (int i = cursorPos; i < text.length(); i++) {
-            if (inWord) {
-                if (text.charAt(i) == ' ') {
+        for(int i = cursorPos; i < text.length(); i++) {
+            if(inWord) {
+                if(text.charAt(i) == ' ') {
                     inWord = false;
                 }
             } else {
-                if (text.charAt(i) != ' ') {
+                if(text.charAt(i) != ' ') {
                     return length;
                 }
             }
@@ -228,7 +228,7 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
     @Override
     public String deleteNextWord() {
         int worldLength = getNextWordLength();
-        if (worldLength > 0) {
+        if(worldLength > 0) {
             return deleteText(cursorPos, cursorPos + worldLength - 1);
         }
         return "";
@@ -236,7 +236,7 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
 
     @Override
     public T deletePreviousChar() {
-        if (cursorPos > 0) {
+        if(cursorPos > 0) {
             text = text.substring(0, cursorPos - 1) + text.substring(cursorPos);
             selectionPos = --cursorPos;
         }
@@ -252,13 +252,13 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
     protected int getPreviousWordLength() {
         int length = 0;
         boolean inWord = false;
-        for (int i = cursorPos - 1; i >= 0; i--) {
-            if (inWord) {
-                if (text.charAt(i) == ' ') {
+        for(int i = cursorPos - 1; i >= 0; i--) {
+            if(inWord) {
+                if(text.charAt(i) == ' ') {
                     return length;
                 }
             } else {
-                if (text.charAt(i) != ' ') {
+                if(text.charAt(i) != ' ') {
                     inWord = true;
                 }
             }
@@ -271,7 +271,7 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
     public String deletePreviousWord() {
         int worldLength = getPreviousWordLength();
         String deleted = "";
-        if (worldLength > 0) {
+        if(worldLength > 0) {
             deleted = deleteText(cursorPos - worldLength, cursorPos - 1);
             selectionPos = cursorPos -= worldLength;
         }
@@ -293,12 +293,12 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
     @Override
     public boolean mouseClick(Click click) {
         ReadablePoint position = click;
-        if (getContainer() != null) {
+        if(getContainer() != null) {
             getContainer().convertFor(this, (Point) (position = new Point(position)));
         }
         boolean hovering = isMouseHovering(position);
 
-        if (hovering && isFocused() && click.button == InputConstants.MOUSE_BUTTON_LEFT) {
+        if(hovering && isFocused() && click.button == InputConstants.MOUSE_BUTTON_LEFT) {
             updateCurrentOffset();
             int mouseX = position.getX() - BORDER;
             Font fontRenderer = MCVer.getFontRenderer();
@@ -320,10 +320,10 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
 
     @Override
     public T setFocused(boolean isFocused) {
-        if (isFocused && !this.focused) {
+        if(isFocused && !this.focused) {
             this.blinkCursorTick = 0; // Restart blinking to indicate successful focus
         }
-        if (this.focused != isFocused) {
+        if(this.focused != isFocused) {
             this.focused = isFocused;
             onFocusChanged(this.focused);
         }
@@ -356,7 +356,7 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
         renderer.drawRect(0, 0, width, height, isFocused() ? ReadableColor.WHITE : BORDER_COLOR);
         renderer.drawRect(1, 1, width - 2, height - 2, ReadableColor.BLACK);
 
-        if (text.isEmpty() && !isFocused() && !Strings.isNullOrEmpty(hint)) {
+        if(text.isEmpty() && !isFocused() && !Strings.isNullOrEmpty(hint)) {
             // Draw hint
             String text = fontRenderer.plainSubstrByWidth(hint, width - 2*BORDER);
             renderer.drawString(BORDER, posY, textColorDisabled, text);
@@ -377,10 +377,10 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
             renderer.invertColors(right, height - 2, left, 2);
 
             // Draw cursor
-            if (blinkCursorTick / 6 % 2 == 0 && focused) {
+            if(blinkCursorTick / 6 % 2 == 0 && focused) {
                 String beforeCursor = renderText.substring(0, cursorPos - currentOffset);
                 int posX = BORDER + fontRenderer.width(beforeCursor);
-                if (cursorPos == text.length()) {
+                if(cursorPos == text.length()) {
                     renderer.drawString(posX, posY, CURSOR_COLOR, "_", true);
                 } else {
                     renderer.drawRect(posX, posY - 1, 1, 1 + fontRenderer.lineHeight, CURSOR_COLOR);
@@ -391,19 +391,19 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
 
     @Override
     public boolean handleKey(KeyInput keyInput) {
-        if (!this.focused) {
+        if(!this.focused) {
             return false;
         }
 
         int keyCode = keyInput.key;
 
-        if (keyCode == InputConstants.KEY_TAB) {
+        if(keyCode == InputConstants.KEY_TAB) {
             Focusable other = keyInput.hasShift() ? previous : next;
-            if (other != null) {
+            if(other != null) {
                 setFocused(false);
                 other.setFocused(true);
                 // If the other field is a text field, by default select all its text (saves a Ctrl+A)
-                if (other instanceof AbstractGuiTextField) {
+                if(other instanceof AbstractGuiTextField) {
                     AbstractGuiTextField<?> field = (AbstractGuiTextField<?>) other;
                     field.cursorPos = 0;
                     field.selectionPos = field.text.length();
@@ -412,16 +412,16 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
             return true;
         }
 
-        if (keyCode == InputConstants.KEY_RETURN) {
+        if(keyCode == InputConstants.KEY_RETURN) {
             onEnter();
             return true;
         }
 
         String textBefore = text;
         try {
-            if (keyInput.hasCtrl()) {
+            if(keyInput.hasCtrl()) {
                 // Shortcuts use the logical key so they follow the active keyboard layout
-                switch (keyInput.keycode) {
+                switch(keyInput.keycode) {
                     case InputConstants.KEYCODE_A: // Select all
                         cursorPos = 0;
                         selectionPos = text.length();
@@ -430,12 +430,12 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
                         MCVer.setClipboardString(getSelectedText());
                         return true;
                     case InputConstants.KEYCODE_V: // Paste
-                        if (isEnabled()) {
+                        if(isEnabled()) {
                             writeText(MCVer.getClipboardString());
                         }
                         return true;
                     case InputConstants.KEYCODE_X: // Cut
-                        if (isEnabled()) {
+                        if(isEnabled()) {
                             MCVer.setClipboardString(deleteSelectedText());
                         }
                         return true;
@@ -444,7 +444,7 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
 
             boolean words = keyInput.hasCtrl();
             boolean select = keyInput.hasShift();
-            switch (keyCode) {
+            switch(keyCode) {
                 case InputConstants.KEY_HOME:
                     cursorPos = 0;
                     break;
@@ -452,8 +452,8 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
                     cursorPos = text.length();
                     break;
                 case InputConstants.KEY_LEFT:
-                    if (cursorPos != 0) {
-                        if (words) {
+                    if(cursorPos != 0) {
+                        if(words) {
                             cursorPos -= getPreviousWordLength();
                         } else {
                             cursorPos--;
@@ -461,8 +461,8 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
                     }
                     break;
                 case InputConstants.KEY_RIGHT:
-                    if (cursorPos != text.length()) {
-                        if (words) {
+                    if(cursorPos != text.length()) {
+                        if(words) {
                             cursorPos += getNextWordLength();
                         } else {
                             cursorPos++;
@@ -470,10 +470,10 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
                     }
                     break;
                 case InputConstants.KEY_BACKSPACE:
-                    if (isEnabled()) {
-                        if (!getSelectedText().isEmpty()) {
+                    if(isEnabled()) {
+                        if(!getSelectedText().isEmpty()) {
                             deleteSelectedText();
-                        } else if (words) {
+                        } else if(words) {
                             deletePreviousWord();
                         } else {
                             deletePreviousChar();
@@ -481,10 +481,10 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
                     }
                     return true;
                 case InputConstants.KEY_DELETE:
-                    if (isEnabled()) {
-                        if (!getSelectedText().isEmpty()) {
+                    if(isEnabled()) {
+                        if(!getSelectedText().isEmpty()) {
                             deleteSelectedText();
-                        } else if (words) {
+                        } else if(words) {
                             deleteNextWord();
                         } else {
                             deleteNextChar();
@@ -495,12 +495,12 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
                     return true;
             }
 
-            if (!select) {
+            if(!select) {
                 selectionPos = cursorPos;
             }
             return true;
         } finally {
-            if (!textBefore.equals(text)) {
+            if(!textBefore.equals(text)) {
                 onTextChanged(textBefore);
             }
         }
@@ -508,24 +508,24 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
 
     @Override
     public boolean handleChar(CharInput charInput) {
-        if (!this.focused) {
+        if(!this.focused) {
             return false;
         }
 
-        if (!isEnabled() || !charInput.isValidChar()) {
+        if(!isEnabled() || !charInput.isValidChar()) {
             return true;
         }
 
         String textBefore = text;
         try {
             String inputText = charInput.asString();
-            if (inputText.equals("\r")) {
+            if(inputText.equals("\r")) {
                 inputText = "\n";
             }
             writeText(inputText);
             return true;
         } finally {
-            if (!textBefore.equals(text)) {
+            if(!textBefore.equals(text)) {
                 onTextChanged(textBefore);
             }
         }
@@ -540,7 +540,7 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
      * Called when the user presses the Enter/Return key while this text field is focused.
      */
     protected void onEnter() {
-        if (onEnter != null) {
+        if(onEnter != null) {
             onEnter.run();
         }
     }
@@ -549,7 +549,7 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
      * Called when the text has changed due to user input.
      */
     protected void onTextChanged(String from) {
-        if (textChanged != null) {
+        if(textChanged != null) {
             textChanged.consume(from);
         }
     }
@@ -560,7 +560,7 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
     protected void onFocusChanged(boolean focused) {
         // SDL only delivers text input while the game knows a text element has focus
         MCVer.onTextInputFocusChange(textInputAdapter, focused);
-        if (focusChanged != null) {
+        if(focusChanged != null) {
             focusChanged.consume(focused);
         }
     }

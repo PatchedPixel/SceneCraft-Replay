@@ -79,12 +79,11 @@ public abstract class AbstractGuiButton<T extends AbstractGuiButton<T>> extends 
 
         byte texture = 1;
         int color = labelColor;
-        if (!isEnabled()) {
+        if(!isEnabled()) {
             texture = 0;
             color = 0xa0a0a0;
-        } else if (isMouseHovering(new Point(renderInfo.mouseX, renderInfo.mouseY))) {
+        } else if(isMouseHovering(new Point(renderInfo.mouseX, renderInfo.mouseY))) {
             texture = 2;
-            color = 0xffffa0;
         }
 
         int halfWidth = size.getWidth() / 2;
@@ -93,9 +92,9 @@ public abstract class AbstractGuiButton<T extends AbstractGuiButton<T>> extends 
         int offsetY = renderer.getGpuOffsetY();
         renderer.getContext().blitSprite(RenderPipelines.GUI_TEXTURED, BUTTON_TEXTURES[texture], offsetX, offsetY, size.getWidth(), size.getHeight());
 
-        if (this.texture != null) {
+        if(this.texture != null) {
             renderer.bindTexture(this.texture);
-            if (spriteUV != null && textureSize != null) {
+            if(spriteUV != null && textureSize != null) {
                 ReadableDimension spriteSize = this.spriteSize != null ? this.spriteSize : getMinSize();
                 renderer.drawTexturedRect(0, 0, spriteUV.getX(), spriteUV.getY(), size.getWidth(), size.getHeight(),
                         spriteSize.getWidth(), spriteSize.getHeight(),
@@ -105,14 +104,14 @@ public abstract class AbstractGuiButton<T extends AbstractGuiButton<T>> extends 
             }
         }
 
-        if (label != null) {
+        if(label != null) {
             renderer.drawCenteredString(halfWidth, (size.getHeight() - 8) / 2, color, label, true);
         }
     }
 
     @Override
     public ReadableDimension calcMinSize() {
-        if (label != null) {
+        if(label != null) {
             Font fontRenderer = MCVer.getFontRenderer();
             return new Dimension(fontRenderer.width(label), 20);
         } else {

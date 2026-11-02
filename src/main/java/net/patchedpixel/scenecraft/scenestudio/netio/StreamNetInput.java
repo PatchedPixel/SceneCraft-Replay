@@ -17,7 +17,7 @@ public class StreamNetInput extends AbstractNetInput {
     @Override
     public byte readByte() throws IOException {
         int b = in.read();
-        if (b < 0) {
+        if(b < 0) {
             throw new EOFException();
         }
         return (byte) b;
@@ -26,9 +26,9 @@ public class StreamNetInput extends AbstractNetInput {
     @Override
     public int readBytes(byte[] dest, int offset, int length) throws IOException {
         int total = 0;
-        while (total < length) {
+        while(total < length) {
             int read = in.read(dest, offset + total, length - total);
-            if (read < 0) {
+            if(read < 0) {
                 throw new EOFException();
             }
             total += read;

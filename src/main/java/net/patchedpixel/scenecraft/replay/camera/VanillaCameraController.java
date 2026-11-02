@@ -36,14 +36,14 @@ public class VanillaCameraController implements CameraController {
 
     @Override
     public void update(float partialTicksPassed) {
-        if (partialTicksPassed == 0) return;
+        if(partialTicksPassed == 0) return;
         Vector3f direction = new Vector3f(0, 0, 0);
-        for (int i = 0; i < 6; i++) { // First, get movement direction depending on keys pressed
-            if (bindings[i].isDown()) {
+        for(int i = 0; i < 6; i++) { // First, get movement direction depending on keys pressed
+            if(bindings[i].isDown()) {
                 direction.add(DIRECTIONS[i]);
             }
         }
-        if (direction.length() == 0) return;
+        if(direction.length() == 0) return;
         direction.normalize(); // Normalize, so we don't move quicker if we hold down multiple keys
         double yawRadians = Math.toRadians(camera.getYRot());
         float yawSin = (float) Math.sin(yawRadians), yawCos = (float) Math.cos(yawRadians);

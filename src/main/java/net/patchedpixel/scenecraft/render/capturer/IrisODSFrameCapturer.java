@@ -44,7 +44,7 @@ public class IrisODSFrameCapturer implements FrameCapturer<ODSGpuFrame> {
 
             @Override
             public float updateForNextFrame() {
-                if (call++ % 2 == 0) {
+                if(call++ % 2 == 0) {
                     partialTicks = renderInfo.updateForNextFrame();
                 }
                 return partialTicks;
@@ -72,7 +72,7 @@ public class IrisODSFrameCapturer implements FrameCapturer<ODSGpuFrame> {
         try {
             irisConfig.save();
             Iris.reload();
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -97,12 +97,12 @@ public class IrisODSFrameCapturer implements FrameCapturer<ODSGpuFrame> {
         isLeftEye = false;
         Map<Channel, CubicGpuFrame> rightChannels = right.process();
 
-        if (leftChannels != null && rightChannels != null) {
+        if(leftChannels != null && rightChannels != null) {
             Map<Channel, ODSGpuFrame> result = new HashMap<>();
-            for (Channel channel : Channel.values()) {
+            for(Channel channel : Channel.values()) {
                 CubicGpuFrame leftFrame = leftChannels.get(channel);
                 CubicGpuFrame rightFrame = rightChannels.get(channel);
-                if (leftFrame != null && rightFrame != null) {
+                if(leftFrame != null && rightFrame != null) {
                     result.put(channel, new ODSGpuFrame(leftFrame, rightFrame));
                 }
             }

@@ -33,7 +33,7 @@ public class Utils {
         byte[] rowBuf = new byte[bufferWidth * bbp];
         // Copy image flipped vertically to target buffer
         int rows = buffer.remaining() / bbp / bufferWidth;
-        for (int i = 0; i < rows; i++) {
+        for(int i = 0; i < rows; i++) {
             buffer.get(rowBuf);
             to.position(((yOffset + rows - i - 1) * width + xOffset) * bbp);
             to.put(rowBuf);

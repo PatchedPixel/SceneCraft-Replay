@@ -64,11 +64,11 @@ public class PathSegmentImpl implements PathSegment {
 
     @Override
     public void setInterpolator(Interpolator interpolator) {
-        if (this.interpolator != null) {
+        if(this.interpolator != null) {
             this.interpolator.removeSegment(this);
         }
         this.interpolator = interpolator;
-        if (this.interpolator != null) {
+        if(this.interpolator != null) {
             this.interpolator.addSegment(this);
         }
     }

@@ -50,8 +50,8 @@ public class ConnectionEventHandler {
     public void onConnectedToServerEvent(Connection networkManager) {
         try {
             boolean local = networkManager.isMemoryConnection();
-            if (local) {
-                if (mc.getSingleplayerServer().getLevel(Level.OVERWORLD).isDebug()) {
+            if(local) {
+                if(mc.getSingleplayerServer().getLevel(Level.OVERWORLD).isDebug()) {
                     logger.info("Debug World record is not supported.");
                     return;
                 }
@@ -74,20 +74,20 @@ public class ConnectionEventHandler {
             String worldName;
             String serverName = null;
             boolean autoStart = core.getSettingsRegistry().get(Setting.AUTO_START_RECORDING);
-            if (local) {
+            if(local) {
                 worldName = mc.getSingleplayerServer().getWorldData().getLevelName();
                 serverName = worldName;
-            } else if (serverInfo != null && serverInfo.isRealm()) {
+            } else if(serverInfo != null && serverInfo.isRealm()) {
                 // we can't access the server name without tapping too deep in the Realms Library
                 worldName = "A Realms Server";
-            } else if (serverInfo != null) {
+            } else if(serverInfo != null) {
                 worldName = serverInfo.ip;
-                if (!I18n.get("selectServer.defaultName").equals(serverInfo.name)) {
+                if(!I18n.get("selectServer.defaultName").equals(serverInfo.name)) {
                     serverName = serverInfo.name;
                 }
 
                 Boolean autoStartServer = ServerInfoExt.from(serverInfo).getAutoRecording();
-                if (autoStartServer != null) {
+                if(autoStartServer != null) {
                     autoStart = autoStartServer;
                 }
             } else {
@@ -125,19 +125,19 @@ public class ConnectionEventHandler {
             guiOverlay = new GuiRecordingOverlay(mc, core.getSettingsRegistry(), guiControls);
             guiOverlay.register();
 
-            if (autoStart) {
+            if(autoStart) {
                 core.printInfoToChat("scenecraft.chat.recordingstarted");
             } else {
                 packetListener.addMarker(MarkerProcessor.MARKER_NAME_START_CUT, 0);
             }
-        } catch (Throwable e) {
+        } catch(Throwable e) {
             e.printStackTrace();
             core.printWarningToChat("scenecraft.chat.recordingfailed");
         }
     }
 
     public void reset() {
-        if (packetListener != null) {
+        if(packetListener != null) {
             guiControls.unregister();
             guiControls = null;
             guiOverlay.unregister();

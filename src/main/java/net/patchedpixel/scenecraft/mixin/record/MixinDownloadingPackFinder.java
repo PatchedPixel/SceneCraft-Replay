@@ -19,10 +19,10 @@ public abstract class MixinDownloadingPackFinder {
     @Inject(method = "onDownload", at = @At("HEAD"))
     private void recordDownloadedPack(@Coerce Object packs, DownloadQueue.BatchResult result, CallbackInfo ci) {
         PacketListener packetListener = SceneCraftRecorder.instance.getConnectionEventHandler().getPacketListener();
-        if (packetListener == null) {
+        if(packetListener == null) {
             return;
         }
-        for (Map.Entry<UUID, Path> entry : result.downloaded().entrySet()) {
+        for(Map.Entry<UUID, Path> entry : result.downloaded().entrySet()) {
             packetListener.getResourcePackRecorder().recordResourcePack(entry.getValue(), entry.getKey());
         }
     }

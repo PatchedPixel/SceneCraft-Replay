@@ -5,9 +5,9 @@ import net.patchedpixel.scenecraft.gui.utils.Event;
 public interface RenderSpectatorCrosshairCallback {
     Event<RenderSpectatorCrosshairCallback> EVENT = Event.create((listeners) ->
             () -> {
-                for (RenderSpectatorCrosshairCallback listener : listeners) {
+                for(RenderSpectatorCrosshairCallback listener : listeners) {
                     Boolean state = listener.shouldRenderSpectatorCrosshair();
-                    if (state != null) {
+                    if(state != null) {
                         return state;
                     }
                 }

@@ -59,7 +59,7 @@ public class Chunk extends TransientThing implements RandomAccessState {
 
     @Override
     public void rewind(PacketSink sink, int currentTimeStamp, int targetTime) throws IOException {
-        if (currentTimeStamp >= despawnTime) {
+        if(currentTimeStamp >= despawnTime) {
             play(sink, spawnTime - 1, targetTime);
             return;
         }

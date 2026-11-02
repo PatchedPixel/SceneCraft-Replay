@@ -28,9 +28,9 @@ public class ClassicCameraController implements CameraController {
     @Override
     public void update(float partialTicksPassed) {
         boolean forward = false, backward = false, left = false, right = false, up = false, down = false;
-        for (KeyMapping kb : MCVer.getMinecraft().options.keyMappings) {
-            if (!kb.isDown()) continue;
-            switch (kb.getName()) {
+        for(KeyMapping kb : MCVer.getMinecraft().options.keyMappings) {
+            if(!kb.isDown()) continue;
+            switch(kb.getName()) {
                 case "key.forward" -> forward = true;
                 case "key.back" -> backward = true;
                 case "key.left" -> left = true;
@@ -52,19 +52,19 @@ public class ClassicCameraController implements CameraController {
 
         boolean accelerating = wanted.lengthSquared() > 0;
 
-        if (accelerating) {
+        if(accelerating) {
             heading.set(wanted);
-            if (motion < threshold) motion = threshold;
+            if(motion < threshold) motion = threshold;
             motion = Math.min(motion * Math.exp(RATE * dt), maxSpeed);
         } else {
             motion *= Math.exp(-RATE * dt);
-            if (motion < threshold) {
+            if(motion < threshold) {
                 motion = 0;
                 heading.zero();
             }
         }
 
-        if (motion <= 0 || heading.lengthSquared() == 0) {
+        if(motion <= 0 || heading.lengthSquared() == 0) {
             return;
         }
 
@@ -83,7 +83,7 @@ public class ClassicCameraController implements CameraController {
     }
 
     private void setCameraMaximumSpeed(double newMaxSpeed) {
-        if (newMaxSpeed < LOWER_SPEED || newMaxSpeed > UPPER_SPEED) return;
+        if(newMaxSpeed < LOWER_SPEED || newMaxSpeed > UPPER_SPEED) return;
         maxSpeed = newMaxSpeed;
         threshold = maxSpeed / 20;
     }
@@ -92,16 +92,16 @@ public class ClassicCameraController implements CameraController {
         Vector3f result = new Vector3f();
         float pitch = camera.getXRot();
         float yaw = camera.getYRot();
-        if (forwardAxis != 0) {
+        if(forwardAxis != 0) {
             result.add(getVectorForRotation(pitch, yaw).mul(forwardAxis));
         }
-        if (rightAxis != 0) {
+        if(rightAxis != 0) {
             result.add(getVectorForRotation(0, yaw + 90).mul(rightAxis));
         }
-        if (verticalAxis != 0) {
+        if(verticalAxis != 0) {
             result.add(0, verticalAxis, 0);
         }
-        if (result.lengthSquared() > 0) {
+        if(result.lengthSquared() > 0) {
             result.normalize();
         }
         return result;

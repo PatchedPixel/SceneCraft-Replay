@@ -127,40 +127,40 @@ public abstract class AbstractPacketStream implements PacketStream {
 
         public void process(PacketData data) throws IOException {
             boolean keep = true;
-            if (data != null && filter.applies(data.getTime())) {
-                if (!active) {
+            if(data != null && filter.applies(data.getTime())) {
+                if(!active) {
                     filter.getFilter().onStart(context);
                     active = true;
                 }
                 keep = filter.getFilter().onPacket(context, data);
-                if (!keep) {
+                if(!keep) {
                     data.getPacket().getBuf().release();
                 }
-            } else if (active) {
+            } else if(active) {
                 filter.getFilter().onEnd(context, lastTimestamp);
                 active = false;
-                for (PacketData d : inserted) {
-                    if (d.getTime() > lastTimestamp) {
+                for(PacketData d : inserted) {
+                    if(d.getTime() > lastTimestamp) {
                         lastTimestamp = d.getTime();
                     }
                     next.process(d);
                 }
                 inserted.clear();
             }
-            if (data != null && keep) {
-                if (data.getTime() > lastTimestamp) {
+            if(data != null && keep) {
+                if(data.getTime() > lastTimestamp) {
                     lastTimestamp = data.getTime();
                 }
                 next.process(data);
             }
-            for (PacketData d : inserted) {
-                if (d.getTime() > lastTimestamp) {
+            for(PacketData d : inserted) {
+                if(d.getTime() > lastTimestamp) {
                     lastTimestamp = d.getTime();
                 }
                 next.process(d);
             }
             inserted.clear();
-            if (data == null) {
+            if(data == null) {
                 next.process(null);
             }
         }
@@ -178,7 +178,7 @@ public abstract class AbstractPacketStream implements PacketStream {
 
         @Override
         public void process(PacketData data) {
-            if (data != null) {
+            if(data != null) {
                 AbstractPacketStream.this.inserted.add(data);
             }
         }
@@ -207,16 +207,16 @@ public abstract class AbstractPacketStream implements PacketStream {
     private void buildPipe() {
         Iterator<StreamElement> iter = filters.iterator();
         StreamElement l = null;
-        while (iter.hasNext()) {
+        while(iter.hasNext()) {
             StreamElement e = iter.next();
-            if (l == null) {
+            if(l == null) {
                 firstElement = e;
             } else {
                 l.next = e;
             }
             l = e;
         }
-        if (l == null) {
+        if(l == null) {
             firstElement = new StreamElementEnd();
         } else {
             l.next = new StreamElementEnd();
@@ -237,8 +237,8 @@ public abstract class AbstractPacketStream implements PacketStream {
     @Override
     public void removeFilter(StreamFilter filter) {
         Iterator<StreamElement> iter = filters.iterator();
-        while (iter.hasNext()) {
-            if (filter == iter.next().filter.getFilter()) {
+        while(iter.hasNext()) {
+            if(filter == iter.next().filter.getFilter()) {
                 iter.remove();
             }
         }
@@ -250,9 +250,9 @@ public abstract class AbstractPacketStream implements PacketStream {
 
     @Override
     public PacketData next() throws IOException {
-        while (inserted.isEmpty()) {
+        while(inserted.isEmpty()) {
             PacketData next = nextInput();
-            if (next == null) {
+            if(next == null) {
                 break;
             }
             firstElement.process(next);
@@ -283,9 +283,9 @@ public abstract class AbstractPacketStream implements PacketStream {
     public String toString() {
         StringBuilder sb = new StringBuilder("PacketStream[");
         StreamElement e = firstElement;
-        while (e != null) {
+        while(e != null) {
             sb.append(e);
-            if (e.next != null) {
+            if(e.next != null) {
                 sb.append(" -> ");
             }
             e = e.next;

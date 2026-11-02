@@ -48,11 +48,11 @@ public abstract class AbstractGuiClickableContainer<T extends AbstractGuiClickab
     @Override
     public boolean mouseClick(Click click) {
         Point pos = new Point(click);
-        if (getContainer() != null) {
+        if(getContainer() != null) {
             getContainer().convertFor(this, pos);
         }
 
-        if (isMouseHovering(pos) && isEnabled()) {
+        if(isMouseHovering(pos) && isEnabled()) {
             onClick(click);
             return true;
         }
@@ -70,7 +70,7 @@ public abstract class AbstractGuiClickableContainer<T extends AbstractGuiClickab
     }
 
     protected void onClick(Click click) {
-        if (onClick != null) {
+        if(onClick != null) {
             onClick.consume(click);
         }
     }

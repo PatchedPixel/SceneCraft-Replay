@@ -82,8 +82,8 @@ public final class Dimension implements ReadableDimension, WritableDimension {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ReadableDimension)) return false;
+        if(this == o) return true;
+        if(!(o instanceof ReadableDimension)) return false;
         ReadableDimension that = (ReadableDimension) o;
         return width == that.getWidth() && height == that.getHeight();
     }

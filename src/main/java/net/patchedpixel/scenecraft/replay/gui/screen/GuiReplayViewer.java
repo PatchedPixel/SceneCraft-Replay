@@ -76,7 +76,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
     private Screen parentScreen;
 
     public final GuiReplayList list = new GuiReplayList(this).onSelectionChanged(this::updateButtons).onSelectionDoubleClicked(() -> {
-        if (this.loadButton.isEnabled()) {
+        if(this.loadButton.isEnabled()) {
             this.loadButton.onClick(new Click(-1, -1, 0, 0));
         }
     });
@@ -85,7 +85,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
     public void display() {
         Screen currentScreen = getMinecraft().gui.screen();
 
-        if (currentScreen != null && currentScreen != toMinecraft()) {
+        if(currentScreen != null && currentScreen != toMinecraft()) {
             parentScreen = currentScreen;
         }
 
@@ -108,19 +108,19 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
         @Override
         public void run() {
             // Prevent the player from opening the replay twice at the same time
-            if (loading) {
+            if(loading) {
                 return;
             }
             loading = true;
             loadButton.setDisabled(); // visual hint
 
             List<GuiReplayEntry> selected = list.getSelected();
-            if (selected.size() == 1) {
+            if(selected.size() == 1) {
                 File file = selected.get(0).file;
                 LOGGER.info("Opening replay in viewer: " + file);
                 try {
                     mod.startReplay(file);
-                } catch (IOException e) {
+                } catch(IOException e) {
                     e.printStackTrace();
                 }
             } else {
@@ -144,7 +144,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
                 File folder = mod.getCore().folders.getReplayFolder().toFile();
 
                 MCVer.openFile(folder);
-            } catch (IOException e) {
+            } catch(IOException e) {
                 mod.getLogger().error("Cannot open file", e);
             }
         }
@@ -164,7 +164,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
             nameField.onEnter(new Runnable() {
                 @Override
                 public void run() {
-                    if (popup.getYesButton().isEnabled()) {
+                    if(popup.getYesButton().isEnabled()) {
                         popup.getYesButton().onClick(new Click(-1, -1, 0, 0));
                     }
                 }
@@ -180,7 +180,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
                 try {
                     // Finally, try to move it
                     Files.move(path, targetPath);
-                } catch (IOException e) {
+                } catch(IOException e) {
                     // We failed (might also be their OS)
                     e.printStackTrace();
                     getMinecraft().gui.setScreen(new AlertScreen(
@@ -196,7 +196,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
         }
     }).setSize(73, 20).setI18nLabel("scenecraft.gui.rename").setDisabled();
     public final GuiButton deleteButton = new GuiButton().onClick(() -> {
-        for (GuiReplayEntry entry : list.getSelected()) {
+        for(GuiReplayEntry entry : list.getSelected()) {
             String name = entry.name.getText();
             GuiYesNoPopup.open(GuiReplayViewer.this,
                     new GuiLabel().setI18nText("scenecraft.gui.viewer.delete.linea").setColor(Colors.BLACK),
@@ -204,7 +204,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
             ).setYesI18nLabel("scenecraft.gui.delete").setNoI18nLabel("scenecraft.gui.cancel").onAccept(() -> {
                 try {
                     FileUtils.forceDelete(entry.file);
-                } catch (IOException e) {
+                } catch(IOException e) {
                     e.printStackTrace();
                 }
                 list.load();
@@ -239,7 +239,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
 
         try {
             list.setFolder(mod.getCore().folders.getReplayFolder().toFile());
-        } catch (IOException e) {
+        } catch(IOException e) {
             throw new ReportedException(CrashReport.forThrowable(e, "Getting replay folder"));
         }
 
@@ -270,7 +270,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
 
         replaySpecificButtons.forEach(b -> b.setEnabled(count == 1));
         deleteButton.setEnabled(count > 0);
-        if (count > 1) {
+        if(count > 1) {
             Set<RenderJob> jobs = selected.stream().flatMap(entry -> entry.renderQueue.stream()).collect(Collectors.toSet());
             String[] tooltipLines = jobs.stream().map(RenderJob::getName).toArray(String[]::new);
             loadButton.setI18nLabel("scenecraft.gui.viewer.bulkrender", jobs.size());
@@ -278,7 +278,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
             loadButton.setEnabled(!jobs.isEmpty());
 
             String[] compatError = VideoRenderer.checkCompat(jobs.stream().map(RenderJob::getSettings));
-            if (compatError != null) {
+            if(compatError != null) {
                 loadButton.setDisabled().setTooltip(new GuiTooltip().setText(compatError));
             }
         } else {
@@ -292,7 +292,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
 
     @Override
     public boolean handleKey(KeyInput keyInput) {
-        if (keyInput.key == InputConstants.KEY_ESCAPE) {
+        if(keyInput.key == InputConstants.KEY_ESCAPE) {
             close();
             return true;
         }
@@ -314,11 +314,11 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
         {
             onLoad((Consumer<Supplier<GuiReplayEntry>> results) -> {
                 File[] files = folder.listFiles((FileFilter) new SuffixFileFilter(".mcpr", IOCase.INSENSITIVE));
-                if (files == null) {
+                if(files == null) {
                     LOGGER.warn("Failed to list files in {}", folder);
                     return;
                 }
-                if (files.length == 0) {
+                if(files.length == 0) {
                     return;
                 }
                 Map<File, Long> lastModified = new HashMap<>();
@@ -334,27 +334,27 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
 
                 try {
                     List<Future<?>> futures = new ArrayList<>(files.length);
-                    for (final File file : files) {
+                    for(final File file : files) {
                         futures.add(pool.submit(() -> loadEntry(file, results)));
                     }
-                    for (Future<?> future : futures) {
+                    for(Future<?> future : futures) {
                         try {
                             future.get();
-                        } catch (ExecutionException e) {
+                        } catch(ExecutionException e) {
                             LOGGER.error("Could not load Replay File", e.getCause());
                         }
                     }
-                } catch (InterruptedException e) {
+                } catch(InterruptedException e) {
                     Thread.currentThread().interrupt();
                 } finally {
                     pool.shutdownNow();
                     boolean interrupted = Thread.interrupted();
                     try {
                         pool.awaitTermination(30, TimeUnit.SECONDS);
-                    } catch (InterruptedException e) {
+                    } catch(InterruptedException e) {
                         interrupted = true;
                     } finally {
-                        if (interrupted) {
+                        if(interrupted) {
                             Thread.currentThread().interrupt();
                         }
                     }
@@ -363,7 +363,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
         }
 
         private void loadEntry(File file, Consumer<Supplier<GuiReplayEntry>> results) {
-            if (Thread.currentThread().isInterrupted()) {
+            if(Thread.currentThread().isInterrupted()) {
                 return;
             }
             try (ReplayFile replayFile = SceneCraft.instance.files.open(file.toPath())) {
@@ -371,40 +371,40 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
                 final Image thumb = replayFile.getThumbBytes().flatMap(stream -> {
                     try {
                         return Optional.of(Image.read(replayFile, stream, converted));
-                    } catch (IOException e) {
-                        if (!Thread.currentThread().isInterrupted()) {
+                    } catch(IOException e) {
+                        if(!Thread.currentThread().isInterrupted()) {
                             e.printStackTrace();
                         }
                         return Optional.empty();
                     }
                 }).orElse(null);
-                if (converted[0]) {
+                if(converted[0]) {
                     replayFile.save();
                 }
                 final ReplayMetaData metaData = replayFile.getMetaData();
                 List<RenderJob> renderQueue = RenderJob.readQueue(replayFile);
 
-                if (Thread.currentThread().isInterrupted()) {
-                    if (thumb != null) {
+                if(Thread.currentThread().isInterrupted()) {
+                    if(thumb != null) {
                         thumb.close();
                     }
                     return;
                 }
 
-                if (metaData != null) {
+                if(metaData != null) {
                     results.consume(() -> new GuiReplayEntry(file, metaData, thumb, renderQueue) {
                         @Override
                         public ReadableDimension calcMinSize() {
-                            if (isFiltered(this)) {
+                            if(isFiltered(this)) {
                                 return new Dimension(-4, -4);
                             }
                             return super.calcMinSize();
                         }
                     });
-                } else if (thumb != null) {
+                } else if(thumb != null) {
                     thumb.close();
                 }
-            } catch (Exception e) {
+            } catch(Exception e) {
                 LOGGER.error("Could not load Replay File {}", file.getName(), e);
             }
         }
@@ -415,7 +415,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
 
         private boolean isFiltered(GuiReplayEntry entry) {
             String filter = filterTextField.getText().toLowerCase();
-            if (filter.isEmpty()) {
+            if(filter.isEmpty()) {
                 return false;
             }
             return !entry.name.getText().toLowerCase().contains(filter);
@@ -423,7 +423,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
 
         @Override
         public boolean handleKey(KeyInput keyInput) {
-            if (keyInput.key == InputConstants.KEY_F1) {
+            if(keyInput.key == InputConstants.KEY_F1) {
                 SettingsRegistry reg = SceneCraft.instance.getSettingsRegistry();
                 reg.set(Setting.SHOW_SERVER_IPS, !reg.get(Setting.SHOW_SERVER_IPS));
                 reg.save();
@@ -431,16 +431,16 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
             }
 
             boolean filterHasPriority = !filterTextField.getText().isEmpty();
-            if (filterHasPriority && filterTextField.handleKey(keyInput)) {
+            if(filterHasPriority && filterTextField.handleKey(keyInput)) {
                 scrollY(0); // ensure we scroll to top if most entries are filtered
                 return true;
             }
 
-            if (super.handleKey(keyInput)) {
+            if(super.handleKey(keyInput)) {
                 return true;
             }
 
-            if (!filterHasPriority && filterTextField.handleKey(keyInput)) {
+            if(!filterHasPriority && filterTextField.handleKey(keyInput)) {
                 scrollY(0); // ensure we scroll to top if most entries are filtered
                 return true;
             }
@@ -450,7 +450,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
 
         @Override
         public boolean handleChar(CharInput charInput) {
-            if (filterTextField.handleChar(charInput)) {
+            if(filterTextField.handleChar(charInput)) {
                 scrollY(0); // ensure we scroll to top if most entries are filtered
                 return true;
             }
@@ -463,7 +463,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
             super.draw(renderer, size, renderInfo);
 
             String filter = filterTextField.getText();
-            if (!filter.isEmpty()) {
+            if(!filter.isEmpty()) {
                 boolean anyMatches = getListPanel().calcMinSize().getHeight() > 0;
 
                 Font fontRenderer = getFontRenderer();
@@ -527,21 +527,21 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
             this.renderQueue = renderQueue;
 
             name.setText(ChatFormatting.UNDERLINE + Utils.fileNameToReplayName(file.getName()));
-            if (!StringUtils.isEmpty(metaData.getCustomServerName())) {
+            if(!StringUtils.isEmpty(metaData.getCustomServerName())) {
                 server.setText(metaData.getCustomServerName());
-            } else if (StringUtils.isEmpty(metaData.getServerName())
+            } else if(StringUtils.isEmpty(metaData.getServerName())
                     || !SceneCraft.instance.getSettingsRegistry().get(Setting.SHOW_SERVER_IPS)) {
                 server.setI18nText("scenecraft.gui.iphidden").setColor(Colors.DARK_RED);
             } else {
                 server.setText(metaData.getServerName());
             }
             incompatible = !SceneCraft.isCompatible(metaData.getFileFormatVersion(), metaData.getRawProtocolVersionOr0());
-            if (incompatible) {
+            if(incompatible) {
                 version.setText("Minecraft " + metaData.getMcVersion());
             }
             dateMillis = metaData.getDate();
             date.setText(new SimpleDateFormat().format(new Date(dateMillis)));
-            if (thumbImage == null) {
+            if(thumbImage == null) {
                 thumbnail = new GuiImage(DEFAULT_THUMBNAIL).setSize(30 * 16 / 9, 30);
                 addElements(null, thumbnail);
             } else {
@@ -550,7 +550,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
             duration.setText(Utils.convertSecondsToShortString(metaData.getDuration() / 1000));
             addElements(null, durationPanel);
 
-            if (!renderQueue.isEmpty()) {
+            if(!renderQueue.isEmpty()) {
                 renderQueueIcon.setTooltip(new GuiTooltip()
                         .setText(renderQueue.stream().map(RenderJob::getName).toArray(String[]::new)));
                 addElements(null, renderQueueIcon);
@@ -566,7 +566,7 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
                     pos(infoPanel, width(thumbnail) + 5, 0);
                     pos(version, width - width(version), 0);
 
-                    if (renderQueueIcon.getContainer() != null) {
+                    if(renderQueueIcon.getContainer() != null) {
                         pos(renderQueueIcon, width(thumbnail) - width(renderQueueIcon), 0);
                     }
                 }

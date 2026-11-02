@@ -7,8 +7,8 @@ import net.patchedpixel.scenecraft.gui.utils.Event;
 public interface KeyEventCallback {
     Event<KeyEventCallback> EVENT = Event.create((listeners) ->
             (keyInput, action) -> {
-                for (KeyEventCallback listener : listeners) {
-                    if (listener.onKeyEvent(keyInput, action)) {
+                for(KeyEventCallback listener : listeners) {
+                    if(listener.onKeyEvent(keyInput, action)) {
                         return true;
                     }
                 }

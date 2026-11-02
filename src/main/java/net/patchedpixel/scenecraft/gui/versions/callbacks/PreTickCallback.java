@@ -5,7 +5,7 @@ import net.patchedpixel.scenecraft.gui.utils.Event;
 public interface PreTickCallback {
     Event<PreTickCallback> EVENT = Event.create((listeners) ->
             () -> {
-                for (PreTickCallback listener : listeners) {
+                for(PreTickCallback listener : listeners) {
                     listener.preTick();
                 }
             }

@@ -72,21 +72,21 @@ public class EntityPositionTracker {
      */
     public void load(Consumer<Double> progressMonitor) throws IOException {
         Optional<InputStream> cached;
-        synchronized (replayFile) {
+        synchronized(replayFile) {
             Optional<InputStream> oldCache = replayFile.get(OLD_CACHE_ENTRY);
-            if (oldCache.isPresent()) {
+            if(oldCache.isPresent()) {
                 oldCache.get().close();
                 replayFile.remove(OLD_CACHE_ENTRY);
             }
             cached = replayFile.getCache(CACHE_ENTRY);
         }
-        if (cached.isPresent()) {
+        if(cached.isPresent()) {
             try (InputStream in = cached.get()) {
                 loadFromCache(in);
-            } catch (EOFException e) {
+            } catch(EOFException e) {
                 // Cache contains insufficient data, probably due to a previous crash / full disk
                 loadFromPacketData(progressMonitor);
-                synchronized (replayFile) {
+                synchronized(replayFile) {
                     replayFile.removeCache(CACHE_ENTRY);
                 }
                 saveToCache();
@@ -100,11 +100,11 @@ public class EntityPositionTracker {
     private void loadFromCache(InputStream rawIn) throws IOException {
         NetInput in = new StreamNetInput(rawIn);
         entityPositions = new TreeMap<>();
-        for (int i = in.readVarInt(); i > 0; i--) {
+        for(int i = in.readVarInt(); i > 0; i--) {
             int entityId = in.readVarInt();
             TreeMap<Long, Location> locationMap = new TreeMap<>();
             long time = 0;
-            for (int j = in.readVarInt(); j > 0; j--) {
+            for(int j = in.readVarInt(); j > 0; j--) {
                 time += in.readVarLong();
                 locationMap.put(time, new Location(
                         in.readDouble(), in.readDouble(), in.readDouble(), in.readFloat(), in.readFloat()
@@ -115,9 +115,9 @@ public class EntityPositionTracker {
     }
 
     private void saveToCache() throws IOException {
-        synchronized (replayFile) {
+        synchronized(replayFile) {
             Optional<InputStream> cached = replayFile.getCache(CACHE_ENTRY);
-            if (cached.isPresent()) {
+            if(cached.isPresent()) {
                 // Someone was faster than we were
                 cached.get().close();
                 return;
@@ -126,11 +126,11 @@ public class EntityPositionTracker {
             try (OutputStream rawOut = replayFile.writeCache(CACHE_ENTRY)) {
                 NetOutput out = new StreamNetOutput(rawOut);
                 out.writeVarInt(entityPositions.size());
-                for (Map.Entry<Integer, NavigableMap<Long, Location>> entry : entityPositions.entrySet()) {
+                for(Map.Entry<Integer, NavigableMap<Long, Location>> entry : entityPositions.entrySet()) {
                     out.writeVarInt(entry.getKey());
                     out.writeVarInt(entry.getValue().size());
                     long time = 0;
-                    for (Map.Entry<Long, Location> locEntry : entry.getValue().entrySet()) {
+                    for(Map.Entry<Long, Location> locEntry : entry.getValue().entrySet()) {
                         out.writeVarLong(locEntry.getKey() - time);
                         time = locEntry.getKey();
                         Location loc = locEntry.getValue();
@@ -149,7 +149,7 @@ public class EntityPositionTracker {
         // Get the packet data input stream
         int replayLength;
         ReplayInputStream origIn;
-        synchronized (replayFile) {
+        synchronized(replayFile) {
             ReplayMetaData metaData = replayFile.getMetaData();
             replayLength = Math.max(1, metaData.getDuration());
             origIn = replayFile.getPacketData(PacketTypeRegistry.get(State.LOGIN));
@@ -158,24 +158,24 @@ public class EntityPositionTracker {
         Map<Integer, NavigableMap<Long, Location>> entityPositions = new HashMap<>();
         try (ReplayInputStream in = origIn) {
             PacketData packetData;
-            while ((packetData = in.readPacket()) != null) {
+            while((packetData = in.readPacket()) != null) {
                 Packet packet = packetData.getPacket();
 
                 Integer entityID = PacketUtils.getEntityId(packet);
-                if (entityID == null) {
+                if(entityID == null) {
                     packet.release();
                     continue;
                 }
 
                 NavigableMap<Long, Location> positions = entityPositions.get(entityID);
-                if (positions == null) {
+                if(positions == null) {
                     entityPositions.put(entityID, positions = new TreeMap<>());
                 }
 
                 Location oldPosition = positions.isEmpty() ? null : positions.lastEntry().getValue();
                 Location newPosition = PacketUtils.updateLocation(oldPosition, packet);
 
-                if (newPosition != null) {
+                if(newPosition != null) {
                     positions.put(packetData.getTime(), newPosition);
 
                     double progress = (double) packetData.getTime() / replayLength;
@@ -197,17 +197,17 @@ public class EntityPositionTracker {
      * @throws IllegalStateException if {@link #load(Consumer)} hasn't been called or hasn't finished yet.
      */
     public Location getEntityPositionAtTimestamp(int entityID, long timestamp) {
-        if (entityPositions == null) {
+        if(entityPositions == null) {
             throw new IllegalStateException("Not yet initialized.");
         }
 
         NavigableMap<Long, Location> positions = entityPositions.get(entityID);
-        if (positions == null) {
+        if(positions == null) {
             return null;
         }
         Map.Entry<Long, Location> lower = positions.floorEntry(timestamp);
         Map.Entry<Long, Location> higher = positions.higherEntry(timestamp);
-        if (lower == null || higher == null) {
+        if(lower == null || higher == null) {
             return null;
         }
         double r = (higher.getKey() - timestamp) / (higher.getKey() - lower.getKey());

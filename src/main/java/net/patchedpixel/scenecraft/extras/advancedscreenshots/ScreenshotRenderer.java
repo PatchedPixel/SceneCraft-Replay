@@ -39,7 +39,7 @@ public class ScreenshotRenderer implements RenderInfo {
 
             resizeMainWindow(mc, widthBefore, heightBefore);
             return true;
-        } catch (OutOfMemoryError e) {
+        } catch(OutOfMemoryError e) {
             e.printStackTrace();
             CrashReport report = CrashReport.forThrowable(e, "Creating Equirectangular Screenshot");
             MCVer.getMinecraft().delayCrash(report);

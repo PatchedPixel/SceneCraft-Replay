@@ -22,7 +22,7 @@ public class Mixin_FixCopyTextureToBuffer_DepthTexture {
             Operation<Void> original,
             @Local(argsOnly = true) GpuTexture texture
     ) {
-        if (depthAttachment == 0 && texture.getFormat().hasDepthAspect()) {
+        if(depthAttachment == 0 && texture.getFormat().hasDepthAspect()) {
             depthAttachment = colorAttachment;
             colorAttachment = 0;
         }

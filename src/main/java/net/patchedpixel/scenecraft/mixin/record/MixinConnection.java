@@ -20,13 +20,13 @@ public abstract class MixinConnection {
     @Inject(method = "setupCompression", at = @At("RETURN"))
     private void ensureSceneCraftRecorderIsAfterDecompress(CallbackInfo ci) {
         ChannelHandler recorder = null;
-        for (Map.Entry<String, ChannelHandler> entry : channel.pipeline()) {
+        for(Map.Entry<String, ChannelHandler> entry : channel.pipeline()) {
             String key = entry.getKey();
-            if (PacketListener.RAW_RECORDER_KEY.equals(key)) {
+            if(PacketListener.RAW_RECORDER_KEY.equals(key)) {
                 recorder = entry.getValue();
             }
-            if (PacketListener.DECOMPRESS_KEY.equals(key)) {
-                if (recorder != null) {
+            if(PacketListener.DECOMPRESS_KEY.equals(key)) {
+                if(recorder != null) {
                     // If we've already found the recorder, then that means decompress is after recorder. That's no good
                     // because it means the recorder is getting compressed packets, we need to move the recorder.
                     channel.pipeline().remove(recorder);

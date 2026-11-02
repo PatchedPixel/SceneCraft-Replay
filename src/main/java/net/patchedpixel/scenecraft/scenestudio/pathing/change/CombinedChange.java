@@ -63,7 +63,7 @@ public class CombinedChange implements Change {
     public void apply(Timeline timeline) {
         Preconditions.checkState(!applied, "Already applied!");
 
-        for (Change change : changeList) {
+        for(Change change : changeList) {
             change.apply(timeline);
         }
 
@@ -75,7 +75,7 @@ public class CombinedChange implements Change {
         Preconditions.checkState(applied, "Not yet applied!");
 
         ListIterator<Change> iterator = changeList.listIterator(changeList.size());
-        while (iterator.hasPrevious()) {
+        while(iterator.hasPrevious()) {
             iterator.previous().undo(timeline);
         }
 

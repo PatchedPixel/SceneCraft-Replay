@@ -16,7 +16,7 @@ public class Mixin_FakeSystemTimeUniforms_Iris {
         GameRenderer gameRenderer = MCVer.getMinecraft().gameRenderer;
         EntityRendererHandler entityRendererHandler =
             ((EntityRendererHandler.IEntityRenderer) gameRenderer).sceneCraftRender_getHandler();
-        if (entityRendererHandler != null) {
+        if(entityRendererHandler != null) {
             frameStartTimeNs = entityRendererHandler.getFakeFinishTimeNano();
         }
         return frameStartTimeNs;

@@ -29,7 +29,7 @@ public class GuiRecordingControls extends EventRegistrations {
     private GuiPanel panel = new GuiPanel().setLayout(new HorizontalLayout().setSpacing(4));
 
     private GuiButton buttonPauseResume = new GuiButton(panel).onClick(() -> {
-        if (paused) {
+        if(paused) {
             packetListener.addMarker(MarkerProcessor.MARKER_NAME_END_CUT);
         } else {
             packetListener.addMarker(MarkerProcessor.MARKER_NAME_START_CUT);
@@ -39,13 +39,13 @@ public class GuiRecordingControls extends EventRegistrations {
     }).setSize(98, 20);
 
     private GuiButton buttonStartStop = new GuiButton(panel).onClick(() -> {
-        if (stopped) {
+        if(stopped) {
             paused = false;
             packetListener.addMarker(MarkerProcessor.MARKER_NAME_END_CUT);
             core.printInfoToChat("scenecraft.chat.recordingstarted");
         } else {
             int timestamp = (int) packetListener.getCurrentDuration();
-            if (!paused) {
+            if(!paused) {
                 packetListener.addMarker(MarkerProcessor.MARKER_NAME_START_CUT, timestamp);
             }
             packetListener.addMarker(MarkerProcessor.MARKER_NAME_SPLIT, timestamp + 1);
@@ -74,10 +74,10 @@ public class GuiRecordingControls extends EventRegistrations {
     private void injectIntoIngameMenu(Screen guiScreen,
                                       Collection<AbstractWidget> buttonList
     ) {
-        if (!(guiScreen instanceof PauseScreen)) {
+        if(!(guiScreen instanceof PauseScreen)) {
             return;
         }
-        if (buttonList.isEmpty()) {
+        if(buttonList.isEmpty()) {
             return; // menu-less pause (F3+Esc)
         }
         Function<Integer, Integer> yPos =

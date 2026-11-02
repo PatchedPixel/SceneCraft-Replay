@@ -60,9 +60,9 @@ public class SceneCraftReplay implements Module {
     @Override
     public void registerKeyBindings(KeyBindingRegistry registry) {
         registry.registerKeyBinding("scenecraft.input.marker", InputConstants.KEY_M, () -> {
-            if (replayHandler != null ) {
+            if(replayHandler != null ) {
                 CameraEntity camera = replayHandler.getCameraEntity();
-                if (camera != null) {
+                if(camera != null) {
                     Marker marker = new Marker();
                     marker.setTime(replayHandler.getReplaySender().currentTimeStamp());
                     marker.setX(camera.getX());
@@ -77,7 +77,7 @@ public class SceneCraftReplay implements Module {
         }, true);
 
         registry.registerKeyBinding("scenecraft.input.thumbnail", InputConstants.KEY_N, () -> {
-            if (replayHandler != null) {
+            if(replayHandler != null) {
                 Minecraft mc = MCVer.getMinecraft();
                 ListenableFuture<NoGuiScreenshot> future = NoGuiScreenshot.take(mc, 1280, 720);
                 Futures.addCallback(future, new FutureCallback<>() {
@@ -89,7 +89,7 @@ public class SceneCraftReplay implements Module {
                             result.getImage().writePNG(thumbOut);
                             replayHandler.getReplayFile().writeThumbBytes(thumbOut.toByteArray());
                             core.printInfoToChat("scenecraft.chat.savedthumb");
-                        } catch (IOException e) {
+                        } catch(IOException e) {
                             e.printStackTrace();
                             core.printWarningToChat("scenecraft.chat.failedthumb");
                         } finally {
@@ -107,7 +107,7 @@ public class SceneCraftReplay implements Module {
         }, true);
 
         keyPlayPause = registry.registerKeyBinding("scenecraft.input.playpause", InputConstants.KEY_P, () -> {
-            if (replayHandler != null) {
+            if(replayHandler != null) {
                 replayHandler.getOverlay().playPauseButton.onClick(new Click(-1, -1, 0, 0));
             }
         }, true);
@@ -154,18 +154,18 @@ public class SceneCraftReplay implements Module {
     }
 
     public ReplayHandler startReplay(ReplayFile replayFile, boolean checkModCompat, boolean asyncMode) throws IOException {
-        if (replayHandler != null) {
+        if(replayHandler != null) {
             SceneCraftCompat.showModHud();
             replayHandler.endReplay();
         }
-        if (checkModCompat) {
+        if(checkModCompat) {
             ModCompat.ModInfoDifference modDifference = new ModCompat.ModInfoDifference(replayFile.getModInfo());
-            if (!modDifference.getMissing().isEmpty() || !modDifference.getDiffering().isEmpty()) {
+            if(!modDifference.getMissing().isEmpty() || !modDifference.getDiffering().isEmpty()) {
                 GuiModCompatWarning screen = new GuiModCompatWarning(modDifference);
                 screen.loadButton.onClick(() -> {
                     try {
                         startReplay(replayFile, false, asyncMode);
-                    } catch (IOException e) {
+                    } catch(IOException e) {
                         e.printStackTrace();
                     }
                 });

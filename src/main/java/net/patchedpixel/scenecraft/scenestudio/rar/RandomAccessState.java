@@ -31,7 +31,7 @@ public interface RandomAccessState {
     void rewind(PacketSink sink, int currentTimeStamp, int targetTime) throws IOException;
 
     default void playOrRewind(PacketSink sink, int currentTimeStamp, int targetTime) throws IOException {
-        if (currentTimeStamp <= targetTime) {
+        if(currentTimeStamp <= targetTime) {
             play(sink, currentTimeStamp, targetTime);
         } else {
             rewind(sink, currentTimeStamp, targetTime);

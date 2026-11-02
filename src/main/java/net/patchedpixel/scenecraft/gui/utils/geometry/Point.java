@@ -87,8 +87,8 @@ public final class Point implements ReadablePoint, WritablePoint {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ReadablePoint)) return false;
+        if(this == o) return true;
+        if(!(o instanceof ReadablePoint)) return false;
         ReadablePoint that = (ReadablePoint) o;
         return x == that.getX() && y == that.getY();
     }

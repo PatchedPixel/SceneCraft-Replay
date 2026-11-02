@@ -73,8 +73,8 @@ public class RenderInfo {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
         RenderInfo that = (RenderInfo) o;
         return Float.compare(that.partialTick, partialTick) == 0 &&
                 mouseX == that.mouseX &&

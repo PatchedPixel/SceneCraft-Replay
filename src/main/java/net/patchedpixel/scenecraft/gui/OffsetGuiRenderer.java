@@ -135,7 +135,7 @@ public class OffsetGuiRenderer implements GuiRenderer {
 
     @Override
     public void pushScissor(int x, int y, int width, int height) {
-        if (!strict) {
+        if(!strict) {
             renderer.pushScissor(
                     x + positionX, y + positionY, width, height
             );

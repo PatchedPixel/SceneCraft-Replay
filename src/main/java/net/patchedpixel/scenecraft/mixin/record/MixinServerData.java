@@ -26,7 +26,7 @@ public abstract class MixinServerData implements ServerInfoExt {
     @Inject(method = "write", at = @At("RETURN"))
     private void serialize(CallbackInfoReturnable<CompoundTag> ci) {
         CompoundTag tag = ci.getReturnValue();
-        if (autoRecording != null) {
+        if(autoRecording != null) {
             tag.putBoolean("autoRecording", autoRecording);
         }
     }
@@ -34,7 +34,7 @@ public abstract class MixinServerData implements ServerInfoExt {
     @Inject(method = "read", at = @At("RETURN"))
     private static void deserialize(CompoundTag tag, CallbackInfoReturnable<ServerData> ci) {
         ServerInfoExt serverInfo = ServerInfoExt.from(ci.getReturnValue());
-        if (tag.contains("autoRecording")) {
+        if(tag.contains("autoRecording")) {
             serverInfo.setAutoRecording(tag.getBoolean("autoRecording").orElseThrow());
         }
     }

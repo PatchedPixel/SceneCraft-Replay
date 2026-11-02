@@ -81,13 +81,13 @@ public class ZipReplayFile extends AbstractReplayFile {
         removedFiles = new File(tmpFiles, "removed");
         sourceFile = new File(tmpFiles, "source");
 
-        if (input != null && input.exists()) {
+        if(input != null && input.exists()) {
             // Save input file path in case of crash
             shouldSaveInputFile = true;
-        } else if (input == null && sourceFile.exists()) {
+        } else if(input == null && sourceFile.exists()) {
             // Recover input file
             input = new File(new String(readAllBytes(sourceFile.toPath()), StandardCharsets.UTF_8));
-            if (!input.exists()) {
+            if(!input.exists()) {
                 throw new IOException("Recovered source file no longer exists.");
             }
         }
@@ -96,19 +96,19 @@ public class ZipReplayFile extends AbstractReplayFile {
         this.input = input;
         this.cache = cache;
 
-        if (input != null && input.exists()) {
+        if(input != null && input.exists()) {
             this.zipFile = new ZipFile(input);
         }
 
         // Try to restore any changes if we weren't able to save them last time
-        if (changedFiles.exists()) {
+        if(changedFiles.exists()) {
             try (Stream<Path> files = walk(changedFiles.toPath())) {
                 files.filter(Files::isRegularFile)
                         .map(Path::toFile)
                         .forEach(f -> changedEntries.put(changedFiles.toURI().relativize(f.toURI()).getPath(), f));
             }
         }
-        if (removedFiles.exists()) {
+        if(removedFiles.exists()) {
             try (Stream<Path> files = walk(removedFiles.toPath())) {
                 files.filter(Files::isRegularFile)
                         .map(Path::toFile)
@@ -122,31 +122,31 @@ public class ZipReplayFile extends AbstractReplayFile {
         String mcprHash = null;
 
         Optional<InputStream> cacheIn = getCache(ENTRY_RECORDING_HASH);
-        if (cacheIn.isPresent()) {
+        if(cacheIn.isPresent()) {
             try (InputStream in = cacheIn.get();
                  Reader rin = new InputStreamReader(in);
                  BufferedReader brin = new BufferedReader(rin)) {
                 cacheHash = brin.readLine();
-            } catch (IOException ignored) {}
+            } catch(IOException ignored) {}
         }
 
         Optional<InputStream> mcprIn = get(ENTRY_RECORDING_HASH);
-        if (mcprIn.isPresent()) {
+        if(mcprIn.isPresent()) {
             try (InputStream in = mcprIn.get();
                  Reader rin = new InputStreamReader(in);
                  BufferedReader brin = new BufferedReader(rin)) {
                 mcprHash = brin.readLine();
-            } catch (IOException ignored) {}
+            } catch(IOException ignored) {}
         }
 
-        if (!Objects.equals(cacheHash, mcprHash)) {
+        if(!Objects.equals(cacheHash, mcprHash)) {
             delete(cache);
             createCache(mcprHash);
         }
     }
 
     private void createCache(String hash) throws IOException {
-        if (hash == null) return; // legacy replay without hash entry, should get one when recording data is re-written
+        if(hash == null) return; // legacy replay without hash entry, should get one when recording data is re-written
         try (OutputStream out = writeCache(ENTRY_RECORDING_HASH);
              Writer writer = new OutputStreamWriter(out)) {
             writer.write(hash);
@@ -158,7 +158,7 @@ public class ZipReplayFile extends AbstractReplayFile {
      * @throws IOException
      */
     private void saveInputFile() throws IOException {
-        if (shouldSaveInputFile) {
+        if(shouldSaveInputFile) {
             createParentDirs(sourceFile);
             try (OutputStream out = new BufferedOutputStream(new FileOutputStream(sourceFile))) {
                 out.write(input.getCanonicalPath().getBytes(StandardCharsets.UTF_8));
@@ -169,14 +169,14 @@ public class ZipReplayFile extends AbstractReplayFile {
 
     @Override
     public Optional<InputStream> get(String entry) throws IOException {
-        if (changedEntries.containsKey(entry)) {
+        if(changedEntries.containsKey(entry)) {
             return Optional.of(new BufferedInputStream(new FileInputStream(changedEntries.get(entry))));
         }
-        if (zipFile == null || removedEntries.contains(entry)) {
+        if(zipFile == null || removedEntries.contains(entry)) {
             return Optional.empty();
         }
         ZipEntry zipEntry = zipFile.getEntry(entry);
-        if (zipEntry == null) {
+        if(zipEntry == null) {
             return Optional.empty();
         }
         return Optional.of(new BufferedInputStream(zipFile.getInputStream(zipEntry)));
@@ -185,13 +185,13 @@ public class ZipReplayFile extends AbstractReplayFile {
     @Override
     public Optional<InputStream> getCache(String entry) throws IOException {
         Path path = cache.toPath().resolve(entry);
-        if (!Files.exists(path)) {
+        if(!Files.exists(path)) {
             return Optional.empty();
         }
         InputStream rawIn = new BufferedInputStream(Files.newInputStream(path));
         try {
             return Optional.of(new GZIPInputStream(rawIn));
-        } catch (IOException e) {
+        } catch(IOException e) {
             Closeables.closeQuietly(rawIn);
             return Optional.empty();
         }
@@ -201,20 +201,20 @@ public class ZipReplayFile extends AbstractReplayFile {
     public Map<String, InputStream> getAll(Pattern pattern) throws IOException {
         Map<String, InputStream> streams = new HashMap<>();
 
-        for (Map.Entry<String, File> entry : changedEntries.entrySet()) {
+        for(Map.Entry<String, File> entry : changedEntries.entrySet()) {
             String name = entry.getKey();
-            if (pattern.matcher(name).matches()) {
+            if(pattern.matcher(name).matches()) {
                 streams.put(name, new BufferedInputStream(new FileInputStream(changedEntries.get(name))));
             }
         }
 
-        if (zipFile != null) {
+        if(zipFile != null) {
             Enumeration<? extends ZipEntry> entries = zipFile.entries();
-            while (entries.hasMoreElements()) {
+            while(entries.hasMoreElements()) {
                 ZipEntry entry = entries.nextElement();
                 String name = entry.getName();
-                if (pattern.matcher(name).matches()) {
-                    if (!streams.containsKey(name) && !removedEntries.contains(name)) {
+                if(pattern.matcher(name).matches()) {
+                    if(!streams.containsKey(name) && !removedEntries.contains(name)) {
                         streams.put(name, new BufferedInputStream(zipFile.getInputStream(entry)));
                     }
                 }
@@ -228,17 +228,17 @@ public class ZipReplayFile extends AbstractReplayFile {
     public OutputStream write(String entry) throws IOException {
         saveInputFile();
         File file = changedEntries.get(entry);
-        if (file == null) {
+        if(file == null) {
             file = new File(changedFiles, entry);
             createParentDirs(file);
             changedEntries.put(entry, file);
         }
         OutputStream out = new BufferedOutputStream(new FileOutputStream(file));
         Closeables.close(outputStreams.put(entry, out), true);
-        if (removedEntries.remove(entry)) {
+        if(removedEntries.remove(entry)) {
             deleteIfExists(new File(removedFiles, entry).toPath());
         }
-        if (ENTRY_RECORDING.equals(entry)) {
+        if(ENTRY_RECORDING.equals(entry)) {
             // Immediately invalidate old hash in case we crash during writing
             try (OutputStream os = ZipReplayFile.this.write(ENTRY_RECORDING_HASH);
                  Writer writer = new OutputStreamWriter(os)) {
@@ -300,7 +300,7 @@ public class ZipReplayFile extends AbstractReplayFile {
         saveInputFile();
         Closeables.close(outputStreams.remove(entry), true);
         File file = changedEntries.remove(entry);
-        if (file != null && file.exists()) {
+        if(file != null && file.exists()) {
             delete(file);
         }
         removedEntries.add(entry);
@@ -317,13 +317,13 @@ public class ZipReplayFile extends AbstractReplayFile {
 
     @Override
     public void save() throws IOException {
-        if (zipFile != null && changedEntries.isEmpty() && removedEntries.isEmpty()) {
+        if(zipFile != null && changedEntries.isEmpty() && removedEntries.isEmpty()) {
             return; // No changes, no need to save
         }
         File outputFile = createTempFile("scenestudio", "replayfile").toFile();
         saveTo(outputFile);
         close();
-        if (output.exists()) {
+        if(output.exists()) {
             delete(output);
         }
         move(outputFile.toPath(), output.toPath());
@@ -332,15 +332,15 @@ public class ZipReplayFile extends AbstractReplayFile {
 
     @Override
     public void saveTo(File target) throws IOException {
-        for (OutputStream out : outputStreams.values()) {
+        for(OutputStream out : outputStreams.values()) {
             Closeables.close(out, false);
         }
         outputStreams.clear();
 
         try (ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(target)))) {
-            if (zipFile != null) {
-                for (ZipEntry entry : Collections.list(zipFile.entries())) {
-                    if (!changedEntries.containsKey(entry.getName()) && !removedEntries.contains(entry.getName())) {
+            if(zipFile != null) {
+                for(ZipEntry entry : Collections.list(zipFile.entries())) {
+                    if(!changedEntries.containsKey(entry.getName()) && !removedEntries.contains(entry.getName())) {
                         entry = new ZipEntry(entry);
                         entry.setCompressedSize(-1);
                         out.putNextEntry(entry);
@@ -348,7 +348,7 @@ public class ZipReplayFile extends AbstractReplayFile {
                     }
                 }
             }
-            for (Map.Entry<String, File> e : changedEntries.entrySet()) {
+            for(Map.Entry<String, File> e : changedEntries.entrySet()) {
                 out.putNextEntry(new ZipEntry(e.getKey()));
                 Utils.copy(new BufferedInputStream(new FileInputStream(e.getValue())), out);
             }
@@ -357,10 +357,10 @@ public class ZipReplayFile extends AbstractReplayFile {
 
     @Override
     public void close() throws IOException {
-        if (zipFile != null) {
+        if(zipFile != null) {
             zipFile.close();
         }
-        for (OutputStream out : outputStreams.values()) {
+        for(OutputStream out : outputStreams.values()) {
             Closeables.close(out, true);
         }
         outputStreams.clear();
@@ -372,13 +372,13 @@ public class ZipReplayFile extends AbstractReplayFile {
 
     private static void createParentDirs(File file) throws IOException {
         File parent = file.getCanonicalFile().getParentFile();
-        if (parent != null) {
+        if(parent != null) {
             createDirectories(parent.toPath());
         }
     }
 
     private static void touch(File file) throws IOException {
-        if (file.exists()) {
+        if(file.exists()) {
             setLastModifiedTime(file.toPath(), FileTime.fromMillis(System.currentTimeMillis()));
         } else {
             createFile(file.toPath());
@@ -387,8 +387,8 @@ public class ZipReplayFile extends AbstractReplayFile {
 
     private void delete(File file) throws IOException {
         File[] children = file.listFiles();
-        if (children != null) {
-            for (File child : children) {
+        if(children != null) {
+            for(File child : children) {
                 delete(child);
             }
         }

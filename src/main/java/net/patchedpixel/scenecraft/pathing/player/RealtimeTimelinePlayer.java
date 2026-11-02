@@ -38,26 +38,26 @@ public class RealtimeTimelinePlayer extends AbstractTimelinePlayer {
 
     @Override
     public void onTick() {
-        if (secondFrame) {
+        if(secondFrame) {
             secondFrame = false;
             startTime = System.currentTimeMillis() - startOffset;
         }
 
-        if (MCVer.getMinecraft().gui.overlay() != null) {
-            if (!loadingResources) {
+        if(MCVer.getMinecraft().gui.overlay() != null) {
+            if(!loadingResources) {
                 timeBeforeResourceLoading = getTimePassed();
                 loadingResources = true;
             }
             super.onTick();
             return;
-        } else if (loadingResources && !firstFrame) {
+        } else if(loadingResources && !firstFrame) {
             startTime = System.currentTimeMillis() - timeBeforeResourceLoading;
             loadingResources = false;
         }
 
         super.onTick();
 
-        if (firstFrame) {
+        if(firstFrame) {
             firstFrame = false;
             secondFrame = true;
         }
@@ -65,8 +65,8 @@ public class RealtimeTimelinePlayer extends AbstractTimelinePlayer {
 
     @Override
     public long getTimePassed() {
-        if (firstFrame) return startOffset;
-        if (loadingResources) return timeBeforeResourceLoading;
+        if(firstFrame) return startOffset;
+        if(loadingResources) return timeBeforeResourceLoading;
         return System.currentTimeMillis() - startTime;
     }
 }

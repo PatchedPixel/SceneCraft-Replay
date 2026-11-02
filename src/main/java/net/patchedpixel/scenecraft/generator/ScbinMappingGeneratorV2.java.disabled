@@ -39,7 +39,7 @@ public final class ScbinMappingGeneratorV2 {
         mapping.put("sounds", generateRegistry(BuiltInRegistries.SOUND_EVENT, getRegistryMap(existingMaster, "sounds")));
         mapping.put("particles", generateRegistry(BuiltInRegistries.PARTICLE_TYPE, getRegistryMap(existingMaster, "particles")));
 
-        if (output.getParent() != null) {
+        if(output.getParent() != null) {
             Files.createDirectories(output.getParent());
         }
 
@@ -48,11 +48,11 @@ public final class ScbinMappingGeneratorV2 {
     }
 
     private static Map<String, Object> loadExistingMapping(Path path) {
-        if (Files.exists(path)) {
+        if(Files.exists(path)) {
             try {
                 String content = Files.readString(path);
                 return GSON.fromJson(content, new TypeToken<Map<String, Object>>(){}.getType());
-            } catch (Exception e) {
+            } catch(Exception e) {
                 System.err.println("Failed to read the old mapping from Downloads; creating a new one from scratch.");
             }
         }
@@ -60,10 +60,10 @@ public final class ScbinMappingGeneratorV2 {
     }
 
     private static Map<String, String> getRegistryMap(Map<String, Object> master, String key) {
-        if (master != null && master.containsKey(key)) {
+        if(master != null && master.containsKey(key)) {
             try {
                 return (Map<String, String>) master.get(key);
-            } catch (Exception ignored) {}
+            } catch(Exception ignored) {}
         }
         return new LinkedHashMap<>();
     }
@@ -72,15 +72,15 @@ public final class ScbinMappingGeneratorV2 {
         Map<String, String> result = new LinkedHashMap<>();
         Set<String> usedCodes = new LinkedHashSet<>();
 
-        for (Map.Entry<String, String> entry : oldRegistryMap.entrySet()) {
+        for(Map.Entry<String, String> entry : oldRegistryMap.entrySet()) {
             String net = entry.getKey();
             String code = entry.getValue();
 
-            if (code.indexOf('.') >= 0) {
+            if(code.indexOf('.') >= 0) {
                 continue;
             }
 
-            if (registry.containsKey(Identifier.parse(net))) {
+            if(registry.containsKey(Identifier.parse(net))) {
                 result.put(net, code);
                 usedCodes.add(code);
             }
@@ -88,9 +88,9 @@ public final class ScbinMappingGeneratorV2 {
 
         List<Identifier> ids = registry.keySet().stream().sorted(Comparator.comparing(Identifier::toString)).toList();
 
-        for (Identifier net : ids) {
+        for(Identifier net : ids) {
             String idStr = net.toString();
-            if (!result.containsKey(idStr)) {
+            if(!result.containsKey(idStr)) {
                 String code = generateCode(net, usedCodes);
                 result.put(idStr, code);
             }
@@ -101,15 +101,15 @@ public final class ScbinMappingGeneratorV2 {
     private static String generateCode(Identifier net, Set<String> usedCodes) {
         String name = net.getPath().replace(".", "");
 
-        if (!name.contains("_")) {
-            for (int length = 1; length <= 3; length++) {
-                if (length > name.length()) {
+        if(!name.contains("_")) {
+            for(int length = 1; length <= 3; length++) {
+                if(length > name.length()) {
                     break;
                 }
 
                 String candidate = name.substring(0, length);
 
-                if (!usedCodes.contains(candidate)) {
+                if(!usedCodes.contains(candidate)) {
                     usedCodes.add(candidate);
                     return candidate;
                 }
@@ -118,18 +118,18 @@ public final class ScbinMappingGeneratorV2 {
 
         String[] words = name.split("_");
 
-        if (words.length <= 3) {
+        if(words.length <= 3) {
             String initialCode = getInitialCode(words);
 
-            if (!initialCode.isEmpty() && initialCode.length() <= 3 && !usedCodes.contains(initialCode)) {
+            if(!initialCode.isEmpty() && initialCode.length() <= 3 && !usedCodes.contains(initialCode)) {
                 usedCodes.add(initialCode);
                 return initialCode;
             }
 
             List<String> wordCandidates = generateWordCandidates(words);
 
-            for (String candidate : wordCandidates) {
-                if (candidate.length() <= 3 && !usedCodes.contains(candidate)) {
+            for(String candidate : wordCandidates) {
+                if(candidate.length() <= 3 && !usedCodes.contains(candidate)) {
                     usedCodes.add(candidate);
                     return candidate;
                 }
@@ -140,12 +140,12 @@ public final class ScbinMappingGeneratorV2 {
 
         generateCombinations(name.replace("_", ""), 0, 3, new StringBuilder(), candidates);
 
-        for (String candidate : candidates) {
-            if (candidate.length() > 3) {
+        for(String candidate : candidates) {
+            if(candidate.length() > 3) {
                 continue;
             }
 
-            if (!usedCodes.contains(candidate)) {
+            if(!usedCodes.contains(candidate)) {
                 usedCodes.add(candidate);
                 return candidate;
             }
@@ -156,14 +156,14 @@ public final class ScbinMappingGeneratorV2 {
     private static String getInitialCode(String[] words) {
         StringBuilder result = new StringBuilder();
 
-        for (String word : words) {
-            if (word.isEmpty()) {
+        for(String word : words) {
+            if(word.isEmpty()) {
                 continue;
             }
 
             result.append(word.charAt(0));
 
-            if (result.length() == 3) {
+            if(result.length() == 3) {
                 break;
             }
         }
@@ -173,14 +173,14 @@ public final class ScbinMappingGeneratorV2 {
     private static List<String> generateWordCandidates(String[] words) {
         List<String> result = new ArrayList<>();
 
-        if (words.length == 0) {
+        if(words.length == 0) {
             return result;
         }
 
-        if (words.length == 3) {
-            for (int a = 0; a < words[0].length(); a++) {
-                for (int b = 0; b < words[1].length(); b++) {
-                    for (int c = 0; c < words[2].length(); c++) {
+        if(words.length == 3) {
+            for(int a = 0; a < words[0].length(); a++) {
+                for(int b = 0; b < words[1].length(); b++) {
+                    for(int c = 0; c < words[2].length(); c++) {
                         String candidate = "" + words[0].charAt(a) + words[1].charAt(b) + words[2].charAt(c);
                         result.add(candidate);
                     }
@@ -189,16 +189,16 @@ public final class ScbinMappingGeneratorV2 {
             return result;
         }
 
-        if (words.length == 2) {
-            for (int a = 0; a < words[0].length(); a++) {
-                for (int b = 0; b < words[1].length(); b++) {
+        if(words.length == 2) {
+            for(int a = 0; a < words[0].length(); a++) {
+                for(int b = 0; b < words[1].length(); b++) {
                     result.add("" + words[0].charAt(a) + words[1].charAt(b));
                 }
             }
 
-            for (int a = 0; a < words[0].length(); a++) {
-                for (int b = 0; b < words[1].length(); b++) {
-                    for (int c = b + 1;
+            for(int a = 0; a < words[0].length(); a++) {
+                for(int b = 0; b < words[1].length(); b++) {
+                    for(int c = b + 1;
                          c < words[1].length();
                          c++) {
 
@@ -207,12 +207,12 @@ public final class ScbinMappingGeneratorV2 {
                 }
             }
 
-            for (int a = 0; a < words[0].length(); a++) {
-                for (int b = a + 1;
+            for(int a = 0; a < words[0].length(); a++) {
+                for(int b = a + 1;
                      b < words[0].length();
                      b++) {
 
-                    for (int c = 0;
+                    for(int c = 0;
                          c < words[1].length();
                          c++) {
 
@@ -223,10 +223,10 @@ public final class ScbinMappingGeneratorV2 {
             return result;
         }
 
-        if (words.length > 3) {
-            for (int a = 0; a < words[0].length(); a++) {
-                for (int b = 0; b < words[1].length(); b++) {
-                    for (int c = 0; c < words[2].length(); c++) {
+        if(words.length > 3) {
+            for(int a = 0; a < words[0].length(); a++) {
+                for(int b = 0; b < words[1].length(); b++) {
+                    for(int c = 0; c < words[2].length(); c++) {
                         result.add("" + words[0].charAt(a) + words[1].charAt(b) + words[2].charAt(c));
                     }
                 }
@@ -237,15 +237,15 @@ public final class ScbinMappingGeneratorV2 {
     }
 
     private static void generateCombinations(String name, int start, int maxLength, StringBuilder current, List<String> result) {
-        if (!current.isEmpty()) {
+        if(!current.isEmpty()) {
             result.add(current.toString());
         }
 
-        if (current.length() == maxLength) {
+        if(current.length() == maxLength) {
             return;
         }
 
-        for (int i = start; i < name.length(); i++) {
+        for(int i = start; i < name.length(); i++) {
             current.append(name.charAt(i));
             generateCombinations(name, i + 1, maxLength, current, result);
             current.deleteCharAt(current.length() - 1);

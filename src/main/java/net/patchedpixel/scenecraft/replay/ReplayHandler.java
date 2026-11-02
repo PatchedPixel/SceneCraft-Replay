@@ -134,7 +134,7 @@ public class ReplayHandler {
         ReplayClosingCallback.EVENT.invoker().replayClosing(this);
 
         fullReplaySender.terminateReplay();
-        if (quickMode) {
+        if(quickMode) {
             quickReplaySender.unregister();
         }
 
@@ -143,10 +143,10 @@ public class ReplayHandler {
 
         channel.close().awaitUninterruptibly();
 
-        if (mc.player instanceof CameraEntity) {
+        if(mc.player instanceof CameraEntity) {
         }
 
-        if (mc.level != null) {
+        if(mc.level != null) {
             mc.disconnectWithProgressScreen();
         }
 
@@ -217,7 +217,7 @@ public class ReplayHandler {
 
     public void ensureQuickModeInitialized(Runnable andThen) {
         ListenableFuture<Void> future = quickReplaySender.getInitializationPromise();
-        if (future == null) {
+        if(future == null) {
             InitializingQuickModePopup popup = new InitializingQuickModePopup(overlay);
             future = quickReplaySender.initialize(progress -> popup.progressBar.setProgress(progress.floatValue()));
             Futures.addCallback(future, new FutureCallback<Void>() {
@@ -267,8 +267,8 @@ public class ReplayHandler {
     }
 
     public void setQuickMode(boolean quickMode) {
-        if (quickMode == this.quickMode) return;
-        if (quickMode && fullReplaySender.isAsyncMode()) {
+        if(quickMode == this.quickMode) return;
+        if(quickMode && fullReplaySender.isAsyncMode()) {
             // If this method is called via runLater, then it cannot switch to sync mode by itself as there might be
             // some rogue packets in the task queue after it. Instead the caller must switch to sync mode first and
             // use runLater until all packets have been processed (when using setAsyncModeAndWait, one runLater should
@@ -278,7 +278,7 @@ public class ReplayHandler {
         this.quickMode = quickMode;
 
         CameraEntity cam = getCameraEntity();
-        if (cam != null) {
+        if(cam != null) {
             targetCameraPosition = new Location(cam.getX(), cam.getY(), cam.getZ(), cam.getYRot(), cam.getXRot());
         } else {
             targetCameraPosition = null;
@@ -286,7 +286,7 @@ public class ReplayHandler {
 
         channel.pipeline().replace(PACKET_HANDLER_NAME, PACKET_HANDLER_NAME, quickMode ? quickReplaySender : fullReplaySender);
 
-        if (quickMode) {
+        if(quickMode) {
             quickReplaySender.register();
             quickReplaySender.restart();
             quickReplaySender.sendPacketsTill(fullReplaySender.currentTimeStamp());
@@ -314,23 +314,23 @@ public class ReplayHandler {
      */
     public void spectateEntity(Entity e) {
         CameraEntity cameraEntity = getCameraEntity();
-        if (cameraEntity == null) {
+        if(cameraEntity == null) {
             return; // Cannot spectate if we have no camera
         }
-        if (e == null || e == cameraEntity) {
+        if(e == null || e == cameraEntity) {
             spectating = null;
             e = cameraEntity;
-        } else if (e instanceof Player) {
+        } else if(e instanceof Player) {
             spectating = e.getUUID();
         }
 
-        if (e == cameraEntity) {
+        if(e == cameraEntity) {
             cameraEntity.setCameraController(SceneCraftReplay.instance.createCameraController(cameraEntity));
         } else {
             cameraEntity.setCameraController(new SpectatorCameraController(cameraEntity));
         }
 
-        if (mc.getCameraEntity() != e) {
+        if(mc.getCameraEntity() != e) {
             mc.setCameraEntity(e);
             cameraEntity.setCameraPosRot(e);
         }
@@ -366,27 +366,27 @@ public class ReplayHandler {
 
     public void moveCameraToTargetPosition() {
         CameraEntity cam = getCameraEntity();
-        if (cam != null && targetCameraPosition != null) {
+        if(cam != null && targetCameraPosition != null) {
             cam.setCameraPosRot(targetCameraPosition);
         }
     }
 
     public void doJump(int targetTime, boolean retainCameraPosition) {
-        if (!getReplaySender().isAsyncMode()) {
+        if(!getReplaySender().isAsyncMode()) {
             return; // path playback, rendering, etc. -> no jumping allowed
         }
 
-        if (getReplaySender() == quickReplaySender) {
+        if(getReplaySender() == quickReplaySender) {
             // Always round to full tick
             targetTime = targetTime + targetTime % 50;
 
-            if (targetTime >= 50) {
+            if(targetTime >= 50) {
                 // Jump to time of previous tick first
                 quickReplaySender.sendPacketsTill(targetTime - 50);
             }
 
             // Update all entity positions (especially prev/lastTick values)
-            for (Entity entity : mc.level.entitiesForRendering()) {
+            for(Entity entity : mc.level.entitiesForRendering()) {
                 skipTeleportInterpolation(entity);
                 entity.xOld = entity.xo = entity.getX();
                 entity.yOld = entity.yo = entity.getY();
@@ -402,24 +402,24 @@ public class ReplayHandler {
             quickReplaySender.sendPacketsTill(targetTime);
 
             // Immediately apply player teleport interpolation
-            for (Entity entity : mc.level.entitiesForRendering()) {
+            for(Entity entity : mc.level.entitiesForRendering()) {
                 skipTeleportInterpolation(entity);
             }
             return;
         }
         FullReplaySender replaySender = fullReplaySender;
 
-        if (replaySender.isHurrying()) {
+        if(replaySender.isHurrying()) {
             return; // When hurrying, no Timeline jumping etc. is possible
         }
 
-        if (targetTime < replaySender.currentTimeStamp()) {
+        if(targetTime < replaySender.currentTimeStamp()) {
             mc.gui.setScreen(null);
         }
 
-        if (retainCameraPosition) {
+        if(retainCameraPosition) {
             CameraEntity cam = getCameraEntity();
-            if (cam != null) {
+            if(cam != null) {
                 targetCameraPosition = new Location(cam.getX(), cam.getY(), cam.getZ(),
                         cam.getYRot(), cam.getXRot());
             } else {
@@ -428,17 +428,17 @@ public class ReplayHandler {
         }
 
         long diff = targetTime - (replaySender.isHurrying() ? replaySender.getDesiredTimestamp() : replaySender.currentTimeStamp());
-        if (diff != 0) {
-            if (diff > 0 && diff < 5000) { // Small difference and no time travel
-                if (replaySender.paused()) {
+        if(diff != 0) {
+            if(diff > 0 && diff < 5000) { // Small difference and no time travel
+                if(replaySender.paused()) {
                     replaySender.setSyncModeAndWait();
                     do {
                         replaySender.sendPacketsTill(targetTime);
                         targetTime += 500;
-                    } while (mc.player == null || mc.gui.screen() instanceof LevelLoadingScreen);
+                    } while(mc.player == null || mc.gui.screen() instanceof LevelLoadingScreen);
                     replaySender.setAsyncMode(true);
 
-                    for (int i = 0; i < Math.min(diff / 50, 3); i++) {
+                    for(int i = 0; i < Math.min(diff / 50, 3); i++) {
                         mc.tick();
                     }
                 } else {
@@ -464,7 +464,7 @@ public class ReplayHandler {
                 do {
                     replaySender.sendPacketsTill(targetTime);
                     targetTime += 500;
-                } while (mc.player == null || mc.gui.screen() instanceof LevelLoadingScreen);
+                } while(mc.player == null || mc.gui.screen() instanceof LevelLoadingScreen);
                 replaySender.setAsyncMode(true);
                 replaySender.setReplaySpeed(0);
 
@@ -473,11 +473,11 @@ public class ReplayHandler {
 
                 // If the packets we just sent somehow caused the client to disconnect, then the above connection tick
                 // call will have unloaded the world, and we'll have to abort what we were doing.
-                if (mc.level == null) {
+                if(mc.level == null) {
                     return;
                 }
 
-                for (Entity entity : mc.level.entitiesForRendering()) {
+                for(Entity entity : mc.level.entitiesForRendering()) {
                     skipTeleportInterpolation(entity);
                     entity.xOld = entity.xo = entity.getX();
                     entity.yOld = entity.yo = entity.getY();
@@ -498,9 +498,9 @@ public class ReplayHandler {
 
     private void skipTeleportInterpolation(Entity entity) {
         InterpolationHandler i = entity.getInterpolation();
-        if (i != null && i.hasActiveInterpolation()) {
+        if(i != null && i.hasActiveInterpolation()) {
             net.minecraft.core.PositionAndRotation target = i.target();
-            if (target != null) {
+            if(target != null) {
                 entity.snapTo(target.position(), target.yRot(), target.xRot());
             }
             i.cancel();

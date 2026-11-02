@@ -17,7 +17,7 @@ public abstract class MinimapRendererMixin {
             require = 0
     )
     private void scenecraft$hideMinimap(CallbackInfo ci) {
-        if (SceneCraftCompat.shouldHide()) {
+        if(SceneCraftCompat.shouldHide()) {
             ci.cancel();
         }
     }

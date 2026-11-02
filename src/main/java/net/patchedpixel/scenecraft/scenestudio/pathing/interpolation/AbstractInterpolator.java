@@ -36,14 +36,14 @@ public abstract class AbstractInterpolator implements Interpolator {
 
     @Override
     public void registerProperty(Property property) {
-        if (properties.add(property)) {
+        if(properties.add(property)) {
             dirty = true;
         }
     }
 
     @Override
     public void unregisterProperty(Property property) {
-        if (properties.remove(property)) {
+        if(properties.remove(property)) {
             dirty = true;
         }
     }
@@ -67,7 +67,7 @@ public abstract class AbstractInterpolator implements Interpolator {
 
     @Override
     public Map<PropertyPart, InterpolationParameters> bake(Map<PropertyPart, InterpolationParameters> parameters) {
-        if (segments.isEmpty()) throw new IllegalStateException("No segments have been added yet.");
+        if(segments.isEmpty()) throw new IllegalStateException("No segments have been added yet.");
         Collections.sort(segments, new Comparator<PathSegment>() {
             @Override
             public int compare(PathSegment s1, PathSegment s2) {
@@ -78,8 +78,8 @@ public abstract class AbstractInterpolator implements Interpolator {
         // Check for continuity
         Iterator<PathSegment> iter = segments.iterator();
         PathSegment last = iter.next();
-        while (iter.hasNext()) {
-            if (last.getEndKeyframe() != (last = iter.next()).getStartKeyframe()) {
+        while(iter.hasNext()) {
+            if(last.getEndKeyframe() != (last = iter.next()).getStartKeyframe()) {
                 throw new IllegalStateException("Segments are not continuous.");
             }
         }

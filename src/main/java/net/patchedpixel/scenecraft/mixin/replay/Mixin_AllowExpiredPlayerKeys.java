@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class Mixin_AllowExpiredPlayerKeys {
     @Inject(method = { "hasExpired()Z", "hasExpired(Ljava/time/Duration;)Z" }, at = @At("HEAD"), cancellable = true)
     private void neverExpireWhenInReplay(CallbackInfoReturnable<Boolean> ci) {
-        if (SceneCraftReplay.instance.getReplayHandler() != null) {
+        if(SceneCraftReplay.instance.getReplayHandler() != null) {
             ci.setReturnValue(false);
         }
     }

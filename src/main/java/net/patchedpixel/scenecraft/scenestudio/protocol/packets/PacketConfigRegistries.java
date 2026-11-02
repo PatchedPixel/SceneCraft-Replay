@@ -38,7 +38,7 @@ public class PacketConfigRegistries {
                 Tag value = in.readBoolean() ? in.readNBT() : null;
                 return Pair.of(key, value);
             });
-            if (registries.registriesMap == null) {
+            if(registries.registriesMap == null) {
                 registries.registriesMap = new HashMap<>();
             }
             registries.registriesMap.computeIfAbsent(registryName, it -> new ArrayList<>()).addAll(registryEntries);
@@ -46,18 +46,18 @@ public class PacketConfigRegistries {
     }
 
     public static List<Packet> write(PacketTypeRegistry registry, Registries registries) throws IOException {
-        if (registries.registriesMap == null) {
+        if(registries.registriesMap == null) {
             return Collections.emptyList();
         }
         List<Packet> packets = new ArrayList<>(registries.registriesMap.size());
-        for (Map.Entry<String, List<Pair<String, Tag>>> registryEntry : registries.registriesMap.entrySet()) {
+        for(Map.Entry<String, List<Pair<String, Tag>>> registryEntry : registries.registriesMap.entrySet()) {
             Packet packet = new Packet(registry, PacketType.ConfigRegistries);
             try (Packet.Writer writer = packet.overwrite()) {
                 writer.writeString(registryEntry.getKey());
                 writer.writeList(registryEntry.getValue(), entry -> {
                     writer.writeString(entry.getKey());
                     Tag value = entry.getValue();
-                    if (value != null) {
+                    if(value != null) {
                         writer.writeBoolean(true);
                         writer.writeNBT(value);
                     } else {

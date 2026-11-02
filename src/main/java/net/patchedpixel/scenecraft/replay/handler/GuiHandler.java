@@ -46,11 +46,11 @@ public class GuiHandler extends EventRegistrations {
 
     { on(InitScreenCallback.EVENT, this::injectIntoIngameMenu); }
     private void injectIntoIngameMenu(Screen guiScreen, Collection<AbstractWidget> buttonList) {
-        if (!(guiScreen instanceof PauseScreen)) {
+        if(!(guiScreen instanceof PauseScreen)) {
             return;
         }
 
-        if (mod.getReplayHandler() != null) {
+        if(mod.getReplayHandler() != null) {
             // Pause replay when menu is opened
             mod.getReplayHandler().getReplaySender().setReplaySpeed(0);
             final Component BUTTON_EXIT_SERVER = Component.translatable("menu.disconnect");
@@ -62,12 +62,12 @@ public class GuiHandler extends EventRegistrations {
             for(AbstractWidget b : new ArrayList<>(buttonList)) {
                 boolean remove = false;
                 Component id = b.getMessage();
-                if (id == null) {
+                if(id == null) {
                     // likely a button of some third-part mod
                     // e.g. https://github.com/Pokechu22/WorldDownloader/blob/b1b279f948beec2d7dac7524eea8f584a866d8eb/share_14/src/main/java/wdl/WDLHooks.java#L491
                     continue;
                 }
-                if (id.equals(BUTTON_EXIT_SERVER)) {
+                if(id.equals(BUTTON_EXIT_SERVER)) {
                     // Replace "Exit Server" button with "Exit Replay" button
                     remove = true;
                     addButton(guiScreen, new InjectedButton(
@@ -81,23 +81,23 @@ public class GuiHandler extends EventRegistrations {
                             null,
                             this::onButton
                     ));
-                } else if (id.equals(BUTTON_ADVANCEMENTS)) {
+                } else if(id.equals(BUTTON_ADVANCEMENTS)) {
                     // Remove "Advancements", "Stats" and "Open to LAN" buttons
                     remove = true;
                     achievements = b;
-                } else if (id.equals(BUTTON_STATS)) {
+                } else if(id.equals(BUTTON_STATS)) {
                     remove = true;
                     stats = b;
-                } else if (id.equals(BUTTON_OPEN_TO_LAN)) {
+                } else if(id.equals(BUTTON_OPEN_TO_LAN)) {
                     remove = true;
                 }
-                if (remove) {
+                if(remove) {
                     // Moving the button far off-screen is easier to do cross-version than actually removing it
                     b.setX(-1000);
                     b.setY(-1000);
                 }
             }
-            if (achievements != null && stats != null) {
+            if(achievements != null && stats != null) {
                 moveAllButtonsInRect(buttonList,
                         achievements.getX(), stats.getX() + stats.getWidth(),
                         achievements.getY(), Integer.MAX_VALUE,
@@ -132,20 +132,20 @@ public class GuiHandler extends EventRegistrations {
 
     { on(InitScreenCallback.EVENT, (screen, _) -> ensureReplayStopped(screen)); }
     private void ensureReplayStopped(Screen guiScreen) {
-        if (!(guiScreen instanceof TitleScreen || guiScreen instanceof JoinMultiplayerScreen)) {
+        if(!(guiScreen instanceof TitleScreen || guiScreen instanceof JoinMultiplayerScreen)) {
             return;
         }
         net.patchedpixel.scenecraft.compat.SceneCraftCompat.recoverStaleHud();
 
-        if (mod.getReplayHandler() != null) {
+        if(mod.getReplayHandler() != null) {
             // Something went terribly wrong and we ended up in the main menu with the replay still active.
             // To prevent players from joining live servers and using the CameraEntity, try to stop the replay now.
             try {
                 mod.getReplayHandler().endReplay();
-            } catch (IOException e) {
+            } catch(IOException e) {
                 LOGGER.error("Trying to stop broken replay: ", e);
             } finally {
-                if (mod.getReplayHandler() != null) {
+                if(mod.getReplayHandler() != null) {
                     mod.forcefullyStopReplay();
                 }
             }
@@ -154,11 +154,11 @@ public class GuiHandler extends EventRegistrations {
 
     { on(InitScreenCallback.EVENT, this::injectIntoMainMenu); }
     private void injectIntoMainMenu(Screen guiScreen, Collection<AbstractWidget> buttonList) {
-        if (!(guiScreen instanceof TitleScreen)) {
+        if(!(guiScreen instanceof TitleScreen)) {
             return;
         }
 
-        if (mod.getCore().getSettingsRegistry().get(Setting.LEGACY_MAIN_MENU_BUTTON)) {
+        if(mod.getCore().getSettingsRegistry().get(Setting.LEGACY_MAIN_MENU_BUTTON)) {
             legacyInjectIntoMainMenu(guiScreen, buttonList);
         } else {
             properInjectIntoMainMenu(guiScreen);
@@ -170,16 +170,16 @@ public class GuiHandler extends EventRegistrations {
         MainMenuButtonPosition buttonPosition = MainMenuButtonPosition.valueOf(mod.getCore().getSettingsRegistry().get(Setting.MAIN_MENU_BUTTON));
 
         // Workaround for FancyMenu v2 initializing the screen twice, likely fixed in v3
-        if (isFancyMenu2Installed()) {
-            for (AbstractWidget button : buttonList) {
-                if (button instanceof InjectedButton) {
+        if(isFancyMenu2Installed()) {
+            for(AbstractWidget button : buttonList) {
+                if(button instanceof InjectedButton) {
                     return;
                 }
             }
         }
 
         Point pos;
-        if (buttonPosition == MainMenuButtonPosition.BIG) {
+        if(buttonPosition == MainMenuButtonPosition.BIG) {
             int x = screen.width / 2 - 100;
             // We want to position our button below the realms button
             Optional<AbstractWidget> targetButton = findButton(buttonList, "menu.online", 14)
@@ -205,7 +205,7 @@ public class GuiHandler extends EventRegistrations {
         }
 
         AbstractWidget replayViewerButton;
-        if (buttonPosition == MainMenuButtonPosition.BIG) {
+        if(buttonPosition == MainMenuButtonPosition.BIG) {
             replayViewerButton = new InjectedButton(
                     screen, BUTTON_REPLAY_VIEWER,
                     pos.getX(), pos.getY(),
@@ -244,7 +244,7 @@ public class GuiHandler extends EventRegistrations {
         }
 
         int index = determineButtonIndex(buttonList, replayViewerButton);
-        if (index != -1) {
+        if(index != -1) {
             buttonList.add(index, replayViewerButton);
         } else {
             buttonList.add(replayViewerButton);
@@ -261,7 +261,7 @@ public class GuiHandler extends EventRegistrations {
         boolean isCustomMainMenuMod = guiScreen.getClass().getName().endsWith("custommainmenu.gui.GuiFakeMain");
 
         MainMenuButtonPosition buttonPosition = MainMenuButtonPosition.valueOf(mod.getCore().getSettingsRegistry().get(Setting.MAIN_MENU_BUTTON));
-        if (buttonPosition != MainMenuButtonPosition.BIG && !isCustomMainMenuMod) {
+        if(buttonPosition != MainMenuButtonPosition.BIG && !isCustomMainMenuMod) {
             VanillaGuiScreen vanillaGui = VanillaGuiScreen.wrap(guiScreen);
 
             GuiReplayButton replayButton = new GuiReplayButton();
@@ -274,7 +274,7 @@ public class GuiHandler extends EventRegistrations {
 
                 @Override
                 protected void layout(net.patchedpixel.scenecraft.gui.container.GuiScreen container, int width, int height) {
-                    if (pos == null) {
+                    if(pos == null) {
                         // Delaying computation so we can take into account buttons
                         // added after our callback.
                         pos = determineButtonPos(buttonPosition, guiScreen, buttonList);
@@ -321,11 +321,11 @@ public class GuiHandler extends EventRegistrations {
     private Point determineButtonPos(MainMenuButtonPosition buttonPosition, Screen guiScreen, Collection<AbstractWidget> buttonList) {
         Point topRight = new Point(guiScreen.width - 20 - 5, 5);
 
-        if (buttonPosition == MainMenuButtonPosition.TOP_LEFT) {
+        if(buttonPosition == MainMenuButtonPosition.TOP_LEFT) {
             return new Point(5, 5);
-        } else if (buttonPosition == MainMenuButtonPosition.TOP_RIGHT) {
+        } else if(buttonPosition == MainMenuButtonPosition.TOP_RIGHT) {
             return topRight;
-        } else if (buttonPosition == MainMenuButtonPosition.DEFAULT) {
+        } else if(buttonPosition == MainMenuButtonPosition.DEFAULT) {
             return Stream.of(
                             findButton(buttonList, "menu.singleplayer", 1),
                             findButton(buttonList, "menu.multiplayer", 2),
@@ -348,7 +348,7 @@ public class GuiHandler extends EventRegistrations {
                     .orElse(topRight);
         } else {
             return Optional.of(buttonList).flatMap(buttons -> {
-                switch (buttonPosition) {
+                switch(buttonPosition) {
                     case LEFT_OF_SINGLEPLAYER:
                     case RIGHT_OF_SINGLEPLAYER:
                         return findButton(buttons, "menu.singleplayer", 1);
@@ -361,7 +361,7 @@ public class GuiHandler extends EventRegistrations {
                 }
                 throw new RuntimeException();
             }).map(button -> {
-                switch (buttonPosition) {
+                switch(buttonPosition) {
                     case LEFT_OF_SINGLEPLAYER:
                     case LEFT_OF_MULTIPLAYER:
                     case LEFT_OF_REALMS:
@@ -380,13 +380,13 @@ public class GuiHandler extends EventRegistrations {
         int bestIndex = -1;
 
         int index = 0;
-        for (AbstractWidget other : buttons) {
-            if (other.getY() > button.getY() || other.getY() == button.getY() && other.getX() > button.getX()) {
+        for(AbstractWidget other : buttons) {
+            if(other.getY() > button.getY() || other.getY() == button.getY() && other.getX() > button.getX()) {
                 index++;
                 continue;
             }
 
-            if (best == null || other.getY() > best.getY() || other.getY() == best.getY() && other.getX() > best.getX()) {
+            if(best == null || other.getY() > best.getY() || other.getY() == best.getY() && other.getX() > best.getX()) {
                 best = other;
                 bestIndex = index + 1;
             }
@@ -400,18 +400,18 @@ public class GuiHandler extends EventRegistrations {
         Screen guiScreen = button.guiScreen;
         if(!button.active) return;
 
-        if (guiScreen instanceof TitleScreen) {
-            if (button.id == BUTTON_REPLAY_VIEWER) {
+        if(guiScreen instanceof TitleScreen) {
+            if(button.id == BUTTON_REPLAY_VIEWER) {
                 new GuiReplayViewer(mod).display();
             }
         }
 
-        if (guiScreen instanceof PauseScreen && mod.getReplayHandler() != null) {
-            if (button.id == BUTTON_EXIT_REPLAY) {
+        if(guiScreen instanceof PauseScreen && mod.getReplayHandler() != null) {
+            if(button.id == BUTTON_EXIT_REPLAY) {
                 button.active = false;
                 try {
                     mod.getReplayHandler().endReplay();
-                } catch (IOException e) {
+                } catch(IOException e) {
                     e.printStackTrace();
                 }
             }
@@ -428,7 +428,7 @@ public class GuiHandler extends EventRegistrations {
             this.id = buttonId;
             this.onClick = onClick;
 
-            if (tooltip != null) {
+            if(tooltip != null) {
                 setTooltip(Tooltip.create(Component.translatable(tooltip)));
             }
         }

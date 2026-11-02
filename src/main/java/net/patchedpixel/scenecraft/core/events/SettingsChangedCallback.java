@@ -6,7 +6,7 @@ import net.patchedpixel.scenecraft.gui.utils.Event;
 public interface SettingsChangedCallback {
     Event<SettingsChangedCallback> EVENT = Event.create((listeners) ->
             (registry, key) -> {
-                for (SettingsChangedCallback listener : listeners) {
+                for(SettingsChangedCallback listener : listeners) {
                     listener.onSettingsChanged(registry, key);
                 }
             }

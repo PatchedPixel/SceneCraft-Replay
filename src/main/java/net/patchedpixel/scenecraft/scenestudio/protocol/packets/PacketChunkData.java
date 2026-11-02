@@ -45,7 +45,7 @@ public class PacketChunkData {
     public static PacketChunkData read(Packet packet, int sections) throws IOException {
         PacketChunkData chunkData = new PacketChunkData();
         try (Packet.Reader reader = packet.reader()) {
-            if (packet.getType() == PacketType.UnloadChunk) {
+            if(packet.getType() == PacketType.UnloadChunk) {
                 chunkData.readUnload(packet, reader);
             } else {
                 chunkData.readLoad(packet, reader, sections);
@@ -65,7 +65,7 @@ public class PacketChunkData {
     public Packet write(PacketTypeRegistry registry) throws IOException {
         Packet packet = new Packet(registry, isUnload ? PacketType.UnloadChunk : PacketType.ChunkData);
         try (Packet.Writer writer = packet.overwrite()) {
-            if (isUnload) {
+            if(isUnload) {
                 writeUnload(packet, writer);
             } else {
                 writeLoad(packet, writer);
@@ -134,7 +134,7 @@ public class PacketChunkData {
         this.column = readColumn(packet, data, x, z, sections, heightmaps);
 
         TileEntity[] tileEntities = new TileEntity[in.readVarInt()];
-        for (int i = 0; i < tileEntities.length; i++) {
+        for(int i = 0; i < tileEntities.length; i++) {
             tileEntities[i] = new TileEntity(packet, in);
         }
         this.column.tileEntities = tileEntities;
@@ -156,7 +156,7 @@ public class PacketChunkData {
         out.writeVarInt(len);
         out.writeBytes(byteOut.toByteArray(), len);
         out.writeVarInt(this.column.tileEntities.length);
-        for (TileEntity tileEntity : this.column.tileEntities) {
+        for(TileEntity tileEntity : this.column.tileEntities) {
             tileEntity.write(packet, out);
         }
 
@@ -166,15 +166,15 @@ public class PacketChunkData {
     private static Column readColumn(Packet packet, byte[] data, int x, int z, int sections, Heightmaps heightmaps) throws IOException {
         NetInput in = new StreamNetInput(new ByteArrayInputStream(data));
         Chunk[] chunks = new Chunk[sections];
-        for (int index = 0; index < chunks.length; index++) {
+        for(int index = 0; index < chunks.length; index++) {
             chunks[index] = new Chunk(packet, in);
         }
         return new Column(x, z, chunks, null, null, heightmaps, null, true, null);
     }
 
     private static void writeColumn(Packet packet, NetOutput out, Column column) throws IOException {
-        for (Chunk chunk : column.chunks) {
-            if (chunk != null) {
+        for(Chunk chunk : column.chunks) {
+            if(chunk != null) {
                 chunk.write(packet, out);
             }
         }
@@ -209,8 +209,8 @@ public class PacketChunkData {
 
         public BitSet getChunkMask() {
             BitSet mask = new BitSet();
-            for (int index = 0; index < chunks.length; index++) {
-                if (chunks[index] != null) {
+            for(int index = 0; index < chunks.length; index++) {
+                if(chunks[index] != null) {
                     mask.set(index);
                 }
             }
@@ -317,10 +317,10 @@ public class PacketChunkData {
             this.registry = from.registry;
             this.countDelta = from.countDelta;
             this.bitsPerEntry = from.bitsPerEntry;
-            if (from.states != null) {
+            if(from.states != null) {
                 this.states = new ArrayList<>(from.states);
             }
-            if (from.storage != null) {
+            if(from.storage != null) {
                 this.storage = FlexibleStorage.from(registry, bitsPerEntry, from.storage.entries, from.storage.data.clone());
             }
         }
@@ -342,9 +342,9 @@ public class PacketChunkData {
             this.bitsPerEntry = in.readUnsignedByte();
             this.states = new ArrayList<>();
             int stateCount;
-            if (this.bitsPerEntry > type.highestBitsPerValue()) {
+            if(this.bitsPerEntry > type.highestBitsPerValue()) {
                 stateCount = 0;
-            } else if (this.bitsPerEntry == 0) {
+            } else if(this.bitsPerEntry == 0) {
                 stateCount = 1;
             } else {
                 stateCount = in.readVarInt();
@@ -361,11 +361,11 @@ public class PacketChunkData {
 
         void write(Packet packet, NetOutput out) throws IOException {
             out.writeByte(this.bitsPerEntry);
-            if (this.bitsPerEntry == 0) {
+            if(this.bitsPerEntry == 0) {
                 out.writeVarInt(this.states.get(0));
-            } else if (this.bitsPerEntry <= type.highestBitsPerValue()) {
+            } else if(this.bitsPerEntry <= type.highestBitsPerValue()) {
                 out.writeVarInt(this.states.size());
-                for (Integer state : this.states) {
+                for(Integer state : this.states) {
                     out.writeVarInt(state);
                 }
             }
@@ -374,7 +374,7 @@ public class PacketChunkData {
         }
 
         private int index(int x, int y, int z) {
-            if (this.type == PaletteType.BIOMES) {
+            if(this.type == PaletteType.BIOMES) {
                 return y << 4 | z << 2 | x;
             } else {
                 return y << 8 | z << 4 | x;
@@ -382,7 +382,7 @@ public class PacketChunkData {
         }
 
         public int get(int x, int y, int z) {
-            if (this.bitsPerEntry == 0) {
+            if(this.bitsPerEntry == 0) {
                 return this.states.get(0);
             }
             int id = this.storage.get(index(x, y, z));
@@ -410,7 +410,7 @@ public class PacketChunkData {
                         // if it turns out to have been too small.
                         // We do this here initially, and then also below immediately before `set` if the new net is OOB.
                         int bitsUsed = (1 << this.bitsPerEntry) - 1;
-                        for (int i = 0; i < this.storage.entries; i++) {
+                        for(int i = 0; i < this.storage.entries; i++) {
                             bitsUsed |= this.storage.get(i);
                         }
                         this.bitsPerEntry = 32 - Integer.numberOfLeadingZeros(bitsUsed);
@@ -426,7 +426,7 @@ public class PacketChunkData {
                 id = this.bitsPerEntry <= type.highestBitsPerValue() ? this.states.indexOf(state) : state;
             }
 
-            if (this.bitsPerEntry == 0) {
+            if(this.bitsPerEntry == 0) {
                 return;
             }
 
@@ -438,14 +438,14 @@ public class PacketChunkData {
                 countDelta--;
             }
 
-            if (this.bitsPerEntry > type.highestBitsPerValue() && id > this.storage.maxEntryValue) {
+            if(this.bitsPerEntry > type.highestBitsPerValue() && id > this.storage.maxEntryValue) {
                 // Workaround for us not knowing the size of the global palette. See the two comment blocks above.
                 // Determine how many bits we need per entry to fit this net
                 this.bitsPerEntry = 32 - Integer.numberOfLeadingZeros(id);
                 // Convert old storage to new entry size
                 FlexibleStorage oldStorage = this.storage;
                 this.storage = FlexibleStorage.empty(this.registry, this.bitsPerEntry, this.storage.entries);
-                for (int i = 0; i < this.storage.entries; i++) {
+                for(int i = 0; i < this.storage.entries; i++) {
                     this.storage.set(i, oldStorage.get(i));
                 }
             }
@@ -495,7 +495,7 @@ public class PacketChunkData {
         }
 
         private static int longsForEntries(int bitsPerEntry, int entries) {
-            if (bitsPerEntry == 0) {
+            if(bitsPerEntry == 0) {
                 return 0;
             }
             int entriesPerLong = 64 / bitsPerEntry;
@@ -504,10 +504,10 @@ public class PacketChunkData {
 
         @Override
         public int get(int index) {
-            if (index < 0 || index > this.entries - 1) {
+            if(index < 0 || index > this.entries - 1) {
                 throw new IndexOutOfBoundsException();
             }
-            if (this.bitsPerEntry == 0) {
+            if(this.bitsPerEntry == 0) {
                 return 0;
             }
 
@@ -519,11 +519,11 @@ public class PacketChunkData {
 
         @Override
         public void set(int index, int value) {
-            if (index < 0 || index > this.entries - 1) {
+            if(index < 0 || index > this.entries - 1) {
                 throw new IndexOutOfBoundsException();
             }
 
-            if (value < 0 || value > this.maxEntryValue) {
+            if(value < 0 || value > this.maxEntryValue) {
                 throw new IllegalArgumentException("Value cannot be outside of accepted range.");
             }
 

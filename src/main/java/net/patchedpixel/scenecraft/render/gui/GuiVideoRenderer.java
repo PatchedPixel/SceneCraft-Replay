@@ -36,7 +36,7 @@ public class GuiVideoRenderer extends GuiScreen implements Tickable {
     public final GuiPanel imagePanel = new GuiPanel(){
         @Override
         public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
-            if (previewCheckbox.isChecked()) {
+            if(previewCheckbox.isChecked()) {
                 renderPreview(renderer, size);
             } else {
                 renderNoPreview(renderer, size);
@@ -51,7 +51,7 @@ public class GuiVideoRenderer extends GuiScreen implements Tickable {
     public final GuiButton pauseButton = new GuiButton(buttonPanel).onClick(new Runnable() {
         @Override
         public void run() {
-            if (renderer.isPaused()) {
+            if(renderer.isPaused()) {
                 pauseButton.setI18nLabel("scenecraft.gui.rendering.pause");
                 renderer.setPaused(false);
             } else {
@@ -67,7 +67,7 @@ public class GuiVideoRenderer extends GuiScreen implements Tickable {
         @Override
         public boolean mouseClick(Click click) {
             boolean result = super.mouseClick(click);
-            if (waitingForConfirmation && !result) {
+            if(waitingForConfirmation && !result) {
                 setI18nLabel("scenecraft.gui.rendering.cancel");
                 waitingForConfirmation = false;
             }
@@ -77,7 +77,7 @@ public class GuiVideoRenderer extends GuiScreen implements Tickable {
         @Override
         public void onClick(Click click) {
             super.onClick(click);
-            if (!waitingForConfirmation) {
+            if(!waitingForConfirmation) {
                 setI18nLabel("scenecraft.gui.rendering.cancel.callback");
                 waitingForConfirmation = true;
             } else {
@@ -232,11 +232,11 @@ public class GuiVideoRenderer extends GuiScreen implements Tickable {
         final int videoWidth = videoSize.getWidth();
         final int videoHeight = videoSize.getHeight();
 
-        if (previewTexture == null) {
+        if(previewTexture == null) {
             previewTexture = new DynamicTexture((String) null, videoWidth, videoHeight, true);
         }
 
-        if (previewTextureDirty) {
+        if(previewTextureDirty) {
             previewTexture.upload();
             previewTextureDirty = false;
         }
@@ -263,17 +263,17 @@ public class GuiVideoRenderer extends GuiScreen implements Tickable {
     }
 
     public void updatePreview(ByteBuffer buffer, ReadableDimension size) {
-        if (previewCheckbox.isChecked() && previewTexture != null) {
+        if(previewCheckbox.isChecked() && previewTexture != null) {
             buffer.mark();
-            synchronized (this) {
+            synchronized(this) {
                 NativeImage data = previewTexture.getPixels();
                 assert data != null;
                 // Note: Optifine changes the texture data array to be three times as long (for use by shaders),
                 //       we only want to initialize the first third and since we use our frame size, not the array size,
                 //       we're good to go.
                 int width = size.getWidth();
-                for (int y = 0; y < size.getHeight(); y++) {
-                    for (int x = 0; x < width; x++) {
+                for(int y = 0; y < size.getHeight(); y++) {
+                    for(int x = 0; x < width; x++) {
                         int b = buffer.get() & 0xff;
                         int g = buffer.get() & 0xff;
                         int r = buffer.get() & 0xff;

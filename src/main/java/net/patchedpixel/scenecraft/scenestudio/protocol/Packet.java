@@ -108,8 +108,8 @@ public class Packet {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if(this == o) return true;
+        if(o == null || getClass() != o.getClass()) return false;
         Packet packet = (Packet) o;
         return id == packet.id &&
                 registry.equals(packet.registry) &&
@@ -203,7 +203,7 @@ public class Packet {
         public static <T> List<T> readList(PacketTypeRegistry registry, NetInput in, IOSupplier<T> entryReader) throws IOException {
             int len = in.readVarInt();
             List<T> result = new ArrayList<>(len);
-            for (int i = 0; i < len; i++) {
+            for(int i = 0; i < len; i++) {
                 result.add(entryReader.get());
             }
             return result;
@@ -272,7 +272,7 @@ public class Packet {
 
         public static <T> void writeList(PacketTypeRegistry registry, NetOutput out, List<T> list, IOConsumer<T> entryWriter) throws IOException {
             out.writeVarInt(list.size());
-            for (T entry : list) {
+            for(T entry : list) {
                 entryWriter.consume(entry);
             }
         }

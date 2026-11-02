@@ -94,7 +94,7 @@ public abstract class AbstractGuiVerticalList<T extends AbstractGuiVerticalList<
     public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
         int width = size.getWidth();
         int height = size.getHeight();
-        if (drawShadow) {
+        if(drawShadow) {
             renderer.drawRect(0, 0, width, height, BACKGROUND);
             super.draw(renderer, size, renderInfo);
             renderer.drawRect(0, 0, width, 4, BLACK, BLACK, TRANSPARENT, TRANSPARENT);
@@ -103,10 +103,10 @@ public abstract class AbstractGuiVerticalList<T extends AbstractGuiVerticalList<
             super.draw(renderer, size, renderInfo);
         }
 
-        if (drawSlider) {
+        if(drawSlider) {
             ReadableDimension contentSize = listPanel.calcMinSize();
             int contentHeight = contentSize.getHeight() + 10;
-            if (contentHeight > height) {
+            if(contentHeight > height) {
                 int sliderX = width / 2 + contentSize.getWidth() / 2 + 3;
                 renderer.drawRect(sliderX, 0, 6, height, BLACK); // Draw slider background
                 int sliderY = getOffsetY() * height / contentHeight;
@@ -122,8 +122,8 @@ public abstract class AbstractGuiVerticalList<T extends AbstractGuiVerticalList<
     @Override
     public boolean mouseClick(Click click) {
         ReadablePoint position = convert(click);
-        if (isOnThis(position)) {
-            if (isOnSliderBar(position)) {
+        if(isOnThis(position)) {
+            if(isOnSliderBar(position)) {
                 draggingSlider = true;
             }
             lastMousePos = position;
@@ -136,9 +136,9 @@ public abstract class AbstractGuiVerticalList<T extends AbstractGuiVerticalList<
     @Override
     public boolean mouseDrag(Click click) {
         ReadablePoint position = convert(click);
-        if (lastMousePos != null) {
+        if(lastMousePos != null) {
             int dPixel = lastMousePos.getY() - position.getY();
-            if (draggingSlider) {
+            if(draggingSlider) {
                 int contentHeight = listPanel.calcMinSize().getHeight();
                 int renderHeight = lastRenderSize.getHeight();
                 scrollY(dPixel * (contentHeight + renderHeight) / renderHeight);
@@ -153,7 +153,7 @@ public abstract class AbstractGuiVerticalList<T extends AbstractGuiVerticalList<
 
     @Override
     public boolean mouseRelease(Click click) {
-        if (lastMousePos != null) {
+        if(lastMousePos != null) {
             lastMousePos = null;
             draggingSlider = false;
             // Returning false on purpose, see #mouseClick
@@ -162,7 +162,7 @@ public abstract class AbstractGuiVerticalList<T extends AbstractGuiVerticalList<
     }
 
     private ReadablePoint convert(ReadablePoint readablePoint) {
-        if (getContainer() != null) {
+        if(getContainer() != null) {
             Point point = new Point(readablePoint);
             getContainer().convertFor(this, point);
             return point;
@@ -176,7 +176,7 @@ public abstract class AbstractGuiVerticalList<T extends AbstractGuiVerticalList<
     }
 
     private boolean isOnSliderBar(ReadablePoint point) {
-        if (!drawSlider) {
+        if(!drawSlider) {
             return false;
         }
         int sliderX = lastRenderSize.getWidth() / 2 + listPanel.calcMinSize().getWidth() / 2 + 3;

@@ -7,7 +7,7 @@ public interface ReplayRenderCallback {
     interface Pre {
         Event<Pre> EVENT = Event.create((listeners) ->
                 (renderer) -> {
-                    for (Pre listener : listeners) {
+                    for(Pre listener : listeners) {
                         listener.beforeRendering(renderer);
                     }
                 });
@@ -18,7 +18,7 @@ public interface ReplayRenderCallback {
     interface Post {
         Event<Post> EVENT = Event.create((listeners) ->
                 (renderer) -> {
-                    for (Post listener : listeners) {
+                    for(Post listener : listeners) {
                         listener.afterRendering(renderer);
                     }
                 });

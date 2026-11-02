@@ -40,22 +40,22 @@ class SettingsRegistryBackend {
         load(true);
         try {
             registerWatcher();
-        } catch (IOException e) {
+        } catch(IOException e) {
             LOGGER.warn("Failed to setup file watcher for {}, live-reloading is disabled. Cause: {}", configFile, e);
         }
     }
 
     private void load(boolean createIfMissingOrBroken) {
         String config;
-        if (Files.exists(configFile)) {
+        if(Files.exists(configFile)) {
             try {
                 config = new String(Files.readAllBytes(configFile), StandardCharsets.UTF_8);
-            } catch (IOException e) {
+            } catch(IOException e) {
                 e.printStackTrace();
                 return;
             }
         } else {
-            if (createIfMissingOrBroken) {
+            if(createIfMissingOrBroken) {
                 save();
             }
 
@@ -63,35 +63,35 @@ class SettingsRegistryBackend {
         }
         Gson gson = new Gson();
         JsonObject root = gson.fromJson(config, JsonObject.class);
-        if (root == null) {
+        if(root == null) {
             LOGGER.error("Config file {} appears corrupted: {}", configFile, config);
-            if (createIfMissingOrBroken) {
+            if(createIfMissingOrBroken) {
                 save();
             }
             return;
         }
-        for (Map.Entry<SettingsRegistry.SettingKey<?>, Object> entry : settings.entrySet()) {
+        for(Map.Entry<SettingsRegistry.SettingKey<?>, Object> entry : settings.entrySet()) {
             SettingsRegistry.SettingKey<?> key = entry.getKey();
             JsonElement category = root.get(key.getCategory());
-            if (category != null && category.isJsonObject()) {
+            if(category != null && category.isJsonObject()) {
                 JsonElement valueElem = category.getAsJsonObject().get(key.getKey());
-                if (valueElem == null || !valueElem.isJsonPrimitive()) continue;
+                if(valueElem == null || !valueElem.isJsonPrimitive()) continue;
                 JsonPrimitive value = valueElem.getAsJsonPrimitive();
-                if (key.getDefault() instanceof Boolean && value.isBoolean()) {
+                if(key.getDefault() instanceof Boolean && value.isBoolean()) {
                     entry.setValue(value.getAsBoolean());
                 }
-                if (key.getDefault() instanceof Integer && value.isNumber()) {
+                if(key.getDefault() instanceof Integer && value.isNumber()) {
                     entry.setValue(value.getAsNumber().intValue());
                 }
-                if (key.getDefault() instanceof Double && value.isNumber()) {
+                if(key.getDefault() instanceof Double && value.isNumber()) {
                     entry.setValue(value.getAsNumber().doubleValue());
                 }
-                if (key.getDefault() instanceof String && value.isString()) {
+                if(key.getDefault() instanceof String && value.isString()) {
                     String valueStr = value.getAsString();
-                    if (entry instanceof SettingsRegistry.MultipleChoiceSettingKey) {
+                    if(entry instanceof SettingsRegistry.MultipleChoiceSettingKey) {
                         @SuppressWarnings("unchecked")
                         List<String> choices = ((SettingsRegistry.MultipleChoiceSettingKey<String>) entry).getChoices();
-                        if (choices.stream().noneMatch(valueStr::equals)) {
+                        if(choices.stream().noneMatch(valueStr::equals)) {
                             continue;
                         }
                     }
@@ -105,24 +105,24 @@ class SettingsRegistryBackend {
         WatchService watchService = configFile.getFileSystem().newWatchService();
         configFile.getParent().register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY);
         Thread thread = new Thread(() -> {
-            while (true) {
+            while(true) {
                 WatchKey nextKey;
                 try {
                     nextKey = watchService.take();
-                } catch (InterruptedException e) {
+                } catch(InterruptedException e) {
                     return;
                 }
-                for (WatchEvent<?> event : nextKey.pollEvents()) {
+                for(WatchEvent<?> event : nextKey.pollEvents()) {
                     WatchEvent.Kind<?> kind = event.kind();
-                    if (kind == StandardWatchEventKinds.OVERFLOW) {
+                    if(kind == StandardWatchEventKinds.OVERFLOW) {
                         continue;
                     }
                     Path fileName = ((Path) event.context());
-                    if (fileName.equals(configFile.getFileName())) {
+                    if(fileName.equals(configFile.getFileName())) {
                         MCVer.getMinecraft().schedule(this::reload);
                     }
                 }
-                if (!nextKey.reset()) {
+                if(!nextKey.reset()) {
                     return;
                 }
             }
@@ -136,7 +136,7 @@ class SettingsRegistryBackend {
         load(false);
 
         SettingsRegistry settingsRegistry = SceneCraft.instance.getSettingsRegistry();
-        for (SettingsRegistry.SettingKey<?> key : settings.keySet()) {
+        for(SettingsRegistry.SettingKey<?> key : settings.keySet()) {
             SettingsChangedCallback.EVENT.invoker().onSettingsChanged(settingsRegistry, key);
         }
     }
@@ -151,28 +151,28 @@ class SettingsRegistryBackend {
 
     public void save() {
         JsonObject root = new JsonObject();
-        for (Map.Entry<SettingsRegistry.SettingKey<?>, Object> entry : settings.entrySet()) {
+        for(Map.Entry<SettingsRegistry.SettingKey<?>, Object> entry : settings.entrySet()) {
             SettingsRegistry.SettingKey<?> key = entry.getKey();
             JsonObject category = root.getAsJsonObject(key.getCategory());
-            if (category == null) {
+            if(category == null) {
                 category = new JsonObject();
                 root.add(key.getCategory(), category);
             }
 
             Object value = entry.getValue();
-            if (value instanceof Boolean) {
+            if(value instanceof Boolean) {
                 category.addProperty(key.getKey(), (Boolean) value);
             }
-            if (value instanceof Number) {
+            if(value instanceof Number) {
                 category.addProperty(key.getKey(), (Number) value);
             }
-            if (value instanceof String) {
+            if(value instanceof String) {
                 category.addProperty(key.getKey(), (String) value);
-                if (key instanceof SettingsRegistry.MultipleChoiceSettingKey) {
+                if(key instanceof SettingsRegistry.MultipleChoiceSettingKey) {
                     @SuppressWarnings("unchecked")
                     List<String> choices = ((SettingsRegistry.MultipleChoiceSettingKey<String>) key).getChoices();
                     JsonArray array = new JsonArray();
-                    for (String choice : choices) {
+                    for(String choice : choices) {
                         array.add(choice);
                     }
                     category.add(key.getKey() + "_valid_values", array);
@@ -184,7 +184,7 @@ class SettingsRegistryBackend {
         try {
             ensureDirectoryExists(configFile.getParent());
             Files.write(configFile, config.getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
     }

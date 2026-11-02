@@ -18,7 +18,7 @@ public final class ScbinMappingReloadListener implements ResourceManagerReloadLi
     @Override
     public void onResourceManagerReload(ResourceManager resourceManager) {
         String value = System.getProperty(OUTPUT_PROPERTY);
-        if (value == null || !done.compareAndSet(false, true)) {
+        if(value == null || !done.compareAndSet(false, true)) {
             return;
         }
 
@@ -26,7 +26,7 @@ public final class ScbinMappingReloadListener implements ResourceManagerReloadLi
 
         try {
             ScbinMappingGeneratorV2.generate(output);
-        } catch (IOException | RuntimeException e) {
+        } catch(IOException | RuntimeException e) {
             LOGGER.error("Failed to generate mapping", e);
         }
     }

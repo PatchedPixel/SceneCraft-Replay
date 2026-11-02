@@ -40,7 +40,7 @@ public abstract class MixinNetHandlerConfigClient {
     @Inject(method = "handleConfigurationFinished", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/Connection;setupInboundProtocol(Lnet/minecraft/network/ProtocolInfo;Lnet/minecraft/network/PacketListener;)V"))
     public void recordEnabledPackData(CallbackInfo ci, @Local RegistryAccess.Frozen registryManager) {
         PacketListener packetListener = SceneCraftRecorder.instance.getConnectionEventHandler().getPacketListener();
-        if (packetListener == null) return;
+        if(packetListener == null) return;
 
         ByteBuf byteBuf = Unpooled.buffer();
         FriendlyByteBuf buf = new FriendlyByteBuf(byteBuf);
@@ -65,7 +65,7 @@ public abstract class MixinNetHandlerConfigClient {
     private <T> void write(FriendlyByteBuf buf, Registry<T> registry, Codec<T> codec, RegistryOps<Tag> ops) {
         buf.writeUtf(registry.key().identifier().toString());
         buf.writeVarInt(registry.size());
-        for (Map.Entry<ResourceKey<T>, T> entry : registry.entrySet()) {
+        for(Map.Entry<ResourceKey<T>, T> entry : registry.entrySet()) {
             buf.writeUtf(entry.getKey().identifier().toString());
             buf.writeNbt(codec.encodeStart(ops, entry.getValue()).getOrThrow());
         }

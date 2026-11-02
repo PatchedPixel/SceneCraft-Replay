@@ -74,18 +74,18 @@ public class MarkerProcessor {
         int nextSuffix = 0;
         List<String> suffixes = new ArrayList<>();
         OutputState state = OutputState.Writing;
-        for (Marker marker : markers) {
-            if (MARKER_NAME_START_CUT.equals(marker.getName())) {
-                if (marker.getTime() == 0) {
+        for(Marker marker : markers) {
+            if(MARKER_NAME_START_CUT.equals(marker.getName())) {
+                if(marker.getTime() == 0) {
                     // Special case: Automatic record has been disabled
                     state = OutputState.NotYetWriting;
                 } else {
                     state = OutputState.Paused;
                 }
-            } else if (MARKER_NAME_END_CUT.equals(marker.getName())) {
+            } else if(MARKER_NAME_END_CUT.equals(marker.getName())) {
                 state = OutputState.Writing;
-            } else if (MARKER_NAME_SPLIT.equals(marker.getName())) {
-                switch (state) {
+            } else if(MARKER_NAME_SPLIT.equals(marker.getName())) {
+                switch(state) {
                     case NotYetWriting:
                         break;
                     case Writing:
@@ -99,11 +99,11 @@ public class MarkerProcessor {
                 }
             }
         }
-        if (state != OutputState.NotYetWriting) {
+        if(state != OutputState.NotYetWriting) {
             suffixes.add("_" + nextSuffix);
         }
 
-        if (suffixes.size() == 1) {
+        if(suffixes.size() == 1) {
             // If there's only one output, it can keep the name of the input
             return Collections.singletonList("");
         }
@@ -112,7 +112,7 @@ public class MarkerProcessor {
 
     public static List<Pair<Path, ReplayMetaData>> apply(Path path, Consumer<Float> progress) throws IOException {
         SceneCraft mod = SceneCraft.instance;
-        if (!hasWork(path)) {
+        if(!hasWork(path)) {
             ReplayMetaData metaData;
             try (ReplayFile inputReplayFile = mod.files.open(path)) {
                 metaData = inputReplayFile.getMetaData();
@@ -131,7 +131,7 @@ public class MarkerProcessor {
 
         Path rawFolder = SceneCraft.instance.folders.getRawReplayFolder();
         Path inputPath = rawFolder.resolve(path.getFileName());
-        for (int i = 1; Files.exists(inputPath); i++) {
+        for(int i = 1; Files.exists(inputPath); i++) {
             inputPath = inputPath.resolveSibling(replayName + "." + i + ".mcpr");
         }
         Files.move(path, inputPath);
@@ -151,7 +151,7 @@ public class MarkerProcessor {
             PacketData nextPacket = replayInputStream.readPacket();
             Marker nextMarker = markerIterator.next();
 
-            while (nextPacket != null && outputFileSuffixes.hasNext()) {
+            while(nextPacket != null && outputFileSuffixes.hasNext()) {
                 Path outputPath = path.resolveSibling(replayName + outputFileSuffixes.next() + ".mcpr");
                 try (ReplayFile outputReplayFile = mod.files.open(null, outputPath)) {
                     long duration = 0;
@@ -160,43 +160,43 @@ public class MarkerProcessor {
                     metaData.setDate(metaData.getDate() + timeOffset);
 
                     try (ReplayOutputStream replayOutputStream = outputReplayFile.writePacketData()) {
-                        if (cutFilter != null) {
+                        if(cutFilter != null) {
                             cutFilter.release();
                             cutFilter = squashFilter.copy();
-                        } else if (splitCounter > 0) {
+                        } else if(splitCounter > 0) {
                             List<PacketData> packets = new ArrayList<>();
                             squashFilter.copy().onEnd(
                                     new IteratorStream(packets.listIterator(), (StreamFilter) null),
                                     timeOffset
                             );
-                            for (PacketData packet : packets) {
+                            for(PacketData packet : packets) {
                                 replayOutputStream.write(0, packet.getPacket());
                             }
                         }
                         boolean hasFurtherOutputs = outputFileSuffixes.hasNext();
 
-                        while (nextPacket != null) {
-                            if (nextMarker != null && nextPacket.getTime() >= nextMarker.getTime()) {
-                                if (MARKER_NAME_START_CUT.equals(nextMarker.getName())) {
-                                    if (cutFilter != null) {
+                        while(nextPacket != null) {
+                            if(nextMarker != null && nextPacket.getTime() >= nextMarker.getTime()) {
+                                if(MARKER_NAME_START_CUT.equals(nextMarker.getName())) {
+                                    if(cutFilter != null) {
                                         cutFilter.release();
                                     }
                                     startCutOffset = nextMarker.getTime();
                                     cutFilter = new SquashFilter(dimensionTracker);
-                                } else if (MARKER_NAME_END_CUT.equals(nextMarker.getName())) {
+                                } else if(MARKER_NAME_END_CUT.equals(nextMarker.getName())) {
                                     timeOffset += nextMarker.getTime() - startCutOffset;
-                                    if (cutFilter != null) {
+                                    if(cutFilter != null) {
                                         List<PacketData> packets = new ArrayList<>();
                                         cutFilter.onEnd(
                                                 new IteratorStream(packets.listIterator(), (StreamFilter) null),
                                                 nextMarker.getTime()
                                         );
-                                        for (PacketData packet : packets) {
+                                        for(PacketData packet : packets) {
                                             replayOutputStream.write(nextMarker.getTime() - timeOffset, packet.getPacket());
                                         }
                                         cutFilter = null;
                                     }
-                                } else if (MARKER_NAME_SPLIT.equals(nextMarker.getName())) {
+                                } else if(MARKER_NAME_SPLIT.equals(nextMarker.getName())) {
                                     splitCounter++;
                                     timeOffset = nextMarker.getTime();
                                     startCutOffset = timeOffset;
@@ -211,10 +211,10 @@ public class MarkerProcessor {
                             }
 
                             dimensionTracker.onPacket(null, nextPacket);
-                            if (hasFurtherOutputs) {
+                            if(hasFurtherOutputs) {
                                 squashFilter.onPacket(null, nextPacket);
                             }
-                            if (cutFilter != null) {
+                            if(cutFilter != null) {
                                 cutFilter.onPacket(null, nextPacket);
                             } else {
                                 replayOutputStream.write(nextPacket.getTime() - timeOffset, nextPacket.getPacket().copy());
@@ -222,7 +222,7 @@ public class MarkerProcessor {
                             }
                             nextPacket.release();
                             nextPacket = replayInputStream.readPacket();
-                            if (nextPacket != null) {
+                            if(nextPacket != null) {
                                 progress.accept((float) nextPacket.getTime() / (float) inputDuration);
                             } else {
                                 progress.accept(1f);
@@ -240,9 +240,9 @@ public class MarkerProcessor {
                     // We could filter these but SceneStudio doesn't yet provide a nice method for determining
                     // which ones are used.
                     Map<Integer, String> resourcePackIndex = inputReplayFile.getResourcePackIndex();
-                    if (resourcePackIndex != null) {
+                    if(resourcePackIndex != null) {
                         outputReplayFile.writeResourcePackIndex(resourcePackIndex);
-                        for (String hash : resourcePackIndex.values()) {
+                        for(String hash : resourcePackIndex.values()) {
                             try (InputStream in = inputReplayFile.getResourcePack(hash).get();
                                  OutputStream out = outputReplayFile.writeResourcePack(hash)) {
                                 Utils.copy(in, out);
@@ -257,7 +257,7 @@ public class MarkerProcessor {
             }
 
             squashFilter.release();
-            if (cutFilter != null) {
+            if(cutFilter != null) {
                 cutFilter.release();
             }
         }

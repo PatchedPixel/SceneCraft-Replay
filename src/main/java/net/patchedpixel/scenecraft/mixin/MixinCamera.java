@@ -42,10 +42,10 @@ public abstract class MixinCamera {
 
     @Inject(method = "update", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;alignWithEntity(F)V", shift = At.Shift.AFTER))
     private void sceneCraftRender_setupCubicFrameRotation(CallbackInfo ci) {
-        if (getHandler() == null || !(getHandler().data instanceof CubicGpuFrameCapturer.Data)) return;
+        if(getHandler() == null || !(getHandler().data instanceof CubicGpuFrameCapturer.Data)) return;
         CubicGpuFrameCapturer.Data data = (CubicGpuFrameCapturer.Data) getHandler().data;
 
-        switch (data) {
+        switch(data) {
             case FRONT:
                 break;
             case RIGHT:
@@ -73,7 +73,7 @@ public abstract class MixinCamera {
 
     @Inject(method = "alignWithEntity", at = @At("RETURN"))
     private void sceneCraftRender_setupStereoscopicProjection(CallbackInfo ci) {
-        if (getHandler() == null || !(getHandler().data instanceof StereoscopicGpuFrameCapturer.Data)) return;
+        if(getHandler() == null || !(getHandler().data instanceof StereoscopicGpuFrameCapturer.Data)) return;
         StereoscopicGpuFrameCapturer.Data data = (StereoscopicGpuFrameCapturer.Data) getHandler().data;
 
         move(0f, 0f, 0.1f * (data == StereoscopicGpuFrameCapturer.Data.LEFT_EYE ? -1 : 1));
@@ -81,14 +81,14 @@ public abstract class MixinCamera {
 
     @WrapOperation(method = "alignWithEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;setRotation(FF)V"))
     private void sceneCraftRender_stabilizeCamera(Camera instance, float yRot, float xRot, Operation<Void> original) {
-        if (getHandler() != null) {
+        if(getHandler() != null) {
             RenderSettings settings = getHandler().getSettings();
 
-            if (settings.isStabilizeYaw()) {
+            if(settings.isStabilizeYaw()) {
                 yRot = 0f;
             }
 
-            if (settings.isStabilizePitch()) {
+            if(settings.isStabilizePitch()) {
                 xRot = 0f;
             }
         }
@@ -99,10 +99,10 @@ public abstract class MixinCamera {
     @Inject(method = "setRotation(FFF)V", at = @At("TAIL"))
     private void sceneCraftReplay_applyRoll(float yRot, float xRot, float roll, CallbackInfo ci) {
         Entity entity = this.entity;
-        if (!(entity instanceof CameraEntity)) return;
+        if(!(entity instanceof CameraEntity)) return;
 
         EntityRendererHandler handler = getHandler();
-        if (handler != null && handler.getSettings().isStabilizeRoll()) return;
+        if(handler != null && handler.getSettings().isStabilizeRoll()) return;
 
         this.rotation.rotateZ(-((CameraEntity) entity).roll * (float) Math.PI / 180f);
 

@@ -117,7 +117,7 @@ public class GuiEditMarkerPopup extends AbstractGuiPopup<GuiEditMarkerPopup> imp
 
     @Override
     public boolean handleKey(KeyInput keyInput) {
-        if (keyInput.isEscape()) {
+        if(keyInput.isEscape()) {
             cancelButton.onClick(new Click(-1, -1, 0, keyInput.modifiers));
             return true;
         }

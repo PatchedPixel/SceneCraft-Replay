@@ -108,7 +108,7 @@ public final class Color implements ReadableColor {
      * The alpha channel is left untouched.
      */
     public void fromHSB(float hue, float saturation, float brightness) {
-        if (saturation <= 0f) {
+        if(saturation <= 0f) {
             int v = Math.round(brightness * 255f);
             setRed(v);
             setGreen(v);
@@ -123,7 +123,7 @@ public final class Color implements ReadableColor {
         float r;
         float g;
         float b;
-        switch ((int) h) {
+        switch((int) h) {
             case 0:
                 r = brightness;
                 g = t;
@@ -162,8 +162,8 @@ public final class Color implements ReadableColor {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ReadableColor)) return false;
+        if(this == o) return true;
+        if(!(o instanceof ReadableColor)) return false;
         ReadableColor that = (ReadableColor) o;
         return red == that.getRed() && green == that.getGreen() && blue == that.getBlue() && alpha == that.getAlpha();
     }

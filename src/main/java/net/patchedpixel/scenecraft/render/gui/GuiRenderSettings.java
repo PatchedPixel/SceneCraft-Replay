@@ -62,7 +62,7 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
             }).setMinSize(new Dimension(0, 20)).setValues(RenderSettings.RenderMethod.getSupported());
 
     {
-        for (Map.Entry<RenderSettings.RenderMethod, IGuiClickable> entry :
+        for(Map.Entry<RenderSettings.RenderMethod, IGuiClickable> entry :
                 renderMethodDropdown.getDropdownEntries().entrySet()) {
             entry.getValue().setTooltip(new GuiTooltip().setText(entry.getKey().getDescription()));
         }
@@ -76,7 +76,7 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
                     // Update export arguments to match new Preset
                     exportArguments.setText(newPreset.getValue());
                     // Update output file ending
-                    if (outputFile != null) {
+                    if(outputFile != null) {
                         outputFile = conformExtension(outputFile, newPreset);
                         outputFileButton.setLabel(outputFile.getName());
                     }
@@ -109,7 +109,7 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
             popup.setFolder(getParentFile(outputFile));
             popup.setFileName(outputFile.getName());
             popup.onAccept(file -> {
-                if (!file.getName().equals(outputFile.getName())) {
+                if(!file.getName().equals(outputFile.getName())) {
                     userDefinedOutputFileName = true;
                 }
                 outputFile = file;
@@ -223,17 +223,17 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
             try {
                 VideoRenderer videoRenderer = new VideoRenderer(save(false, click.hasCtrl()), replayHandler, timeline);
                 videoRenderer.renderVideo();
-            } catch (FFmpegWriter.NoFFmpegException e) {
+            } catch(FFmpegWriter.NoFFmpegException e) {
                 LOGGER.error("Rendering video:", e);
                 getMinecraft().gui.setScreen(new GuiNoFfmpeg(getScreen()::display).toMinecraft());
-            } catch (FFmpegWriter.FFmpegStartupException e) {
+            } catch(FFmpegWriter.FFmpegStartupException e) {
                 GuiExportFailed.tryToRecover(e, newSettings -> {
                     // Update settings with fixed ffmpeg arguments
                     exportArguments.setText(newSettings.getExportArguments());
                     // Restart rendering, this will also save the changed ffmpeg arguments
                     renderButton.onClick(click);
                 });
-            } catch (Throwable t) {
+            } catch(Throwable t) {
                 error(LOGGER, GuiRenderSettings.this, CrashReport.forThrowable(t, "Rendering video"), () -> {});
                 getScreen().display(); // Re-show the render settings gui and the new error popup
             }
@@ -297,18 +297,18 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
         String json = "{}";
         try {
             json = new String(Files.readAllBytes(getSettingsPath()), StandardCharsets.UTF_8);
-        } catch (NoSuchFileException | FileNotFoundException ignored) {
-        } catch (IOException e) {
+        } catch(NoSuchFileException | FileNotFoundException ignored) {
+        } catch(IOException e) {
             LOGGER.error("Reading render settings:", e);
         }
         RenderSettings settings = null;
         try {
             settings = new Gson().fromJson(json, RenderSettings.class);
-        } catch (JsonSyntaxException e) {
+        } catch(JsonSyntaxException e) {
             LOGGER.error("Parsing render settings:", e);
             LOGGER.error("Raw JSON: {}", json);
         }
-        if (settings == null) {
+        if(settings == null) {
             settings = new RenderSettings();
         }
         load(settings);
@@ -322,7 +322,7 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
 
         // Validate video width and height
         String resolutionError = updateResolution();
-        if (resolutionError == null) {
+        if(resolutionError == null) {
             queueButton.setEnabled().setTooltip(null);
             videoWidth.setTextColor(Colors.WHITE);
             videoHeight.setTextColor(Colors.WHITE);
@@ -333,16 +333,16 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
         }
 
         String[] compatError = VideoRenderer.checkCompat(save(false, false));
-        if (resolutionError != null) {
+        if(resolutionError != null) {
             renderButton.setDisabled().setTooltip(new GuiTooltip().setI18nText(resolutionError));
-        } else if (compatError != null) {
+        } else if(compatError != null) {
             renderButton.setDisabled().setTooltip(new GuiTooltip().setText(compatError));
         } else {
             renderButton.setEnabled().setTooltip(null);
         }
 
         // Enable/Disable bitrate input field and dropdown
-        if (encodingPresetDropdown.getSelectedValue().hasBitrateSetting()) {
+        if(encodingPresetDropdown.getSelectedValue().hasBitrateSetting()) {
             bitRateField.setEnabled();
             bitRateUnit.setEnabled();
         } else {
@@ -351,7 +351,7 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
         }
 
         // Enable/Disable camera stabilization checkboxes
-        switch (renderMethod) {
+        switch(renderMethod) {
             case CUBIC:
             case EQUIRECTANGULAR:
             case ODS:
@@ -365,7 +365,7 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
         sphericalFovSlider.setEnabled(renderMethod.isSpherical());
 
         // Enable/Disable inject metadata checkbox
-        if (encodingPresetDropdown.getSelectedValue().getFileExtension().equals("mp4")
+        if(encodingPresetDropdown.getSelectedValue().getFileExtension().equals("mp4")
                 && renderMethod.isSpherical()) {
             injectSphericalMetadata.setEnabled().setTooltip(null);
         } else {
@@ -381,7 +381,7 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
         exportArguments.setEnabled(isFFmpeg);
         antiAliasingDropdown.setEnabled(isFFmpeg);
 
-        if (isEXR || isPNG) {
+        if(isEXR || isPNG) {
             depthMap.setEnabled().setTooltip(null);
         } else {
             depthMap.setDisabled().setTooltip(new GuiTooltip().setColor(Colors.RED)
@@ -400,10 +400,10 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
 
         int videoHeight = this.videoHeight.getInteger();
         int videoWidth;
-        if (method.hasFixedAspectRatio()) {
+        if(method.hasFixedAspectRatio()) {
             // cubic rendering requires an aspect ratio of 4:3,
             // therefore the height must be divisible by 3
-            if (method == RenderSettings.RenderMethod.CUBIC && videoHeight % 3 != 0) {
+            if(method == RenderSettings.RenderMethod.CUBIC && videoHeight % 3 != 0) {
                 return "scenecraft.gui.rendersettings.customresolution.warning.cubic.height";
             }
 
@@ -416,12 +416,12 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
         }
 
         // Make sure the export arguments haven't been changed manually
-        if (exportArguments.getText().equals(preset.getValue())) {
+        if(exportArguments.getText().equals(preset.getValue())) {
             // Yuv420 requires both dimensions to be even
-            if (preset.isYuv420()
+            if(preset.isYuv420()
                     && (videoWidth % 2 != 0 || videoHeight % 2 != 0)) {
 
-                if (method == RenderSettings.RenderMethod.CUBIC) {
+                if(method == RenderSettings.RenderMethod.CUBIC) {
                     // cubic yuv rendering has the special case that the height must be
                     // divisible by both 3 and 2 - tell the user about it with a special message
                     return "scenecraft.gui.rendersettings.customresolution.warning.yuv420.cubic";
@@ -436,26 +436,26 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
 
     protected int videoWidthForHeight(RenderSettings.RenderMethod method, int height,
                                       int sphericalFovX, int sphericalFovY) {
-        if (method.isSpherical()) {
-            if (sphericalFovY < 180) {
+        if(method.isSpherical()) {
+            if(sphericalFovY < 180) {
                 // calculate the non-cropped height of the video
                 height = Math.round(height * 180 / (float) sphericalFovY);
             }
 
             int width = height * 2;
 
-            if (sphericalFovX < 360) {
+            if(sphericalFovX < 360) {
                 // crop the resulting width
                 width = Math.round(width * (float) sphericalFovX / 360);
             }
 
-            if (method == RenderSettings.RenderMethod.ODS) {
+            if(method == RenderSettings.RenderMethod.ODS) {
                 width = Math.round(width / 2f);
             }
 
             return width;
 
-        } else if (method == RenderSettings.RenderMethod.CUBIC) {
+        } else if(method == RenderSettings.RenderMethod.CUBIC) {
             Preconditions.checkArgument(height % 3 == 0);
             return height / 3 * 4;
         }
@@ -464,23 +464,23 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
     }
 
     public void load(RenderSettings settings) {
-        if (settings.getRenderMethod().isSupported()) {
+        if(settings.getRenderMethod().isSupported()) {
             renderMethodDropdown.setSelected(settings.getRenderMethod());
         }
         RenderSettings.EncodingPreset encodingPreset = settings.getEncodingPreset();
         /* encodingPreset can be null from a previously supported and later removed preset */
         boolean invalidEncodingPreset = encodingPreset == null || !encodingPreset.isSupported();
-        if (invalidEncodingPreset) {
+        if(invalidEncodingPreset) {
             encodingPreset = new RenderSettings().getEncodingPreset();
         }
         encodingPresetDropdown.setSelected(encodingPreset);
         videoWidth.setValue(settings.getTargetVideoWidth());
         videoHeight.setValue(settings.getTargetVideoHeight());
         frameRateSlider.setValue(settings.getFramesPerSecond() - 10);
-        if (settings.getBitRate() % (1 << 20) == 0) {
+        if(settings.getBitRate() % (1 << 20) == 0) {
             bitRateField.setValue(settings.getBitRate() >> 20);
             bitRateUnit.setSelected(2);
-        } else if (settings.getBitRate() % (1 << 10) == 0) {
+        } else if(settings.getBitRate() % (1 << 10) == 0) {
             bitRateField.setValue(settings.getBitRate() >> 10);
             bitRateUnit.setSelected(1);
         } else {
@@ -488,10 +488,10 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
             bitRateUnit.setSelected(0);
         }
         File savedOutputFile = settings.getOutputFile();
-        if (savedOutputFile == null || !getParentFile(savedOutputFile).exists()) {
+        if(savedOutputFile == null || !getParentFile(savedOutputFile).exists()) {
             this.outputFile = generateOutputFile(encodingPreset);
             userDefinedOutputFileName = false;
-        } else if (savedOutputFile.exists()) {
+        } else if(savedOutputFile.exists()) {
             String name = generateOutputFile(encodingPreset).getName();
             boolean isFolder = savedOutputFile.isDirectory() && !savedOutputFile.getName().endsWith(".exr");
             this.outputFile = new File(isFolder ? savedOutputFile : getParentFile(savedOutputFile), name);
@@ -506,7 +506,7 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
         stabilizeYaw.setChecked(settings.isStabilizeYaw());
         stabilizePitch.setChecked(settings.isStabilizePitch());
         stabilizeRoll.setChecked(settings.isStabilizeRoll());
-        if (settings.getChromaKeyingColor() == null) {
+        if(settings.getChromaKeyingColor() == null) {
             chromaKeyingCheckbox.setChecked(false);
             chromaKeyingColor.setColor(Colors.GREEN);
         } else {
@@ -520,7 +520,7 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
         antiAliasingDropdown.setSelected(settings.getAntiAliasing());
         exportCommand.setText(settings.getExportCommand());
         String exportArguments = settings.getExportArguments();
-        if (exportArguments == null || settings.getEncodingPreset() == null || invalidEncodingPreset) {
+        if(exportArguments == null || settings.getEncodingPreset() == null || invalidEncodingPreset) {
             // backwards compat, see RenderSettings#exportArguments
             exportArguments = encodingPreset.getValue();
         }
@@ -576,14 +576,14 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
             file.toPath();
             outputFile = file;
             outputFileButton.setLabel(file.getName());
-        } catch (InvalidPathException ignored) {
+        } catch(InvalidPathException ignored) {
             setOutputFileBaseName("filename_invalid_" + base.hashCode());
         }
     }
 
     protected File conformExtension(File file, RenderSettings.EncodingPreset preset) {
         String name = file.getName();
-        if (name.contains(".")) {
+        if(name.contains(".")) {
             name = name.substring(0, name.lastIndexOf('.'));
         }
         return new File(getParentFile(file), name + "." + preset.getFileExtension());
@@ -604,7 +604,7 @@ public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {
         String json = new Gson().toJson(settings);
         try {
             Files.write(getSettingsPath(), json.getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
+        } catch(IOException e) {
             LOGGER.error("Saving render settings:", e);
         }
         super.close();

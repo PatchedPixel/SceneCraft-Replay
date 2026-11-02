@@ -55,14 +55,14 @@ public class PacketEntityTeleport {
 
             int pathType = in.readVarInt();
             double x, y, z;
-            if (pathType == 0) {
+            if(pathType == 0) {
                 x = in.readDouble();
                 y = in.readDouble();
                 z = in.readDouble();
             } else {
                 int count = in.readVarInt();
                 x = y = z = 0;
-                for (int i = 0; i < count; i++) {
+                for(int i = 0; i < count; i++) {
                     x = in.readDouble();
                     y = in.readDouble();
                     z = in.readDouble();

@@ -14,11 +14,11 @@ public abstract class Mixin_ChromaKeyDisableFog {
     @ModifyVariable(method = "getBuffer", at = @At("HEAD"), argsOnly = true)
     private FogRenderer.FogMode sceneCraftRender_suppressFogIfChromaKeyIsActive(FogRenderer.FogMode fogType) {
         Minecraft mc = MCVer.getMinecraft();
-        if (mc == null) return fogType;
+        if(mc == null) return fogType;
         GameRenderer gameRenderer = mc.gameRenderer;
-        if (gameRenderer == null) return fogType;
+        if(gameRenderer == null) return fogType;
         EntityRendererHandler handler = ((EntityRendererHandler.IEntityRenderer) gameRenderer).sceneCraftRender_getHandler();
-        if (handler != null && handler.getSettings().getChromaKeyingColor() != null) {
+        if(handler != null && handler.getSettings().getChromaKeyingColor() != null) {
             fogType = FogRenderer.FogMode.NONE;
         }
         return fogType;

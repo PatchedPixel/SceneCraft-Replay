@@ -37,9 +37,9 @@ public abstract class MixinClientLevel extends Level {
             float volume, float pitch,
             long seed,
             CallbackInfo ci) {
-        if (player == this.minecraft.player) {
+        if(player == this.minecraft.player) {
             RecordingEventHandler handler = SceneCraftRecorder.instance.getConnectionEventHandler().getRecordingEventHandler();
-            if (handler != null) {
+            if(handler != null) {
                 handler.onPacket(new ClientboundSoundPacket(
                         sound, category, x, y, z, volume, pitch
                         , seed
@@ -53,9 +53,9 @@ public abstract class MixinClientLevel extends Level {
             Entity player,
             int type, BlockPos pos, int data, CallbackInfo ci
     ) {
-        if (player == this.minecraft.player) {
+        if(player == this.minecraft.player) {
             RecordingEventHandler handler = SceneCraftRecorder.instance.getConnectionEventHandler().getRecordingEventHandler();
-            if (handler != null) {
+            if(handler != null) {
                 handler.onClientEffect(type, pos, data);
             }
         }
@@ -66,7 +66,7 @@ public abstract class MixinClientLevel extends Level {
                                              BlockPos pos,
                                              int progress, CallbackInfo info) {
         RecordingEventHandler recordingEventHandler = SceneCraftRecorder.instance.getConnectionEventHandler().getRecordingEventHandler();
-        if (recordingEventHandler != null) {
+        if(recordingEventHandler != null) {
             recordingEventHandler.onBlockBreakAnim(breakerId,
                     pos,
                     progress);

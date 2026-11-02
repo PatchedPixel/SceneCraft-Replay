@@ -67,7 +67,7 @@ public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHa
             GuiYesNoPopup.open(GuiKeyframeRepository.this,
                     new GuiLabel().setI18nText("scenecraft.gui.keyframerepo.overwrite").setColor(Colors.BLACK)
             ).setYesI18nLabel("gui.yes").setNoI18nLabel("gui.no").onAccept(() -> {
-                for (Entry entry : selectedEntries) {
+                for(Entry entry : selectedEntries) {
                     timelines.put(entry.name, currentTimeline);
                 }
                 overwriteButton.setDisabled();
@@ -88,7 +88,7 @@ public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHa
             nameField.onEnter(new Runnable() {
                 @Override
                 public void run() {
-                    if (popup.getYesButton().isEnabled()) {
+                    if(popup.getYesButton().isEnabled()) {
                         popup.getYesButton().onClick(new Click(-1, -1, 0, 0));
                     }
                 }
@@ -113,11 +113,11 @@ public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHa
             getMinecraft().gui.setScreen(null);
             try {
                 Timeline timeline = timelines.get(selectedEntries.iterator().next().name);
-                for (Path path : timeline.getPaths()) {
+                for(Path path : timeline.getPaths()) {
                     path.updateAll();
                 }
                 future.set(timeline);
-            } catch (Throwable t) {
+            } catch(Throwable t) {
                 future.setException(t);
             }
         }
@@ -136,7 +136,7 @@ public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHa
             nameField.onEnter(new Runnable() {
                 @Override
                 public void run() {
-                    if (popup.getYesButton().isEnabled()) {
+                    if(popup.getYesButton().isEnabled()) {
                         popup.getYesButton().onClick(new Click(-1, -1, 0, 0));
                     }
                 }
@@ -162,7 +162,7 @@ public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHa
             GuiYesNoPopup.open(GuiKeyframeRepository.this,
                     new GuiLabel().setI18nText("scenecraft.gui.keyframerepo.delete").setColor(Colors.BLACK)
             ).setYesI18nLabel("scenecraft.gui.delete").setNoI18nLabel("scenecraft.gui.cancel").onAccept(() -> {
-                for (Entry entry : selectedEntries) {
+                for(Entry entry : selectedEntries) {
                     timelines.remove(entry.name);
                     list.getListPanel().removeElement(entry);
                 }
@@ -178,13 +178,13 @@ public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHa
         @Override
         public void run() {
             Map<String, Timeline> toBeSerialized = new HashMap<>();
-            for (Entry entry : selectedEntries) {
+            for(Entry entry : selectedEntries) {
                 toBeSerialized.put(entry.name, timelines.get(entry.name));
             }
             try {
                 TimelineSerialization serialization = new TimelineSerialization(registry, null);
                 setClipboardString(serialization.serialize(toBeSerialized));
-            } catch (Throwable t) {
+            } catch(Throwable t) {
                 t.printStackTrace();
                 CrashReport report = CrashReport.forThrowable(t, "Copying timeline(s)");
                 Utils.error(LOGGER, GuiKeyframeRepository.this, report, () -> {});
@@ -197,16 +197,16 @@ public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHa
         public void run() {
             try {
                 TimelineSerialization serialization = new TimelineSerialization(registry, null);
-                for (Map.Entry<String, Timeline> entry : serialization.deserialize(getClipboardString()).entrySet()) {
+                for(Map.Entry<String, Timeline> entry : serialization.deserialize(getClipboardString()).entrySet()) {
                     String name = entry.getKey();
-                    while (timelines.containsKey(name)) {
+                    while(timelines.containsKey(name)) {
                         name += " (Copy)";
                     }
                     timelines.put(name, entry.getValue());
                     list.getListPanel().addElements(null, new Entry(name));
                 }
                 save();
-            } catch (Throwable t) {
+            } catch(Throwable t) {
                 // Intentionally not making a fuzz about it cause this will likely happen when they have anything
                 // else in their clipboard.
                 // If it's actually not working, they'll go complain and we'll just check the log.
@@ -226,8 +226,8 @@ public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHa
             ArrayDeque<Map.Entry<String, Timeline>> toBeAdded = new ArrayDeque<>();
             // Iterating over timelines to get consistent ordering (cause selectedEntries is an unordered set)
             // and we need to get the Timelines anyway.
-            for (Map.Entry<String, Timeline> entry : timelines.entrySet()) {
-                if (selected.contains(entry.getKey())) {
+            for(Map.Entry<String, Timeline> entry : timelines.entrySet()) {
+                if(selected.contains(entry.getKey())) {
                     toBeAdded.offerLast(entry);
                 }
             }
@@ -235,7 +235,7 @@ public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHa
                 @Override
                 public void run() {
                     Map.Entry<String, Timeline> entry = toBeAdded.pollFirst();
-                    if (entry == null) {
+                    if(entry == null) {
                         return;
                     }
                     String name = entry.getKey();
@@ -303,8 +303,8 @@ public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHa
 
         timelines.putAll(replayFile.getTimelines(registry));
 
-        for (Map.Entry<String, Timeline> entry : timelines.entrySet()) {
-            if (entry.getKey().isEmpty()) continue; // don't show auto-save slot
+        for(Map.Entry<String, Timeline> entry : timelines.entrySet()) {
+            if(entry.getKey().isEmpty()) continue; // don't show auto-save slot
             list.getListPanel().addElements(null, new Entry(entry.getKey()));
         }
 
@@ -340,7 +340,7 @@ public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHa
     public void save() {
         try {
             replayFile.writeTimelines(registry, timelines);
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
             SceneCraft.instance.printWarningToChat("Error saving timelines: " + e.getMessage());
         }
@@ -348,12 +348,12 @@ public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHa
 
     @Override
     public boolean handleKey(KeyInput keyInput) {
-        if (keyInput.hasCtrl()) {
-            switch (keyInput.key) {
+        if(keyInput.hasCtrl()) {
+            switch(keyInput.key) {
                 case InputConstants.KEY_A:
-                    if (selectedEntries.size() < timelines.size()) {
-                        for (GuiElement<?> child : list.getListPanel().getChildren()) {
-                            if (child instanceof Entry) {
+                    if(selectedEntries.size() < timelines.size()) {
+                        for(GuiElement<?> child : list.getListPanel().getChildren()) {
+                            if(child instanceof Entry) {
                                 selectedEntries.add((Entry) child);
                             }
                         }
@@ -396,10 +396,10 @@ public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHa
 
         @Override
         protected void onClick(Click click) {
-            if (!click.hasCtrl()) {
+            if(!click.hasCtrl()) {
                 selectedEntries.clear();
             }
-            if (selectedEntries.contains(this)) {
+            if(selectedEntries.contains(this)) {
                 selectedEntries.remove(this);
             } else {
                 selectedEntries.add(this);
@@ -409,7 +409,7 @@ public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHa
 
         @Override
         public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
-            if (selectedEntries.contains(this)) {
+            if(selectedEntries.contains(this)) {
                 renderer.drawRect(0, 0, size.getWidth(), size.getHeight(), Colors.BLACK);
                 renderer.drawRect(0, 0, 2, size.getHeight(), Colors.WHITE);
             }

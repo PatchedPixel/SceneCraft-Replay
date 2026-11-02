@@ -73,7 +73,7 @@ public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> i
     private final GuiTextField nameField = new GuiTextField(popup).onEnter(new Runnable() {
         @Override
         public void run() {
-            if (acceptButton.isEnabled()) {
+            if(acceptButton.isEnabled()) {
                 acceptButton.onClick(new Click(-1, -1, 0, 0));
             }
         }
@@ -88,8 +88,8 @@ public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> i
         @Override
         public void run() {
             String fileName = nameField.getText();
-            if (!load && fileExtensions.length > 0) {
-                if (!hasValidExtension(fileName)) {
+            if(!load && fileExtensions.length > 0) {
+                if(!hasValidExtension(fileName)) {
                     fileName = fileName + "." + fileExtensions[0];
                 }
             }
@@ -152,12 +152,12 @@ public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> i
         try {
             //noinspection ResultOfMethodCallIgnored
             file.toPath();
-        } catch (InvalidPathException ignored) {
+        } catch(InvalidPathException ignored) {
             valid = false;
         }
 
         // If we're loading, the file must exist
-        if (load) {
+        if(load) {
             valid &= file.exists();
         }
 
@@ -165,40 +165,40 @@ public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> i
     }
 
     public void setFolder(File folder) {
-        if (!folder.isDirectory()) {
+        if(!folder.isDirectory()) {
             throw new IllegalArgumentException("Folder has to be a directory.");
         }
         try {
             this.folder = folder = folder.getCanonicalFile();
-        } catch (IOException e) {
+        } catch(IOException e) {
             close();
             throw new RuntimeException(e);
         }
 
         updateButton();
 
-        for (GuiElement element : new ArrayList<>(pathPanel.getElements().keySet())) {
+        for(GuiElement element : new ArrayList<>(pathPanel.getElements().keySet())) {
             pathPanel.removeElement(element);
         }
-        for (GuiElement element : new ArrayList<>(fileList.getListPanel().getElements().keySet())) {
+        for(GuiElement element : new ArrayList<>(fileList.getListPanel().getElements().keySet())) {
             fileList.getListPanel().removeElement(element);
         }
 
         File[] files = folder.listFiles();
-        if (files != null) {
+        if(files != null) {
             Arrays.sort(files, new Comparator<File>() {
                 @Override
                 public int compare(File f1, File f2) {
-                    if (f1.isDirectory() && !f2.isDirectory()) {
+                    if(f1.isDirectory() && !f2.isDirectory()) {
                         return -1;
-                    } else if (!f1.isDirectory() && f2.isDirectory()) {
+                    } else if(!f1.isDirectory() && f2.isDirectory()) {
                         return 1;
                     }
                     return f1.getName().compareToIgnoreCase(f2.getName());
                 }
             });
-            for (final File file : files) {
-                if (file.isDirectory()) {
+            for(final File file : files) {
+                if(file.isDirectory()) {
                     fileList.getListPanel().addElements(new VerticalLayout.Data(0), new GuiButton().onClick(new Runnable() {
                         @Override
                         public void run() {
@@ -206,7 +206,7 @@ public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> i
                         }
                     }).setLabel(file.getName() + File.separator));
                 } else {
-                    if (hasValidExtension(file.getName())) {
+                    if(hasValidExtension(file.getName())) {
                         fileList.getListPanel().addElements(new VerticalLayout.Data(0), new GuiButton().onClick(new Runnable() {
                             @Override
                             public void run() {
@@ -220,7 +220,7 @@ public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> i
         fileList.setOffsetY(0);
 
         File[] roots = File.listRoots();
-        if (roots != null && roots.length > 1) {
+        if(roots != null && roots.length > 1) {
             // Windows can have multiple file system roots
             // So we place a dropdown menu (skinned like a button) at the front of the path
             final GuiDropdownMenu<File> dropdown = new GuiDropdownMenu<File>(pathPanel) {
@@ -236,7 +236,7 @@ public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> i
                 @Override
                 public void layout(ReadableDimension size, RenderInfo renderInfo) {
                     super.layout(size, renderInfo);
-                    if (renderInfo.layer == 0) {
+                    if(renderInfo.layer == 0) {
                         skin.layout(size, renderInfo);
                     }
                 }
@@ -244,7 +244,7 @@ public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> i
                 @Override
                 public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
                     super.draw(renderer, size, renderInfo);
-                    if (renderInfo.layer == 0) {
+                    if(renderInfo.layer == 0) {
                         skin.setLabel(getSelectedValue().toString());
                         skin.draw(renderer, size, renderInfo);
                     }
@@ -252,11 +252,11 @@ public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> i
             };
             List<File> actualRoots = new ArrayList<>();
             File selected = null;
-            for (File root : roots) {
+            for(File root : roots) {
                 // Windows apparently also has file system roots that aren't directories, so we'll have to filter those
-                if (root.isDirectory()) {
+                if(root.isDirectory()) {
                     actualRoots.add(root);
-                    if (folder.getAbsolutePath().startsWith(root.getAbsolutePath())) {
+                    if(folder.getAbsolutePath().startsWith(root.getAbsolutePath())) {
                         selected = root;
                     }
                 }
@@ -273,11 +273,11 @@ public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> i
             });
         }
         LinkedList<File> parents = new LinkedList<>();
-        while (folder != null) {
+        while(folder != null) {
             parents.addFirst(folder);
             folder = folder.getParentFile();
         }
-        for (final File parent : parents) {
+        for(final File parent : parents) {
             pathPanel.addElements(null, new GuiButton().onClick(new Runnable() {
                 @Override
                 public void run() {
@@ -295,8 +295,8 @@ public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> i
     }
 
     private boolean hasValidExtension(String name) {
-        for (String fileExtension : fileExtensions) {
-            if (name.endsWith("." + fileExtension)) {
+        for(String fileExtension : fileExtensions) {
+            if(name.endsWith("." + fileExtension)) {
                 return true;
             }
         }
@@ -315,7 +315,7 @@ public class GuiFileChooserPopup extends AbstractGuiPopup<GuiFileChooserPopup> i
 
     @Override
     public boolean handleKey(KeyInput keyInput) {
-        if (keyInput.isEscape()) {
+        if(keyInput.isEscape()) {
             cancelButton.onClick(new Click(-1, -1, 0, keyInput.modifiers));
             return true;
         }

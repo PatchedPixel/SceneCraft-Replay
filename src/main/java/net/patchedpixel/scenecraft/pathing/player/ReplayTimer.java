@@ -30,7 +30,7 @@ public class ReplayTimer extends DeltaTracker.Timer {
     public interface UpdatedCallback {
         Event<UpdatedCallback> EVENT = Event.create((listeners) ->
                 () -> {
-                    for (UpdatedCallback listener : listeners) {
+                    for(UpdatedCallback listener : listeners) {
                         listener.onUpdate();
                     }
                 }

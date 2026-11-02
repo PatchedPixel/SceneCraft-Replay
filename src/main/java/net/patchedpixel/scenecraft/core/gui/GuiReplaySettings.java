@@ -38,10 +38,10 @@ public class GuiReplaySettings extends AbstractGuiScreen<GuiReplaySettings> {
         HorizontalLayout.Data leftHorizontalData = new HorizontalLayout.Data(1);
         HorizontalLayout.Data rightHorizontalData = new HorizontalLayout.Data(0);
         int i = 0;
-        for (final SettingsRegistry.SettingKey<?> key : settingsRegistry.getSettings()) {
-            if (key.getDisplayString() != null) {
+        for(final SettingsRegistry.SettingKey<?> key : settingsRegistry.getSettings()) {
+            if(key.getDisplayString() != null) {
                 GuiElement<?> element;
-                if (key.getDefault() instanceof Boolean) {
+                if(key.getDefault() instanceof Boolean) {
                     @SuppressWarnings("unchecked")
                     final SettingsRegistry.SettingKey<Boolean> booleanKey = (SettingsRegistry.SettingKey<Boolean>) key;
                     final GuiToggleButton button = new GuiToggleButton<>().setSize(150, 20)
@@ -54,18 +54,18 @@ public class GuiReplaySettings extends AbstractGuiScreen<GuiReplaySettings> {
                             settingsRegistry.save();
                         }
                     });
-                } else if (key instanceof SettingsRegistry.MultipleChoiceSettingKey) {
+                } else if(key instanceof SettingsRegistry.MultipleChoiceSettingKey) {
                     final SettingsRegistry.MultipleChoiceSettingKey<?> multipleChoiceKey =
                             (SettingsRegistry.MultipleChoiceSettingKey<?>) key;
                     List<?> values = multipleChoiceKey.getChoices();
                     MultipleChoiceDropdownEntry[] entries = new MultipleChoiceDropdownEntry[values.size()];
                     int selected = 0;
                     Object currentValue = settingsRegistry.get(multipleChoiceKey);
-                    for (int j = 0; j < entries.length; j++) {
+                    for(int j = 0; j < entries.length; j++) {
                         Object value = values.get(j);
                         entries[j] = new MultipleChoiceDropdownEntry(value,
                                 I18n.get(multipleChoiceKey.getDisplayString()) + ": " + I18n.get(value.toString()));
-                        if (currentValue.equals(value)) {
+                        if(currentValue.equals(value)) {
                             selected = j;
                         }
                     }
@@ -73,7 +73,7 @@ public class GuiReplaySettings extends AbstractGuiScreen<GuiReplaySettings> {
                         @Override
                         protected ReadableDimension calcMinSize() {
                             ReadableDimension size = super.calcMinSize();
-                            if (size.getWidth() > 150) {
+                            if(size.getWidth() > 150) {
                                 return new Dimension(150, size.getHeight());
                             } else {
                                 return size;
@@ -93,7 +93,7 @@ public class GuiReplaySettings extends AbstractGuiScreen<GuiReplaySettings> {
                     throw new IllegalArgumentException("Type " + key.getDefault().getClass() + " not supported.");
                 }
 
-                if (i++ % 2 == 0) {
+                if(i++ % 2 == 0) {
                     leftColumn.addElements(leftHorizontalData, element);
                 } else {
                     rightColumn.addElements(rightHorizontalData, element);

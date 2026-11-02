@@ -37,18 +37,18 @@ public class ReplayFilesService {
         Path realInput = input != null ? input.toAbsolutePath().normalize() : null;
         Path realOutput = output.toAbsolutePath().normalize();
 
-        if (realInput != null && !lockedPaths.add(realInput)) {
+        if(realInput != null && !lockedPaths.add(realInput)) {
             throw new FileLockedException(realInput);
         }
-        if (!Objects.equals(realInput, realOutput) && !lockedPaths.add(realOutput)) {
-            if (realInput != null) {
+        if(!Objects.equals(realInput, realOutput) && !lockedPaths.add(realOutput)) {
+            if(realInput != null) {
                 lockedPaths.remove(realInput);
             }
             throw new FileLockedException(realOutput);
         }
 
         Runnable onClose = () -> {
-            if (realInput != null) {
+            if(realInput != null) {
                 lockedPaths.remove(realInput);
             }
             lockedPaths.remove(realOutput);
@@ -62,7 +62,7 @@ public class ReplayFilesService {
                     realOutput.toFile(),
                     folders.getCachePathForReplay(realOutput).toFile()
             );
-        } catch (IOException e) {
+        } catch(IOException e) {
             onClose.run();
             throw e;
         }
@@ -73,25 +73,25 @@ public class ReplayFilesService {
         // Move anything which is still in the record folder into the regular replay folder
         // so it can be opened and/or recovered
         try (DirectoryStream<Path> paths = Files.newDirectoryStream(folders.getRecordingFolder())) {
-            for (Path path : paths) {
+            for(Path path : paths) {
                 Path destination = folders.getReplayFolder().resolve(path.getFileName());
-                if (Files.exists(destination)) {
+                if(Files.exists(destination)) {
                     continue; // better play it save
                 }
                 Files.move(path, destination);
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
 
         // Restore corrupted replays
         try (DirectoryStream<Path> paths = Files.newDirectoryStream(folders.getReplayFolder())) {
-            for (Path path : paths) {
+            for(Path path : paths) {
                 String name = path.getFileName().toString();
-                if (name.endsWith(".mcpr.tmp") && Files.isDirectory(path)) {
+                if(name.endsWith(".mcpr.tmp") && Files.isDirectory(path)) {
                     Path original = path.resolveSibling(FilenameUtils.getBaseName(name));
                     Path noRecoverMarker = original.resolveSibling(original.getFileName() + ".no_recover");
-                    if (Files.exists(noRecoverMarker)) {
+                    if(Files.exists(noRecoverMarker)) {
                         // This file, when its markers are processed, doesn't actually result in any replays.
                         // So we don't really need to recover it either, let's just get rid of it.
                         FileUtils.deleteDirectory(path.toFile());
@@ -101,7 +101,7 @@ public class ReplayFilesService {
                     new RestoreReplayGui(core, GuiScreen.wrap(core.getMinecraft().gui.screen()), original.toFile()).display();
                 }
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
 
@@ -118,67 +118,67 @@ public class ReplayFilesService {
                 @Override
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                     String name = dir.getFileName().toString();
-                    if (name.endsWith(".mcpr.cache")) {
+                    if(name.endsWith(".mcpr.cache")) {
                         FileUtils.deleteDirectory(dir.toFile());
                         return FileVisitResult.SKIP_SUBTREE;
                     }
                     return super.preVisitDirectory(dir, attrs);
                 }
             });
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
 
         // Cleanup raw folder content three weeks after creation (these are pretty valuable for debugging)
         try (DirectoryStream<Path> paths = Files.newDirectoryStream(folders.getRawReplayFolder())) {
-            for (Path path : paths) {
-                if (Files.getLastModifiedTime(path).toMillis() + 21 * DAYS < System.currentTimeMillis()) {
+            for(Path path : paths) {
+                if(Files.getLastModifiedTime(path).toMillis() + 21 * DAYS < System.currentTimeMillis()) {
                     Files.delete(path);
                 }
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
 
         // Cleanup cache folders 7 days after last modification or when its replay is gone
         try (DirectoryStream<Path> paths = Files.newDirectoryStream(folders.getCacheFolder())) {
-            for (Path path : paths) {
-                if (Files.isDirectory(path)) {
+            for(Path path : paths) {
+                if(Files.isDirectory(path)) {
                     Path replay = folders.getReplayPathForCache(path);
                     long lastModified = Files.getLastModifiedTime(path).toMillis();
-                    if (lastModified + 7 * DAYS < System.currentTimeMillis() || !Files.exists(replay)) {
+                    if(lastModified + 7 * DAYS < System.currentTimeMillis() || !Files.exists(replay)) {
                         FileUtils.deleteDirectory(path.toFile());
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
 
         // Cleanup deleted corrupted replays
         try (DirectoryStream<Path> paths = Files.newDirectoryStream(folders.getReplayFolder())) {
-            for (Path path : paths) {
+            for(Path path : paths) {
                 String name = path.getFileName().toString();
-                if (name.endsWith(".mcpr.del") && Files.isDirectory(path)) {
+                if(name.endsWith(".mcpr.del") && Files.isDirectory(path)) {
                     long lastModified = Files.getLastModifiedTime(path).toMillis();
-                    if (lastModified + 2 * DAYS < System.currentTimeMillis()) {
+                    if(lastModified + 2 * DAYS < System.currentTimeMillis()) {
                         FileUtils.deleteDirectory(path.toFile());
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
 
         // Cleanup leftover no_recover files
         try (DirectoryStream<Path> paths = Files.newDirectoryStream(folders.getReplayFolder())) {
-            for (Path path : paths) {
+            for(Path path : paths) {
                 String name = path.getFileName().toString();
-                if (name.endsWith(".no_recover")) {
+                if(name.endsWith(".no_recover")) {
                     Files.delete(path);
                 }
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         }
     }

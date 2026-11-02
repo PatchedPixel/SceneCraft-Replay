@@ -54,23 +54,23 @@ public abstract class AbstractComposedGuiElement<T extends AbstractComposedGuiEl
             BiFunction<ComposedGuiElement<?>, Integer, R> recurse,
             Function<C, R> function
     ) {
-        if (ofType.isInstance(this) && getLayer() == layer) {
+        if(ofType.isInstance(this) && getLayer() == layer) {
             R result = function.apply(ofType.cast(this));
-            if (result != null) {
+            if(result != null) {
                 return result;
             }
         }
-        for (final GuiElement<?> element : getChildren()) {
+        for(final GuiElement<?> element : getChildren()) {
             R result = null;
-            if (element instanceof ComposedGuiElement) {
+            if(element instanceof ComposedGuiElement) {
                 ComposedGuiElement<?> composed = (ComposedGuiElement<?>) element;
-                if (layer <= composed.getMaxLayer()) {
+                if(layer <= composed.getMaxLayer()) {
                     result = recurse.apply(composed, layer - composed.getLayer());
                 }
-            } else if (ofType.isInstance(element) && element.getLayer() == layer) {
+            } else if(ofType.isInstance(element) && element.getLayer() == layer) {
                 result = function.apply(ofType.cast(element));
             }
-            if (result != null) {
+            if(result != null) {
                 return result;
             }
         }

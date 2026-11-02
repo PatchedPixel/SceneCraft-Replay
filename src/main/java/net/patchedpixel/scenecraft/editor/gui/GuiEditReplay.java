@@ -155,7 +155,7 @@ public class GuiEditReplay extends AbstractGuiPopup<GuiEditReplay> {
             try (ReplayFile replayFile = SceneCraft.instance.files.open(inputPath)) {
                 replayFile.writeMarkers(markers);
                 replayFile.save();
-            } catch (IOException e) {
+            } catch(IOException e) {
                 Utils.error(SceneCraftEditor.LOGGER, this, CrashReport.forThrowable(e, "Writing markers"), this::close);
             }
 
@@ -166,7 +166,7 @@ public class GuiEditReplay extends AbstractGuiPopup<GuiEditReplay> {
                     progressPopup.close();
                     close();
                 });
-            } catch (Throwable e) {
+            } catch(Throwable e) {
                 e.printStackTrace(); // in case runLater fails
                 CrashReport crashReport = CrashReport.forThrowable(e, "Running marker processor");
                 SceneCraft.instance.runLater(() -> Utils.error(SceneCraftEditor.LOGGER, this, crashReport, () -> {
@@ -219,9 +219,9 @@ public class GuiEditReplay extends AbstractGuiPopup<GuiEditReplay> {
 
         @Override
         protected void drawMarker(GuiRenderer renderer, ReadableDimension size, Marker marker, int markerX) {
-            if (MarkerProcessor.MARKER_NAME_SPLIT.equals(marker.getName())) {
+            if(MarkerProcessor.MARKER_NAME_SPLIT.equals(marker.getName())) {
                 int height = size.getHeight() - BORDER_BOTTOM - BORDER_TOP - MARKER_SIZE + 1;
-                for (int y = 0; y < height; y += 3) {
+                for(int y = 0; y < height; y += 3) {
                     renderer.drawRect(markerX, BORDER_TOP + y, 1, 2, Color.WHITE);
                 }
             }
@@ -232,17 +232,17 @@ public class GuiEditReplay extends AbstractGuiPopup<GuiEditReplay> {
         private void drawCutQuads(GuiRenderer renderer, ReadableDimension size) {
             boolean inCut = false;
             int startTime = 0;
-            for (Marker marker : markers.stream().sorted(Comparator.comparing(Marker::getTime)).collect(Collectors.toList())) {
-                if (MarkerProcessor.MARKER_NAME_START_CUT.equals(marker.getName()) && !inCut) {
+            for(Marker marker : markers.stream().sorted(Comparator.comparing(Marker::getTime)).collect(Collectors.toList())) {
+                if(MarkerProcessor.MARKER_NAME_START_CUT.equals(marker.getName()) && !inCut) {
                     inCut = true;
                     startTime = marker.getTime();
-                } else if (MarkerProcessor.MARKER_NAME_END_CUT.equals(marker.getName()) && inCut) {
+                } else if(MarkerProcessor.MARKER_NAME_END_CUT.equals(marker.getName()) && inCut) {
                     drawCutQuad(renderer, size, startTime, marker.getTime());
                     inCut = false;
                 }
             }
 
-            if (inCut) {
+            if(inCut) {
                 drawCutQuad(renderer, size, startTime, getLength());
             }
         }
@@ -253,7 +253,7 @@ public class GuiEditReplay extends AbstractGuiPopup<GuiEditReplay> {
             int visibleTime = (int) (getZoom() * getLength());
             int endTime = getOffset() + visibleTime;
 
-            if (startFrameTime >= endTime || endFrameTime <= startTime) {
+            if(startFrameTime >= endTime || endFrameTime <= startTime) {
                 return; // Segment out of display range
             }
 
@@ -261,7 +261,7 @@ public class GuiEditReplay extends AbstractGuiPopup<GuiEditReplay> {
             double relativeEnd = endFrameTime - startTime;
             int startX = BORDER_LEFT + Math.max(0, (int) (relativeStart / visibleTime * visibleWidth) + MARKER_SIZE / 2 + 1);
             int endX = BORDER_LEFT + Math.min(visibleWidth, (int) (relativeEnd / visibleTime * visibleWidth) - MARKER_SIZE / 2);
-            if (startX < endX) {
+            if(startX < endX) {
                 renderer.drawRect(startX + 1, size.getHeight() - BORDER_BOTTOM - MARKER_SIZE,
                         endX - startX - 2, MARKER_SIZE - 2, Color.RED);
             }

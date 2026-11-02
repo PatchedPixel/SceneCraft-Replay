@@ -235,21 +235,21 @@ public class ReplayMetaData {
     }
 
     public boolean equals(Object o) {
-        if (o == this) return true;
-        if (!(o instanceof ReplayMetaData)) return false;
+        if(o == this) return true;
+        if(!(o instanceof ReplayMetaData)) return false;
         final ReplayMetaData other = (ReplayMetaData) o;
-        if (!other.canEqual(this)) return false;
-        if (this.singleplayer != other.singleplayer) return false;
-        if (!Objects.equals(this.serverName, other.serverName)) return false;
-        if (!Objects.equals(this.customServerName, other.customServerName)) return false;
-        if (this.duration != other.duration) return false;
-        if (this.date != other.date) return false;
-        if (!Objects.equals(this.mcversion, other.mcversion)) return false;
-        if (!Objects.equals(this.fileFormat, other.fileFormat)) return false;
-        if (this.fileFormatVersion != other.fileFormatVersion) return false;
-        if (this.protocol != other.protocol) return false;
-        if (!Objects.equals(this.generator, other.generator)) return false;
-        if (this.selfId != other.selfId) return false;
+        if(!other.canEqual(this)) return false;
+        if(this.singleplayer != other.singleplayer) return false;
+        if(!Objects.equals(this.serverName, other.serverName)) return false;
+        if(!Objects.equals(this.customServerName, other.customServerName)) return false;
+        if(this.duration != other.duration) return false;
+        if(this.date != other.date) return false;
+        if(!Objects.equals(this.mcversion, other.mcversion)) return false;
+        if(!Objects.equals(this.fileFormat, other.fileFormat)) return false;
+        if(this.fileFormatVersion != other.fileFormatVersion) return false;
+        if(this.protocol != other.protocol) return false;
+        if(!Objects.equals(this.generator, other.generator)) return false;
+        if(this.selfId != other.selfId) return false;
         return Arrays.deepEquals(this.players, other.players);
     }
 

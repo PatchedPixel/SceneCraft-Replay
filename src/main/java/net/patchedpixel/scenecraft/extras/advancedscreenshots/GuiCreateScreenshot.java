@@ -57,13 +57,13 @@ public class GuiCreateScreenshot extends GuiRenderSettings implements Loadable {
                     RenderSettings settings = save(false, click.hasCtrl());
 
                     boolean success = new ScreenshotRenderer(settings).renderScreenshot();
-                    if (success) {
+                    if(success) {
                         GuiScreen screen = createBaseScreen();
                         new GuiUploadScreenshot(screen, mod, settings).open();
                         screen.display();
                     }
 
-                } catch (Throwable t) {
+                } catch(Throwable t) {
                     error(LOGGER, GuiCreateScreenshot.this, CrashReport.forThrowable(t, "Rendering video"), () -> {});
                     getScreen().display(); // Re-show the render settings gui and the new error popup
                 }
@@ -100,9 +100,9 @@ public class GuiCreateScreenshot extends GuiRenderSettings implements Loadable {
         File screenshotFolder = new File(getMinecraft().gameDirectory, "screenshots");
         screenshotFolder.mkdirs();
         String baseName = DATE_FORMAT.format(new Date());
-        for (int i = 1; ; i++) {
+        for(int i = 1; ; i++) {
             File screenshotFile = new File(screenshotFolder, baseName + (i == 1 ? "" : "_" + i) + ".png");
-            if (!screenshotFile.exists()) {
+            if(!screenshotFile.exists()) {
                 return screenshotFile;
             }
         }

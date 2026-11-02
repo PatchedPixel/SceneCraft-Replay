@@ -16,7 +16,7 @@ import java.nio.file.Path;
 public class Mixin_LoadIrisOdsShaderPack {
     @Redirect(method = "loadExternalShaderpack", at = @At(value = "INVOKE", target = "Lnet/irisshaders/iris/Iris;getShaderpacksDirectory()Ljava/nio/file/Path;"))
     private static Path loadSceneCraftOdsPack(String name) {
-        if (IrisODSFrameCapturer.INSTANCE != null && IrisODSFrameCapturer.SHADER_PACK_NAME.equals(name)) {
+        if(IrisODSFrameCapturer.INSTANCE != null && IrisODSFrameCapturer.SHADER_PACK_NAME.equals(name)) {
             // Root of our own mod file (contains the shaders/ directory of the ODS shader pack)
             return modRoot();
         } else {
@@ -28,9 +28,9 @@ public class Mixin_LoadIrisOdsShaderPack {
     private static Path modRoot() {
         try {
             URL marker = Mixin_LoadIrisOdsShaderPack.class.getResource("/META-INF/neoforge.mods.toml");
-            if (marker == null) throw new IllegalStateException("neoforge.mods.toml not found");
+            if(marker == null) throw new IllegalStateException("neoforge.mods.toml not found");
             return Path.of(marker.toURI()).getParent().getParent();
-        } catch (URISyntaxException e) {
+        } catch(URISyntaxException e) {
             throw new RuntimeException("Failed to locate SceneCraft mod root", e);
         }
     }

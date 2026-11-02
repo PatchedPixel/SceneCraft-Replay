@@ -43,7 +43,7 @@ public class GuiRenderingDone extends GuiScreen {
     public final GuiButton closeButton = new GuiButton().onClick(new Runnable() {
         @Override
         public void run() {
-            if (neverOpenCheckbox.isChecked()) {
+            if(neverOpenCheckbox.isChecked()) {
                 SettingsRegistry settingsRegistry = mod.getCore().getSettingsRegistry();
                 settingsRegistry.set(Setting.SKIP_POST_RENDER_GUI, true);
                 settingsRegistry.save();
@@ -79,7 +79,7 @@ public class GuiRenderingDone extends GuiScreen {
 
     @Override
     public void display() {
-        if (mod.getCore().getSettingsRegistry().get(Setting.SKIP_POST_RENDER_GUI)) {
+        if(mod.getCore().getSettingsRegistry().get(Setting.SKIP_POST_RENDER_GUI)) {
             return;
         }
         super.display();

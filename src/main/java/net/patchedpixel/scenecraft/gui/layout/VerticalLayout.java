@@ -56,7 +56,7 @@ public class VerticalLayout implements Layout {
         int y = 0;
         int spacing = 0;
         Map<GuiElement, Pair<ReadablePoint, ReadableDimension>> map = new LinkedHashMap<>();
-        for (Map.Entry<GuiElement, LayoutData> entry : container.getElements().entrySet()) {
+        for(Map.Entry<GuiElement, LayoutData> entry : container.getElements().entrySet()) {
             y += spacing;
             spacing = this.spacing;
 
@@ -71,12 +71,12 @@ public class VerticalLayout implements Layout {
             map.put(element, Pair.<ReadablePoint, ReadableDimension>of(new Point(x, y), elementSize));
             y += elementSize.getHeight();
         }
-        if (alignment != Alignment.TOP) {
+        if(alignment != Alignment.TOP) {
             int remaining = size.getHeight() - y;
-            if (alignment == Alignment.CENTER) {
+            if(alignment == Alignment.CENTER) {
                 remaining /= 2;
             }
-            for (Pair<ReadablePoint, ReadableDimension> pair : map.values()) {
+            for(Pair<ReadablePoint, ReadableDimension> pair : map.values()) {
                 ((Point) pair.getLeft()).translate(0, remaining);
             }
         }
@@ -88,14 +88,14 @@ public class VerticalLayout implements Layout {
         int maxWidth = 0;
         int height = 0;
         int spacing = 0;
-        for (Map.Entry<GuiElement, LayoutData> entry : container.getElements().entrySet()) {
+        for(Map.Entry<GuiElement, LayoutData> entry : container.getElements().entrySet()) {
             height += spacing;
             spacing = this.spacing;
 
             GuiElement element = entry.getKey();
             ReadableDimension minSize = element.getMinSize();
             int width = minSize.getWidth();
-            if (width > maxWidth) {
+            if(width > maxWidth) {
                 maxWidth = width;
             }
             height += minSize.getHeight();
@@ -147,8 +147,8 @@ public class VerticalLayout implements Layout {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if(this == o) return true;
+            if(o == null || getClass() != o.getClass()) return false;
             Data data = (Data) o;
             return Double.compare(data.alignment, alignment) == 0 &&
                     maximizeWidth == data.maximizeWidth;

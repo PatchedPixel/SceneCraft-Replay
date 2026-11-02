@@ -60,7 +60,7 @@ public abstract class AbstractGuiCheckbox<T extends AbstractGuiCheckbox<T>>
         super.draw(renderer, size, renderInfo);
 
         int color = 0xe0e0e0;
-        if (!isEnabled()) {
+        if(!isEnabled()) {
             color = 0xa0a0a0;
         }
 

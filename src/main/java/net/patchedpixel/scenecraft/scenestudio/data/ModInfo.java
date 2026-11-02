@@ -45,8 +45,8 @@ public class ModInfo {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ModInfo)) return false;
+        if(this == o) return true;
+        if(!(o instanceof ModInfo)) return false;
         ModInfo that = (ModInfo) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(version, that.version);
     }
