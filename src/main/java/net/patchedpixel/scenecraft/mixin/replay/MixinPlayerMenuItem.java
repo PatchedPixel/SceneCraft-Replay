@@ -22,9 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  */
 @Mixin(PlayerMenuItem.class)
 public abstract class MixinPlayerMenuItem {
-    @Final
-    @Shadow
-    private PlayerInfo playerInfo;
+    @Shadow @Final private PlayerInfo playerInfo;
 
     @Inject(method = "selectItem", at = @At("HEAD"), cancellable = true)
     private void sceneCraft$spectateInReplay(SpectatorMenu menu, CallbackInfo ci) {

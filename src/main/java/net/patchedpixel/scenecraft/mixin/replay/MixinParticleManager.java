@@ -15,21 +15,18 @@ import java.util.Queue;
 
 @Mixin(ParticleEngine.class)
 public abstract class MixinParticleManager {
-    @Final @Shadow
-    private Queue<Particle> particlesToAdd;
+    @Shadow @Final private Queue<Particle> particlesToAdd;
 
     /**
      * This method additionally clears the queue of particles to be added when the world is changed.
-     * Otherwise particles from the previous world might show up in this one if they were spawned after
+     * Otherwise, particles from the previous world might show up in this one if they were spawned after
      * the last tick in the previous world.
      *
-     * @param world The new world
+     * @param level The new world
      * @param ci Callback info
      */
     @Inject(method = "setLevel", at = @At("HEAD"))
-    public void sceneCraftReplay_clearParticleQueue(
-            ClientLevel world,
-            CallbackInfo ci) {
+    public void sceneCraftReplay_clearParticleQueue(ClientLevel level, CallbackInfo ci) {
         this.particlesToAdd.clear();
     }
 }

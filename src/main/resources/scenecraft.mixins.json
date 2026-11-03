@@ -39,6 +39,7 @@
     "replay.Mixin_MoveRealmsButton",
     "replay.Mixin_ShowSpectatedHand_Iris",
     "replay.MixinGuiSpectator",
+    "replay.MixinPacketDecoder",
     "replay.MixinKeyboardListener",
     "replay.MixinParticleManager",
     "replay.MixinRenderArrow",

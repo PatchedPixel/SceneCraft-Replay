@@ -1,0 +1,60 @@
+package net.patchedpixel.scenecraft.replay;
+
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.ConnectionProtocol;
+
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static net.patchedpixel.scenecraft.replay.SceneCraftReplay.LOGGER;
+
+/**
+ * Makes the replay tolerant of packets that carry more bytes than the vanilla codec reads.
+ * <p>
+ * Vanilla's {@code PacketDecoder} throws "was larger than I expected, found N bytes extra" and the whole packet is
+ * lost when that happens. A recording can contain such packets when the server (or a mod) appended data to a vanilla
+ * packet, and losing e.g. the add-entity packet of the recorded player means the player is missing in the replay.
+ * <p>
+ * The actual hook is {@link net.patchedpixel.scenecraft.mixin.replay.MixinPacketDecoder}: it keeps all of vanilla's
+ * decoding (including the protocol phase switching that happens on terminal packets) and only discards the unread
+ * bytes of a packet that was decoded successfully, so the packet itself is still delivered.
+ */
+public final class LenientPacketDecoder {
+    /** Packets (protocol/id) that were already reported, so a long replay doesn't flood the log. */
+    private static final Set<String> REPORTED = ConcurrentHashMap.newKeySet();
+
+    private LenientPacketDecoder() {}
+
+    /**
+     * Discards everything still readable input {@code input}. Called right after the codec has decoded a packet.
+     *
+     * @param protocol the protocol phase of the decoder, only used for logging
+     * @param input       the buffer holding the packet; its reader index is just behind the decoded packet
+     */
+    public static void skipTrailingBytes(ConnectionProtocol protocol, ByteBuf input) {
+        int extra = input.readableBytes();
+        if(extra <= 0) {
+            return;
+        }
+        // Each replay packet is fed as its own buffer, so the packet id (a VarInt) is at absolute index 0.
+        int id = readPacketId(input);
+        if(REPORTED.add(protocol + "/" + id)) {
+            LOGGER.warn("Replay packet {}/{} has {} unread trailing bytes (extra data appended by a mod or server, "
+                    + "or a vanilla format difference). They are skipped so the packet is not lost. "
+                    + "Only the first occurrence of each packet is logged.", protocol, id, extra);
+        }
+        input.skipBytes(extra);
+    }
+
+    private static int readPacketId(ByteBuf in) {
+        int value = 0;
+        for(int i = 0; i < 5 && i < in.writerIndex(); i++) {
+            byte b = in.getByte(i);
+            value |= (b & 0x7F) << (7 * i);
+            if((b & 0x80) == 0) {
+                return value;
+            }
+        }
+        return -1;
+    }
+}

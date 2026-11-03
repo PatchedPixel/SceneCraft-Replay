@@ -1026,7 +1026,17 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
             }
             timestamp = (int) data.getTime();
             net.patchedpixel.scenecraft.scenestudio.protocol.Packet packet = data.getPacket();
-            type = packet.getType();
+            PacketType packetType = packet.getType();
+            // A real bundle delimiter has no payload. One that carries data is something else that was mislabeled as
+            // a delimiter, and feeding it on would flip the bundler's state and swallow every following packet. Drop it
+            // (an empty buffer is ignored by the decoder) and don't let it toggle inBundle either.
+            if(packetType == PacketType.Bundle && packet.getBuf().readableBytes() > 0) {
+                type = PacketType.UnknownPlay;
+                bytes = new byte[0];
+                packet.getBuf().release();
+                return;
+            }
+            type = packetType;
             // Workaround for ReplayMod 2.7.16-17 saving the LoginSuccess packet with an incorrect packet net
             // A fake one will have been sythesized by ReplayStudo, so we can simply drop the broken one.
             if(packet.getId() == -1) {

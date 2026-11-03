@@ -5,12 +5,13 @@ import net.patchedpixel.scenecraft.replay.Setting;
 import net.patchedpixel.scenecraft.replay.handler.GuiHandler.MainMenuButtonPosition;
 import net.minecraft.client.gui.screens.TitleScreen;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(TitleScreen.class)
 public abstract class Mixin_MoveRealmsButton {
-    private static final String REALMS_INIT = "Lcom/mojang/realmsclient/gui/screens/RealmsNotificationsScreen;init(II)V";
+    @Unique private static final String REALMS_INIT = "Lcom/mojang/realmsclient/gui/screens/RealmsNotificationsScreen;init(II)V";
 
     @ModifyArg(
             method = "init",

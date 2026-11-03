@@ -28,7 +28,6 @@ public abstract class Mixin_ShowSpectatedHand_Iris {
             // alternative doesn't really matter, the caller only checks for equality to SPECTATOR
             return camera.isSpectator() ? GameType.SPECTATOR : GameType.SURVIVAL;
         }
-
         return interactionManager.getPlayerMode();
     }
 }

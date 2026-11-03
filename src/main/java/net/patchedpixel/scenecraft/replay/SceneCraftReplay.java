@@ -35,14 +35,10 @@ import java.util.Optional;
 public class SceneCraftReplay implements Module {
     { instance = this; }
     public static SceneCraftReplay instance;
-
-    private SceneCraft core;
+    private final SceneCraft core;
     public KeyBindingRegistry.Binding keyPlayPause;
-
     private final CameraControllerRegistry cameraControllerRegistry = new CameraControllerRegistry();
-
     public static Logger LOGGER = LogManager.getLogger();
-
     private ReplayHandler replayHandler;
 
     public ReplayHandler getReplayHandler() {
@@ -53,7 +49,6 @@ public class SceneCraftReplay implements Module {
 
     public SceneCraftReplay(SceneCraft core) {
         this.core = core;
-
         core.getSettingsRegistry().register(Setting.class);
     }
 
@@ -75,7 +70,6 @@ public class SceneCraftReplay implements Module {
                 }
             }
         }, true);
-
         registry.registerKeyBinding("scenecraft.input.thumbnail", InputConstants.KEY_N, () -> {
             if(replayHandler != null) {
                 Minecraft mc = MCVer.getMinecraft();
@@ -105,21 +99,17 @@ public class SceneCraftReplay implements Module {
                 }, Runnable::run);
             }
         }, true);
-
         keyPlayPause = registry.registerKeyBinding("scenecraft.input.playpause", InputConstants.KEY_P, () -> {
             if(replayHandler != null) {
                 replayHandler.getOverlay().playPauseButton.onClick(new Click(-1, -1, 0, 0));
             }
         }, true);
-
         core.getKeyBindingRegistry().registerKeyBinding("scenecraft.input.rollclockwise", InputConstants.KEY_L, () -> {
             // Noop, actual handling logic in CameraEntity#update
         }, true);
-
         core.getKeyBindingRegistry().registerKeyBinding("scenecraft.input.rollcounterclockwise", InputConstants.KEY_J, () -> {
             // Noop, actual handling logic in CameraEntity#update
         }, true);
-
         core.getKeyBindingRegistry().registerKeyBinding("scenecraft.input.resettilt", InputConstants.KEY_K, () -> {
             Optional.ofNullable(replayHandler).map(ReplayHandler::getCameraEntity).ifPresent(c -> c.roll = 0);
         }, true);
@@ -141,7 +131,6 @@ public class SceneCraftReplay implements Module {
                 return new VanillaCameraController(core.getMinecraft(), cameraEntity);
             }
         });
-
         new GuiHandler(this).register();
     }
 
