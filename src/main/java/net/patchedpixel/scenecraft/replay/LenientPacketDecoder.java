@@ -12,7 +12,6 @@ import static net.patchedpixel.scenecraft.replay.SceneCraftReplay.LOGGER;
  * Makes the replay tolerant of packets that carry more bytes than the vanilla codec reads.
  */
 public final class LenientPacketDecoder {
-    /** Packets (protocol/id) that were already reported, so a long replay doesn't flood the log. */
     private static final Set<String> REPORTED = ConcurrentHashMap.newKeySet();
 
     private LenientPacketDecoder() {}
