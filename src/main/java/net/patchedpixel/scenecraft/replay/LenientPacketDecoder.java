@@ -10,14 +10,6 @@ import static net.patchedpixel.scenecraft.replay.SceneCraftReplay.LOGGER;
 
 /**
  * Makes the replay tolerant of packets that carry more bytes than the vanilla codec reads.
- * <p>
- * Vanilla's {@code PacketDecoder} throws "was larger than I expected, found N bytes extra" and the whole packet is
- * lost when that happens. A recording can contain such packets when the server (or a mod) appended data to a vanilla
- * packet, and losing e.g. the add-entity packet of the recorded player means the player is missing in the replay.
- * <p>
- * The actual hook is {@link net.patchedpixel.scenecraft.mixin.replay.MixinPacketDecoder}: it keeps all of vanilla's
- * decoding (including the protocol phase switching that happens on terminal packets) and only discards the unread
- * bytes of a packet that was decoded successfully, so the packet itself is still delivered.
  */
 public final class LenientPacketDecoder {
     /** Packets (protocol/id) that were already reported, so a long replay doesn't flood the log. */
