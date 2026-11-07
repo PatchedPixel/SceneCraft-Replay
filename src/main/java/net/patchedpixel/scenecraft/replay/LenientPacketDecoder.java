@@ -27,7 +27,6 @@ public final class LenientPacketDecoder {
         if(extra <= 0) {
             return;
         }
-        // Each replay packet is fed as its own buffer, so the packet id (a VarInt) is at absolute index 0.
         int id = readPacketId(input);
         if(REPORTED.add(protocol + "/" + id)) {
             LOGGER.warn("Replay packet {}/{} has {} unread trailing bytes (extra data appended by a mod or server, "

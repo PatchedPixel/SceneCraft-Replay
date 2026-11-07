@@ -4,6 +4,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import net.minecraft.client.multiplayer.LevelLoadTracker;
+import net.minecraft.client.multiplayer.ServerData;
 import net.patchedpixel.scenecraft.core.utils.Restrictions;
 import net.patchedpixel.scenecraft.platform.Utils;
 import net.patchedpixel.scenecraft.replay.camera.CameraEntity;
@@ -185,11 +187,12 @@ public class ReplayHandler {
         channel.pipeline().addLast("packet_handler", networkManager);
         channel.pipeline().fireChannelActive();
 
-        // MC usually transitions from handshake to login via the packets it sends.
-        // We don't send any packets (there is no server to receive them), so we need to switch manually.
+        // Dummy server entry so ClientSessionData can resolve a session file (no real server/world in replays)
+        ServerData replayServerData = new ServerData("SceneCraft Replay Server", "replay.scenecraft.invalid", ServerData.Type.OTHER);
+
         networkManager.setupInboundProtocol(LoginProtocols.CLIENTBOUND, new ClientHandshakePacketListenerImpl(
-                networkManager, mc, null, null, false, null, it -> {},
-                new net.minecraft.client.multiplayer.LevelLoadTracker(),
+                networkManager, mc, replayServerData, null, false, null, _ -> {},
+                new LevelLoadTracker(),
                 null
         ));
         networkManager.setupOutboundProtocol(LoginProtocols.SERVERBOUND);
