@@ -2,11 +2,11 @@ package net.patchedpixel.scenecraft.platform;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import net.patchedpixel.scenecraft.core.events.PreRenderCallback;
-import net.patchedpixel.scenecraft.gui.function.KeyInput;
-import net.patchedpixel.scenecraft.gui.utils.EventRegistrations;
-import net.patchedpixel.scenecraft.core.events.KeyBindingEventCallback;
-import net.patchedpixel.scenecraft.core.events.KeyEventCallback;
+import net.patchedpixel.scenecraft.common.core.events.PreRenderCallback;
+import net.patchedpixel.scenecraft.common.gui.function.KeyInput;
+import net.patchedpixel.scenecraft.common.gui.utils.EventRegistrations;
+import net.patchedpixel.scenecraft.common.core.events.KeyBindingEventCallback;
+import net.patchedpixel.scenecraft.common.core.events.KeyEventCallback;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
@@ -15,8 +15,8 @@ import net.minecraft.ReportedException;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.resources.Identifier;
-import static net.patchedpixel.scenecraft.SceneCraft.MOD_ID;
-import static net.patchedpixel.scenecraft.core.versions.MCVer.identifier;
+import static net.patchedpixel.scenecraft.common.SceneCraft.MOD_ID;
+import static net.patchedpixel.scenecraft.common.core.versions.MCVer.identifier;
 
 import java.util.ArrayList;
 import java.util.Collection;

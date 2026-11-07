@@ -1,9 +1,9 @@
 package net.patchedpixel.scenecraft.platform;
 
 //import net.patchedpixel.scenecraft.ScbinMappingReloadListener;
-import net.patchedpixel.scenecraft.SceneCraft;
-import net.patchedpixel.scenecraft.core.gui.GuiReplaySettings;
-import net.patchedpixel.scenecraft.record.SceneCraftRecorder;
+import net.patchedpixel.scenecraft.common.SceneCraft;
+import net.patchedpixel.scenecraft.common.core.gui.GuiReplaySettings;
+import net.patchedpixel.scenecraft.common.record.SceneCraftRecorder;
 //import net.minecraft.resources.Identifier;
 import net.minecraft.SharedConstants;
 import net.neoforged.api.distmarker.Dist;

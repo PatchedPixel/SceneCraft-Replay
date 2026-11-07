@@ -21,7 +21,7 @@ config="scenecraft.mixins.json"
 
 # FRAPI intregation
 [modproperties.${mod_id}]
-"frex:flawless_frames_handler" = "net.patchedpixel.scenecraft.render.utils.FlawlessFrames"
+"frex:flawless_frames_handler" = "net.patchedpixel.scenecraft.common.render.utils.FlawlessFrames"
 
 # Better Mod List integration
 [modproperties.modmenu]
