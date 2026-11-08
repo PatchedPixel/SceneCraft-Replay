@@ -1,13 +1,10 @@
 import groovy.json.JsonOutput
 
-import java.util.zip.ZipEntry
-import java.util.zip.ZipFile
-import java.util.zip.ZipOutputStream
-
 plugins {
     id 'java-library'
     id 'maven-publish'
     id 'net.neoforged.moddev' version '2.0.148'
+    id 'com.gradleup.shadow' version '9.2.2'
     id 'idea'
 }
 
@@ -18,20 +15,17 @@ tasks.named('wrapper', Wrapper).configure {
 version = mod_version
 group = mod_group_id
 
+base {
+    archivesName = "${mod_id}-${platform}-${minecraft_version}"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(25)
+
 sourceSets.main.resources {
     srcDir('src/generated/resources')
 
     exclude("src/generated/**/.cache")
 }
-
-def tinyexrGroup = "net.patchedpixel.shaded-tinyexr"
-def tinyexrArtifact = "tinyexr-all"
-def tinyexrRepoDir = layout.buildDirectory.dir("lib-shading").get().asFile
-def tinyexrOutDir = new File(tinyexrRepoDir, "${tinyexrGroup.replace('.', '/')}/${tinyexrArtifact}/${lwjgl_version}")
-def tinyexrOutJar = new File(tinyexrOutDir, "${tinyexrArtifact}-${lwjgl_version}.jar")
-
-def jgltfGroup = "net.patchedpixel.shaded-jgltf"
-def jacksonGroup = "net.patchedpixel.shaded-jackson"
 
 repositories {
     mavenCentral()
@@ -50,128 +44,7 @@ repositories {
         name = "caffeinemcRepositoryMaven"
         url = uri("https://maven.caffeinemc.net/releases")
     }
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "ShadedLibs"
-                url = tinyexrRepoDir.toURI()
-            }
-        }
-        filter {
-            includeGroup tinyexrGroup
-            includeGroup jgltfGroup
-            includeGroup jacksonGroup
-        }
-    }
 }
-
-if (!tinyexrOutJar.exists()) {
-    def tinyexrNatives = ["natives-windows", "natives-windows-arm64", "natives-linux", "natives-linux-arm64", "natives-macos", "natives-macos-arm64"]
-    def tinyexrDeps = [dependencies.create("org.lwjgl:lwjgl-tinyexr:${lwjgl_version}")]
-    tinyexrNatives.each { n -> tinyexrDeps << dependencies.create("org.lwjgl:lwjgl-tinyexr:${lwjgl_version}:${n}") }
-    def tinyexrConfig = configurations.detachedConfiguration(*tinyexrDeps)
-    tinyexrConfig.transitive = false
-
-    tinyexrOutDir.mkdirs()
-    def seen = new HashSet<String>()
-    new ZipOutputStream(new FileOutputStream(tinyexrOutJar)).withCloseable { out ->
-        tinyexrConfig.resolve().sort { it.name.length() }.each { jar ->
-            new ZipFile(jar).withCloseable { zip ->
-                zip.entries().each { e ->
-                    def name = e.name
-                    if (e.isDirectory() || name.startsWith("META-INF/") && (name.endsWith(".SF") || name.endsWith(".RSA") || name.endsWith(".DSA"))) return
-                    if (!seen.add(name)) return
-                    out.putNextEntry(new ZipEntry(name))
-                    zip.getInputStream(e).withCloseable { it.transferTo(out) }
-                    out.closeEntry()
-                }
-            }
-        }
-    }
-    new File(tinyexrOutDir, "${tinyexrArtifact}-${lwjgl_version}.pom").text = """<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>${tinyexrGroup}</groupId>
-  <artifactId>${tinyexrArtifact}</artifactId>
-  <version>${lwjgl_version}</version>
-</project>
-"""
-}
-
-def mergeJars = { String group, String artifact, String version, String moduleName, List<String> coords ->
-    def outDir = new File(tinyexrRepoDir, "${group.replace('.', '/')}/${artifact}/${version}")
-    def outJar = new File(outDir, "${artifact}-${version}.jar")
-    if (!outJar.exists()) {
-        outDir.mkdirs()
-        def cfg = configurations.detachedConfiguration(*coords.collect { dependencies.create(it) })
-        cfg.transitive = false
-
-        def seen = new HashSet<String>()
-        def services = new LinkedHashMap<String, LinkedHashSet<String>>()
-        new ZipOutputStream(new FileOutputStream(outJar)).withCloseable { out ->
-            cfg.resolve().each { jar ->
-                new ZipFile(jar).withCloseable { zip ->
-                    zip.entries().each { e ->
-                        def name = e.name
-                        if (e.isDirectory()) return
-                        if (name == "META-INF/MANIFEST.MF") return
-                        if (name.startsWith("META-INF/") && (name.endsWith(".SF") || name.endsWith(".RSA") || name.endsWith(".DSA"))) return
-                        if (name == "module-info.class" || name ==~ /META-INF\/versions\/\d+\/module-info\.class/) return
-                        if (name.startsWith("META-INF/services/")) {
-                            zip.getInputStream(e).withCloseable { ins ->
-                                services.computeIfAbsent(name) { new LinkedHashSet<String>() }
-                                        .addAll(ins.getText("UTF-8").readLines().findAll { it.trim() })
-                            }
-                            return
-                        }
-                        if (!seen.add(name)) return
-                        out.putNextEntry(new ZipEntry(name))
-                        zip.getInputStream(e).withCloseable { it.transferTo(out) }
-                        out.closeEntry()
-                    }
-                }
-            }
-            services.each { name, lines ->
-                out.putNextEntry(new ZipEntry(name))
-                out.write((lines.join("\n") + "\n").getBytes("UTF-8"))
-                out.closeEntry()
-            }
-            out.putNextEntry(new ZipEntry("META-INF/MANIFEST.MF"))
-            out.write("Manifest-Version: 1.0\r\nAutomatic-Module-Name: ${moduleName}\r\nMulti-Release: true\r\n\r\n".getBytes("UTF-8"))
-            out.closeEntry()
-        }
-        new File(outDir, "${artifact}-${version}.pom").text = """<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>${group}</groupId>
-  <artifactId>${artifact}</artifactId>
-  <version>${version}</version>
-</project>
-"""
-    }
-}
-
-def jgltfArtifact = "jgltf-all"
-def jgltfMergedVersion = jgltf_version
-mergeJars(jgltfGroup, jgltfArtifact, jgltfMergedVersion, "net.patchedpixel.shaded.jgltf", [
-        "de.javagl:jgltf-model:${jgltf_version}",
-        "de.javagl:jgltf-impl-v1:${jgltf_version}",
-        "de.javagl:jgltf-impl-v2:${jgltf_version}"
-])
-
-def jacksonArtifact = "jackson-all"
-def jacksonMergedVersion = jackson_version
-mergeJars(jacksonGroup, jacksonArtifact, jacksonMergedVersion, "net.patchedpixel.shaded.jackson", [
-        "com.fasterxml.jackson.core:jackson-core:${jackson_version}",
-        "com.fasterxml.jackson.core:jackson-annotations:${jackson_version}",
-        "com.fasterxml.jackson.core:jackson-databind:${jackson_version}"
-])
-
-base {
-    archivesName = "${mod_id}-${platform}-${minecraft_version}"
-}
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 neoForge {
     version = project.neo_version
@@ -216,6 +89,8 @@ neoForge {
 }
 
 configurations {
+    shade
+    implementation.extendsFrom(shade)
     runtimeClasspath.extendsFrom localRuntime
 }
 
@@ -226,13 +101,56 @@ dependencies {
     compileOnly("maven.modrinth:9eGKb6K1:3rpCvvMZ") // Simple Voice Chat
     compileOnly("net.caffeinemc:sodium-neoforge-mod:0.9.3-beta.1+mc26.3") // Sodium
 
-    // OpenEXR lib
-    implementation(jarJar("${tinyexrGroup}:${tinyexrArtifact}:${lwjgl_version}"))
+    // OpenEXR
+    shade("org.lwjgl:lwjgl-tinyexr:${lwjgl_version}") {
+        transitive = false
+    }
+    ["natives-windows", "natives-windows-arm64", "natives-linux", "natives-linux-arm64", "natives-macos", "natives-macos-arm64"].each { nativeClassifier ->
+        shade("org.lwjgl:lwjgl-tinyexr:${lwjgl_version}:${nativeClassifier}") {
+            transitive = false
+        }
+    }
 
-    // Project lib
-    implementation(jarJar("com.googlecode.mp4parser:isoparser:1.1.22"))
-    implementation(jarJar("${jgltfGroup}:${jgltfArtifact}:${jgltfMergedVersion}"))
-    implementation(jarJar("${jacksonGroup}:${jacksonArtifact}:${jacksonMergedVersion}"))
+    // MP4Parser
+    shade "com.googlecode.mp4parser:isoparser:1.1.22"
+
+    // JGLTF
+    shade "de.javagl:jgltf-model:${jgltf_version}"
+    shade "de.javagl:jgltf-impl-v1:${jgltf_version}"
+    shade "de.javagl:jgltf-impl-v2:${jgltf_version}"
+
+    // Jackson
+    shade "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
+    shade "com.fasterxml.jackson.core:jackson-annotations:${jackson_version}"
+    shade "com.fasterxml.jackson.core:jackson-databind:${jackson_version}"
+}
+
+tasks.named('shadowJar') {
+    configurations = [project.configurations.shade]
+    archiveClassifier = ''
+
+    relocate('com.fasterxml.jackson', 'net.patchedpixel.scenecraft.libs.jackson')
+    relocate('com.googlecode.mp4parser', 'net.patchedpixel.scenecraft.libs.googlecode.mp4parser')
+    relocate('com.coremedia.iso', 'net.patchedpixel.scenecraft.libs.coremedia.iso')
+    relocate('com.mp4parser', 'net.patchedpixel.scenecraft.libs.mp4parser')
+    relocate('org.mp4parser.aspectj', 'net.patchedpixel.scenecraft.libs.mp4parser.aspectj')
+    relocate('de.javagl.jgltf', 'net.patchedpixel.scenecraft.libs.jgltf')
+    mergeServiceFiles()
+
+    exclude 'META-INF/*.SF'
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+
+    exclude 'module-info.class'
+    exclude 'META-INF/versions/*/module-info.class'
+}
+
+tasks.named('jar', Jar).configure {
+    archiveClassifier = 'slim'
+}
+
+tasks.named('build').configure {
+    dependsOn 'shadowJar'
 }
 
 def convertLang = tasks.register("convertLang") {
@@ -287,7 +205,7 @@ neoForge.ideSyncTask tasks.named('processResources')
 publishing {
     publications {
         register('mavenJava', MavenPublication) {
-            from components.java
+            artifact tasks.named('shadowJar')
         }
     }
     repositories {

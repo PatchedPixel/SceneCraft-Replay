@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.patchedpixel.scenecraft.platform.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "MixinPlatformCamera",
+    "MixinPlatformGui",
+    "MixinPlatformHud"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

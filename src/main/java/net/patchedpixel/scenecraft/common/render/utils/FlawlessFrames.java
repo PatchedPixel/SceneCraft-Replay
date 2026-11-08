@@ -1,7 +1,7 @@
 package net.patchedpixel.scenecraft.common.render.utils;
 
 import net.patchedpixel.scenecraft.common.SceneCraft;
-import net.neoforged.fml.ModList;
+import net.patchedpixel.scenecraft.platform.ModLoader;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -29,7 +29,7 @@ public class FlawlessFrames {
             CONSUMERS.add(consumer);
         }
 
-        hasSodium = ModList.get().isLoaded("sodium");
+        hasSodium = ModLoader.isModLoaded("sodium");
     }
 
     public static void setEnabled(boolean enabled) {

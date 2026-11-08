@@ -41,7 +41,7 @@ import net.minecraft.client.renderer.state.gui.GuiRenderState;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.util.thread.BlockableEventLoop;
-import net.neoforged.fml.ModList;
+import net.patchedpixel.scenecraft.platform.ModLoader;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -106,13 +106,13 @@ public class VideoRenderer implements RenderInfo {
 
             @Override
             public void consume(Map<Channel, BitmapFrame> channels) {
-                BitmapFrame bgra = channels.get(Channel.BRGA);
-                if(bgra != null) {
+                BitmapFrame rgba = channels.get(Channel.RGBA);
+                if(rgba != null) {
                     synchronized(this) {
-                        int frameId = bgra.getFrameId();
+                        int frameId = rgba.getFrameId();
                         if(lastFrameId < frameId) {
                             lastFrameId = frameId;
-                            gui.updatePreview(bgra.getByteBuffer(), bgra.getSize());
+                            gui.updatePreview(rgba.getByteBuffer(), rgba.getSize());
                         }
                     }
                 }
@@ -508,7 +508,7 @@ public class VideoRenderer implements RenderInfo {
     }
 
     public static String[] checkCompat(RenderSettings settings) {
-        if(ModList.get().isLoaded("sodium") && !FlawlessFrames.hasSodium()) {
+        if(ModLoader.isModLoaded("sodium") && !FlawlessFrames.hasSodium()) {
             return new String[] {
                     "Rendering is not supported with your Sodium version.",
                     "It is missing support for the FREX Flawless Frames API.",
@@ -516,7 +516,7 @@ public class VideoRenderer implements RenderInfo {
             };
         }
         if(settings.getRenderMethod() == RenderSettings.RenderMethod.ODS
-                && !ModList.get().isLoaded("iris")) {
+                && !ModLoader.isModLoaded("iris")) {
             return new String[] {
                     "ODS export requires Iris to be installed for Minecraft 1.17 and above.",
                     "Note that it is nevertheless incompatible with other shaders and will simply replace them.",

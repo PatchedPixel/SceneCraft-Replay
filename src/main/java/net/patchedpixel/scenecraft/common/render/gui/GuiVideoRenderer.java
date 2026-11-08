@@ -274,9 +274,9 @@ public class GuiVideoRenderer extends GuiScreen implements Tickable {
                 int width = size.getWidth();
                 for(int y = 0; y < size.getHeight(); y++) {
                     for(int x = 0; x < width; x++) {
-                        int b = buffer.get() & 0xff;
-                        int g = buffer.get() & 0xff;
                         int r = buffer.get() & 0xff;
+                        int g = buffer.get() & 0xff;
+                        int b = buffer.get() & 0xff;
                         buffer.get(); // alpha
                         int value = 0xff << 24 | r << 16 | g << 8 |  b;
                         data.setPixel(x, y, value);

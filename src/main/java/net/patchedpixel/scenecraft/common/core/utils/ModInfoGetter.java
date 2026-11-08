@@ -3,7 +3,7 @@ package net.patchedpixel.scenecraft.common.core.utils;
 import net.patchedpixel.scenecraft.common.scenestudio.data.ModInfo;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
-import net.neoforged.fml.ModList;
+import net.patchedpixel.scenecraft.platform.ModLoader;
 
 import java.util.*;
 import java.util.function.Function;
@@ -11,11 +11,11 @@ import java.util.stream.Collectors;
 
 class ModInfoGetter {
     static Collection<ModInfo> getInstalledNetworkMods() {
-        Map<String, ModInfo> modInfoMap = ModList.get().getMods().stream()
+        Map<String, ModInfo> modInfoMap = ModLoader.getLoadedMods().stream()
                 .map(mod -> new ModInfo(
-                        mod.getModId(),
-                        mod.getDisplayName(),
-                        mod.getVersion().toString()
+                        mod.id(),
+                        mod.displayName(),
+                        mod.version()
                 ))
                 .collect(Collectors.toMap(ModInfo::getId, Function.identity()));
 

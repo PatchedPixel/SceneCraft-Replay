@@ -51,12 +51,12 @@ public class EXRWriter implements FrameConsumer<BitmapFrame> {
 
     @Override
     public void consume(Map<Channel, BitmapFrame> channels) {
-        BitmapFrame bgraFrame = channels.get(Channel.BRGA);
+        BitmapFrame rgbaFrame = channels.get(Channel.RGBA);
         BitmapFrame depthFrame = channels.get(Channel.DEPTH);
 
-        Path path = outputFolder.resolve(bgraFrame.getFrameId() + ".exr");
-        ReadableDimension size = bgraFrame.getSize();
-        ByteBuffer bgra = bgraFrame.getByteBuffer();
+        Path path = outputFolder.resolve(rgbaFrame.getFrameId() + ".exr");
+        ReadableDimension size = rgbaFrame.getSize();
+        ByteBuffer rgba = rgbaFrame.getByteBuffer();
         int width = size.getWidth();
         int height = size.getHeight();
         int numChannels = 4 + (depthFrame != null ? 1 : 0);
@@ -95,7 +95,7 @@ public class EXRWriter implements FrameConsumer<BitmapFrame> {
             image.width(width);
             image.height(height);
             image.images(imagePointers);
-            FloatBuffer[] bgrChannels = new FloatBuffer[4];
+            FloatBuffer[] rgbaChannels = new FloatBuffer[4];
             FloatBuffer depthChannel = null;
             for(int i = 0; i < numChannels; i++) {
                 FloatBuffer channel = images.slice();
@@ -104,7 +104,8 @@ public class EXRWriter implements FrameConsumer<BitmapFrame> {
                 if(i == 4) {
                     depthChannel = channel;
                 } else {
-                    bgrChannels[(i + 3) % 4] = channel;
+                    // EXR channel order is A, B, G, R (see names above); rgbaChannels is indexed R, G, B, A
+                    rgbaChannels[3 - i] = channel;
                 }
             }
 
@@ -112,10 +113,10 @@ public class EXRWriter implements FrameConsumer<BitmapFrame> {
 
             for(int y = 0; y < height; y++) {
                 for(int x = 0; x < width; x++) {
-                    bgrChannels[0].put(((int) bgra.get() & 0xff) / 255f); // b
-                    bgrChannels[1].put(((int) bgra.get() & 0xff) / 255f); // g
-                    bgrChannels[2].put(((int) bgra.get() & 0xff) / 255f); // r
-                    bgrChannels[3].put(((int) bgra.get() & 0xff | alphaMask) / 255f); // a
+                    rgbaChannels[0].put(((int) rgba.get() & 0xff) / 255f); // r
+                    rgbaChannels[1].put(((int) rgba.get() & 0xff) / 255f); // g
+                    rgbaChannels[2].put(((int) rgba.get() & 0xff) / 255f); // b
+                    rgbaChannels[3].put(((int) rgba.get() & 0xff | alphaMask) / 255f); // a
                 }
             }
             if(depthFrame != null && depthChannel != null) {

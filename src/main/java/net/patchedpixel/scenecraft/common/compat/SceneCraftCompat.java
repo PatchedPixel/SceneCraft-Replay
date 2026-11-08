@@ -1,8 +1,7 @@
 package net.patchedpixel.scenecraft.common.compat;
 
 import de.maxhenkel.voicechat.VoicechatClient;
-import net.neoforged.fml.ModList;
-import net.neoforged.fml.loading.FMLPaths;
+import net.patchedpixel.scenecraft.platform.ModLoader;
 import net.patchedpixel.scenecraft.common.core.Module;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -78,7 +77,7 @@ public class SceneCraftCompat implements Module {
 
     private static boolean isLoaded(String modId) {
         try {
-            return ModList.get() != null && ModList.get().isLoaded(modId);
+            return ModLoader.isModLoaded(modId);
         } catch(Throwable t) {
             return false;
         }
@@ -96,7 +95,7 @@ public class SceneCraftCompat implements Module {
     }
 
     private static Path markerPath() {
-        return FMLPaths.CONFIGDIR.get().resolve(MARKER_NAME);
+        return ModLoader.getConfigDir().resolve(MARKER_NAME);
     }
 
     private static void writeMarker(boolean originalHidden) {

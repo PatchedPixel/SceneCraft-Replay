@@ -26,7 +26,7 @@ public abstract class PboGpuFrameCapturer<F extends Frame, D extends Enum<D> & C
 
         withDepth = renderInfo.getRenderSettings().isDepthMap();
         data = type.getEnumConstants();
-        int bufferSize = framePixels * (4 /* bgra */ + (withDepth ? 4 /* float */ : 0)) * data.length;
+        int bufferSize = framePixels * (4 /* rgba */ + (withDepth ? 4 /* float */ : 0)) * data.length;
         pbo = RenderSystem.getDevice().createBuffer(null, GpuBuffer.USAGE_COPY_DST | GpuBuffer.USAGE_MAP_READ, bufferSize);
         otherPBO = RenderSystem.getDevice().createBuffer(null, GpuBuffer.USAGE_COPY_DST | GpuBuffer.USAGE_MAP_READ, bufferSize);
     }
@@ -44,29 +44,18 @@ public abstract class PboGpuFrameCapturer<F extends Frame, D extends Enum<D> & C
         return framesDone >= renderInfo.getTotalFrames() + 2;
     }
 
-    private F readFromPbo(ByteBuffer pboBuffer, int bytesPerPixel, boolean swapRB) {
+    private F readFromPbo(ByteBuffer pboBuffer, int bytesPerPixel) {
         GpuFrame[] frames = new GpuFrame[data.length];
         int frameBufferSize = getFrameWidth() * getFrameHeight() * bytesPerPixel;
         for(int i = 0; i < frames.length; i++) {
             ByteBuffer frameBuffer = ByteBufferPool.allocate(frameBufferSize);
             pboBuffer.limit(pboBuffer.position() + frameBufferSize);
-            if(swapRB) {
-                for(int j = 0; j < frameBufferSize; j += 4) {
-                    byte r = pboBuffer.get();
-                    byte g = pboBuffer.get();
-                    byte b = pboBuffer.get();
-                    byte a = pboBuffer.get();
-                    frameBuffer.put(b);
-                    frameBuffer.put(g);
-                    frameBuffer.put(r);
-                    frameBuffer.put(a);
-                }
-            } else {
-                frameBuffer.put(pboBuffer);
-            }
+            // The pixels stay in the render target's native RGBA order, ffmpeg is told to expect exactly that.
+            frameBuffer.put(pboBuffer);
             frameBuffer.rewind();
             frames[i] = new GpuFrame(framesDone - 2, frameSize, bytesPerPixel, frameBuffer);
         }
+
         return create(frames);
     }
 
@@ -78,9 +67,9 @@ public abstract class PboGpuFrameCapturer<F extends Frame, D extends Enum<D> & C
             // Read pbo to memory
             try (GpuBufferSlice.MappedView view = pbo.map(true, false)) {
                 channels = new HashMap<>();
-                channels.put(Channel.BRGA, readFromPbo(view.data(), 4, true));
+                channels.put(Channel.RGBA, readFromPbo(view.data(), 4));
                 if(withDepth) {
-                    channels.put(Channel.DEPTH, readFromPbo(view.data(), 4, false));
+                    channels.put(Channel.DEPTH, readFromPbo(view.data(), 4));
                 }
             }
         }
@@ -97,6 +86,7 @@ public abstract class PboGpuFrameCapturer<F extends Frame, D extends Enum<D> & C
 
         framesDone++;
         swapPBOs();
+
         return channels;
     }
 
@@ -109,6 +99,7 @@ public abstract class PboGpuFrameCapturer<F extends Frame, D extends Enum<D> & C
             offset += data.length * getFrameWidth() * getFrameHeight() * 4;
             cmd.copyTextureToBuffer(frameBuffer().getDepthTexture(), pbo, offset, () -> {}, 0);
         }
+
         return null;
     }
 

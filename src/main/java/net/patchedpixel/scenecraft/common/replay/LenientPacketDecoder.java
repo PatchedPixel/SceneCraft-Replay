@@ -27,12 +27,14 @@ public final class LenientPacketDecoder {
         if(extra <= 0) {
             return;
         }
+
         int id = readPacketId(input);
         if(REPORTED.add(protocol + "/" + id)) {
             LOGGER.warn("Replay packet {}/{} has {} unread trailing bytes (extra data appended by a mod or server, "
                     + "or a vanilla format difference). They are skipped so the packet is not lost. "
                     + "Only the first occurrence of each packet is logged.", protocol, id, extra);
         }
+
         input.skipBytes(extra);
     }
 
@@ -45,6 +47,7 @@ public final class LenientPacketDecoder {
                 return value;
             }
         }
+
         return -1;
     }
 }

@@ -6,7 +6,6 @@ import net.patchedpixel.scenecraft.common.render.RenderSettings;
 import net.patchedpixel.scenecraft.common.render.capturer.CubicGpuFrameCapturer;
 import net.patchedpixel.scenecraft.common.render.capturer.StereoscopicGpuFrameCapturer;
 import net.patchedpixel.scenecraft.common.render.hooks.EntityRendererHandler;
-import net.patchedpixel.scenecraft.common.replay.camera.CameraEntity;
 import net.minecraft.client.Camera;
 import net.minecraft.world.entity.Entity;
 import org.joml.Quaternionf;
@@ -94,22 +93,6 @@ public abstract class MixinCamera {
         }
 
         original.call(instance, yRot, xRot);
-    }
-
-    @Inject(method = "setRotation(FFF)V", at = @At("TAIL"))
-    private void sceneCraftReplay_applyRoll(float yRot, float xRot, float roll, CallbackInfo ci) {
-        Entity entity = this.entity;
-        if(!(entity instanceof CameraEntity)) return;
-
-        EntityRendererHandler handler = getHandler();
-        if(handler != null && handler.getSettings().isStabilizeRoll()) return;
-
-        this.rotation.rotateZ(-((CameraEntity) entity).roll * (float) Math.PI / 180f);
-
-        FORWARDS.rotate(this.rotation, this.forwards);
-        UP.rotate(this.rotation, this.up);
-        LEFT.rotate(this.rotation, this.left);
-        this.matrixPropertiesDirty |= 3;
     }
 
     @Unique

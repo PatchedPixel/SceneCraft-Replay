@@ -25,7 +25,7 @@ public class ScreenshotWriter implements FrameConsumer<BitmapFrame> {
 
     @Override
     public void consume(Map<Channel, BitmapFrame> channels) {
-        BitmapFrame frame = channels.get(Channel.BRGA);
+        BitmapFrame frame = channels.get(Channel.RGBA);
 
         // skip the first frame, in which not all chunks are properly loaded
         if(frame.getFrameId() == 0) return;
@@ -34,9 +34,10 @@ public class ScreenshotWriter implements FrameConsumer<BitmapFrame> {
         try (Image img = new Image(frameSize.getWidth(), frameSize.getHeight())) {
             for(int y = 0; y < frameSize.getHeight(); y++) {
                 for(int x = 0; x < frameSize.getWidth(); x++) {
-                    byte b = frame.getByteBuffer().get();
-                    byte g = frame.getByteBuffer().get();
                     byte r = frame.getByteBuffer().get();
+                    byte g = frame.getByteBuffer().get();
+                    byte b = frame.getByteBuffer().get();
+                    frame.getByteBuffer().get(); // alpha
 
                     img.setRGBA(x, y, r, g, b, 0xff);
                 }

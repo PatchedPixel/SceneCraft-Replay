@@ -8,7 +8,7 @@ import net.patchedpixel.scenecraft.common.gui.utils.color.Color;
 import net.patchedpixel.scenecraft.common.gui.utils.color.ReadableColor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.util.Util;
-import net.neoforged.fml.ModList;
+import net.patchedpixel.scenecraft.platform.ModLoader;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
 import java.io.File;
@@ -48,7 +48,7 @@ public class RenderSettings {
         public boolean isSupported() {
             // ODS is only implemented through an Iris shader pack, and Iris only exists for the OpenGL backend.
             if(this == ODS) {
-                return ModList.get().isLoaded("iris") && MCVer.isOpenGlBackend();
+                return ModLoader.isModLoaded("iris") && MCVer.isOpenGlBackend();
             }
             return true;
         }
@@ -80,7 +80,7 @@ public class RenderSettings {
         }
 
         public String getValue() {
-            return "-y -f rawvideo -pix_fmt bgra -s %WIDTH%x%HEIGHT% -r %FPS% -i - %FILTERS%" + preset;
+            return "-y -f rawvideo -pix_fmt rgba -s %WIDTH%x%HEIGHT% -r %FPS% -i - %FILTERS%" + preset;
         }
 
         public String getFileExtension() {
@@ -149,13 +149,14 @@ public class RenderSettings {
     private final AntiAliasing antiAliasing;
 
     private final String exportCommand;
-    // We switched from rgb24 to bgra for performance at one point, so for backwards compatibility we need to
-    // reset the arguments if they're from an older version. Easiest way to do that is to just change the key
-    // and handle the null during loading.
+    // The export arguments contain the ffmpeg input pixel format, so the saved value is only valid for the pixel
+    // format the frames are delivered in (now rgba). Whenever that changes, the key has to change as well, so that
+    // arguments saved by an older version are dropped on load (the null is handled when loading the GUI)
+    // instead of being used with frames in a different channel order.
     @SerializedName("exportArguments")
     // using an empty string as default because old versions will realize it's not a preset and prompt the user
-    private final String exportArgumentsPreBgra = "";
-    @SerializedName("exportArgumentsBgra")
+    private final String exportArgumentsLegacy = "";
+    @SerializedName("exportArgumentsRgba")
     private final String exportArguments;
 
     private final boolean highPerformance;
@@ -484,7 +485,7 @@ public class RenderSettings {
                 ", cameraPathExport=" + cameraPathExport +
                 ", antiAliasing=" + antiAliasing +
                 ", exportCommand='" + exportCommand + '\'' +
-                ", exportArgumentsPreBgra='" + exportArgumentsPreBgra + '\'' +
+                ", exportArgumentsLegacy='" + exportArgumentsLegacy + '\'' +
                 ", exportArguments='" + exportArguments + '\'' +
                 ", highPerformance=" + highPerformance +
                 '}';

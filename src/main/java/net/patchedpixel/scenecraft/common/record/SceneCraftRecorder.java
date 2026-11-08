@@ -19,7 +19,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.patchedpixel.scenecraft.platform.ClientPayloadRegistry;
+import net.patchedpixel.scenecraft.platform.ConnectionAccess;
 
 public class SceneCraftRecorder implements Module {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -58,11 +59,10 @@ public class SceneCraftRecorder implements Module {
         return connectionEventHandler;
     }
 
-    public static void registerPayloads(RegisterPayloadHandlersEvent event) {
-        event.registrar("1").optional()
-                .configurationToClient(Restrictions.ID, Restrictions.CODEC, (_, _) -> {})
-                .playToClient(Restrictions.ID, Restrictions.CODEC, (_, _) -> {})
-                .configurationToClient(ENABLED_PACKS_DATA, ENABLED_PACKS_CODEC, (_, _) -> {});
+    public static void registerPayloads(ClientPayloadRegistry registry) {
+        registry.configurationToClient(Restrictions.ID, Restrictions.CODEC);
+        registry.playToClient(Restrictions.ID, Restrictions.CODEC);
+        registry.configurationToClient(ENABLED_PACKS_DATA, ENABLED_PACKS_CODEC);
     }
 
     private static final CustomPacketPayload.Type<EnabledPacksPayload> ENABLED_PACKS_DATA = new CustomPacketPayload.Type<>(Identifier.parse(PacketEnabledPacksData.ID));
@@ -83,7 +83,7 @@ public class SceneCraftRecorder implements Module {
     }
 
     public void initiateRecording(Connection networkManager) {
-        Channel channel = networkManager.channel();
+        Channel channel = ConnectionAccess.getChannel(networkManager);
         if(channel.pipeline().get(ReplayHandler.PACKET_HANDLER_NAME) != null) return;
         if(channel.hasAttr(ATTR_CHECKED)) return;
         channel.attr(ATTR_CHECKED).set(null);

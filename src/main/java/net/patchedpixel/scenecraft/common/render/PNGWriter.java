@@ -29,15 +29,15 @@ public class PNGWriter implements FrameConsumer<BitmapFrame> {
 
     @Override
     public void consume(Map<Channel, BitmapFrame> channels) {
-        BitmapFrame bgraFrame = channels.get(Channel.BRGA);
+        BitmapFrame rgbaFrame = channels.get(Channel.RGBA);
         BitmapFrame depthFrame = channels.get(Channel.DEPTH);
         try {
-            if(bgraFrame != null) {
-                withImage(bgraFrame, image ->
-                        image.writePNG(outputFolder.resolve(bgraFrame.getFrameId() + ".png").toFile()));
+            if(rgbaFrame != null) {
+                withImage(rgbaFrame, true, image ->
+                        image.writePNG(outputFolder.resolve(rgbaFrame.getFrameId() + ".png").toFile()));
             }
             if(depthFrame != null) {
-                withImage(depthFrame, image ->
+                withImage(depthFrame, false, image ->
                         image.writePNG(outputFolder.resolve(depthFrame.getFrameId() + ".depth.png").toFile()));
             }
         } catch(Throwable t) {
@@ -47,7 +47,7 @@ public class PNGWriter implements FrameConsumer<BitmapFrame> {
         }
     }
 
-    private void withImage(BitmapFrame frame, IOConsumer<Image> consumer) throws IOException {
+    private void withImage(BitmapFrame frame, boolean rgba, IOConsumer<Image> consumer) throws IOException {
         byte alphaMask = (byte) (keepAlpha ? 0 : 0xff);
         ByteBuffer buffer = frame.getByteBuffer();
         ReadableDimension size = frame.getSize();
@@ -56,10 +56,19 @@ public class PNGWriter implements FrameConsumer<BitmapFrame> {
         try (Image image = new Image(width, height)) {
             for(int y = 0; y < height; y++) {
                 for(int x = 0; x < width; x++) {
-                    byte b = buffer.get();
-                    byte g = buffer.get();
-                    byte r = buffer.get();
-                    byte a = buffer.get();
+                    byte r, g, b, a;
+                    if(rgba) {
+                        r = buffer.get();
+                        g = buffer.get();
+                        b = buffer.get();
+                        a = buffer.get();
+                    } else {
+                        // Depth: raw float bytes, keep the layout the depth PNGs always had
+                        b = buffer.get();
+                        g = buffer.get();
+                        r = buffer.get();
+                        a = buffer.get();
+                    }
                     image.setRGBA(x, y, r, g, b, a | alphaMask);
                 }
             }

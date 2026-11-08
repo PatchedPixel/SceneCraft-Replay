@@ -18,7 +18,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.patchedpixel.scenecraft.common.core.versions.ScreenWidgets;
-import net.neoforged.fml.ModList;
+import net.patchedpixel.scenecraft.platform.ModLoader;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.components.Button;
 
@@ -252,8 +252,8 @@ public class GuiHandler extends EventRegistrations {
     }
 
     private boolean isFancyMenu2Installed() {
-        return ModList.get().getModContainerById("fancymenu")
-                .map(c -> c.getModInfo().getVersion().toString().startsWith("2."))
+        return ModLoader.getModVersion("fancymenu")
+                .map(version -> version.startsWith("2."))
                 .orElse(false);
     }
 

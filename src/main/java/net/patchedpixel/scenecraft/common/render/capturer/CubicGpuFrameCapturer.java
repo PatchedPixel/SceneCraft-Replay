@@ -38,6 +38,6 @@ public class CubicGpuFrameCapturer extends GpuFrameCapturer<CubicGpuFrame, Cubic
                 renderFrame(frameId, Data.BACK),
                 renderFrame(frameId, Data.TOP),
                 renderFrame(frameId, Data.BOTTOM));
-        return Collections.singletonMap(Channel.BRGA, frame);
+        return Collections.singletonMap(Channel.RGBA, frame);
     }
 }

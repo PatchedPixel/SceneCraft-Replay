@@ -143,7 +143,7 @@ public class FFmpegWriter implements FrameConsumer<BitmapFrame> {
 
     @Override
     public void consume(Map<Channel, BitmapFrame> channels) {
-        BitmapFrame frame = channels.get(Channel.BRGA);
+        BitmapFrame frame = channels.get(Channel.RGBA);
         try {
             checkSize(frame.getSize());
             channel.write(frame.getByteBuffer());

@@ -28,6 +28,6 @@ public class StereoscopicGpuFrameCapturer extends GpuFrameCapturer<StereoscopicG
         GpuFrame left = renderFrame(frameId, Data.LEFT_EYE);
         GpuFrame right = renderFrame(frameId, Data.RIGHT_EYE);
         StereoscopicGpuFrame frame = new StereoscopicGpuFrame(left, right);
-        return Collections.singletonMap(Channel.BRGA, frame);
+        return Collections.singletonMap(Channel.RGBA, frame);
     }
 }

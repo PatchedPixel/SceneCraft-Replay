@@ -29,7 +29,8 @@ public class SceneCraftPlatform {
             this.mod.registerModuleKeyBindings();
             this.mod.getKeyBindingRegistry().onRegisterKeyMappings(event);
         });
-        modBus.addListener(RegisterPayloadHandlersEvent.class, SceneCraftRecorder::registerPayloads);
+        modBus.addListener(RegisterPayloadHandlersEvent.class,
+                event -> SceneCraftRecorder.registerPayloads(new ClientPayloadRegistry(event)));
 //        modBus.addListener(AddClientReloadListenersEvent.class, event ->
 //                event.addListener(
 //                        Identifier.fromNamespaceAndPath(SceneCraft.MOD_ID, "scbin_mapping_generator"),

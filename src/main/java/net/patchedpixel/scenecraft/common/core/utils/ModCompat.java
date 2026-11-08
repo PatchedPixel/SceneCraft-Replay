@@ -1,6 +1,7 @@
 package net.patchedpixel.scenecraft.common.core.utils;
 
 import net.patchedpixel.scenecraft.common.scenestudio.data.ModInfo;
+import net.patchedpixel.scenecraft.platform.ModLoader;
 
 import java.util.*;
 
@@ -16,7 +17,7 @@ public class ModCompat {
             Collection<ModInfo> installedList = getInstalledNetworkMods();
             REQUIRED:
             for(ModInfo required : requiredList) {
-                if("neoforge".equals(required.getId())) continue;
+                if(ModLoader.isLoaderModId(required.getId())) continue;
                 for(ModInfo installed : installedList) {
                     if(required.getId().equals(installed.getId())) {
                         // Mod is installed, check if versions match
