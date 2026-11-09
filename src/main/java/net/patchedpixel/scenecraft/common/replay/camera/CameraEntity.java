@@ -1,5 +1,6 @@
 package net.patchedpixel.scenecraft.common.replay.camera;
 
+import net.minecraft.client.player.ItemActivation;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 import net.minecraft.client.player.FirstPersonHandsAndItems;
 import net.patchedpixel.scenecraft.platform.KeyBindingRegistry;
@@ -15,7 +16,7 @@ import net.patchedpixel.scenecraft.common.replay.events.RenderHotbarCallback;
 import net.patchedpixel.scenecraft.common.replay.events.RenderSpectatorCrosshairCallback;
 import net.patchedpixel.scenecraft.common.gui.utils.EventRegistrations;
 import net.patchedpixel.scenecraft.common.gui.versions.callbacks.PreTickCallback;
-import net.patchedpixel.scenecraft.platform.Utils;
+import net.patchedpixel.scenecraft.common.utils.Utils;
 import net.patchedpixel.scenecraft.common.replay.Setting;
 import net.patchedpixel.scenecraft.common.scenestudio.util.Location;
 import net.minecraft.client.Minecraft;
@@ -93,19 +94,19 @@ public class CameraEntity
             Minecraft mcIn,
             ClientLevel worldIn,
             ClientPacketListener netHandlerPlayClient,
-            StatsCounter statisticsManager
-            , ClientRecipeBook recipeBook
-            , net.minecraft.client.player.ItemActivation itemActivation
+            StatsCounter statisticsManager,
+            ClientRecipeBook recipeBook,
+            ItemActivation itemActivation
     ) {
         super(mcIn,
                 worldIn,
                 netHandlerPlayClient,
-                statisticsManager
-                , recipeBook
-                , Input.EMPTY
-                , false
-                , mcIn.computeChatAbilities()
-                , itemActivation
+                statisticsManager,
+                recipeBook,
+                Input.EMPTY,
+                false,
+                mcIn.computeChatAbilities(),
+                itemActivation
         );
         setUUID(CAMERA_UUID);
         eventHandler.register();
@@ -224,8 +225,7 @@ public class CameraEntity
 
     @Override
     public void tick() {
-        Entity view =
-            this.minecraft.getCameraEntity();
+        Entity view = this.minecraft.getCameraEntity();
         if(view != null) {
             // Make sure we're always spectating the right entity
             // This is important if the spectated player respawns as their
@@ -282,9 +282,7 @@ public class CameraEntity
     }
 
     @Override
-    public boolean isEyeInFluid(
-            TagKey<Fluid> fluid
-    ) {
+    public boolean isEyeInFluid(TagKey<Fluid> fluid) {
         return falseUnlessSpectating(entity -> entity.isEyeInFluid(fluid));
     }
 

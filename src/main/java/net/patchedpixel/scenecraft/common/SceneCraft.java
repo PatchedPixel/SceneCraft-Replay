@@ -36,6 +36,7 @@ import static net.patchedpixel.scenecraft.common.core.versions.MCVer.identifier;
 
 public class SceneCraft implements net.patchedpixel.scenecraft.common.core.Module, Scheduler {
     public static final String MOD_ID = "scenecraft";
+    public static final String RM_ID = "replaymod";
 
     public static final Identifier TEXTURE = identifier(SceneCraft.MOD_ID, "replay_gui.png");
     public static final int TEXTURE_SIZE = 256;

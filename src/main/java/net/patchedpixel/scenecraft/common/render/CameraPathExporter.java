@@ -29,7 +29,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.file.Files;
 
-import static net.patchedpixel.scenecraft.platform.Utils.configure;
+import static net.patchedpixel.scenecraft.common.utils.Utils.configure;
 
 public class CameraPathExporter {
     /** OpenGL's GL_FLOAT, which is what glTF uses as component type for 32 bit floats. */

@@ -44,12 +44,8 @@ public class SpectatorCameraController implements CameraController {
     }
 
     @Override
-    public void increaseSpeed() {
-
-    }
+    public void increaseSpeed() {}
 
     @Override
-    public void decreaseSpeed() {
-
-    }
+    public void decreaseSpeed() {}
 }

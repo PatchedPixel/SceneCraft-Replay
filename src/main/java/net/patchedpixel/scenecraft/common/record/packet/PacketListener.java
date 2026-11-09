@@ -3,8 +3,8 @@ package net.patchedpixel.scenecraft.common.record.packet;
 import net.patchedpixel.scenecraft.common.scenestudio.protocol.State;
 
 import net.patchedpixel.scenecraft.common.SceneCraft;
-import net.patchedpixel.scenecraft.common.core.utils.Restrictions;
-import net.patchedpixel.scenecraft.platform.Utils;
+import net.patchedpixel.scenecraft.common.utils.Restrictions;
+import net.patchedpixel.scenecraft.common.utils.Utils;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 import net.patchedpixel.scenecraft.common.editor.gui.MarkerProcessor;
 import net.patchedpixel.scenecraft.common.record.SceneCraftRecorder;

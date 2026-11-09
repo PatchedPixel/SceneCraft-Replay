@@ -26,6 +26,7 @@ public class Mixin_FixCopyTextureToBuffer_DepthTexture {
             depthAttachment = colorAttachment;
             colorAttachment = 0;
         }
+
         original.call(instance, framebuffer, colorAttachment, depthAttachment, mipLevel, bindTarget);
     }
 }

@@ -4,7 +4,7 @@ import net.patchedpixel.scenecraft.common.SceneCraft;
 import net.patchedpixel.scenecraft.common.gui.utils.geometry.Dimension;
 import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
 
-import net.patchedpixel.scenecraft.platform.Utils;
+import net.patchedpixel.scenecraft.common.utils.Utils;
 import net.patchedpixel.scenecraft.common.render.rendering.VideoRenderer;
 import net.patchedpixel.scenecraft.common.gui.GuiRenderer;
 import net.patchedpixel.scenecraft.common.gui.RenderInfo;

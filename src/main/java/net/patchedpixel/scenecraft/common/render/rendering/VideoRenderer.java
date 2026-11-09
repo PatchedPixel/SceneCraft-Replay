@@ -55,7 +55,7 @@ import java.util.concurrent.Future;
 import java.util.stream.Stream;
 
 import static com.google.common.collect.Iterables.getLast;
-import static net.patchedpixel.scenecraft.platform.Utils.DEFAULT_MS_PER_TICK;
+import static net.patchedpixel.scenecraft.common.utils.Utils.DEFAULT_MS_PER_TICK;
 import static net.patchedpixel.scenecraft.common.core.versions.MCVer.*;
 import static net.patchedpixel.scenecraft.common.render.SceneCraftRender.LOGGER;
 

@@ -1,4 +1,4 @@
-package net.patchedpixel.scenecraft.common.core.utils;
+package net.patchedpixel.scenecraft.common.utils;
 
 import net.patchedpixel.scenecraft.common.scenestudio.data.ModInfo;
 import net.minecraft.core.Registry;

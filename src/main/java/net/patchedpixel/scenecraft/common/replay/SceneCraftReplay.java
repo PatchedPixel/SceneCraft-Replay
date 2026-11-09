@@ -8,7 +8,7 @@ import net.patchedpixel.scenecraft.common.compat.SceneCraftCompat;
 import net.patchedpixel.scenecraft.platform.KeyBindingRegistry;
 import net.patchedpixel.scenecraft.common.core.Module;
 import net.patchedpixel.scenecraft.common.SceneCraft;
-import net.patchedpixel.scenecraft.common.core.utils.ModCompat;
+import net.patchedpixel.scenecraft.common.utils.ModCompat;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.patchedpixel.scenecraft.common.replay.camera.CameraController;

@@ -1,4 +1,4 @@
-package net.patchedpixel.scenecraft.platform;
+package net.patchedpixel.scenecraft.common.utils;
 
 import com.google.common.base.Throwables;
 import com.google.common.net.PercentEscaper;
@@ -57,9 +57,9 @@ import static net.patchedpixel.scenecraft.common.core.versions.MCVer.getMinecraf
 import net.minecraft.ReportType;
 
 public class Utils {
-    private static Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger();
 
-    public static final float DEFAULT_MS_PER_TICK = 1000 / 20;
+    public static final float DEFAULT_MS_PER_TICK = (float) 1000 / 20;
 
     private static InputStream getResourceAsStream(String path) {
         return Utils.class.getResourceAsStream(path);
@@ -81,7 +81,7 @@ public class Utils {
     /**
      * Neither the root certificate of LetsEncrypt nor the root that cross-signed it is included in the default
      * Java keystore prior to 8u101.
-     * Therefore whenever a connection to the replaymod.com site is made, this SSLContext has to be used instead.
+     * Therefore, whenever a connection to the replaymod.com site is made, this SSLContext has to be used instead.
      * It has been constructed to include the necessary root certificates.
      * @see #SSL_SOCKET_FACTORY
      */
@@ -114,9 +114,9 @@ public class Utils {
     }
 
     public static String convertSecondsToShortString(int seconds) {
-        int hours = seconds/(60*60);
-        int min = seconds/60 - hours*60;
-        int sec = seconds - ((min*60) + (hours*60*60));
+        int hours = seconds / (60 * 60);
+        int min = seconds / 60 - hours * 60;
+        int sec = seconds - ((min * 60) + (hours * 60 * 60));
 
         StringBuilder builder = new StringBuilder();
         if(hours > 0) builder.append(String.format("%02d", hours)).append(":");
@@ -181,7 +181,7 @@ public class Utils {
             return false;
         }
 
-        // Looking good, but now we gotta clean up that mess (and Anti-Virus / Cloud Sync are know to lock them)
+        // Looking good, but now we have to clean up that mess (and Anti-Virus / Cloud Sync are know to lock them)
         int attempts = 0;
         while(true) {
             try {
@@ -189,8 +189,8 @@ public class Utils {
                 return true;
             } catch(IOException e) {
                 if(attempts++ > 100) {
-                    LOGGER.warn("Repeatedly failed to clean up temporary test file at " + path + ": ", e);
-                    return false; // while we were able to use it, it's taken now and we can't get it back
+                    LOGGER.warn("Repeatedly failed to clean up temporary test file at {}: ", path, e);
+                    return false; // while we were able to use it, it's taken now, and we can't get it back
                 }
             }
         }

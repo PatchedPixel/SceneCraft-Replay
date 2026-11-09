@@ -3,6 +3,7 @@ package net.patchedpixel.scenecraft.common.mixin.render;
 import com.llamalad7.mixinextras.sugar.Local;
 import net.patchedpixel.scenecraft.common.render.hooks.ForceChunkLoadingHook;
 import net.patchedpixel.scenecraft.common.render.utils.FlawlessFrames;
+import net.patchedpixel.scenecraft.platform.SectionCompilation;
 import net.minecraft.client.Camera;
 import net.minecraft.client.SectionUpdateTracker;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -29,22 +30,15 @@ import java.util.concurrent.TimeoutException;
 
 @Mixin(LevelExtractor.class)
 public abstract class Mixin_ForceChunkLoading {
-    @Shadow
-    @Final
-    private LevelRenderer levelRenderer;
+    @Shadow @Final private LevelRenderer levelRenderer;
 
-    @Shadow
-    private @Nullable SectionUpdateTracker sectionUpdateTracker;
+    @Shadow private @Nullable SectionUpdateTracker sectionUpdateTracker;
 
-    @Shadow
-    private @Nullable ClientLevel level;
+    @Shadow private @Nullable ClientLevel level;
 
-    @Shadow
-    @Final
-    private LevelRenderState levelRenderState;
+    @Shadow @Final private LevelRenderState levelRenderState;
 
-    @Shadow
-    protected abstract void applyFrustum(Frustum frustum);
+    @Shadow protected abstract void applyFrustum(Frustum frustum);
 
     @Inject(method = "extract", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/LevelRenderer;visibleSections()Lit/unimi/dsi/fastutil/objects/ObjectArrayList;"))
     private void forceAllChunks(
@@ -92,7 +86,7 @@ public abstract class Mixin_ForceChunkLoading {
                 if(dirtyState != null
                         && dirtyState.isDirty()
                         && (section.sectionMesh.get() != CompiledSectionMesh.UNCOMPILED || this.sectionUpdateTracker.hasAllNeighbors(this.level, section.getSectionNode()))) {
-                    section.compileAsync(cache.createRegion(this.level, section.getSectionNode()));
+                    SectionCompilation.compileAsync(section, cache, this.level);
                     dirtyState.setNotDirty();
                     areWeDoneYet = false;
                 }
