@@ -26,12 +26,12 @@ Started as a [ReplayMod](https://github.com/ReplayMod/ReplayMod) fork for modern
 
 ## 📦 Supported versions
 
-| Minecraft       | Loader   | Status      |
-|-----------------|----------|-------------|
-| 26.3            | NeoForge | ✅ Available |
-| 1.21.1          | NeoForge | 🛠️ Planned |
-| 1.20.1          | Forge    | 🛠️ Planned |
-| Other versions  | NeoForge | 🛠️ Planned |
+| Minecraft      | Loader   | Status      |
+|----------------|----------|-------------|
+| 26.2 - 26.3    | NeoForge | ✅ Available |
+| 1.21.1         | NeoForge | 🛠️ Planned |
+| 1.20.1         | Forge    | 🛠️ Planned |
+| Other versions | NeoForge | 🛠️ Planned |
 
 Each build targets one Minecraft version and one loader, so pick the jar that matches your game.
 
