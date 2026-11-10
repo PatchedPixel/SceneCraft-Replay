@@ -11,7 +11,6 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 
-
 public final class ModLoader {
     private static final String LOADER_MOD_ID = "neoforge";
     private static final String MOD_METADATA_FILE = "/META-INF/neoforge.mods.toml";
