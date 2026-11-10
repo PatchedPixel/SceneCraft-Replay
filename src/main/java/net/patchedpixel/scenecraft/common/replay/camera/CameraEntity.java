@@ -15,7 +15,7 @@ import net.patchedpixel.scenecraft.common.replay.events.RenderHotbarCallback;
 import net.patchedpixel.scenecraft.common.replay.events.RenderSpectatorCrosshairCallback;
 import net.patchedpixel.scenecraft.common.gui.utils.EventRegistrations;
 import net.patchedpixel.scenecraft.common.gui.versions.callbacks.PreTickCallback;
-import net.patchedpixel.scenecraft.platform.Utils;
+import net.patchedpixel.scenecraft.common.utils.Utils;
 import net.patchedpixel.scenecraft.common.replay.Setting;
 import net.patchedpixel.scenecraft.common.scenestudio.util.Location;
 import net.minecraft.client.Minecraft;

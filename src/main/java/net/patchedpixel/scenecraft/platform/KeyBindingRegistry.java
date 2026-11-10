@@ -59,7 +59,7 @@ public class KeyBindingRegistry extends EventRegistrations {
             }
             Identifier id = identifier(MOD_ID, name.substring(LEGACY_KEY_PREFIX.length()));
             String key = String.format("key.%s.%s", id.getNamespace(), id.getPath());
-            KeyMapping keyBinding = new KeyMapping(key, InputConstants.Type.KEYBOARD, keyCode, CATEGORY);
+            KeyMapping keyBinding = new KeyMapping(key, InputConstants.Type.KEYSYM, keyCode, CATEGORY);
             pendingMappings.add(keyBinding);
             binding = new Binding(name, keyBinding);
             bindings.put(name, binding);

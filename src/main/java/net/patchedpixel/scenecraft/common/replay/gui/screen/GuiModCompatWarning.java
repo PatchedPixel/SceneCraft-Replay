@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.common.replay.gui.screen;
 
-import net.patchedpixel.scenecraft.common.core.utils.ModCompat;
+import net.patchedpixel.scenecraft.common.utils.ModCompat;
 import net.patchedpixel.scenecraft.common.scenestudio.data.ModInfo;
 import net.patchedpixel.scenecraft.common.scenestudio.util.I18n;
 import net.patchedpixel.scenecraft.common.gui.container.AbstractGuiScreen;

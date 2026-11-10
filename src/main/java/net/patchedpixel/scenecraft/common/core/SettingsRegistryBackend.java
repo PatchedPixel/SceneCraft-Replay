@@ -23,7 +23,7 @@ import java.nio.file.WatchService;
 import java.util.List;
 import java.util.Map;
 
-import static net.patchedpixel.scenecraft.platform.Utils.ensureDirectoryExists;
+import static net.patchedpixel.scenecraft.common.utils.Utils.ensureDirectoryExists;
 import static net.patchedpixel.scenecraft.common.core.versions.MCVer.getMinecraft;
 
 class SettingsRegistryBackend {

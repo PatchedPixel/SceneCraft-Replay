@@ -6,8 +6,8 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import net.minecraft.client.multiplayer.LevelLoadTracker;
 import net.minecraft.client.multiplayer.ServerData;
-import net.patchedpixel.scenecraft.common.core.utils.Restrictions;
-import net.patchedpixel.scenecraft.platform.Utils;
+import net.patchedpixel.scenecraft.common.utils.Restrictions;
+import net.patchedpixel.scenecraft.common.utils.Utils;
 import net.patchedpixel.scenecraft.common.replay.camera.CameraEntity;
 import net.patchedpixel.scenecraft.common.replay.camera.SpectatorCameraController;
 import net.patchedpixel.scenecraft.common.replay.events.ReplayClosedCallback;
@@ -53,7 +53,7 @@ import net.minecraft.network.protocol.PacketFlow;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import static net.patchedpixel.scenecraft.platform.Utils.DEFAULT_MS_PER_TICK;
+import static net.patchedpixel.scenecraft.common.utils.Utils.DEFAULT_MS_PER_TICK;
 import static net.patchedpixel.scenecraft.common.core.versions.MCVer.*;
 import static net.patchedpixel.scenecraft.common.replay.SceneCraftReplay.LOGGER;
 

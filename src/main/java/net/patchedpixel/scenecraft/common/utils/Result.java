@@ -1,4 +1,4 @@
-package net.patchedpixel.scenecraft.common.core.utils;
+package net.patchedpixel.scenecraft.common.utils;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

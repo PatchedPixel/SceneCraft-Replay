@@ -3,7 +3,7 @@ package net.patchedpixel.scenecraft.common.record;
 import net.patchedpixel.scenecraft.platform.KeyBindingRegistry;
 import net.patchedpixel.scenecraft.common.core.Module;
 import net.patchedpixel.scenecraft.common.SceneCraft;
-import net.patchedpixel.scenecraft.common.core.utils.Restrictions;
+import net.patchedpixel.scenecraft.common.utils.Restrictions;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.patchedpixel.scenecraft.common.record.handler.ConnectionEventHandler;
 import net.patchedpixel.scenecraft.common.record.handler.GuiHandler;

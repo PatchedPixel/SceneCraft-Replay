@@ -2,7 +2,7 @@ package net.patchedpixel.scenecraft.common.render;
 
 import net.patchedpixel.scenecraft.common.core.Module;
 import net.patchedpixel.scenecraft.common.SceneCraft;
-import net.patchedpixel.scenecraft.platform.Utils;
+import net.patchedpixel.scenecraft.common.utils.Utils;
 import net.patchedpixel.scenecraft.common.render.utils.RenderJob;
 import net.patchedpixel.scenecraft.common.replay.ReplayHandler;
 import net.patchedpixel.scenecraft.common.replay.events.ReplayClosedCallback;

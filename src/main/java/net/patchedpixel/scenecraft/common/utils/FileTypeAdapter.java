@@ -1,4 +1,4 @@
-package net.patchedpixel.scenecraft.common.core.utils;
+package net.patchedpixel.scenecraft.common.utils;
 
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;

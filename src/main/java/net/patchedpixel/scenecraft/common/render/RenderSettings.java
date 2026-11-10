@@ -2,7 +2,7 @@ package net.patchedpixel.scenecraft.common.render;
 
 import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
-import net.patchedpixel.scenecraft.common.core.utils.FileTypeAdapter;
+import net.patchedpixel.scenecraft.common.utils.FileTypeAdapter;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 import net.patchedpixel.scenecraft.common.gui.utils.color.Color;
 import net.patchedpixel.scenecraft.common.gui.utils.color.ReadableColor;

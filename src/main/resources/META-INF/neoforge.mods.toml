@@ -43,7 +43,7 @@ file="META-INF/accesstransformer.cfg"
 [[dependencies.${mod_id}]]
     modId="neoforge"
     type="required"
-    versionRange="[26.3.0,)"
+    versionRange="[26.2.0,)"
     ordering="NONE"
     side="CLIENT"
 

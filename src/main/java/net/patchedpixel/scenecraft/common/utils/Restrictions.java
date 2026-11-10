@@ -1,4 +1,4 @@
-package net.patchedpixel.scenecraft.common.core.utils;
+package net.patchedpixel.scenecraft.common.utils;
 
 import net.patchedpixel.scenecraft.common.SceneCraft;
 import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;

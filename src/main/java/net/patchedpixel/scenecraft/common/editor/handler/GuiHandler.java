@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.common.editor.handler;
 
-import net.patchedpixel.scenecraft.platform.Utils;
+import net.patchedpixel.scenecraft.common.utils.Utils;
 import net.patchedpixel.scenecraft.common.editor.SceneCraftEditor;
 import net.patchedpixel.scenecraft.common.editor.gui.GuiEditReplay;
 import net.patchedpixel.scenecraft.common.replay.gui.screen.GuiReplayViewer;

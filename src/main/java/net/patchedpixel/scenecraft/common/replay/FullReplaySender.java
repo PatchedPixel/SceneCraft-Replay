@@ -5,7 +5,7 @@ import net.patchedpixel.scenecraft.common.scenestudio.netio.ByteBufNetOutput;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Files;
 import net.patchedpixel.scenecraft.common.SceneCraft;
-import net.patchedpixel.scenecraft.common.core.utils.Restrictions;
+import net.patchedpixel.scenecraft.common.utils.Restrictions;
 import net.patchedpixel.scenecraft.common.replay.camera.CameraEntity;
 import net.patchedpixel.scenecraft.common.scenestudio.io.ReplayInputStream;
 import net.patchedpixel.scenecraft.common.scenestudio.protocol.State;
@@ -57,7 +57,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static net.patchedpixel.scenecraft.platform.Utils.DEFAULT_MS_PER_TICK;
+import static net.patchedpixel.scenecraft.common.utils.Utils.DEFAULT_MS_PER_TICK;
 import static net.patchedpixel.scenecraft.common.core.versions.MCVer.*;
 
 /**

@@ -10,10 +10,9 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
-
-import com.mojang.renderpearl.api.buffers.GpuBuffer;
-import com.mojang.renderpearl.api.commands.CommandEncoder;
+import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.systems.CommandEncoder;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 public abstract class PboGpuFrameCapturer<F extends Frame, D extends Enum<D> & CaptureData> extends GpuFrameCapturer<F, D> {

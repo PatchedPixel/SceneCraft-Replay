@@ -45,7 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Map;
 
-import static net.patchedpixel.scenecraft.platform.Utils.error;
+import static net.patchedpixel.scenecraft.common.utils.Utils.error;
 import static net.patchedpixel.scenecraft.common.render.SceneCraftRender.LOGGER;
 
 public class GuiRenderSettings extends AbstractGuiPopup<GuiRenderSettings> {

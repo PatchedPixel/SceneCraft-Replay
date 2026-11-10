@@ -3,7 +3,7 @@ package net.patchedpixel.scenecraft.common.extras.playeroverview;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.patchedpixel.scenecraft.common.SceneCraft;
 import net.patchedpixel.scenecraft.common.core.events.PreRenderHandCallback;
-import net.patchedpixel.scenecraft.platform.Utils;
+import net.patchedpixel.scenecraft.common.utils.Utils;
 import net.patchedpixel.scenecraft.common.extras.Extra;
 import net.patchedpixel.scenecraft.common.replay.ReplayHandler;
 import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;

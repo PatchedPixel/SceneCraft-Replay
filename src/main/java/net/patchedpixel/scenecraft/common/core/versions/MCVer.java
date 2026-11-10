@@ -70,7 +70,7 @@ public class MCVer {
     }
 
     /**
-     * Whether the active renderpearl backend is OpenGL (as opposed to Vulkan).
+     * Whether the active backend is OpenGL (as opposed to Vulkan).
      * Used to gate features which only exist for OpenGL (e.g. Iris based ODS rendering).
      */
     public static boolean isOpenGlBackend() {
@@ -85,10 +85,7 @@ public class MCVer {
         return Minecraft.getInstance();
     }
 
-    public static void addButton(
-            Screen screen,
-            Button button
-    ) {
+    public static void addButton(Screen screen, Button button) {
         screen.addRenderableWidget(button);
     }
 

@@ -3,7 +3,7 @@ package net.patchedpixel.scenecraft.common.pathing.gui;
 import com.google.common.util.concurrent.SettableFuture;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.patchedpixel.scenecraft.common.SceneCraft;
-import net.patchedpixel.scenecraft.platform.Utils;
+import net.patchedpixel.scenecraft.common.utils.Utils;
 import net.patchedpixel.scenecraft.common.render.gui.GuiRenderQueue;
 import net.patchedpixel.scenecraft.common.render.gui.GuiRenderSettings;
 import net.patchedpixel.scenecraft.common.replay.ReplayHandler;

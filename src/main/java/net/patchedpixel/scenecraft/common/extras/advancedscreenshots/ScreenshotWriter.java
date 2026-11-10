@@ -1,7 +1,7 @@
 package net.patchedpixel.scenecraft.common.extras.advancedscreenshots;
 
 import net.patchedpixel.scenecraft.common.SceneCraft;
-import net.patchedpixel.scenecraft.platform.Utils;
+import net.patchedpixel.scenecraft.common.utils.Utils;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 import net.patchedpixel.scenecraft.common.extras.SceneCraftExtras;
 import net.patchedpixel.scenecraft.common.render.frame.BitmapFrame;
