@@ -377,14 +377,20 @@ public abstract class AbstractGuiTextField<T extends AbstractGuiTextField<T>>
             renderer.invertColors(right, height - 2, left, 2);
 
             // Draw cursor
-            if(blinkCursorTick / 6 % 2 == 0 && focused) {
+            if(focused) {
                 String beforeCursor = renderText.substring(0, cursorPos - currentOffset);
                 int posX = BORDER + fontRenderer.width(beforeCursor);
-                if(cursorPos == text.length()) {
-                    renderer.drawString(posX, posY, CURSOR_COLOR, "_", true);
-                } else {
-                    renderer.drawRect(posX, posY - 1, 1, 1 + fontRenderer.lineHeight, CURSOR_COLOR);
+                if(blinkCursorTick / 6 % 2 == 0) {
+                    if(cursorPos == text.length()) {
+                        renderer.drawString(posX, posY, CURSOR_COLOR, "_", true);
+                    } else {
+                        renderer.drawRect(posX, posY - 1, 1, 1 + fontRenderer.lineHeight, CURSOR_COLOR);
+                    }
                 }
+
+                int x = renderer.getGpuOffsetX() + posX;
+                int y = renderer.getGpuOffsetY() + posY;
+                MCVer.setTextInputArea(x, y, x + 1, y + fontRenderer.lineHeight);
             }
         }
     }

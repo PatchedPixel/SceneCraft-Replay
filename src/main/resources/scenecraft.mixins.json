@@ -29,7 +29,6 @@
     "render.Mixin_BlockOnChunkRebuilds",
     "render.Mixin_ChromaKeyDisableFog",
     "render.Mixin_FakeSystemTimeUniforms_Iris",
-    "render.Mixin_FixCopyTextureToBuffer_DepthTexture",
     "render.Mixin_ForceChunkLoading",
     "render.Mixin_LoadIrisOdsShaderPack",
     "render.MixinParticleManager",

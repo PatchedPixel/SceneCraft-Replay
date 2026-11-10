@@ -75,16 +75,15 @@ public class PacketTeam {
 
     private static void skipTeamInfo(Packet packet, Packet.Reader in) throws IOException {
         in.readText(); // display name
+        in.readText(); // prefix
+        in.readText(); // suffix
 
-        
         in.readVarInt(); // name tag visibility
         in.readVarInt(); // collision rule
 
         if(in.readBoolean()) {
             in.readVarInt(); // color
         }
-        in.readText(); // prefix
-        in.readText(); // suffix
 
         in.readByte(); // flags
     }

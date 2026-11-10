@@ -147,6 +147,10 @@ public class MCVer {
         getMinecraft().onTextInputFocusChange(element, focused);
     }
 
+    public static void setTextInputArea(int x0, int y0, int x1, int y1) {
+        getMinecraft().textInputManager().setTextInputArea(x0, y0, x1, y1);
+    }
+
     public static Component literalText(String str) {
         return Component.literal(str);
     }
