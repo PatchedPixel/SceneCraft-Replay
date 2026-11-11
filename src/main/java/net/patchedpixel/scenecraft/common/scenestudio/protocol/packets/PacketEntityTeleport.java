@@ -29,7 +29,6 @@ public class PacketEntityTeleport {
     public static Location getLocation(Packet packet) throws IOException {
         try (Packet.Reader in = packet.reader()) {
             in.readVarInt(); // entity net
-
             double x = in.readDouble();
             double y = in.readDouble();
             double z = in.readDouble();
@@ -45,30 +44,18 @@ public class PacketEntityTeleport {
     }
 
     /**
-     * Reads an entity_position_sync packet: varint net, PositionPath (varint type; 0 = Vec3 doubles,
-     * 1 = list of (Vec3, varint ticks)), float yaw, float pitch, boolean onGround.
-     * Returns the end position of the path.
+     * Reads an entity_position_sync packet: varint net, Vec3 position, Vec3 delta movement,
+     * float yaw, float pitch, boolean onGround.
      */
     public static Location getSyncLocation(Packet packet) throws IOException {
         try (Packet.Reader in = packet.reader()) {
             in.readVarInt(); // entity net
-
-            int pathType = in.readVarInt();
-            double x, y, z;
-            if(pathType == 0) {
-                x = in.readDouble();
-                y = in.readDouble();
-                z = in.readDouble();
-            } else {
-                int count = in.readVarInt();
-                x = y = z = 0;
-                for(int i = 0; i < count; i++) {
-                    x = in.readDouble();
-                    y = in.readDouble();
-                    z = in.readDouble();
-                    in.readVarInt(); // tick offset
-                }
-            }
+            double x = in.readDouble();
+            double y = in.readDouble();
+            double z = in.readDouble();
+            in.readDouble(); // delta movement x
+            in.readDouble(); // delta movement y
+            in.readDouble(); // delta movement z
             float yaw = in.readFloat();
             float pitch = in.readFloat();
             return new Location(x, y, z, yaw, pitch);

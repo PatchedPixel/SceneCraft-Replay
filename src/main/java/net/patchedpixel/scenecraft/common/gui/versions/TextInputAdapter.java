@@ -49,9 +49,4 @@ public class TextInputAdapter implements GuiEventListener {
     public boolean isFocused() {
         return focused.getAsBoolean();
     }
-
-    @Override
-    public boolean capturesInput() {
-        return true;
-    }
 }

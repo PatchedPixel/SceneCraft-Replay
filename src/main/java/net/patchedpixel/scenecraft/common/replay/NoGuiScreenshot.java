@@ -2,16 +2,16 @@ package net.patchedpixel.scenecraft.common.replay;
 
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
-import com.mojang.blaze3d.buffers.GpuBuffer;
-import com.mojang.blaze3d.buffers.GpuBufferSlice;
-import com.mojang.blaze3d.buffers.GpuFence;
-import com.mojang.blaze3d.systems.CommandEncoder;
-import com.mojang.blaze3d.systems.GpuDevice;
 import net.patchedpixel.scenecraft.common.SceneCraft;
 import net.patchedpixel.scenecraft.common.gui.versions.Image;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.screens.Screen;
+import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import com.mojang.blaze3d.buffers.GpuFence;
+import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.systems.CommandEncoder;
+import com.mojang.blaze3d.systems.GpuDevice;
 import com.mojang.blaze3d.platform.NativeImage;
 
 public class NoGuiScreenshot {
@@ -55,7 +55,7 @@ public class NoGuiScreenshot {
 
                 mc.gameRenderer.update(mc.getDeltaTracker());
                 mc.gameRenderer.extract(mc.getDeltaTracker(), true);
-                mc.gameRenderer.render();
+                mc.gameRenderer.render(mc.getDeltaTracker(), true);
             } catch(Throwable t) {
                 future.setException(t);
                 return;

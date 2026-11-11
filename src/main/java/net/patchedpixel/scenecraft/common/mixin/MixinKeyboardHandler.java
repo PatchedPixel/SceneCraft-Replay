@@ -43,6 +43,7 @@ public class MixinKeyboardHandler {
         if(KeyboardCallback.EVENT.invoker().keyPressed(new KeyInput(mcKeyInput))) {
             return true;
         }
+
         return original.call(screen, mcKeyInput);
     }
 
@@ -65,6 +66,7 @@ public class MixinKeyboardHandler {
         if(consumed && screen instanceof ScreenExt ext && ext.doesPassEvents()) {
             KeyMapping.set(InputConstants.getKey(mcKeyInput), false);
         }
+
         return consumed;
     }
 
@@ -73,6 +75,7 @@ public class MixinKeyboardHandler {
         if(KeyboardCallback.EVENT.invoker().charTyped(new CharInput(mcCharInput))) {
             return true;
         }
+
         return original.call(screen, mcCharInput);
     }
 }

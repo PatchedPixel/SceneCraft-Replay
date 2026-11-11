@@ -96,10 +96,10 @@ configurations {
 
 dependencies {
     // Mod compat
-    compileOnly("maven.modrinth:YL57xq9U:Ag5S66CF") // Iris Shaders
-    compileOnly("maven.modrinth:1bokaNcj:j2Xo3Dhc") // Xaero's Minimap
-    compileOnly("maven.modrinth:9eGKb6K1:3rpCvvMZ") // Simple Voice Chat
-    compileOnly("net.caffeinemc:sodium-neoforge-mod:0.9.3-beta.1+mc26.3") // Sodium
+    compileOnly("maven.modrinth:YL57xq9U:k55HdONq") // Iris Shaders
+    compileOnly("maven.modrinth:1bokaNcj:ja3RzZIV") // Xaero's Minimap
+    compileOnly("maven.modrinth:9eGKb6K1:sT38GqTp") // Simple Voice Chat
+    compileOnly("net.caffeinemc:sodium-neoforge-mod:0.9.2+mc26.2") // Sodium
 
     // OpenEXR
     shade("org.lwjgl:lwjgl-tinyexr:${lwjgl_version}") {

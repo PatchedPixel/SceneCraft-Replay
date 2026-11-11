@@ -3,8 +3,8 @@ package net.patchedpixel.scenecraft.common.mixin.render;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import com.mojang.blaze3d.opengl.DirectStateAccess;
 import com.mojang.blaze3d.textures.GpuTexture;
+import com.mojang.blaze3d.opengl.DirectStateAccess;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,7 +26,6 @@ public class Mixin_FixCopyTextureToBuffer_DepthTexture {
             depthAttachment = colorAttachment;
             colorAttachment = 0;
         }
-
         original.call(instance, framebuffer, colorAttachment, depthAttachment, mipLevel, bindTarget);
     }
 }

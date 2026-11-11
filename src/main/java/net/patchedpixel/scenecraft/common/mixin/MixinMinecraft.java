@@ -2,12 +2,12 @@ package net.patchedpixel.scenecraft.common.mixin;
 
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.platform.SDLEventHandler;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.patchedpixel.scenecraft.common.core.events.PostRenderCallback;
 import net.patchedpixel.scenecraft.common.core.events.PreRenderCallback;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
+import net.patchedpixel.scenecraft.common.gui.container.VanillaGuiScreen;
 import net.patchedpixel.scenecraft.common.gui.versions.ScreenExt;
 import net.patchedpixel.scenecraft.common.render.gui.progress.VirtualWindow;
 import net.patchedpixel.scenecraft.common.render.hooks.WindowDelegateHolder;
@@ -17,6 +17,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.PacketProcessor;
 import net.minecraft.util.thread.ReentrantBlockableEventLoop;
+import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -32,7 +33,6 @@ public abstract class MixinMinecraft extends ReentrantBlockableEventLoop<Runnabl
     private static final String GAME_RENDERER_RENDER = "Lnet/minecraft/client/Minecraft;renderFrame(Z)V";
 
     @Shadow protected abstract void handleKeybinds();
-    @Shadow @Final private SDLEventHandler sdlEventHandler;
     @Shadow @Final private PacketProcessor packetProcessor;
 
     @Unique
@@ -47,12 +47,12 @@ public abstract class MixinMinecraft extends ReentrantBlockableEventLoop<Runnabl
 
     @Override
     public void sceneCraftPollEvents() {
-        RenderSystem.pollEvents(this.sdlEventHandler);
+        RenderSystem.pollEvents();
     }
 
     @Override
     public void sceneCraftPumpEvents() {
-        RenderSystem.pumpEvents(this.sdlEventHandler);
+        GLFW.glfwPollEvents();
     }
 
     @Override
@@ -108,13 +108,15 @@ public abstract class MixinMinecraft extends ReentrantBlockableEventLoop<Runnabl
     }
 
     @Inject(method = "handleGlobalKeyPress", at = @At("HEAD"), cancellable = true)
-    private void scenecraft$noFriendsHotkeyInReplay(InputConstants.Key key, boolean controlDown, CallbackInfoReturnable<Boolean> cir) {
-        SceneCraftReplay replay = SceneCraftReplay.instance;
-        if(replay == null || replay.getReplayHandler() == null) {
-            return;
-        }
+    private void scenecraft$noFriendsHotkeyWhileTyping(InputConstants.Key key, boolean controlDown, CallbackInfoReturnable<Boolean> cir) {
         Minecraft mc = (Minecraft) (Object) this;
-        if(mc.options.keyFriends.matches(key)) {
+        if (!mc.options.keyFriends.matches(key)) return;
+
+        SceneCraftReplay replay = SceneCraftReplay.instance;
+        boolean inReplay = replay != null && replay.getReplayHandler() != null;
+        boolean typing = VanillaGuiScreen.isInputCaptured(mc.gui.screen());
+
+        if (inReplay || typing) {
             cir.setReturnValue(false);
         }
     }

@@ -183,7 +183,7 @@ public abstract class AbstractGuiResourceLoadingList
 
     @Override
     public boolean handleKey(KeyInput keyInput) {
-        if(keyInput.hasCtrl() && keyInput.keycode == InputConstants.KEYCODE_A) {
+        if(keyInput.hasCtrl() && keyInput.key == InputConstants.KEY_A) {
             List<Element> all = new ArrayList<>();
             for(GuiElement<?> child : getListPanel().getChildren()) {
                 if(child instanceof AbstractGuiResourceLoadingList.Element) {

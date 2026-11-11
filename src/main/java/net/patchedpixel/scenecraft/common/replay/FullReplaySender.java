@@ -580,7 +580,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
                 org.dimension(),
                 org.seed(),
                 GameType.SPECTATOR,
-                Optional.of(GameType.SPECTATOR),
+                GameType.SPECTATOR,
                 org.isDebug(),
                 org.isFlat(),
                 org.lastDeathLocation(),

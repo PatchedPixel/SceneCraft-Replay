@@ -4,6 +4,7 @@ import net.patchedpixel.scenecraft.common.gui.versions.callbacks.OpenGuiScreenCa
 import net.patchedpixel.scenecraft.common.gui.versions.callbacks.PreTickCallback;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.Screen;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,7 +17,7 @@ public class MixinGui {
         PreTickCallback.EVENT.invoker().preTick();
     }
 
-    @Inject(method = "setScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/Gui;screen:Lnet/minecraft/client/gui/screens/Screen;"))
+    @Inject(method = "setScreen", at = @At(value = "FIELD", target = "Lnet/minecraft/client/gui/Gui;screen:Lnet/minecraft/client/gui/screens/Screen;", opcode = Opcodes.PUTFIELD))
     private void openGuiScreen(Screen newGuiScreen, CallbackInfo ci) {
         OpenGuiScreenCallback.EVENT.invoker().openGuiScreen(newGuiScreen);
     }

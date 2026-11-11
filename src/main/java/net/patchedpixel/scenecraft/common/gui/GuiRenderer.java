@@ -24,7 +24,7 @@
  */
 package net.patchedpixel.scenecraft.common.gui;
 
-import com.mojang.renderpearl.api.textures.GpuTexture;
+import com.mojang.blaze3d.textures.GpuTexture;
 import net.patchedpixel.scenecraft.common.gui.utils.color.ReadableColor;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.AbstractTexture;

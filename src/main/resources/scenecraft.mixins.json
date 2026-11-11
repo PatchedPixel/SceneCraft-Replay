@@ -46,7 +46,6 @@
     "replay.MixinRenderItem",
     "replay.MixinRenderLivingBase",
     "replay.MixinPlayerMenuItem",
-    "replay.entity_tracking.Mixin_EntityExt",
     "replay.world_border.Mixin_UseReplayTime_ForMovement",
     "replay.world_border.Mixin_UseReplayTime_ForTexture"
   ],

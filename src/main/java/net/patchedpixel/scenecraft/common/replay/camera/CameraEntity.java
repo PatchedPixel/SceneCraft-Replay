@@ -1,7 +1,7 @@
 package net.patchedpixel.scenecraft.common.replay.camera;
 
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
-import net.minecraft.client.player.FirstPersonHandsAndItems;
+import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.patchedpixel.scenecraft.platform.KeyBindingRegistry;
 import net.patchedpixel.scenecraft.common.SceneCraft;
 import net.patchedpixel.scenecraft.common.core.SettingsRegistry;
@@ -27,26 +27,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.stats.StatsCounter;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.level.Level;
-
 import net.minecraft.client.entity.ClientAvatarEntity;
 import net.minecraft.world.entity.Avatar;
-
 import net.minecraft.world.entity.player.Input;
-
 import net.minecraft.world.entity.player.PlayerSkin;
 import net.minecraft.util.Mth;
-
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.client.ClientRecipeBook;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.InteractionHand;
-
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.PlayerModelPart;
 
@@ -63,9 +57,7 @@ import static net.patchedpixel.scenecraft.common.core.versions.MCVer.*;
  * Camera movement is controlled by a separate {@link CameraController}.
  */
 @SuppressWarnings("EntityConstructor")
-public class CameraEntity
-        extends LocalPlayer
-{
+public class CameraEntity extends LocalPlayer {
     private static final UUID CAMERA_UUID = UUID.nameUUIDFromBytes("SceneCraftCamera".getBytes(StandardCharsets.UTF_8));
 
     /**
@@ -93,19 +85,17 @@ public class CameraEntity
             Minecraft mcIn,
             ClientLevel worldIn,
             ClientPacketListener netHandlerPlayClient,
-            StatsCounter statisticsManager
-            , ClientRecipeBook recipeBook
-            , net.minecraft.client.player.ItemActivation itemActivation
+            StatsCounter statisticsManager,
+            ClientRecipeBook recipeBook
     ) {
         super(mcIn,
                 worldIn,
                 netHandlerPlayClient,
-                statisticsManager
-                , recipeBook
-                , Input.EMPTY
-                , false
-                , mcIn.computeChatAbilities()
-                , itemActivation
+                statisticsManager,
+                recipeBook,
+                Input.EMPTY,
+                false,
+                mcIn.computeChatAbilities()
         );
         setUUID(CAMERA_UUID);
         eventHandler.register();
@@ -224,8 +214,7 @@ public class CameraEntity
 
     @Override
     public void tick() {
-        Entity view =
-            this.minecraft.getCameraEntity();
+        Entity view = this.minecraft.getCameraEntity();
         if(view != null) {
             // Make sure we're always spectating the right entity
             // This is important if the spectated player respawns as their
@@ -282,9 +271,7 @@ public class CameraEntity
     }
 
     @Override
-    public boolean isEyeInFluid(
-            TagKey<Fluid> fluid
-    ) {
+    public boolean isEyeInFluid(TagKey<Fluid> fluid) {
         return falseUnlessSpectating(entity -> entity.isEyeInFluid(fluid));
     }
 
@@ -378,21 +365,21 @@ public class CameraEntity
     }
 
     @Override
-    public float getSwingAnimation(float renderPartialTicks) {
+    public float getAttackAnim(float renderPartialTicks) {
         Entity view = this.minecraft.getCameraEntity();
         if(view != this && view instanceof Player) {
-            return ((Player) view).getSwingAnimation(renderPartialTicks);
+            return ((Player) view).getAttackAnim(renderPartialTicks);
         }
         return 0;
     }
 
     @Override
-    public net.minecraft.world.entity.LivingEntity.SwingDescription getCurrentSwing() {
+    public int getCurrentSwingDuration() {
         Entity view = this.minecraft.getCameraEntity();
         if(view != this && view instanceof Player) {
-            return ((Player) view).getCurrentSwing();
+            return ((Player) view).getCurrentSwingDuration();
         }
-        return null;
+        return super.getCurrentSwingDuration();
     }
 
     @Override
@@ -602,7 +589,7 @@ public class CameraEntity
                 if(lastHandRendered != player) {
                     lastHandRendered = player;
 
-                    FirstPersonHandsAndItems acc = mc.player.firstPersonHandsAndItems();
+                    ItemInHandRenderer acc = mc.gameRenderer.itemInHandRenderer;
                     acc.oMainHandHeight = 1;
                     acc.oOffHandHeight = 1;
                     acc.mainHandHeight = 1;

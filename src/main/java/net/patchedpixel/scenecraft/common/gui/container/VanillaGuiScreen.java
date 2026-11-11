@@ -1,5 +1,6 @@
 package net.patchedpixel.scenecraft.common.gui.container;
 
+import net.minecraft.client.gui.screens.Screen;
 import net.patchedpixel.scenecraft.common.gui.function.CharHandler;
 import net.patchedpixel.scenecraft.common.gui.function.CharInput;
 import net.patchedpixel.scenecraft.common.gui.function.Click;
@@ -72,6 +73,12 @@ public class VanillaGuiScreen extends GuiScreen implements Draggable, KeyHandler
     public void display() {
         getMinecraft().gui.setScreen(mcScreen);
         register();
+    }
+
+    public static boolean isInputCaptured(Screen mcScreen) {
+        VanillaGuiScreen gui = WRAPPERS.get(mcScreen);
+        if (gui == null || !gui.eventHandler.active) return false;
+        return ((MinecraftGuiScreen) gui.getSuperMcGui()).isInputCaptured();
     }
 
     @Override

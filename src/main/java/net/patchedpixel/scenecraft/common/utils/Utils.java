@@ -81,7 +81,7 @@ public class Utils {
     /**
      * Neither the root certificate of LetsEncrypt nor the root that cross-signed it is included in the default
      * Java keystore prior to 8u101.
-     * Therefore whenever a connection to the replaymod.com site is made, this SSLContext has to be used instead.
+     * Therefore, whenever a connection to the replaymod.com site is made, this SSLContext has to be used instead.
      * It has been constructed to include the necessary root certificates.
      * @see #SSL_SOCKET_FACTORY
      */
@@ -209,7 +209,7 @@ public class Utils {
 
     public static boolean isCtrlDown() {
         boolean mac = Util.getPlatform() == Util.OS.OSX;
-        return InputConstants.isKeyDown(getMinecraft().getWindow(), mac ? InputConstants.KEY_LSUPER : InputConstants.KEY_LCONTROL) || InputConstants.isKeyDown(getMinecraft().getWindow(), mac ? InputConstants.KEY_RSUPER : InputConstants.KEY_RCONTROL);
+        return MCVer.isKeyDown(mac ? InputConstants.KEY_LSUPER : InputConstants.KEY_LCONTROL) || MCVer.isKeyDown(mac ? InputConstants.KEY_RSUPER : InputConstants.KEY_RCONTROL);
     }
 
     public static GuiInfoPopup error(Logger logger, GuiContainer container, CrashReport crashReport, Runnable onClose) {

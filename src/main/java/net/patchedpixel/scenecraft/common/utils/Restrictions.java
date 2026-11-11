@@ -14,7 +14,7 @@ import io.netty.buffer.Unpooled;
  * @see <a href="https://gist.github.com/Johni0702/2547c463e51f65f312cb">Replay Restrictions Gist</a>
  */
 public class Restrictions {
-    public static final Identifier PLUGIN_CHANNEL = identifier(SceneCraft.MOD_ID, "restrict");
+    public static final Identifier PLUGIN_CHANNEL = identifier(SceneCraft.RM_ID, "restrict");
 
     public String handle(ClientboundCustomPayloadPacket packet) {
         FriendlyByteBuf buffer = new FriendlyByteBuf(Unpooled.wrappedBuffer(((Payload) packet.payload()).bytes()));

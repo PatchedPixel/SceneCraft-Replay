@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import static net.patchedpixel.scenecraft.common.core.versions.MCVer.getMinecraft;
 
 public class Pipeline<R extends Frame, P extends Frame> implements Runnable {
+
     private final WorldRenderer worldRenderer;
     private final FrameCapturer<R> capturer;
     private final FrameProcessor<R, P> processor;

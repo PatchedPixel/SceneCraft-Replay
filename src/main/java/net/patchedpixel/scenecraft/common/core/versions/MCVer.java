@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.common.core.versions;
 
-import com.mojang.blaze3d.Blaze3D;
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.patchedpixel.scenecraft.common.scenestudio.protocol.State;
 import net.patchedpixel.scenecraft.common.scenestudio.protocol.CurrentProtocol;
@@ -64,13 +64,13 @@ public class MCVer {
 
     public static void resizeMainWindow(Minecraft mc, int width, int height) {
         Window window = mc.getWindow();
-        window.onFramebufferResize(width, height);
+        window.onFramebufferResize(window.handle(), width, height);
         window.framebufferWidth = width;
         window.framebufferHeight = height;
     }
 
     /**
-     * Whether the active backend is OpenGL (as opposed to Vulkan).
+     * Whether the active render backend is OpenGL (as opposed to Vulkan).
      * Used to gate features which only exist for OpenGL (e.g. Iris based ODS rendering).
      */
     public static boolean isOpenGlBackend() {
@@ -79,6 +79,10 @@ public class MCVer {
         } catch(Throwable t) {
             return false;
         }
+    }
+
+    public static boolean isKeyDown(int key) {
+        return InputConstants.isKeyDown(getMinecraft().getWindow(), key);
     }
 
     public static Minecraft getMinecraft() {
@@ -138,10 +142,13 @@ public class MCVer {
 
     /**
      * Tells the game that the given element starts or stops receiving text input.
-     * With SDL this is required for typed characters to be delivered at all.
      */
     public static void onTextInputFocusChange(GuiEventListener element, boolean focused) {
         getMinecraft().onTextInputFocusChange(element, focused);
+    }
+
+    public static void setTextInputArea(int x0, int y0, int x1, int y1) {
+        getMinecraft().textInputManager().setTextInputArea(x0, y0, x1, y1);
     }
 
     public static Component literalText(String str) {
@@ -177,15 +184,16 @@ public class MCVer {
                 return Optional.of(b);
             }
         }
+
         return Optional.empty();
     }
 
-    /** SDL3 event polling (replaces glfwPollEvents). */
+    /** Polls the window events, with the game's detection of a frozen event loop active. */
     public static void pollEvents() {
         ((MinecraftMethodAccessor) getMinecraft()).sceneCraftPollEvents();
     }
 
-    /** Flushes and re-polls the SDL input events. */
+    /** Polls the window events without the game's frozen event loop detection. */
     public static void pumpEvents() {
         ((MinecraftMethodAccessor) getMinecraft()).sceneCraftPumpEvents();
     }
@@ -213,11 +221,11 @@ public class MCVer {
     }
 
     public static void openFile(File file) {
-        Blaze3D.openPath(file.toPath());
+        Util.getPlatform().openPath(file.toPath());
     }
 
     public static void openURL(URI url) {
-        Blaze3D.openUri(url);
+        Util.getPlatform().openUri(url);
     }
 
     public static void pushMatrix() {

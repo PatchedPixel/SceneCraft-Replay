@@ -2,8 +2,8 @@ package net.patchedpixel.scenecraft.common.mixin;
 
 import com.llamalad7.mixinextras.injector.v2.WrapWithCondition;
 import com.mojang.blaze3d.pipeline.RenderTarget;
-import com.mojang.renderpearl.api.commands.CommandEncoder;
-import com.mojang.renderpearl.api.textures.GpuTexture;
+import com.mojang.blaze3d.systems.CommandEncoder;
+import com.mojang.blaze3d.textures.GpuTexture;
 import net.patchedpixel.scenecraft.common.core.events.PreRenderHandCallback;
 import net.patchedpixel.scenecraft.common.render.hooks.EntityRendererHandler;
 import net.patchedpixel.scenecraft.common.render.hooks.FramebufferDelegateHolder;
@@ -61,7 +61,7 @@ public abstract class MixinGameRenderer implements EntityRendererHandler.IEntity
 
     @WrapWithCondition(
             method = "render",
-            at = @At(value = "INVOKE", target = "Lcom/mojang/renderpearl/api/commands/CommandEncoder;clearDepthTexture(Lcom/mojang/renderpearl/api/textures/GpuTexture;D)V")
+            at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;clearDepthTexture(Lcom/mojang/blaze3d/textures/GpuTexture;D)V")
     )
     private boolean sceneCraftRender_skipClearWhenRecordingDepthGui(CommandEncoder instance, GpuTexture texture, double v) {
         EntityRendererHandler handler = this.sceneCraftRender_getHandler();
@@ -69,8 +69,8 @@ public abstract class MixinGameRenderer implements EntityRendererHandler.IEntity
     }
 
     @WrapWithCondition(
-            method = "render3dHud",
-            at = @At(value = "INVOKE", target = "Lcom/mojang/renderpearl/api/commands/CommandEncoder;clearDepthTexture(Lcom/mojang/renderpearl/api/textures/GpuTexture;D)V")
+            method = "renderLevel",
+            at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/CommandEncoder;clearDepthTexture(Lcom/mojang/blaze3d/textures/GpuTexture;D)V")
     )
     private boolean sceneCraftRender_skipClearWhenRecordingDepthHand(CommandEncoder instance, GpuTexture texture, double v) {
         EntityRendererHandler handler = this.sceneCraftRender_getHandler();

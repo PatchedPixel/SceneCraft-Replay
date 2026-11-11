@@ -69,9 +69,12 @@ public class EntityRendererHandler extends EventRegistrations implements WorldRe
             Screen orgScreen = mc.gui.screen();
             boolean orgPauseOnLostFocus = mc.options.pauseOnLostFocus;
             boolean orgHudIsHidden = mc.gui.hud.isHidden();
+            double orgChunkFadeInTime = mc.options.chunkSectionFadeInTime().get();
             try {
                 mc.gui.screen = null;
                 mc.options.pauseOnLostFocus = false; // do not want the pause menu to open if the window is unfocused
+                // Chunks fade in based on wall-clock time, which has no relation to the frame being rendered
+                mc.options.chunkSectionFadeInTime().set(0.0);
                 if(omnidirectional) {
                     // makes no sense, we wouldn't even know where to put it
                     mc.gameRenderer.mainCamera().enablePanoramicMode();
@@ -82,13 +85,14 @@ public class EntityRendererHandler extends EventRegistrations implements WorldRe
                 if(!warmedUp) {
                     warmedUp = true;
                     mc.gameRenderer.extract(mc.getDeltaTracker(), true);
-                    mc.gameRenderer.render();
+                    mc.gameRenderer.render(mc.getDeltaTracker(), true);
                 }
                 mc.gameRenderer.extract(mc.getDeltaTracker(), true);
-                mc.gameRenderer.render();
+                mc.gameRenderer.render(mc.getDeltaTracker(), true);
             } finally {
                 mc.gui.screen = orgScreen;
                 mc.options.pauseOnLostFocus = orgPauseOnLostFocus;
+                mc.options.chunkSectionFadeInTime().set(orgChunkFadeInTime);
                 mc.gameRenderer.mainCamera().disablePanoramicMode();
                 if(!orgHudIsHidden) mc.gui.hud.toggle();
             }

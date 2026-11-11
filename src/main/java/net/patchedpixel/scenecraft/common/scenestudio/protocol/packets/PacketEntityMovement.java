@@ -29,14 +29,12 @@ import java.io.IOException;
 
 public class PacketEntityMovement {
     /**
-     * Reads a move_entity_* packet (26.x format).
+     * Reads a move_entity_* packet (26.2 format).
      * <pre>
-     * Pos:    varint net, varint properties (onGround | stepCount &lt;&lt; 1), VecDelta
-     * PosRot: Pos + byte yaw + byte pitch
-     * Rot:    varint net, boolean onGround, byte yaw, byte pitch
-     * VecDelta: stepCount == 0: 3 shorts; otherwise stepCount * (varint ticks, 3 shorts)
+     * Pos:    varint net, 3 shorts (delta * 4096), boolean onGround
+     * PosRot: varint net, 3 shorts (delta * 4096), byte yaw, byte pitch, boolean onGround
+     * Rot:    varint net, byte yaw, byte pitch, boolean onGround
      * </pre>
-     * For stepped movement the returned delta is the sum of all steps (the final displacement).
      */
     public static Triple<DPosition, Pair<Float, Float>, Boolean> getMovement(Packet packet) throws IOException {
         PacketType type = packet.getType();
@@ -45,28 +43,9 @@ public class PacketEntityMovement {
         try (Packet.Reader in = packet.reader()) {
             in.readVarInt(); // entity net
 
-            boolean onGround;
             DPosition pos = null;
             if(hasPos) {
-                int properties = in.readVarInt();
-                onGround = (properties & 1) != 0;
-                int steps = properties >>> 1;
-                long dx = 0, dy = 0, dz = 0;
-                if(steps <= 0) {
-                    dx = in.readShort();
-                    dy = in.readShort();
-                    dz = in.readShort();
-                } else {
-                    for(int i = 0; i < steps; i++) {
-                        in.readVarInt(); // ticks
-                        dx += in.readShort();
-                        dy += in.readShort();
-                        dz += in.readShort();
-                    }
-                }
-                pos = new DPosition(dx / 4096.0, dy / 4096.0, dz / 4096.0);
-            } else {
-                onGround = in.readBoolean();
+                pos = new DPosition(in.readShort() / 4096.0, in.readShort() / 4096.0, in.readShort() / 4096.0);
             }
             Pair<Float, Float> yawPitch = null;
             if(hasRot) {
@@ -75,6 +54,7 @@ public class PacketEntityMovement {
                         in.readByte() / 256f * 360
                 );
             }
+            boolean onGround = in.readBoolean();
             return Triple.of(pos, yawPitch, onGround);
         }
     }
@@ -97,17 +77,15 @@ public class PacketEntityMovement {
             out.writeVarInt(entityId);
 
             if(hasPos) {
-                out.writeVarInt(onGround ? 1 : 0); // properties: no steps
                 out.writeShort((int) Math.round(deltaPos.getX() * 4096));
                 out.writeShort((int) Math.round(deltaPos.getY() * 4096));
                 out.writeShort((int) Math.round(deltaPos.getZ() * 4096));
-            } else {
-                out.writeBoolean(onGround);
             }
             if(hasRot) {
                 out.writeByte((int) (yawPitch.getKey() / 360 * 256));
                 out.writeByte((int) (yawPitch.getValue() / 360 * 256));
             }
+            out.writeBoolean(onGround);
         }
         return packet;
     }

@@ -24,7 +24,7 @@
  */
 package net.patchedpixel.scenecraft.common.gui;
 
-import com.mojang.renderpearl.api.textures.GpuTexture;
+import com.mojang.blaze3d.textures.GpuTexture;
 import net.patchedpixel.scenecraft.common.gui.utils.NonNull;
 import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
 import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadablePoint;

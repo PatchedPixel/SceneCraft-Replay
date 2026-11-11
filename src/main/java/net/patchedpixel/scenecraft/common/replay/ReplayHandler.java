@@ -500,10 +500,7 @@ public class ReplayHandler {
     private void skipTeleportInterpolation(Entity entity) {
         InterpolationHandler i = entity.getInterpolation();
         if(i != null && i.hasActiveInterpolation()) {
-            net.minecraft.core.PositionAndRotation target = i.target();
-            if(target != null) {
-                entity.snapTo(target.position(), target.yRot(), target.xRot());
-            }
+            entity.snapTo(i.position(), i.yRot(), i.xRot());
             i.cancel();
         }
     }

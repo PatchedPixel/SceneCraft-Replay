@@ -34,7 +34,7 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.Identifier;
 import org.joml.Matrix3x2fStack;
 
-import com.mojang.renderpearl.api.textures.GpuTexture;
+import com.mojang.blaze3d.textures.GpuTexture;
 import net.minecraft.client.renderer.RenderPipelines;
 
 import java.util.ArrayList;

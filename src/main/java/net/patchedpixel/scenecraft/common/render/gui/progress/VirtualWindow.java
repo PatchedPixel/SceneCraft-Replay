@@ -9,8 +9,8 @@ import com.mojang.blaze3d.platform.Window;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.mojang.renderpearl.api.device.GpuSurface;
-import com.mojang.renderpearl.api.device.SurfaceException;
+import com.mojang.blaze3d.systems.GpuSurface;
+import com.mojang.blaze3d.systems.SurfaceException;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 

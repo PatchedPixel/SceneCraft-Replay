@@ -11,12 +11,9 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
-
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.resources.Identifier;
-import static net.patchedpixel.scenecraft.common.SceneCraft.MOD_ID;
-import static net.patchedpixel.scenecraft.common.core.versions.MCVer.identifier;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +25,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
+
+import static net.patchedpixel.scenecraft.common.SceneCraft.MOD_ID;
+import static net.patchedpixel.scenecraft.common.core.versions.MCVer.identifier;
 
 public class KeyBindingRegistry extends EventRegistrations {
     public static final String LEGACY_KEY_PREFIX = "scenecraft.input.";
@@ -42,12 +42,14 @@ public class KeyBindingRegistry extends EventRegistrations {
     public Binding registerKeyBinding(String name, int keyCode, Runnable whenPressed, boolean onlyInRepay) {
         Binding binding = registerKeyBinding(name, keyCode, onlyInRepay);
         binding.handlers.add(whenPressed);
+
         return binding;
     }
 
     public Binding registerRepeatedKeyBinding(String name, int keyCode, Runnable whenPressed, boolean onlyInRepay) {
         Binding binding = registerKeyBinding(name, keyCode, onlyInRepay);
         binding.repeatedHandlers.add(whenPressed);
+
         return binding;
     }
 
@@ -57,18 +59,21 @@ public class KeyBindingRegistry extends EventRegistrations {
             if(keyCode <= 0) {
                 keyCode = InputConstants.UNKNOWN.getValue();
             }
+
             Identifier id = identifier(MOD_ID, name.substring(LEGACY_KEY_PREFIX.length()));
             String key = String.format("key.%s.%s", id.getNamespace(), id.getPath());
             KeyMapping keyBinding = new KeyMapping(key, InputConstants.Type.KEYSYM, keyCode, CATEGORY);
             pendingMappings.add(keyBinding);
             binding = new Binding(name, keyBinding);
             bindings.put(name, binding);
+
             if(onlyInRepay) {
                 this.onlyInReplay.add(keyBinding);
             }
         } else if(!onlyInRepay) {
             this.onlyInReplay.remove(binding.keyBinding);
         }
+
         return binding;
     }
 
@@ -139,6 +144,7 @@ public class KeyBindingRegistry extends EventRegistrations {
                 throw new ReportedException(crashReport);
             }
         }
+
         return false;
     }
 
@@ -190,6 +196,7 @@ public class KeyBindingRegistry extends EventRegistrations {
             if(this.autoActivation == active) {
                 return;
             }
+
             this.autoActivation = active;
             this.autoActivationUpdate.accept(active);
         }

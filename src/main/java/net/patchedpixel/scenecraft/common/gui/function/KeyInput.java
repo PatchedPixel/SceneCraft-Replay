@@ -28,23 +28,23 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.input.KeyEvent;
 
 public class KeyInput implements InputWithModifiers {
-    /** Physical key position (SDL scancode). Independent of the keyboard layout. */
+    /** GLFW key code, one of the InputConstants.KEY_* constants. */
     public int key;
-    /** Logical key (SDL keycode). Follows the active keyboard layout. */
-    public int keycode;
+    /** Platform specific scancode of the physical key. */
+    public int scancode;
     public int modifiers;
 
-    public KeyInput(int key, int keycode, int modifiers) {
+    public KeyInput(int key, int scancode, int modifiers) {
         this.key = key;
-        this.keycode = keycode;
+        this.scancode = scancode;
         this.modifiers = modifiers;
     }
 
     public KeyInput(KeyEvent mc) {
-        this(mc.key(), mc.keycode(), mc.modifiers());
+        this(mc.key(), mc.scancode(), mc.modifiers());
     }
     public KeyEvent toMC() {
-        return new KeyEvent(key, keycode, modifiers);
+        return new KeyEvent(key, scancode, modifiers);
     }
 
     @Override

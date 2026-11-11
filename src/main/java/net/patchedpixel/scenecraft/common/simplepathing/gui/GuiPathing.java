@@ -6,6 +6,7 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 import net.patchedpixel.scenecraft.common.SceneCraft;
 import net.patchedpixel.scenecraft.common.utils.Result;
 import net.patchedpixel.scenecraft.common.utils.Utils;
@@ -78,7 +79,7 @@ public class GuiPathing {
             if(tooltip != null) {
                 if(player.isActive()) {
                     tooltip.setI18nText("scenecraft.gui.ingame.menu.pausepath");
-                } else if(InputConstants.isKeyDown(InputConstants.KEY_LCONTROL)) {
+                } else if(MCVer.isKeyDown(InputConstants.KEY_LCONTROL)) {
                     tooltip.setI18nText("scenecraft.gui.ingame.menu.playpathfromstart");
                 } else {
                     tooltip.setI18nText("scenecraft.gui.ingame.menu.playpath");
@@ -250,7 +251,7 @@ public class GuiPathing {
                 if(player.isActive()) {
                     player.getFuture().cancel(false);
                 } else {
-                    boolean ignoreTimeKeyframes = InputConstants.isKeyDown(InputConstants.KEY_LSHIFT);
+                    boolean ignoreTimeKeyframes = MCVer.isKeyDown(InputConstants.KEY_LSHIFT);
 
                     Timeline timeline = preparePathsForPlayback(ignoreTimeKeyframes).okOrElse(err -> {
                         GuiInfoPopup.open(overlay, err);
@@ -262,7 +263,7 @@ public class GuiPathing {
                     timePath.setActive(!ignoreTimeKeyframes);
 
                     // Start from cursor time unless the control key is pressed (then start from beginning)
-                    int startTime = InputConstants.isKeyDown(InputConstants.KEY_LCONTROL)? 0 : GuiPathing.this.timeline.getCursorPosition();
+                    int startTime = MCVer.isKeyDown(InputConstants.KEY_LCONTROL)? 0 : GuiPathing.this.timeline.getCursorPosition();
                     ListenableFuture<Void> future = player.start(timeline, startTime);
                     overlay.setCloseable(false);
                     overlay.setMouseVisible(true);
@@ -459,7 +460,7 @@ public class GuiPathing {
             // Replay time passed
             int timePassed = time - keyframeTime;
             // Speed (set to 1 when shift is held)
-            double speed = InputConstants.isKeyDown(InputConstants.KEY_LSHIFT) ? 1 : replayHandler.getOverlay().getSpeedSliderValue();
+            double speed = MCVer.isKeyDown(InputConstants.KEY_LSHIFT) ? 1 : replayHandler.getOverlay().getSpeedSliderValue();
             // Cursor time passed
             int cursorPassed = (int) (timePassed / speed);
             // Return new position

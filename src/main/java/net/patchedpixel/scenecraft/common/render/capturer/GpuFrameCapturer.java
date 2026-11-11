@@ -19,9 +19,9 @@ import static net.patchedpixel.scenecraft.common.core.versions.MCVer.popMatrix;
 import static net.patchedpixel.scenecraft.common.core.versions.MCVer.pushMatrix;
 import static net.patchedpixel.scenecraft.common.core.versions.MCVer.resizeMainWindow;
 
-import com.mojang.renderpearl.api.buffers.GpuBufferSlice;
-import com.mojang.renderpearl.api.buffers.GpuBuffer;
-import com.mojang.renderpearl.api.device.GpuDevice;
+import com.mojang.blaze3d.buffers.GpuBufferSlice;
+import com.mojang.blaze3d.buffers.GpuBuffer;
+import com.mojang.blaze3d.systems.GpuDevice;
 import org.joml.Vector4f;
 
 public abstract class GpuFrameCapturer<F extends Frame, D extends CaptureData> implements FrameCapturer<F> {

@@ -214,7 +214,7 @@ public class World implements RandomAccessState {
             PacketJoinGame joinGame = new PacketJoinGame();
             joinGame.entityId = -1789435; // arbitrary negative value
             joinGame.gameMode = 3; // Spectator
-            joinGame.prevGameMode = 4; // optional varint: net + 1, so 4 = Spectator
+            joinGame.prevGameMode = 3; // plain byte on 26.2 (-1 = none), 3 = Spectator
             joinGame.dimensions = dimensions;
             joinGame.registries = registries;
             joinGame.dimensionType = dimensionType;
@@ -229,7 +229,7 @@ public class World implements RandomAccessState {
         public PacketRespawn toRespawnPacket() {
             PacketRespawn respawn = new PacketRespawn();
             respawn.gameMode = 3; // Spectator
-            respawn.prevGameMode = 4; // optional varint: net + 1, so 4 = Spectator
+            respawn.prevGameMode = 3; // plain byte on 26.2 (-1 = none), 3 = Spectator
             respawn.dimensionType = dimensionType;
             respawn.dimension = dimension;
             respawn.seed = seed;

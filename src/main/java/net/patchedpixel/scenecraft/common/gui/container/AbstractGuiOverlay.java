@@ -239,15 +239,6 @@ public abstract class AbstractGuiOverlay<T extends AbstractGuiOverlay<T>> extend
             ((ScreenExt) this).setPassEvents(true);
         }
 
-        /**
-         * Lets vanilla know that a text element (e.g. in a rename dialog) is capturing keyboard input,
-         * so global hotkeys do not fire while typing.
-         */
-        @Override
-        public boolean isInputCaptured() {
-            return invokeHandlers(net.patchedpixel.scenecraft.common.gui.function.Focusable.class, net.patchedpixel.scenecraft.common.gui.function.Focusable::isFocused);
-        }
-
         @Override
         public boolean keyPressed(net.minecraft.client.input.KeyEvent mcKeyInput) {
             KeyInput keyInput = new KeyInput(mcKeyInput);

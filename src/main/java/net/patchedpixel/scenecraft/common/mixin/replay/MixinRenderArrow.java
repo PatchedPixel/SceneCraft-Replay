@@ -18,8 +18,8 @@ public abstract class MixinRenderArrow extends EntityRenderer {
 
     @SuppressWarnings("unchecked")
     @Override
-    public boolean shouldRender(Entity entity, Frustum camera, double camX, double camY, double camZ, float partialTicks) {
+    public boolean shouldRender(Entity entity, Frustum camera, double camX, double camY, double camZ) {
         // Force arrows to always render, otherwise they stop rendering when you get close to them
-        return SceneCraftReplay.instance.getReplayHandler() != null || super.shouldRender(entity, camera, camX, camY, camZ, partialTicks);
+        return SceneCraftReplay.instance.getReplayHandler() != null || super.shouldRender(entity, camera, camX, camY, camZ);
     }
 }

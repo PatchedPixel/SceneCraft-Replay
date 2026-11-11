@@ -29,7 +29,7 @@ public abstract class MixinEntityRenderer {
      * Cancelling the render event alone is insufficient because it affects neither the shadows nor the fire texture.
      */
     @Inject(method = "shouldRender", at=@At("HEAD"), cancellable = true)
-    public void sceneCraftExtras_isPlayerHidden(Entity entity, @Coerce Object camera, double camX, double camY, double camZ, float partialTicks, CallbackInfoReturnable<Boolean> ci) {
+    public void sceneCraftExtras_isPlayerHidden(Entity entity, @Coerce Object camera, double camX, double camY, double camZ, CallbackInfoReturnable<Boolean> ci) {
         SceneCraftExtras.instance.get(PlayerOverview.class).ifPresent(playerOverview -> {
             if(entity instanceof Player) {
                 Player player = (Player) entity;

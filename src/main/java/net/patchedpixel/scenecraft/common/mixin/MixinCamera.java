@@ -1,5 +1,6 @@
 package net.patchedpixel.scenecraft.common.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.patchedpixel.scenecraft.common.render.RenderSettings;
@@ -7,11 +8,11 @@ import net.patchedpixel.scenecraft.common.render.capturer.CubicGpuFrameCapturer;
 import net.patchedpixel.scenecraft.common.render.capturer.StereoscopicGpuFrameCapturer;
 import net.patchedpixel.scenecraft.common.render.hooks.EntityRendererHandler;
 import net.minecraft.client.Camera;
-import net.minecraft.world.entity.Entity;
+import net.minecraft.client.renderer.Projection;
+import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
-import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,7 +27,6 @@ import static org.joml.Math.PI_f;
 
 @Mixin(Camera.class)
 public abstract class MixinCamera {
-    @Shadow private @Nullable Entity entity;
     @Shadow @Final private static Vector3fc FORWARDS;
     @Shadow @Final private static Vector3fc UP;
     @Shadow @Final private static Vector3fc LEFT;
@@ -35,6 +35,8 @@ public abstract class MixinCamera {
     @Shadow @Final private Vector3f up;
     @Shadow @Final private Vector3f left;
     @Shadow private int matrixPropertiesDirty;
+    @Shadow @Final private Vector3f panoramicForwards;
+    @Shadow private boolean isPanoramicMode;
 
     @Shadow
     protected abstract void move(float forwards, float up, float right);
@@ -43,6 +45,10 @@ public abstract class MixinCamera {
     private void sceneCraftRender_setupCubicFrameRotation(CallbackInfo ci) {
         if(getHandler() == null || !(getHandler().data instanceof CubicGpuFrameCapturer.Data)) return;
         CubicGpuFrameCapturer.Data data = (CubicGpuFrameCapturer.Data) getHandler().data;
+
+        if(this.isPanoramicMode) {
+            this.panoramicForwards.set(this.forwards);
+        }
 
         switch(data) {
             case FRONT:
@@ -71,11 +77,31 @@ public abstract class MixinCamera {
     }
 
     @Inject(method = "alignWithEntity", at = @At("RETURN"))
-    private void sceneCraftRender_setupStereoscopicProjection(CallbackInfo ci) {
+    private void sceneCraftRender_offsetStereoscopicEye(CallbackInfo ci) {
         if(getHandler() == null || !(getHandler().data instanceof StereoscopicGpuFrameCapturer.Data)) return;
         StereoscopicGpuFrameCapturer.Data data = (StereoscopicGpuFrameCapturer.Data) getHandler().data;
 
         move(0f, 0f, 0.1f * (data == StereoscopicGpuFrameCapturer.Data.LEFT_EYE ? -1 : 1));
+    }
+
+    @WrapOperation(method = "extractRenderState", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/Projection;getMatrix(Lorg/joml/Matrix4f;)Lorg/joml/Matrix4f;"))
+    private Matrix4f sceneCraftRender_offsetStereoscopicProjection(Projection projection, Matrix4f dest, Operation<Matrix4f> original) {
+        return applyStereoscopicProjectionOffset(original.call(projection, dest));
+    }
+
+    @ModifyReturnValue(method = "createProjectionMatrixForCulling", at = @At("RETURN"))
+    private Matrix4f sceneCraftRender_offsetStereoscopicCullingProjection(Matrix4f projection) {
+        return applyStereoscopicProjectionOffset(projection);
+    }
+
+    @Unique
+    private Matrix4f applyStereoscopicProjectionOffset(Matrix4f projection) {
+        if(getHandler() == null || !(getHandler().data instanceof StereoscopicGpuFrameCapturer.Data)) {
+            return projection;
+        }
+        StereoscopicGpuFrameCapturer.Data data = (StereoscopicGpuFrameCapturer.Data) getHandler().data;
+
+        return projection.translateLocal(STEREOSCOPIC_PROJECTION_OFFSET * (data == StereoscopicGpuFrameCapturer.Data.LEFT_EYE ? 1 : -1), 0f, 0f);
     }
 
     @WrapOperation(method = "alignWithEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Camera;setRotation(FF)V"))
@@ -96,7 +122,11 @@ public abstract class MixinCamera {
     }
 
     @Unique
+    private static final float STEREOSCOPIC_PROJECTION_OFFSET = 0.07f;
+
+    @Unique
     private EntityRendererHandler getHandler() {
         return ((EntityRendererHandler.IEntityRenderer) getMinecraft().gameRenderer).sceneCraftRender_getHandler();
     }
 }
+

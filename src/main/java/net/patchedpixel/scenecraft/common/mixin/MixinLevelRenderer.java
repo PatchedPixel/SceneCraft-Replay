@@ -31,7 +31,7 @@ public abstract class MixinLevelRenderer {
     }
 
     @WrapOperation(
-            method = "addSkyPass",
+            method = "addSkyPass(Lcom/mojang/blaze3d/framegraph/FrameGraphBuilder;Lnet/minecraft/client/renderer/state/level/CameraRenderState;Lcom/mojang/blaze3d/buffers/GpuBufferSlice;Lorg/joml/Matrix4fc;)V",
             at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/framegraph/FramePass;executes(Ljava/lang/Runnable;)V")
     )
     private void chromaKeyingSky(FramePass pass, Runnable task, Operation<Void> original) {
