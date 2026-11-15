@@ -1,8 +1,5 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import groovy.json.JsonOutput
-
-import java.util.zip.ZipEntry
-import java.util.zip.ZipFile
-import java.util.zip.ZipOutputStream
 
 plugins {
     id 'eclipse'
@@ -11,6 +8,7 @@ plugins {
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.parchmentmc.librarian.forgegradle' version '1.+'
     id 'org.spongepowered.mixin' version '0.7.+'
+    id 'com.gradleup.shadow' version '8.3.6'
 }
 
 version = mod_version
@@ -69,18 +67,17 @@ minecraft {
 mixin {
     add sourceSets.main, "${mod_id}.refmap.json"
     config "${mod_id}.mixins.json"
+    config "${mod_id}.platform.mixins.json"
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
+configurations {
+    shade
+    implementation.extendsFrom(shade)
+}
 
-def tinyexrGroup = "net.patchedpixel.shaded-tinyexr"
-def tinyexrArtifact = "tinyexr-all"
-def tinyexrRepoDir = layout.buildDirectory.dir("lib-shading").get().asFile
-def tinyexrOutDir = new File(tinyexrRepoDir, "${tinyexrGroup.replace('.', '/')}/${tinyexrArtifact}/${lwjgl_version}")
-def tinyexrOutJar = new File(tinyexrOutDir, "${tinyexrArtifact}-${lwjgl_version}.jar")
-
-def jgltfGroup = "net.patchedpixel.shaded-jgltf"
-def jacksonGroup = "net.patchedpixel.shaded-jackson"
+sourceSets.main.resources {
+    srcDir 'src/generated/resources'
+}
 
 repositories {
     mavenCentral()
@@ -100,150 +97,7 @@ repositories {
         name = "caffeinemcRepositoryMaven"
         url = uri("https://maven.caffeinemc.net/releases")
     }
-    exclusiveContent {
-        forRepository {
-            maven {
-                name = "ShadedLibs"
-                url = tinyexrRepoDir.toURI()
-            }
-        }
-        filter {
-            includeGroup tinyexrGroup
-            includeGroup jgltfGroup
-            includeGroup jacksonGroup
-        }
-    }
 }
-
-if (!tinyexrOutJar.exists()) {
-    def tinyexrNatives = ["natives-windows", "natives-windows-arm64", "natives-linux", "natives-linux-arm64", "natives-macos", "natives-macos-arm64"]
-    def tinyexrDeps = [dependencies.create("org.lwjgl:lwjgl-tinyexr:${lwjgl_version}")]
-    tinyexrNatives.each { n -> tinyexrDeps << dependencies.create("org.lwjgl:lwjgl-tinyexr:${lwjgl_version}:${n}") }
-    def tinyexrConfig = configurations.detachedConfiguration(*tinyexrDeps)
-    tinyexrConfig.transitive = false
-
-    tinyexrOutDir.mkdirs()
-    def seen = new HashSet<String>()
-    new ZipOutputStream(new FileOutputStream(tinyexrOutJar)).withCloseable { out ->
-        tinyexrConfig.resolve().sort { it.name.length() }.each { jar ->
-            new ZipFile(jar).withCloseable { zip ->
-                zip.entries().each { e ->
-                    def name = e.name
-                    if (e.isDirectory() || name.startsWith("META-INF/") && (name.endsWith(".SF") || name.endsWith(".RSA") || name.endsWith(".DSA"))) return
-                    if (!seen.add(name)) return
-                    out.putNextEntry(new ZipEntry(name))
-                    zip.getInputStream(e).withCloseable { it.transferTo(out) }
-                    out.closeEntry()
-                }
-            }
-        }
-    }
-    new File(tinyexrOutDir, "${tinyexrArtifact}-${lwjgl_version}.pom").text = """<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>${tinyexrGroup}</groupId>
-  <artifactId>${tinyexrArtifact}</artifactId>
-  <version>${lwjgl_version}</version>
-</project>
-"""
-}
-
-// Generate Maven metadata for the locally shaded TinyEXR artifact.
-def tinyexrArtifactDir = new File(tinyexrRepoDir, "${tinyexrGroup.replace('.', '/')}/${tinyexrArtifact}")
-tinyexrArtifactDir.mkdirs()
-
-new File(tinyexrOutDir, "${tinyexrArtifact}-${lwjgl_version}.pom").text = """\
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>${tinyexrGroup}</groupId>
-    <artifactId>${tinyexrArtifact}</artifactId>
-    <version>${lwjgl_version}</version>
-</project>
-"""
-
-new File(tinyexrArtifactDir, "maven-metadata.xml").text = """\
-<?xml version="1.0" encoding="UTF-8"?>
-<metadata>
-    <groupId>${tinyexrGroup}</groupId>
-    <artifactId>${tinyexrArtifact}</artifactId>
-    <versioning>
-        <release>${lwjgl_version}</release>
-        <versions>
-            <version>${lwjgl_version}</version>
-        </versions>
-    </versioning>
-</metadata>
-"""
-
-def mergeJars = { String group, String artifact, String version, String moduleName, List<String> coords ->
-    def outDir = new File(tinyexrRepoDir, "${group.replace('.', '/')}/${artifact}/${version}")
-    def outJar = new File(outDir, "${artifact}-${version}.jar")
-    if (!outJar.exists()) {
-        outDir.mkdirs()
-        def cfg = configurations.detachedConfiguration(*coords.collect { dependencies.create(it) })
-        cfg.transitive = false
-
-        def seen = new HashSet<String>()
-        def services = new LinkedHashMap<String, LinkedHashSet<String>>()
-        new ZipOutputStream(new FileOutputStream(outJar)).withCloseable { out ->
-            cfg.resolve().each { jar ->
-                new ZipFile(jar).withCloseable { zip ->
-                    zip.entries().each { e ->
-                        def name = e.name
-                        if (e.isDirectory()) return
-                        if (name == "META-INF/MANIFEST.MF") return
-                        if (name.startsWith("META-INF/") && (name.endsWith(".SF") || name.endsWith(".RSA") || name.endsWith(".DSA"))) return
-                        if (name == "module-info.class" || name ==~ /META-INF\/versions\/\d+\/module-info\.class/) return
-                        if (name.startsWith("META-INF/services/")) {
-                            zip.getInputStream(e).withCloseable { ins ->
-                                services.computeIfAbsent(name) { new LinkedHashSet<String>() }
-                                        .addAll(ins.getText("UTF-8").readLines().findAll { it.trim() })
-                            }
-                            return
-                        }
-                        if (!seen.add(name)) return
-                        out.putNextEntry(new ZipEntry(name))
-                        zip.getInputStream(e).withCloseable { it.transferTo(out) }
-                        out.closeEntry()
-                    }
-                }
-            }
-            services.each { name, lines ->
-                out.putNextEntry(new ZipEntry(name))
-                out.write((lines.join("\n") + "\n").getBytes("UTF-8"))
-                out.closeEntry()
-            }
-            out.putNextEntry(new ZipEntry("META-INF/MANIFEST.MF"))
-            out.write("Manifest-Version: 1.0\r\nAutomatic-Module-Name: ${moduleName}\r\nMulti-Release: true\r\n\r\n".getBytes("UTF-8"))
-            out.closeEntry()
-        }
-        new File(outDir, "${artifact}-${version}.pom").text = """<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>${group}</groupId>
-  <artifactId>${artifact}</artifactId>
-  <version>${version}</version>
-</project>
-"""
-    }
-}
-
-def jgltfArtifact = "jgltf-all"
-def jgltfMergedVersion = jgltf_version
-mergeJars(jgltfGroup, jgltfArtifact, jgltfMergedVersion, "net.patchedpixel.shaded.jgltf", [
-        "de.javagl:jgltf-model:${jgltf_version}",
-        "de.javagl:jgltf-impl-v1:${jgltf_version}",
-        "de.javagl:jgltf-impl-v2:${jgltf_version}"
-])
-
-def jacksonArtifact = "jackson-all"
-def jacksonMergedVersion = jackson_version
-mergeJars(jacksonGroup, jacksonArtifact, jacksonMergedVersion, "net.patchedpixel.shaded.jackson", [
-        "com.fasterxml.jackson.core:jackson-core:${jackson_version}",
-        "com.fasterxml.jackson.core:jackson-annotations:${jackson_version}",
-        "com.fasterxml.jackson.core:jackson-databind:${jackson_version}"
-])
 
 jarJar.enable()
 
@@ -260,32 +114,54 @@ dependencies {
     }
 
     // Mod compat
-    compileOnly("maven.modrinth:GchcoXML:iQ1SwGc3") // Oculus
-    compileOnly("maven.modrinth:sk9rgfiA:UTbfe5d1") // Embeddium
-    compileOnly("maven.modrinth:1bokaNcj:dB6E0CY9") // Xaero's Minimap
-    compileOnly("maven.modrinth:9eGKb6K1:lWvbAZ3P") // Simple Voice Chat
+    compileOnly("maven.modrinth:GchcoXML:iQ1SwGc3")
+    compileOnly("maven.modrinth:sk9rgfiA:UTbfe5d1")
+    compileOnly("maven.modrinth:1bokaNcj:dB6E0CY9")
+    compileOnly("maven.modrinth:9eGKb6K1:lWvbAZ3P")
 
-    // OpenEXR lib
-    implementation "${tinyexrGroup}:${tinyexrArtifact}:${lwjgl_version}"
-    jarJar("$tinyexrGroup:$tinyexrArtifact:[$lwjgl_version]") {
-        jarJar.pin(it, lwjgl_version)
+    // OpenEXR
+    shade("org.lwjgl:lwjgl-tinyexr:${lwjgl_version}") {
+        transitive = false
+    }
+    ["natives-windows", "natives-windows-arm64", "natives-linux", "natives-linux-arm64", "natives-macos", "natives-macos-arm64"].each {nativeClassifier ->
+        shade("org.lwjgl:lwjgl-tinyexr:[$lwjgl_version,$lwjgl_version]:$nativeClassifier") {
+            transitive = false
+        }
     }
 
-    // Project lib
-    implementation "com.googlecode.mp4parser:isoparser:1.1.22"
-    jarJar("com.googlecode.mp4parser:isoparser:[1.1.22]") {
-        jarJar.pin(it, "1.1.22")
-    }
-    // JGLtf lib
-    implementation "${jgltfGroup}:${jgltfArtifact}:${jgltfMergedVersion}"
-    jarJar("${jgltfGroup}:${jgltfArtifact}:[${jgltfMergedVersion}]") {
-        jarJar.pin(it, jgltfMergedVersion)
-    }
-    // Jackson lib
-    implementation "${jacksonGroup}:${jacksonArtifact}:${jacksonMergedVersion}"
-    jarJar("${jacksonGroup}:${jacksonArtifact}:[${jacksonMergedVersion}]") {
-        jarJar.pin(it, jacksonMergedVersion)
-    }
+    // MP4Parser
+    shade "com.googlecode.mp4parser:isoparser:1.1.22"
+
+    // JGLTF
+    shade "de.javagl:jgltf-model:${jgltf_version}"
+    shade "de.javagl:jgltf-impl-v1:${jgltf_version}"
+    shade "de.javagl:jgltf-impl-v2:${jgltf_version}"
+
+    // Jackson
+    shade "com.fasterxml.jackson.core:jackson-core:${jackson_version}"
+    shade "com.fasterxml.jackson.core:jackson-annotations:${jackson_version}"
+    shade "com.fasterxml.jackson.core:jackson-databind:${jackson_version}"
+}
+
+tasks.named('shadowJar', ShadowJar) {
+    configurations = [project.configurations.shade]
+    archiveClassifier = ''
+
+    relocate('com.fasterxml.jackson', 'net.patchedpixel.scenecraft.libs.jackson')
+    relocate('com.googlecode.mp4parser', 'net.patchedpixel.scenecraft.libs.googlecode.mp4parser')
+    relocate('com.coremedia.iso', 'net.patchedpixel.scenecraft.libs.coremedia.iso')
+    relocate('com.mp4parser', 'net.patchedpixel.scenecraft.libs.mp4parser')
+    relocate('org.mp4parser.aspectj', 'net.patchedpixel.scenecraft.libs.mp4parser.aspectj')
+    relocate('de.javagl.jgltf', 'net.patchedpixel.scenecraft.libs.jgltf')
+    mergeServiceFiles()
+
+    exclude 'META-INF/*.SF'
+    exclude 'META-INF/*.DSA'
+    exclude 'META-INF/*.RSA'
+}
+
+tasks.named('shadowJar').configure {
+    finalizedBy 'reobfShadowJar'
 }
 
 def convertLang = tasks.register("convertLang") {
@@ -322,11 +198,17 @@ sourceSets.main.resources.srcDir convertLang
 
 tasks.named('processResources', ProcessResources).configure {
     var replaceProperties = [
-            minecraft_version: minecraft_version, minecraft_version_range: minecraft_version_range,
-            forge_version: forge_version, forge_version_range: forge_version_range,
-            loader_version_range: loader_version_range,
-            mod_id: mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
-            mod_authors: mod_authors, mod_description: mod_description,
+            minecraft_version      : minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            forge_version           : forge_version,
+            forge_version_range     : forge_version_range,
+            loader_version_range    : loader_version_range,
+            mod_id                  : mod_id,
+            mod_name                : mod_name,
+            mod_license             : mod_license,
+            mod_version             : mod_version,
+            mod_authors             : mod_authors,
+            mod_description         : mod_description
     ]
     inputs.properties replaceProperties
 
@@ -354,6 +236,7 @@ tasks.named('jar', Jar).configure {
 
 reobf {
     jarJar {}
+    shadowJar {}
 }
 
 tasks.named('jarJar').configure {
@@ -362,6 +245,7 @@ tasks.named('jarJar').configure {
 
 tasks.named('build').configure {
     dependsOn 'jarJar'
+    dependsOn 'reobfShadowJar'
 }
 
 publishing {

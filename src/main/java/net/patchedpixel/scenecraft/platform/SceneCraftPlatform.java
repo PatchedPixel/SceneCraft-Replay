@@ -2,9 +2,8 @@ package net.patchedpixel.scenecraft.platform;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.patchedpixel.scenecraft.SceneCraft;
-import net.patchedpixel.scenecraft.core.gui.GuiReplaySettings;
-import net.patchedpixel.scenecraft.gui.versions.GuiEventBridge;
+import net.patchedpixel.scenecraft.common.SceneCraft;
+import net.patchedpixel.scenecraft.common.core.gui.GuiReplaySettings;
 import net.minecraft.SharedConstants;
 import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
@@ -29,7 +28,7 @@ public class SceneCraftPlatform {
                 () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (remoteVersion, isFromServer) -> true)
         );
 
-        if (FMLEnvironment.dist != Dist.CLIENT) {
+        if(FMLEnvironment.dist != Dist.CLIENT) {
             return;
         }
 
@@ -43,7 +42,7 @@ public class SceneCraftPlatform {
         context.registerExtensionPoint(
                 ConfigScreenHandler.ConfigScreenFactory.class,
                 () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, parent) -> {
-                    if (this.mod == null) {
+                    if(this.mod == null) {
                         return parent;
                     }
                     return new GuiReplaySettings(parent, this.mod.getSettingsRegistry()).toMinecraft();
@@ -59,7 +58,7 @@ public class SceneCraftPlatform {
 
     private void onClientSetup(FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
-            if (this.mod != null) {
+            if(this.mod != null) {
                 this.mod.initModules();
             }
         });

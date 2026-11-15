@@ -6,7 +6,7 @@
 
 Started as a [ReplayMod](https://github.com/ReplayMod/ReplayMod) fork for modern Minecraft, and growing into its own project: multi-version, multi-loader, and rebuilt for the future after the first stable release.
 
-![Loader](https://img.shields.io/badge/loader-NeoForge%20%7C%20Forge%20(planned)-E68C3A)
+![Loader](https://img.shields.io/badge/loader-NeoForge%20%7C%20Forge-E68C3A)
 ![Renderer](https://img.shields.io/badge/renderer-OpenGL%20%7C%20Vulkan-8A63D2)
 ![License](https://img.shields.io/badge/license-GPLv3-blue)
 
@@ -26,12 +26,12 @@ Started as a [ReplayMod](https://github.com/ReplayMod/ReplayMod) fork for modern
 
 ## 📦 Supported versions
 
-| Minecraft       | Loader   | Status      |
-|-----------------|----------|-------------|
-| 26.3            | NeoForge | ✅ Available |
-| 1.21.1          | NeoForge | 🛠️ Planned |
-| 1.20.1          | Forge    | 🛠️ Planned |
-| Other versions  | NeoForge | 🛠️ Planned |
+| Minecraft      | Loader   | Status      |
+|----------------|----------|-------------|
+| 26.2 - 26.3    | NeoForge | ✅ Available |
+| 1.21.1         | NeoForge | 🛠️ Planned |
+| 1.20.1         | Forge    | 🛠️ Planned |
+| Other versions | NeoForge | 🛠️ Planned |
 
 Each build targets one Minecraft version and one loader, so pick the jar that matches your game.
 

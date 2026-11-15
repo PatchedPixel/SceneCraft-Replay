@@ -85,7 +85,7 @@ Open the render settings from the editor, pick a method, resolution, frame rate 
 | Stereoscopic | Side-by-side 3D video. Each eye is half the video width. |
 | Cubic | 360° panorama using a cube projection. |
 | Equirectangular | 360° panorama in the format used by YouTube 360 and most 360 players. |
-| ODS | Stereoscopic 360° (VR video). Needs an Iris shader pack and the OpenGL backend. |
+| ODS | Stereoscopic 360° (VR video). Needs an Iris shader pack (Oculus on Forge 1.20.1) and the OpenGL backend. |
 | Blender export | Experimental. Exports visible geometry as a `.blend` file. Uses a lot of RAM and has known issues. |
 
 **Encoding presets:** MP4 (default, potato, custom bitrate), WebM (custom bitrate), MKV (lossless), PNG sequence and OpenEXR sequence.
@@ -120,8 +120,8 @@ For people reading or contributing to the code. All code is under `src/main/java
 |---|---|
 | Rendering fails to start | Make sure FFmpeg is installed, or set its path in the render settings. |
 | Video size error | With YUV 4:2:0 presets use even width and height (cubic: height divisible by 6). |
-| ODS render option unavailable | ODS needs Iris and the OpenGL backend. |
-| Render or replay behaves oddly with Sodium | Use a SceneCraft-compatible Sodium build or remove Sodium before rendering. |
+| ODS render option unavailable | ODS needs Iris (Oculus on Forge 1.20.1) and the OpenGL backend. |
+| Render or replay behaves oddly with Sodium (Embeddium on Forge 1.20.1) | Use a SceneCraft-compatible build or remove it before rendering. |
 | Something else broke | Open an issue and attach your `latest.log`, plus the crash report if there was one. |
 
 ## Contributing

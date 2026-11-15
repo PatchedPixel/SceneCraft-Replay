@@ -2,7 +2,7 @@
   "required": true,
   "minVersion": "0.8",
   "refmap": "scenecraft.refmap.json",
-  "package": "net.patchedpixel.scenecraft.mixin",
+  "package": "net.patchedpixel.scenecraft.common.mixin",
   "compatibilityLevel": "JAVA_17",
   "client": [
     "MixinCamera",
@@ -39,10 +39,11 @@
     "replay.MixinGuiSpectator",
     "replay.MixinKeyboardListener",
     "replay.MixinParticleManager",
+    "replay.MixinPlayerMenuItem",
     "replay.MixinRenderArrow",
     "replay.MixinRenderItem",
     "replay.MixinRenderLivingBase",
-    "replay.NetworkConstantsAccessor",
+    "replay.MixinViewArea",
     "replay.entity_tracking.Mixin_EntityExt",
     "replay.world_border.Mixin_UseReplayTime_ForMovement",
     "replay.world_border.Mixin_UseReplayTime_ForTexture"
