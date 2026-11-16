@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "refmap": "scenecraft.refmap.json",
+  "package": "net.patchedpixel.scenecraft.platform.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "client": [
+    "MixinNetworkFilters",
+    "NetworkConstantsAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
