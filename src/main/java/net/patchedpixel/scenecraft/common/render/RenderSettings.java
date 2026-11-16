@@ -48,7 +48,7 @@ public class RenderSettings {
         public boolean isSupported() {
             // ODS is only implemented through an Iris shader pack, and Iris only exists for the OpenGL backend.
             if(this == ODS) {
-                return (ModLoader.isModLoaded("oculus") || ModLoader.isModLoaded("iris"));
+                return (ModLoader.isModLoaded("oculus") || ModLoader.isModLoaded("oculus"));
             }
             return true;
         }

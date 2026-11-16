@@ -114,10 +114,10 @@ dependencies {
     }
 
     // Mod compat
-    compileOnly("maven.modrinth:GchcoXML:iQ1SwGc3")
-    compileOnly("maven.modrinth:sk9rgfiA:UTbfe5d1")
-    compileOnly("maven.modrinth:1bokaNcj:dB6E0CY9")
-    compileOnly("maven.modrinth:9eGKb6K1:lWvbAZ3P")
+    implementation fg.deobf("maven.modrinth:GchcoXML:iQ1SwGc3") // Oculus
+    implementation fg.deobf("maven.modrinth:sk9rgfiA:UTbfe5d1") // Embeddium
+    compileOnly("maven.modrinth:1bokaNcj:dB6E0CY9") // Xaero's Minimap
+    compileOnly("maven.modrinth:9eGKb6K1:lWvbAZ3P") // Simple Voicechat
 
     // OpenEXR
     shade("org.lwjgl:lwjgl-tinyexr:${lwjgl_version}") {

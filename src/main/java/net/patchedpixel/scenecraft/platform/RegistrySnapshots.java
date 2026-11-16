@@ -21,8 +21,7 @@ public final class RegistrySnapshots {
 
     private static final Logger LOGGER = LogManager.getLogger("SceneCraft");
 
-    private RegistrySnapshots() {
-    }
+    private RegistrySnapshots() {}
 
     public static byte[] capture() throws IOException {
         CompoundTag root = new CompoundTag();
@@ -30,12 +29,14 @@ public final class RegistrySnapshots {
                 .forEach((name, snapshot) -> root.put(name.toString(), snapshot.write()));
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         NbtIo.writeCompressed(root, out);
+
         return out.toByteArray();
     }
 
     public static void apply(InputStream in) throws IOException {
         CompoundTag root = NbtIo.readCompressed(in);
         Map<ResourceLocation, ForgeRegistry.Snapshot> snapshots = new HashMap<>();
+
         for(String key : root.getAllKeys()) {
             snapshots.put(ResourceLocation.parse(key), ForgeRegistry.Snapshot.read(root.getCompound(key)));
         }

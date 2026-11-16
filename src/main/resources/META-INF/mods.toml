@@ -14,10 +14,6 @@ credits="johni0702 and CrushedPixel as original ReplayMod developers"
 authors="${mod_authors}"
 description='''${mod_description}'''
 
-# FRAPI intregation
-[modproperties.${mod_id}]
-"frex:flawless_frames_handler" = "net.patchedpixel.scenecraft.common.render.utils.FlawlessFrames"
-
 # Better Mod List integration
 [modproperties.modmenu]
 badges=["client"]

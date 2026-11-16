@@ -29,7 +29,7 @@ public class FlawlessFrames {
             CONSUMERS.add(consumer);
         }
 
-        hasSodium = ModLoader.isModLoaded("sodium");
+        hasSodium = ModLoader.isModLoaded("embeddium");
     }
 
     public static void setEnabled(boolean enabled) {

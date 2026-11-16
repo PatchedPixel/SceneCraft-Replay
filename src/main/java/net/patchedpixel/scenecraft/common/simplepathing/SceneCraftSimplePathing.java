@@ -43,6 +43,7 @@ public class SceneCraftSimplePathing extends EventRegistrations implements Modul
     public KeyBindingRegistry.Binding keyPositionKeyframe;
     public KeyBindingRegistry.Binding keyTimeKeyframe;
     public KeyBindingRegistry.Binding keySyncTime;
+
     public static Logger LOGGER = LogManager.getLogger();
     private GuiPathing guiPathing;
     private final PathPreview pathPreview = new PathPreview(this);

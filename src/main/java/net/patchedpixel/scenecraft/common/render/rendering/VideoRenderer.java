@@ -485,17 +485,17 @@ public class VideoRenderer implements RenderInfo {
     }
 
     public static String[] checkCompat(RenderSettings settings) {
-        if(ModLoader.isModLoaded("sodium") && !FlawlessFrames.hasSodium()) {
+        if(ModLoader.isModLoaded("embeddium") && !FlawlessFrames.hasSodium()) {
             return new String[] {
-                    "Rendering is not supported with your Sodium version.",
+                    "Rendering is not supported with your Sodium/Embeddium version.",
                     "It is missing support for the FREX Flawless Frames API.",
-                    "Either use the Sodium build from replaymod.com or uninstall Sodium before rendering!",
+                    "Either use the Sodium/Embeddium build from replaymod.com or uninstall Sodium/Embeddium before rendering!",
             };
         }
         if(settings.getRenderMethod() == RenderSettings.RenderMethod.ODS
-                && !ModLoader.isModLoaded("iris")) {
+                && !ModLoader.isModLoaded("oculus")) {
             return new String[] {
-                    "ODS export requires Iris to be installed for Minecraft 1.17 and above.",
+                    "ODS export requires Iris/Oculus to be installed for Minecraft 1.17 and above.",
                     "Note that it is nevertheless incompatible with other shaders and will simply replace them.",
                     "Get it from: https://modrinth.com/mod/iris",
             };
