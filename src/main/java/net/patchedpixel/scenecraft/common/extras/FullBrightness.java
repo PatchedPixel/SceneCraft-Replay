@@ -27,6 +27,14 @@ public class FullBrightness extends EventRegistrations implements Extra {
 
     private static boolean gamma;
 
+    private static volatile boolean lightmapDirty;
+
+    public static boolean consumeLightmapDirty() {
+        boolean dirty = lightmapDirty;
+        lightmapDirty = false;
+        return dirty;
+    }
+
     public static boolean getGamma() {
         return gamma;
     }
@@ -41,6 +49,7 @@ public class FullBrightness extends EventRegistrations implements Extra {
             @Override
             public void run() {
                 active = !active;
+                lightmapDirty = true;
                 // need to tick once to update lightmap when replay is paused
                 mod.getMinecraft().gameRenderer.tick();
                 ReplayHandler replayHandler = module.getReplayHandler();
@@ -95,7 +104,7 @@ public class FullBrightness extends EventRegistrations implements Extra {
         }
     }
 
-    { on(ReplayOpenedCallback.EVENT, replayHandler -> updateIndicator(replayHandler.getOverlay())); }
+    { on(ReplayOpenedCallback.EVENT, replayHandler -> { lightmapDirty = true; updateIndicator(replayHandler.getOverlay()); }); }
     private void updateIndicator(GuiReplayOverlay overlay) {
         if(active) {
             overlay.statusIndicatorPanel.addElements(new HorizontalLayout.Data(1), indicator);

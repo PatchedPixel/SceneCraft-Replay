@@ -63,6 +63,13 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
     /**
      * These packets are ignored completely during replay.
      */
+    private static final Set<String> SEEN_CUSTOM_CHANNELS = Collections.synchronizedSet(new HashSet<>());
+
+    /** Channel prefixes whose recorded packets must not be replayed (live server session only). */
+    private static final List<String> LIVE_SESSION_CHANNEL_PREFIXES = List.of(
+            "pandalib:"
+    );
+
     private static final List<Class<?>> BAD_PACKETS = Arrays.asList(
             ClientboundHelloPacket.class, // workaround for an issue where SceneCraft prior to 2.6.20 would record these
             ClientboundCustomQueryPacket.class,
@@ -428,10 +435,24 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
             ResourceLocation channelName = packet.getIdentifier();
             String channelNameStr = channelName.toString();
 
+            if(SEEN_CUSTOM_CHANNELS.add(channelNameStr)) {
+                org.apache.logging.log4j.LogManager.getLogger("SceneCraft")
+                        .info("[Replay] custom payload channel in recording: {}", channelNameStr);
+            }
+
             if(channelNameStr.startsWith("voicechat:")) {
                 // The recorded Simple Voice Chat handshake (secret, player state, ...) belongs to a live server session.
                 // Replaying it makes the voice chat client try to connect to the original server.
                 return null;
+            }
+
+            // Config/handshake sync packets of other mods belong to the live server session as well.
+            // Replaying them either hits a channel the client never registered ("Unknown custom packet identifier")
+            // or reaches a mod whose client state was never initialised (e.g. MusicTriggers: helper is null).
+            for(String prefix : LIVE_SESSION_CHANNEL_PREFIXES) {
+                if(channelNameStr.startsWith(prefix)) {
+                    return null;
+                }
             }
         }
 

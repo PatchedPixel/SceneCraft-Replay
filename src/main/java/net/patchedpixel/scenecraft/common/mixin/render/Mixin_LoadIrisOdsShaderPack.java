@@ -2,8 +2,6 @@ package net.patchedpixel.scenecraft.common.mixin.render;
 
 import net.patchedpixel.scenecraft.common.render.capturer.IrisODSFrameCapturer;
 import net.irisshaders.iris.Iris;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 import net.patchedpixel.scenecraft.platform.ModLoader;
 import org.spongepowered.asm.mixin.Mixin;

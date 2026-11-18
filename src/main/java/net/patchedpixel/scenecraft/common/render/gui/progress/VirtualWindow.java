@@ -6,15 +6,9 @@ import net.patchedpixel.scenecraft.common.gui.function.Closeable;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.Window;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-
-
 import com.mojang.blaze3d.pipeline.MainTarget;
 
 public class VirtualWindow implements Closeable {
-    private static final Logger LOGGER = LogManager.getLogger();
     private final Minecraft mc;
     private final Window window;
 

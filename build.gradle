@@ -113,9 +113,11 @@ dependencies {
         jarJar.ranged(it, "[0.5.5,)")
     }
 
-    // Mod compat
+    // Mod compat: Test
     implementation fg.deobf("maven.modrinth:GchcoXML:iQ1SwGc3") // Oculus
     implementation fg.deobf("maven.modrinth:sk9rgfiA:UTbfe5d1") // Embeddium
+
+    // Mod compat: Compile
     compileOnly("maven.modrinth:1bokaNcj:dB6E0CY9") // Xaero's Minimap
     compileOnly("maven.modrinth:9eGKb6K1:lWvbAZ3P") // Simple Voicechat
 

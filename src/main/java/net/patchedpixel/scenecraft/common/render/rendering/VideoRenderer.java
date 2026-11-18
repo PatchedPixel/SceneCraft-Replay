@@ -272,12 +272,12 @@ public class VideoRenderer implements RenderInfo {
             path.updateAll();
             // Find end time
             Collection<Keyframe> keyframes = path.getKeyframes();
-            if(keyframes.size() > 0) {
+            if(!keyframes.isEmpty()) {
                 duration = Math.max(duration, getLast(keyframes).getTime());
             }
         }
 
-        totalFrames = (int) (duration*fps/1000);
+        totalFrames = (int) (duration * fps / 1000);
 
         if(cameraPathExporter != null) {
             cameraPathExporter.setup(totalFrames);
@@ -292,7 +292,7 @@ public class VideoRenderer implements RenderInfo {
         if(!timelinePlayerFuture.isDone()) {
             timelinePlayerFuture.cancel(false);
         }
-        // Tear down of the timeline player might only happen the next tick after it was cancelled
+        // Tear down of the timeline player might only happen the next tick after it was canceled
         timelinePlayer.onTick();
 
         guiWindow.close();
