@@ -139,6 +139,8 @@ tasks.named('shadowJar') {
     archiveClassifier = 'unobfuscated'
     destinationDirectory = layout.buildDirectory.dir('intermediates')
 
+    addMultiReleaseAttribute = false
+
     def jarJarTask = tasks.named('jarJar')
     dependsOn jarJarTask
     from(zipTree(jarJarTask.flatMap { it.archiveFile })) {
@@ -167,6 +169,8 @@ tasks.named('shadowJar') {
     exclude 'META-INF/*.SF'
     exclude 'META-INF/*.DSA'
     exclude 'META-INF/*.RSA'
+    exclude 'META-INF/versions/**'
+    exclude 'module-info.class'
 }
 
 def convertLang = tasks.register("convertLang") {
@@ -269,4 +273,6 @@ tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
 
-idea.module { downloadJavadoc = downloadSources = true }
+idea.module {
+    downloadJavadoc = downloadSources = true
+}
