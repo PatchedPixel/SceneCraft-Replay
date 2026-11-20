@@ -37,18 +37,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.network.Connection;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 import net.minecraft.client.gui.screens.LevelLoadingScreen;
-
 import net.minecraft.world.entity.InterpolationHandler;
-
 import net.minecraft.network.UnconfiguredPipelineHandler;
 import net.minecraft.network.protocol.login.LoginProtocols;
-
 import net.minecraft.client.resources.server.ServerPackManager;
-
 import net.minecraft.network.protocol.PacketFlow;
+import net.patchedpixel.scenecraft.platform.RegistrySnapshots;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -66,6 +64,11 @@ public class ReplayHandler {
      * The file currently being played.
      */
     private final ReplayFile replayFile;
+
+    /**
+     * Whether the registry ids of the recording were applied and must be reverted when the replay is closed.
+     */
+    private boolean registriesApplied;
 
     /**
      * Decodes and sends packets into channel.
@@ -145,11 +148,13 @@ public class ReplayHandler {
 
         channel.close().awaitUninterruptibly();
 
-        if(mc.player instanceof CameraEntity) {
-        }
-
         if(mc.level != null) {
             mc.disconnectWithProgressScreen();
+        }
+
+        if(registriesApplied) {
+            RegistrySnapshots.revert();
+            registriesApplied = false;
         }
 
         DeltaTracker.Timer timer = mc.deltaTracker;
@@ -165,6 +170,8 @@ public class ReplayHandler {
 
     private void setup() {
         Preconditions.checkState(mc.isSameThread(), "Must be called from Minecraft thread.");
+
+        applyRecordedRegistries();
 
         mc.gui.hud.getChat().clearMessages(false);
 
@@ -198,6 +205,19 @@ public class ReplayHandler {
 
         mc.pendingConnection = networkManager;
         mc.getDownloadedPackSource().configureForServerControl(networkManager, ServerPackManager.PackPromptStatus.ALLOWED);
+    }
+
+    private void applyRecordedRegistries() {
+        try {
+            Optional<InputStream> snapshot = replayFile.get(RegistrySnapshots.ENTRY);
+            if(snapshot.isPresent()) {
+                try(InputStream in = snapshot.get()) {
+                    registriesApplied = RegistrySnapshots.apply(in);
+                }
+            }
+        } catch(Throwable t) {
+            LOGGER.warn("Could not apply the registry ids of the replay", t);
+        }
     }
 
     public ReplayFile getReplayFile() {

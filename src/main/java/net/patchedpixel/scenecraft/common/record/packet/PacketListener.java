@@ -323,6 +323,19 @@ public class PacketListener extends ChannelInboundHandlerAdapter {
         );
     }
 
+    public void saveRegistrySnapshot() {
+        try {
+            byte[] snapshot = net.patchedpixel.scenecraft.platform.RegistrySnapshots.capture();
+            synchronized(replayFile) {
+                try(java.io.OutputStream out = replayFile.write(net.patchedpixel.scenecraft.platform.RegistrySnapshots.ENTRY)) {
+                    out.write(snapshot);
+                }
+            }
+        } catch(Throwable t) {
+            logger.error("Saving registry snapshot:", t);
+        }
+    }
+
     public void addMarker(String name) {
         addMarker(name, (int) getCurrentDuration());
     }

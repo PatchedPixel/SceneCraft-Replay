@@ -15,6 +15,7 @@ import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayMetaData;
 import net.patchedpixel.scenecraft.common.scenestudio.stream.IteratorStream;
 import net.patchedpixel.scenecraft.common.scenestudio.util.Utils;
+import net.patchedpixel.scenecraft.platform.RegistrySnapshots;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -236,6 +237,14 @@ public class MarkerProcessor {
                     outputReplayFile.writeMarkers(outputMarkers);
 
                     outputReplayFile.writeModInfo(inputReplayFile.getModInfo());
+
+                    java.util.Optional<InputStream> registries = inputReplayFile.get(RegistrySnapshots.ENTRY);
+                    if(registries.isPresent()) {
+                        try(InputStream in = registries.get();
+                            OutputStream out = outputReplayFile.write(RegistrySnapshots.ENTRY)) {
+                            Utils.copy(in, out);
+                        }
+                    }
 
                     // We could filter these but SceneStudio doesn't yet provide a nice method for determining
                     // which ones are used.

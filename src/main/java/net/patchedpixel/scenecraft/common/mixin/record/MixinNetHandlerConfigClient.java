@@ -42,6 +42,8 @@ public abstract class MixinNetHandlerConfigClient {
         PacketListener packetListener = SceneCraftRecorder.instance.getConnectionEventHandler().getPacketListener();
         if(packetListener == null) return;
 
+        packetListener.saveRegistrySnapshot();
+
         ByteBuf byteBuf = Unpooled.buffer();
         FriendlyByteBuf buf = new FriendlyByteBuf(byteBuf);
         buf.writeUtf(PacketEnabledPacksData.ID);
