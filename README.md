@@ -26,10 +26,10 @@ Started as a [ReplayMod](https://github.com/ReplayMod/ReplayMod) fork for modern
 
 ## 📦 Supported versions
 
-| Minecraft      | Loader   | Status     |
-|----------------|----------|------------|
+| Minecraft      | Loader   | Status    |
+|----------------|----------|-----------|
 | 26.2 - 26.3    | NeoForge | ✅ Available |
-| 1.20.1         | Forge    | ✅ Planned |
+| 1.20.1         | Forge    | ✅ Available |
 | 1.21.1         | NeoForge | 🛠️ Planned |
 | Other versions | NeoForge | 🛠️ Planned |
 
