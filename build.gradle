@@ -242,17 +242,19 @@ tasks.named('jarJar') {
     destinationDirectory = layout.buildDirectory.dir('intermediates')
 }
 
-renamer.mappings.from minecraft.dependency.toSrgFile
+renamer {
+    mappings.from minecraft.dependency.toSrgFile
 
-renamer.enableMixinRefmaps {
-    config "${mod_id}.mixins.json"
-    config "${mod_id}.platform.mixins.json"
-    refMap = "${mod_id}.refmap.json"
-}
+    enableMixinRefmaps {
+        config "${mod_id}.mixins.json"
+        config "${mod_id}.platform.mixins.json"
+        refMap = "${mod_id}.refmap.json"
+    }
 
-renamer.classes(tasks.named('shadowJar')) {
-    archiveClassifier = ''
-    mappings renamer.mixin.generatedMappings
+    classes(tasks.named('shadowJar')) {
+        archiveClassifier = ''
+        mappings renamer.mixin.generatedMappings
+    }
 }
 
 tasks.named('build') {

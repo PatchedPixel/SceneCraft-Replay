@@ -1,14 +1,14 @@
 package net.patchedpixel.scenecraft.platform;
 
 import com.google.common.collect.Multimap;
+import com.mojang.logging.LogUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.RegistryManager;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -19,7 +19,7 @@ import java.util.Map;
 public final class RegistrySnapshots {
     public static final String ENTRY = "registries.nbt";
 
-    private static final Logger LOGGER = LogManager.getLogger("SceneCraft");
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     private RegistrySnapshots() {}
 

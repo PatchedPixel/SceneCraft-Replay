@@ -328,7 +328,7 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
         addButton.setEnabled(timelineSupplier != null);
         editButton.setEnabled(selected == 1);
         removeButton.setEnabled(selected >= 1);
-        renderButton.setEnabled(jobs.size() > 0);
+        renderButton.setEnabled(!jobs.isEmpty());
         renderButton.setI18nLabel("scenecraft.gui.renderqueue.render" + (selected > 0 ? "selected" : "all"));
 
         String[] compatError = VideoRenderer.checkCompat(jobs.stream().map(RenderJob::getSettings));
