@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.ReportedException;
 import net.minecraft.CrashReport;
 import net.minecraft.util.thread.BlockableEventLoop;
+import org.jspecify.annotations.NonNull;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -20,7 +21,6 @@ import java.util.concurrent.TimeUnit;
 import static net.patchedpixel.scenecraft.common.core.versions.MCVer.getMinecraft;
 
 public class Pipeline<R extends Frame, P extends Frame> implements Runnable {
-
     private final WorldRenderer worldRenderer;
     private final FrameCapturer<R> capturer;
     private final FrameProcessor<R, P> processor;
@@ -48,7 +48,7 @@ public class Pipeline<R extends Frame, P extends Frame> implements Runnable {
                 0L, TimeUnit.MILLISECONDS,
                 new ArrayBlockingQueue<Runnable>(2) {
                     @Override
-                    public boolean offer(Runnable runnable) {
+                    public boolean offer(@NonNull Runnable runnable) {
                         try {
                             put(runnable);
                         } catch(InterruptedException e) {
@@ -60,32 +60,61 @@ public class Pipeline<R extends Frame, P extends Frame> implements Runnable {
                 }, new ThreadPoolExecutor.DiscardPolicy());
 
         Minecraft mc = MCVer.getMinecraft();
-        while(!capturer.isDone() && !abort) {
-            if(mc.getWindow().shouldClose() || BlockableEventLoop.delayedCrash != null) {
-                processService.shutdown();
-                return;
+        Throwable failure = null;
+        try {
+            while(!capturer.isDone() && !abort) {
+                if(mc.getWindow().shouldClose() || BlockableEventLoop.delayedCrash != null) {
+                    break;
+                }
+                Map<Channel, R> rawFrame = capturer.process();
+                if(rawFrame != null) {
+                    processService.submit(new ProcessTask(rawFrame));
+                }
             }
-            Map<Channel, R> rawFrame = capturer.process();
-            if(rawFrame != null) {
-                processService.submit(new ProcessTask(rawFrame));
-            }
+        } catch(Throwable t) {
+            failure = t;
         }
 
-        processService.shutdown();
+        // After a failure or an early exit, queued frames may never become consumable
+        // (a failed frame blocks every later one), so do not wait for them indefinitely
+        boolean stoppedEarly = failure != null
+                || abort
+                || BlockableEventLoop.delayedCrash != null
+                || mc.getWindow().shouldClose();
+        if(stoppedEarly) {
+            processService.shutdownNow();
+        } else {
+            processService.shutdown();
+        }
         try {
-            processService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            if(stoppedEarly) {
+                processService.awaitTermination(10, TimeUnit.SECONDS);
+            } else {
+                processService.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+            }
         } catch(InterruptedException e) {
             Thread.currentThread().interrupt();
         }
 
+        // Always runs, also after a failure or an early exit, so ffmpeg and the writers are released
         try {
             worldRenderer.close();
             capturer.close();
             processor.close();
             consumer.close();
         } catch(Throwable t) {
-            CrashReport crashReport = CrashReport.forThrowable(t, "Cleaning up rendering pipeline");
-            throw new ReportedException(crashReport);
+            // Do not hide the original failure
+            if(failure == null) {
+                failure = t;
+            } else {
+                failure.addSuppressed(t);
+            }
+        }
+
+        if(failure != null) {
+            if(failure instanceof RuntimeException e) throw e;
+            if(failure instanceof Error e) throw e;
+            throw new ReportedException(CrashReport.forThrowable(failure, "Rendering pipeline"));
         }
     }
 
@@ -143,7 +172,9 @@ public class Pipeline<R extends Frame, P extends Frame> implements Runnable {
                         try {
                             lock.wait();
                         } catch(InterruptedException e) {
+                            // Shutting down: give up on this frame instead of waiting for earlier ones
                             Thread.currentThread().interrupt();
+                            return;
                         }
                     }
                     inner.consume(channels);

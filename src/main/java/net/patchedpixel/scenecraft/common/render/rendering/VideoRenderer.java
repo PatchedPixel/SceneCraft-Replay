@@ -158,29 +158,34 @@ public class VideoRenderer implements RenderInfo {
         // Note that it is impossible to also get the interpolation between their latest position
         // and the one in the record correct as there's no reliable way to tell when the server ticks
         // or when we should be done with the interpolation of the entity
-        Optional<Integer> optionalVideoStartTime = timeline.getValue(TimestampProperty.PROPERTY, 0);
-        if(optionalVideoStartTime.isPresent()) {
-            int videoStart = optionalVideoStartTime.get();
+        try {
+            Optional<Integer> optionalVideoStartTime = timeline.getValue(TimestampProperty.PROPERTY, 0);
+            if(optionalVideoStartTime.isPresent()) {
+                int videoStart = optionalVideoStartTime.get();
 
-            if(videoStart > 1000) {
-                int replayTime = videoStart - 1000;
-                timer.tickDelta = 0;
-                timer.msPerTick = DEFAULT_MS_PER_TICK;
-                while(replayTime < videoStart) {
-                    replayTime += 50;
-                    replayHandler.getReplaySender().sendPacketsTill(replayTime);
-                    tick();
+                if(videoStart > 1000) {
+                    int replayTime = videoStart - 1000;
+                    timer.tickDelta = 0;
+                    timer.msPerTick = DEFAULT_MS_PER_TICK;
+                    while(replayTime < videoStart) {
+                        replayTime += 50;
+                        replayHandler.getReplaySender().sendPacketsTill(replayTime);
+                        tick();
+                    }
                 }
             }
+
+            renderingPipeline.run();
+        } catch(Throwable t) {
+            // Remember the failure, but still restore the game state in finish()
+            setFailure(t);
         }
 
-        renderingPipeline.run();
-
-        if(BlockableEventLoop.delayedCrash != null) {
-            throw new ReportedException(BlockableEventLoop.delayedCrash.get());
+        if(!hasFailed() && BlockableEventLoop.delayedCrash != null) {
+            setFailure(new ReportedException(BlockableEventLoop.delayedCrash.get()));
         }
 
-        if(settings.isInjectSphericalMetadata()) {
+        if(!hasFailed() && settings.isInjectSphericalMetadata()) {
             MetadataInjector.injectMetadata(settings.getRenderMethod(), settings.getOutputFile(),
                     settings.getTargetVideoWidth(), settings.getTargetVideoHeight(),
                     settings.getSphericalFovX(), settings.getSphericalFovY());
@@ -188,7 +193,9 @@ public class VideoRenderer implements RenderInfo {
 
         finish();
 
-        ReplayRenderCallback.Post.EVENT.invoker().afterRendering(this);
+        if(!hasFailed()) {
+            ReplayRenderCallback.Post.EVENT.invoker().afterRendering(this);
+        }
 
         if(failureCause != null) {
             throw failureCause;
@@ -201,45 +208,50 @@ public class VideoRenderer implements RenderInfo {
     public float updateForNextFrame() {
         // because the jGui lib uses Minecraft's displayWidth and displayHeight values, update these temporarily
         guiWindow.bind();
-
-        if(!settings.isHighPerformance() || framesDone % fps == 0) {
-            while(drawGui() && paused) {
-                try {
-                    //noinspection BusyWait
-                    Thread.sleep(50);
-                } catch(InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
+        boolean bound = true;
+        try {
+            if(!settings.isHighPerformance() || framesDone % fps == 0) {
+                while(drawGui() && paused) {
+                    try {
+                        //noinspection BusyWait
+                        Thread.sleep(50);
+                    } catch(InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
                 }
             }
+
+            // Updating the timer will cause the timeline player to update the game state
+            ReplayTimer timer = (ReplayTimer) mc.deltaTracker;
+            int elapsedTicks = timer.advanceGameTime(MCVer.milliTime());
+
+            executeTaskQueue();
+
+            while(elapsedTicks-- > 0) {
+                tick();
+            }
+
+            if(mc.level != null) {
+                mc.level.update();
+            }
+
+            // change Minecraft's display size back
+            guiWindow.unbind();
+            bound = false;
+
+            if(cameraPathExporter != null) {
+                cameraPathExporter.recordFrame();
+            }
+
+            framesDone++;
+            return timer.tickDelta;
+        } finally {
+            // Only reached with the window still bound when something above threw
+            if(bound) {
+                guiWindow.unbind();
+            }
         }
-
-        // Updating the timer will cause the timeline player to update the game state
-        ReplayTimer timer = (ReplayTimer) mc.deltaTracker;
-        int elapsedTicks =
-        timer.advanceGameTime(
-                MCVer.milliTime()
-        );
-
-        executeTaskQueue();
-
-        while(elapsedTicks-- > 0) {
-            tick();
-        }
-
-        if(mc.level != null) {
-            mc.level.update();
-        }
-
-        // change Minecraft's display size back
-        guiWindow.unbind();
-
-        if(cameraPathExporter != null) {
-            cameraPathExporter.recordFrame();
-        }
-
-        framesDone++;
-        return timer.tickDelta;
     }
 
     @Override
@@ -326,7 +338,9 @@ public class VideoRenderer implements RenderInfo {
             }
         }
 
-        mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvent.createVariableRangeEvent(SOUND_RENDER_SUCCESS), 1));
+        if(!hasFailed()) {
+            mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvent.createVariableRangeEvent(SOUND_RENDER_SUCCESS), 1));
+        }
 
         try {
             if(!hasFailed() && ffmpegWriter != null) {

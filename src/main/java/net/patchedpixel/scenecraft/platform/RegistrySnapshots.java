@@ -7,9 +7,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.neoforged.fml.config.ConfigTracker;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.network.payload.FrozenRegistryPayload;
 import net.neoforged.neoforge.registries.RegistryManager;
 import net.neoforged.neoforge.registries.RegistrySnapshot;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,5 +99,30 @@ public final class RegistrySnapshots {
             }
         }
         return null;
+    }
+
+    public static void reloadDefaultSyncedConfigs() {
+        unloadSyncedConfigs();
+        if(MCVer.getMinecraft().hasSingleplayerServer()) {
+            return;
+        }
+
+        try {
+            ConfigTracker.INSTANCE.loadDefaultSyncedConfigs();
+        } catch(Throwable t) {
+            LOGGER.warn("Could not load default synced configs for the replay", t);
+        }
+    }
+
+    public static void unloadSyncedConfigs() {
+        if(MCVer.getMinecraft().hasSingleplayerServer()) {
+            return;
+        }
+
+        try {
+            ConfigTracker.INSTANCE.unloadConfigs(ModConfig.Type.SYNCED);
+        } catch(Throwable t) {
+            LOGGER.warn("Could not unload synced configs of the replay", t);
+        }
     }
 }

@@ -14,7 +14,6 @@ import net.patchedpixel.scenecraft.common.replay.events.ReplayClosedCallback;
 import net.patchedpixel.scenecraft.common.replay.events.ReplayClosingCallback;
 import net.patchedpixel.scenecraft.common.replay.events.ReplayOpenedCallback;
 import net.patchedpixel.scenecraft.common.replay.gui.overlay.GuiReplayOverlay;
-import net.patchedpixel.scenecraft.common.scenestudio.data.Marker;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
 import net.patchedpixel.scenecraft.common.scenestudio.util.Location;
 import net.patchedpixel.scenecraft.common.gui.container.AbstractGuiScreen;
@@ -82,8 +81,6 @@ public class ReplayHandler {
      */
     private Restrictions restrictions = new Restrictions();
 
-    private Set<Marker> markers;
-
     private final GuiReplayOverlay overlay;
 
     private EmbeddedChannel channel;
@@ -102,8 +99,6 @@ public class ReplayHandler {
         this.replayFile = replayFile;
 
         replayDuration = replayFile.getMetaData().getDuration();
-
-        markers = replayFile.getMarkers().orElse(Collections.emptySet());
 
         fullReplaySender = new FullReplaySender(this, replayFile);
         quickReplaySender = new QuickReplaySender(SceneCraftReplay.instance, replayFile);
@@ -152,6 +147,8 @@ public class ReplayHandler {
             mc.disconnectWithProgressScreen();
         }
 
+        RegistrySnapshots.unloadSyncedConfigs();
+
         if(registriesApplied) {
             RegistrySnapshots.revert();
             registriesApplied = false;
@@ -172,6 +169,7 @@ public class ReplayHandler {
         Preconditions.checkState(mc.isSameThread(), "Must be called from Minecraft thread.");
 
         applyRecordedRegistries();
+        RegistrySnapshots.reloadDefaultSyncedConfigs();
 
         mc.gui.hud.getChat().clearMessages(false);
 
