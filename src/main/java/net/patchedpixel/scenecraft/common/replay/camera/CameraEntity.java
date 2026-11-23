@@ -64,9 +64,7 @@ import static net.patchedpixel.scenecraft.common.core.versions.MCVer.*;
  * Camera movement is controlled by a separate {@link CameraController}.
  */
 @SuppressWarnings("EntityConstructor")
-public class CameraEntity
-        extends LocalPlayer
-{
+public class CameraEntity extends LocalPlayer {
     private static final UUID CAMERA_UUID = UUID.nameUUIDFromBytes("SceneCraftCamera".getBytes(StandardCharsets.UTF_8));
 
     /**

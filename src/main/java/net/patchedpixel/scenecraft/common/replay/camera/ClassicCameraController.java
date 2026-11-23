@@ -84,6 +84,7 @@ public class ClassicCameraController implements CameraController {
 
     private void setCameraMaximumSpeed(double newMaxSpeed) {
         if(newMaxSpeed < LOWER_SPEED || newMaxSpeed > UPPER_SPEED) return;
+
         maxSpeed = newMaxSpeed;
         threshold = maxSpeed / 20;
     }
@@ -92,6 +93,7 @@ public class ClassicCameraController implements CameraController {
         Vector3f result = new Vector3f();
         float pitch = camera.getXRot();
         float yaw = camera.getYRot();
+
         if(forwardAxis != 0) {
             result.add(getVectorForRotation(pitch, yaw).mul(forwardAxis));
         }
@@ -104,6 +106,7 @@ public class ClassicCameraController implements CameraController {
         if(result.lengthSquared() > 0) {
             result.normalize();
         }
+
         return result;
     }
 
@@ -113,6 +116,7 @@ public class ClassicCameraController implements CameraController {
         float f3 = Mth.sin(-yaw * f1 - (float) Math.PI);
         float f4 = -Mth.cos(-pitch * f1);
         float f5 = Mth.sin(-pitch * f1);
+
         return new Vector3f(f3 * f4, f5, f2 * f4);
     }
 }
