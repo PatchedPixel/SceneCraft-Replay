@@ -5,7 +5,7 @@ import com.coremedia.iso.boxes.*;
 import com.google.common.primitives.Bytes;
 import com.googlecode.mp4parser.BasicContainer;
 import net.patchedpixel.scenecraft.common.render.RenderSettings;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.Dimension;
+import net.patchedpixel.scenecraft.common.flamex.util.geometry.Size;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -72,13 +72,13 @@ public class MetadataInjector {
                 throw new IllegalArgumentException("Invalid render method");
         }
 
-        Dimension original = getOriginalDimensions(videoWidth, videoHeight, sphericalFovX, sphericalFovY);
+        Size original = getOriginalDimensions(videoWidth, videoHeight, sphericalFovX, sphericalFovY);
         writeMetadata(videoFile, String.format(xmlString,
-                original.getWidth(), original.getHeight(), videoWidth, videoHeight,
-                (original.getWidth() - videoWidth) / 2, (original.getHeight() - videoHeight) / 2));
+                original.width(), original.height(), videoWidth, videoHeight,
+                (original.width() - videoWidth) / 2, (original.height() - videoHeight) / 2));
     }
 
-    private static Dimension getOriginalDimensions(int videoWidth, int videoHeight,
+    private static Size getOriginalDimensions(int videoWidth, int videoHeight,
                                                    int sphericalFovX, int sphericalFovY) {
         if(sphericalFovX < 360) {
             videoWidth = Math.round(videoWidth * 360 / (float) sphericalFovX);
@@ -88,7 +88,7 @@ public class MetadataInjector {
             videoHeight = Math.round(videoHeight * 180 / (float) sphericalFovY);
         }
 
-        return new Dimension(videoWidth, videoHeight);
+        return new Size(videoWidth, videoHeight);
     }
 
     private static void writeMetadata(File videoFile, String metadata) {

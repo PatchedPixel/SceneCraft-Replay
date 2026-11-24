@@ -65,7 +65,7 @@ public abstract class PboGpuFrameCapturer<F extends Frame, D extends Enum<D> & C
                 frameBuffer.put(pboBuffer);
             }
             frameBuffer.rewind();
-            frames[i] = new GpuFrame(framesDone - 2, frameSize, bytesPerPixel, frameBuffer);
+            frames[i] = new GpuFrame(framesDone - 2, frameSize(), bytesPerPixel, frameBuffer);
         }
         return create(frames);
     }

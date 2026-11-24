@@ -6,16 +6,19 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.CrashReport;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.patchedpixel.scenecraft.common.SceneCraft;
-import net.patchedpixel.scenecraft.common.utils.Result;
-import net.patchedpixel.scenecraft.common.utils.Utils;
 import net.patchedpixel.scenecraft.common.pathing.gui.GuiKeyframeRepository;
 import net.patchedpixel.scenecraft.common.pathing.player.RealtimeTimelinePlayer;
 import net.patchedpixel.scenecraft.common.pathing.properties.CameraProperties;
 import net.patchedpixel.scenecraft.common.pathing.properties.SpectatorProperty;
 import net.patchedpixel.scenecraft.common.pathing.properties.TimestampProperty;
 import net.patchedpixel.scenecraft.common.render.gui.GuiRenderQueue;
-import net.patchedpixel.scenecraft.common.render.gui.GuiRenderSettings;
 import net.patchedpixel.scenecraft.common.replay.ReplayHandler;
 import net.patchedpixel.scenecraft.common.replay.camera.CameraEntity;
 import net.patchedpixel.scenecraft.common.replay.gui.overlay.GuiReplayOverlay;
@@ -24,36 +27,20 @@ import net.patchedpixel.scenecraft.common.scenestudio.pathing.path.Path;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.path.Timeline;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.serialize.TimelineSerialization;
 import net.patchedpixel.scenecraft.common.scenestudio.util.EntityPositionTracker;
-import net.patchedpixel.scenecraft.common.simplepathing.SceneCraftSimplePathing;
 import net.patchedpixel.scenecraft.common.simplepathing.SPTimeline;
 import net.patchedpixel.scenecraft.common.simplepathing.SPTimeline.SPPath;
+import net.patchedpixel.scenecraft.common.simplepathing.SceneCraftSimplePathing;
 import net.patchedpixel.scenecraft.common.simplepathing.Setting;
-import net.patchedpixel.scenecraft.common.gui.GuiRenderer;
-import net.patchedpixel.scenecraft.common.gui.RenderInfo;
-import net.patchedpixel.scenecraft.common.gui.container.GuiContainer;
-import net.patchedpixel.scenecraft.common.gui.container.GuiPanel;
-import net.patchedpixel.scenecraft.common.gui.container.GuiScreen;
-import net.patchedpixel.scenecraft.common.gui.element.GuiButton;
-import net.patchedpixel.scenecraft.common.gui.element.GuiElement;
-import net.patchedpixel.scenecraft.common.gui.element.GuiHorizontalScrollbar;
-import net.patchedpixel.scenecraft.common.gui.element.GuiLabel;
-import net.patchedpixel.scenecraft.common.gui.element.GuiTooltip;
-import net.patchedpixel.scenecraft.common.gui.element.advanced.GuiProgressBar;
-import net.patchedpixel.scenecraft.common.gui.element.advanced.GuiTimelineTime;
-import net.patchedpixel.scenecraft.common.gui.layout.CustomLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.HorizontalLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.VerticalLayout;
-import net.patchedpixel.scenecraft.common.gui.popup.AbstractGuiPopup;
-import net.patchedpixel.scenecraft.common.gui.popup.GuiInfoPopup;
-import net.patchedpixel.scenecraft.common.gui.popup.GuiYesNoPopup;
-import net.patchedpixel.scenecraft.common.gui.utils.Colors;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadablePoint;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.WritablePoint;
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.CrashReport;
+import net.patchedpixel.scenecraft.common.flamex.FlameX;
+import net.patchedpixel.scenecraft.common.flamex.popup.ProgressPopup;
+import net.patchedpixel.scenecraft.common.flamex.widget.ScrollbarWidget;
+import net.patchedpixel.scenecraft.common.flamex.widget.SpriteButton;
+import net.patchedpixel.scenecraft.common.flamex.widget.TimelineTimeWidget;
+import net.patchedpixel.scenecraft.common.utils.Result;
+import net.patchedpixel.scenecraft.common.utils.Utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,152 +49,23 @@ import java.util.Collections;
 import java.util.concurrent.CancellationException;
 import java.util.function.Consumer;
 
-import static net.patchedpixel.scenecraft.common.utils.Utils.error;
 import static net.patchedpixel.scenecraft.common.core.versions.MCVer.getMinecraft;
 import static net.patchedpixel.scenecraft.common.simplepathing.SceneCraftSimplePathing.LOGGER;
+import static net.patchedpixel.scenecraft.common.utils.Utils.error;
 
-/**
- * Gui plug-in to the GuiReplayOverlay for simple pathing.
- */
 public class GuiPathing {
     private static final Logger logger = LogManager.getLogger();
+    private static final int TEXTURE_SIZE = SceneCraft.TEXTURE_SIZE;
 
-    public final GuiButton playPauseButton = new GuiButton() {
-        @Override
-        public GuiElement getTooltip(RenderInfo renderInfo) {
-            GuiTooltip tooltip = (GuiTooltip) super.getTooltip(renderInfo);
-            if(tooltip != null) {
-                if(player.isActive()) {
-                    tooltip.setI18nText("scenecraft.gui.ingame.menu.pausepath");
-                } else if(InputConstants.isKeyDown(getMinecraft().getWindow().getWindow(), InputConstants.KEY_LCONTROL)) {
-                    tooltip.setI18nText("scenecraft.gui.ingame.menu.playpathfromstart");
-                } else {
-                    tooltip.setI18nText("scenecraft.gui.ingame.menu.playpath");
-                }
-            }
-            return tooltip;
-        }
-    }.setSize(20, 20).setTexture(SceneCraft.TEXTURE, SceneCraft.TEXTURE_SIZE).setTooltip(new GuiTooltip());
-
-    public final GuiButton renderButton = new GuiButton().onClick(new Runnable() {
-        @Override
-        public void run() {
-            abortPathPlayback();
-            GuiScreen screen = GuiRenderSettings.createBaseScreen();
-            new GuiRenderQueue(screen, replayHandler, () -> preparePathsForPlayback(false)) {
-                @Override
-                protected void close() {
-                    super.close();
-                    getMinecraft().setScreen(null);
-                }
-            }.open();
-            screen.display();
-        }
-    }).setSize(20, 20).setTexture(SceneCraft.TEXTURE, SceneCraft.TEXTURE_SIZE).setSpriteUV(40, 0)
-            .setTooltip(new GuiTooltip().setI18nText("scenecraft.gui.ingame.menu.renderpath"));
-
-    public final GuiButton positionKeyframeButton = new GuiButton() {
-        @Override
-        public GuiElement getTooltip(RenderInfo renderInfo) {
-            GuiTooltip tooltip = (GuiTooltip) super.getTooltip(renderInfo);
-            if(tooltip != null) {
-                String label;
-                if(getSpriteUV().getY() == 40) { // Add keyframe
-                    if(getSpriteUV().getX() == 0) { // Position
-                        label = "scenecraft.gui.ingame.menu.addposkeyframe";
-                    } else { // Spectator
-                        label = "scenecraft.gui.ingame.menu.addspeckeyframe";
-                    }
-                } else { // Remove keyframe
-                    if(getSpriteUV().getX() == 0) { // Position
-                        label = "scenecraft.gui.ingame.menu.removeposkeyframe";
-                    } else { // Spectator
-                        label = "scenecraft.gui.ingame.menu.removespeckeyframe";
-                    }
-                }
-                tooltip.setText(I18n.get(label) + " (" + mod.keyPositionKeyframe.getBoundKey() + ")");
-            }
-            return tooltip;
-        }
-    }.setSize(20, 20).setTexture(SceneCraft.TEXTURE, SceneCraft.TEXTURE_SIZE).setTooltip(new GuiTooltip());
-
-    public final GuiButton timeKeyframeButton = new GuiButton() {
-        @Override
-        public GuiElement getTooltip(RenderInfo renderInfo) {
-            GuiTooltip tooltip = (GuiTooltip) super.getTooltip(renderInfo);
-            if(tooltip != null) {
-                String label;
-                if(getSpriteUV().getY() == 80) { // Add time keyframe
-                    label = "scenecraft.gui.ingame.menu.addtimekeyframe";
-                } else { // Remove time keyframe
-                    label = "scenecraft.gui.ingame.menu.removetimekeyframe";
-                }
-                tooltip.setText(I18n.get(label) + " (" + mod.keyTimeKeyframe.getBoundKey() + ")");
-            }
-            return tooltip;
-        }
-    }.setSize(20, 20).setTexture(SceneCraft.TEXTURE, SceneCraft.TEXTURE_SIZE).setTooltip(new GuiTooltip());
-
-    public final GuiKeyframeTimeline timeline = new GuiKeyframeTimeline(this){
-        @Override
-        public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
-            if(player.isActive()) {
-                setCursorPosition((int) player.getTimePassed()).ensureCursorVisibleWithPadding();
-            }
-            super.draw(renderer, size, renderInfo);
-        }
-    }.setSize(Integer.MAX_VALUE, 20).setMarkers();
-
-    public final GuiHorizontalScrollbar scrollbar = new GuiHorizontalScrollbar().setSize(Integer.MAX_VALUE, 9);
-    {scrollbar.onValueChanged(new Runnable() {
-        @Override
-        public void run() {
-            timeline.setOffset((int) (scrollbar.getPosition() * timeline.getLength()));
-            timeline.setZoom(scrollbar.getZoom());
-        }
-    }).setZoom(0.1);}
-
-    public final GuiTimelineTime<GuiKeyframeTimeline> timelineTime = new GuiTimelineTime<GuiKeyframeTimeline>()
-            .setTimeline(timeline);
-
-    public final GuiButton zoomInButton = new GuiButton().setSize(9, 9).onClick(new Runnable() {
-        @Override
-        public void run() {
-            zoomTimeline(2d / 3d);
-        }
-    }).setTexture(SceneCraft.TEXTURE, SceneCraft.TEXTURE_SIZE).setSpriteUV(40, 20)
-            .setTooltip(new GuiTooltip().setI18nText("scenecraft.gui.ingame.menu.zoomin"));
-
-    public final GuiButton zoomOutButton = new GuiButton().setSize(9, 9).onClick(new Runnable() {
-        @Override
-        public void run() {
-            zoomTimeline(3d / 2d);
-        }
-    }).setTexture(SceneCraft.TEXTURE, SceneCraft.TEXTURE_SIZE).setSpriteUV(40, 30)
-            .setTooltip(new GuiTooltip().setI18nText("scenecraft.gui.ingame.menu.zoomout"));
-
-    public final GuiPanel zoomButtonPanel = new GuiPanel()
-            .setLayout(new VerticalLayout(VerticalLayout.Alignment.CENTER).setSpacing(2))
-            .addElements(null, zoomInButton, zoomOutButton);
-
-    public final GuiPanel timelinePanel = new GuiPanel().setSize(Integer.MAX_VALUE, 40)
-            .setLayout(new CustomLayout<GuiPanel>() {
-                @Override
-                protected void layout(GuiPanel container, int width, int height) {
-                    pos(zoomButtonPanel, width - width(zoomButtonPanel), 10);
-                    pos(timelineTime, 0, 2);
-                    size(timelineTime, x(zoomButtonPanel), 8);
-                    pos(timeline, 0, y(timelineTime) + height(timelineTime));
-                    size(timeline, x(zoomButtonPanel) - 2, 20);
-                    pos(scrollbar, 0, y(timeline) + height(timeline) + 1);
-                    size(scrollbar, x(zoomButtonPanel) - 2, 9);
-                }
-            }).addElements(null, timeline, timelineTime, scrollbar, zoomButtonPanel);
-
-    public final GuiPanel panel = new GuiPanel()
-            .setLayout(new HorizontalLayout(HorizontalLayout.Alignment.CENTER).setSpacing(5))
-            .addElements(new HorizontalLayout.Data(0.5),
-                    playPauseButton, renderButton, positionKeyframeButton, timeKeyframeButton, timelinePanel);
+    public final SpriteButton playPauseButton;
+    public final SpriteButton renderButton;
+    public final SpriteButton positionKeyframeButton;
+    public final SpriteButton timeKeyframeButton;
+    public final GuiKeyframeTimeline timeline;
+    public final ScrollbarWidget scrollbar = new ScrollbarWidget(100, 9);
+    public final TimelineTimeWidget timelineTime = new TimelineTimeWidget(100, 8);
+    public final SpriteButton zoomInButton;
+    public final SpriteButton zoomOutButton;
 
     private final SceneCraft core;
     private final SceneCraftSimplePathing mod;
@@ -228,145 +86,189 @@ public class GuiPathing {
         this.overlay = replayHandler.getOverlay();
         this.player = new RealtimeTimelinePlayer(replayHandler);
 
-        timeline.setLength(core.getSettingsRegistry().get(Setting.TIMELINE_LENGTH) * 1000);
-
-        playPauseButton.setSpriteUV(new ReadablePoint() {
+        timeline = new GuiKeyframeTimeline(this) {
             @Override
-            public int getX() {
-                return 0;
-            }
-
-            @Override
-            public int getY() {
-                return player.isActive() ? 20 : 0;
-            }
-
-            @Override
-            public void getLocation(WritablePoint dest) {
-                dest.setLocation(getX(), getY());
-            }
-        }).onClick(new Runnable() {
-            @Override
-            public void run() {
+            protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
                 if(player.isActive()) {
-                    player.getFuture().cancel(false);
-                } else {
-                    boolean ignoreTimeKeyframes = InputConstants.isKeyDown(getMinecraft().getWindow().getWindow(), InputConstants.KEY_LSHIFT);
+                    setCursorPosition((int) player.getTimePassed()).ensureCursorVisibleWithPadding();
+                }
+                super.renderWidget(graphics, mouseX, mouseY, partialTick);
+            }
+        };
+        timeline.setMarkers();
+        timeline.setLength(core.getSettingsRegistry().get(Setting.TIMELINE_LENGTH) * 1000);
+        timelineTime.setTimeline(timeline);
 
-                    Timeline timeline = preparePathsForPlayback(ignoreTimeKeyframes).okOrElse(err -> {
-                        GuiInfoPopup.open(overlay, err);
-                        return null;
-                    });
-                    if(timeline == null) return;
+        scrollbar.onValueChanged(() -> {
+            timeline.setOffset((int) (scrollbar.getPosition() * timeline.getLength()));
+            timeline.setZoom(scrollbar.getZoom());
+        }).setZoom(0.1);
 
-                    Path timePath = new SPTimeline(timeline).getTimePath();
-                    timePath.setActive(!ignoreTimeKeyframes);
+        playPauseButton = new SpriteButton(20, 20, SceneCraft.TEXTURE, TEXTURE_SIZE, 20, this::playPausePressed)
+                .uv(() -> 0, () -> player.isActive() ? 20 : 0)
+                .dynamicTooltip(() -> {
+                    if(player.isActive()) {
+                        return Component.translatable("scenecraft.gui.ingame.menu.pausepath");
+                    } else if(InputConstants.isKeyDown(getMinecraft().getWindow().getWindow(), InputConstants.KEY_LCONTROL)) {
+                        return Component.translatable("scenecraft.gui.ingame.menu.playpathfromstart");
+                    } else {
+                        return Component.translatable("scenecraft.gui.ingame.menu.playpath");
+                    }
+                });
 
-                    // Start from cursor time unless the control key is pressed (then start from beginning)
-                    int startTime = InputConstants.isKeyDown(getMinecraft().getWindow().getWindow(), InputConstants.KEY_LCONTROL)? 0 : GuiPathing.this.timeline.getCursorPosition();
-                    ListenableFuture<Void> future = player.start(timeline, startTime);
-                    overlay.setCloseable(false);
-                    overlay.setMouseVisible(true);
-                    core.printInfoToChat("scenecraft.chat.pathstarted");
-                    Futures.addCallback(future, new FutureCallback<Void>() {
-                        @Override
-                        public void onSuccess(@Nullable Void result) {
-                            if(future.isCancelled()) {
-                                core.printInfoToChat("scenecraft.chat.pathinterrupted");
-                            } else {
-                                core.printInfoToChat("scenecraft.chat.pathfinished");
-                            }
-                            overlay.setCloseable(true);
+        renderButton = new SpriteButton(20, 20, SceneCraft.TEXTURE, TEXTURE_SIZE, 20, () -> {
+            abortPathPlayback();
+            new GuiRenderQueue(null, replayHandler, () -> preparePathsForPlayback(false)).open();
+        }).uv(40, 0);
+        renderButton.setTooltip(Tooltip.create(Component.translatable("scenecraft.gui.ingame.menu.renderpath")));
+
+        positionKeyframeButton = new SpriteButton(20, 20, SceneCraft.TEXTURE, TEXTURE_SIZE, 20,
+                () -> toggleKeyframe(SPPath.POSITION, false))
+                .uv(this::positionUvX, this::positionUvY)
+                .dynamicTooltip(() -> {
+                    String label;
+                    if(positionUvY() == 40) { // Add keyframe
+                        if(positionUvX() == 0) { // Position
+                            label = "scenecraft.gui.ingame.menu.addposkeyframe";
+                        } else { // Spectator
+                            label = "scenecraft.gui.ingame.menu.addspeckeyframe";
                         }
-
-                        @Override
-                        public void onFailure(Throwable t) {
-                            if(!(t instanceof CancellationException)) {
-                                t.printStackTrace();
-                            }
-                            overlay.setCloseable(true);
+                    } else { // Remove keyframe
+                        if(positionUvX() == 0) { // Position
+                            label = "scenecraft.gui.ingame.menu.removeposkeyframe";
+                        } else { // Spectator
+                            label = "scenecraft.gui.ingame.menu.removespeckeyframe";
                         }
-                    }, Runnable::run);
-                }
-            }
-        });
+                    }
+                    return MCVer.literalText(I18n.get(label) + " (" + mod.keyPositionKeyframe.getBoundKey() + ")");
+                });
 
-        positionKeyframeButton.setSpriteUV(new ReadablePoint() {
-            @Override
-            public int getX() {
-                SPPath keyframePath = mod.getSelectedPath();
-                long keyframeTime = mod.getSelectedTime();
-                if(keyframePath != SPPath.POSITION) {
-                    // No keyframe or wrong path
-                    keyframeTime = timeline.getCursorPosition();
-                    keyframePath = mod.getCurrentTimeline().isPositionKeyframe(keyframeTime) ? SPPath.POSITION : null;
-                }
-                if(keyframePath != SPPath.POSITION) {
-                    return replayHandler.isCameraView() ? 0 : 40;
-                } else {
-                    return mod.getCurrentTimeline().isSpectatorKeyframe(keyframeTime) ? 40 : 0;
-                }
-            }
+        timeKeyframeButton = new SpriteButton(20, 20, SceneCraft.TEXTURE, TEXTURE_SIZE, 20,
+                () -> toggleKeyframe(SPPath.TIME, false))
+                .uv(() -> 0, this::timeUvY)
+                .dynamicTooltip(() -> {
+                    String label = timeUvY() == 80
+                            ? "scenecraft.gui.ingame.menu.addtimekeyframe" // Add time keyframe
+                            : "scenecraft.gui.ingame.menu.removetimekeyframe"; // Remove time keyframe
+                    return MCVer.literalText(I18n.get(label) + " (" + mod.keyTimeKeyframe.getBoundKey() + ")");
+                });
 
-            @Override
-            public int getY() {
-                SPPath keyframePath = mod.getSelectedPath();
-                if(keyframePath != SPPath.POSITION) {
-                    // No keyframe selected but there might be one at exactly the position of the cursor
-                    keyframePath = mod.getCurrentTimeline().isPositionKeyframe(timeline.getCursorPosition()) ? SPPath.POSITION : null;
-                }
-                return keyframePath == SPPath.POSITION ? 60 : 40;
-            }
+        zoomInButton = new SpriteButton(9, 9, SceneCraft.TEXTURE, TEXTURE_SIZE, 9, () -> zoomTimeline(2d / 3d)).uv(40, 20);
+        zoomInButton.setTooltip(Tooltip.create(Component.translatable("scenecraft.gui.ingame.menu.zoomin")));
+        zoomOutButton = new SpriteButton(9, 9, SceneCraft.TEXTURE, TEXTURE_SIZE, 9, () -> zoomTimeline(3d / 2d)).uv(40, 30);
+        zoomOutButton.setTooltip(Tooltip.create(Component.translatable("scenecraft.gui.ingame.menu.zoomout")));
 
-            @Override
-            public void getLocation(WritablePoint dest) {
-                dest.setLocation(getX(), getY());
-            }
-        }).onClick(new Runnable() {
-            @Override
-            public void run() {
-                toggleKeyframe(SPPath.POSITION, false);
-            }
-        });
-
-        timeKeyframeButton.setSpriteUV(new ReadablePoint() {
-            @Override
-            public int getX() {
-                return 0;
-            }
-
-            @Override
-            public int getY() {
-                SPPath keyframePath = mod.getSelectedPath();
-                if(keyframePath != SPPath.TIME) {
-                    // No keyframe selected but there might be one at exactly the position of the cursor
-                    keyframePath = mod.getCurrentTimeline().isTimeKeyframe(timeline.getCursorPosition()) ? SPPath.TIME : null;
-                }
-                return keyframePath == SPPath.TIME ? 100 : 80;
-            }
-
-            @Override
-            public void getLocation(WritablePoint dest) {
-                dest.setLocation(getX(), getY());
-            }
-        }).onClick(new Runnable() {
-            @Override
-            public void run() {
-                toggleKeyframe(SPPath.TIME, false);
-            }
-        });
-
-        overlay.addElements(null, panel);
-        overlay.setLayout(new CustomLayout<GuiReplayOverlay>(overlay.getLayout()) {
-            @Override
-            protected void layout(GuiReplayOverlay container, int width, int height) {
-                checkForAutoSync();
-                pos(panel, 10, y(overlay.topPanel) + height(overlay.topPanel) + 3);
-                size(panel, width - 20, 40);
-            }
-        });
+        for(net.minecraft.client.gui.components.AbstractWidget w : new net.minecraft.client.gui.components.AbstractWidget[]{
+                playPauseButton, renderButton, positionKeyframeButton, timeKeyframeButton,
+                timelineTime, timeline, scrollbar, zoomInButton, zoomOutButton}) {
+            overlay.addWidget(w);
+        }
+        overlay.addLayoutHook(this::layout);
 
         startLoadingEntityTracker();
+    }
+
+    private void layout(int width, int height) {
+        checkForAutoSync();
+        int x0 = 10;
+        int y0 = overlay.topPanel.getHeight() + 10 + 3;
+        SpriteButton[] buttons = {playPauseButton, renderButton, positionKeyframeButton, timeKeyframeButton};
+        for(int i = 0; i < buttons.length; i++) {
+            buttons[i].setPosition(x0 + i * 25, y0);
+        }
+        int timelineX = x0 + buttons.length * 25;
+        int zoomX = width - 10 - zoomInButton.getWidth();
+        int w = Math.max(20, zoomX - 2 - timelineX);
+        timelineTime.setWidth(w);
+        timelineTime.setPosition(timelineX, y0 + 2);
+        timeline.setWidth(w);
+        timeline.setPosition(timelineX, y0 + 10);
+        scrollbar.setWidth(w);
+        scrollbar.setPosition(timelineX, y0 + 31);
+        zoomInButton.setPosition(zoomX, y0 + 10);
+        zoomOutButton.setPosition(zoomX, y0 + 21);
+    }
+
+    private int positionUvX() {
+        SPPath keyframePath = mod.getSelectedPath();
+        long keyframeTime = mod.getSelectedTime();
+        if(keyframePath != SPPath.POSITION) {
+            // No keyframe or wrong path
+            keyframeTime = timeline.getCursorPosition();
+            keyframePath = mod.getCurrentTimeline().isPositionKeyframe(keyframeTime) ? SPPath.POSITION : null;
+        }
+        if(keyframePath != SPPath.POSITION) {
+            return replayHandler.isCameraView() ? 0 : 40;
+        } else {
+            return mod.getCurrentTimeline().isSpectatorKeyframe(keyframeTime) ? 40 : 0;
+        }
+    }
+
+    private int positionUvY() {
+        SPPath keyframePath = mod.getSelectedPath();
+        if(keyframePath != SPPath.POSITION) {
+            // No keyframe selected but there might be one at exactly the position of the cursor
+            keyframePath = mod.getCurrentTimeline().isPositionKeyframe(timeline.getCursorPosition()) ? SPPath.POSITION : null;
+        }
+        return keyframePath == SPPath.POSITION ? 60 : 40;
+    }
+
+    private int timeUvY() {
+        SPPath keyframePath = mod.getSelectedPath();
+        if(keyframePath != SPPath.TIME) {
+            // No keyframe selected but there might be one at exactly the position of the cursor
+            keyframePath = mod.getCurrentTimeline().isTimeKeyframe(timeline.getCursorPosition()) ? SPPath.TIME : null;
+        }
+        return keyframePath == SPPath.TIME ? 100 : 80;
+    }
+
+    private void showInfo(String... lines) {
+        Minecraft mc = MCVer.getMinecraft();
+        net.minecraft.client.gui.screens.Screen previous = mc.screen;
+        mc.setScreen(FlameX.info(() -> mc.setScreen(previous), lines));
+    }
+
+    private void playPausePressed() {
+        if(player.isActive()) {
+            player.getFuture().cancel(false);
+        } else {
+            boolean ignoreTimeKeyframes = InputConstants.isKeyDown(getMinecraft().getWindow().getWindow(), InputConstants.KEY_LSHIFT);
+
+            Timeline timeline = preparePathsForPlayback(ignoreTimeKeyframes).okOrElse(err -> {
+                if(err != null) showInfo(err);
+                return null;
+            });
+            if(timeline == null) return;
+
+            Path timePath = new SPTimeline(timeline).getTimePath();
+            timePath.setActive(!ignoreTimeKeyframes);
+
+            // Start from cursor time unless the control key is pressed (then start from beginning)
+            int startTime = InputConstants.isKeyDown(getMinecraft().getWindow().getWindow(), InputConstants.KEY_LCONTROL)? 0 : GuiPathing.this.timeline.getCursorPosition();
+            ListenableFuture<Void> future = player.start(timeline, startTime);
+            overlay.setCloseable(false);
+            overlay.setMouseVisible(true);
+            core.printInfoToChat("scenecraft.chat.pathstarted");
+            Futures.addCallback(future, new FutureCallback<Void>() {
+                @Override
+                public void onSuccess(@Nullable Void result) {
+                    if(future.isCancelled()) {
+                        core.printInfoToChat("scenecraft.chat.pathinterrupted");
+                    } else {
+                        core.printInfoToChat("scenecraft.chat.pathfinished");
+                    }
+                    overlay.setCloseable(true);
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    if(!(t instanceof CancellationException)) {
+                        t.printStackTrace();
+                    }
+                    overlay.setCloseable(true);
+                }
+            }, Runnable::run);
+        }
     }
 
     private void abortPathPlayback() {
@@ -412,14 +314,13 @@ public class GuiPathing {
     }
 
     public void clearKeyframesButtonPressed() {
-        GuiYesNoPopup.open(replayHandler.getOverlay(),
-                new GuiLabel().setI18nText("scenecraft.gui.clearcallback.title").setColor(Colors.BLACK)
-        ).setYesI18nLabel("gui.yes").setNoI18nLabel("gui.no").onAccept(() -> {
+        Minecraft mc = MCVer.getMinecraft();
+        mc.setScreen(FlameX.confirm(mc.screen, "scenecraft.gui.clearcallback.title", "gui.yes", "gui.no", () -> {
             mod.clearCurrentTimeline();
             if(entityTracker != null) {
                 mod.getCurrentTimeline().setEntityTracker(entityTracker);
             }
-        });
+        }));
     }
 
     private int prevSpeed = -1;
@@ -560,7 +461,7 @@ public class GuiPathing {
             timeline.getPaths().forEach(Path::updateAll);
             return Result.ok(timeline);
         } catch(Throwable t) {
-            error(LOGGER, replayHandler.getOverlay(), CrashReport.forThrowable(t, "Cloning timeline"), () -> {});
+            error(LOGGER, CrashReport.forThrowable(t, "Cloning timeline"), () -> {});
             return Result.err(null);
         }
     }
@@ -607,8 +508,9 @@ public class GuiPathing {
     public boolean loadEntityTracker(Runnable thenRun) {
         if(entityTracker == null && !errorShown) {
             LOGGER.debug("Entity tracker not yet loaded, delaying...");
-            LoadEntityTrackerPopup popup = new LoadEntityTrackerPopup(replayHandler.getOverlay());
-            entityTrackerLoadingProgress = p -> popup.progressBar.setProgress(p.floatValue());
+            ProgressPopup popup = new ProgressPopup("scenecraft.gui.loadentitytracker", null);
+            popup.open();
+            entityTrackerLoadingProgress = p -> popup.setProgress(p.floatValue());
             Futures.addCallback(entityTrackerFuture, new FutureCallback<Void>() {
                 @Override
                 public void onSuccess(@Nullable Void result) {
@@ -623,8 +525,7 @@ public class GuiPathing {
                 public void onFailure(@Nonnull Throwable t) {
                     if(!errorShown) {
                         String message = "Failed to load entity tracker, spectator keyframes will be broken.";
-                        GuiReplayOverlay overlay = replayHandler.getOverlay();
-                        Utils.error(LOGGER, overlay, CrashReport.forThrowable(t, message), () -> {
+                        Utils.error(LOGGER, CrashReport.forThrowable(t, message), () -> {
                             popup.close();
                             thenRun.run();
                         });
@@ -658,7 +559,7 @@ public class GuiPathing {
                 timeline.getTimePath().getKeyframes().isEmpty() &&
                 time > 1000) {
             String text = I18n.get("scenecraft.gui.ingame.first_keyframe_not_at_start_warning");
-            GuiInfoPopup.open(overlay, text.split("\\\\n"));
+            showInfo(text.split("\\\\n"));
         }
 
         switch(path) {
@@ -718,26 +619,6 @@ public class GuiPathing {
             new GuiEditKeyframe.Position(this, path, keyframe.getTime()).open();
         } else {
             new GuiEditKeyframe.Time(this, path, keyframe.getTime()).open();
-        }
-    }
-
-    private class LoadEntityTrackerPopup extends AbstractGuiPopup<LoadEntityTrackerPopup> {
-        private final GuiProgressBar progressBar = new GuiProgressBar(popup).setSize(300, 20)
-                .setI18nLabel("scenecraft.gui.loadentitytracker");
-
-        public LoadEntityTrackerPopup(GuiContainer container) {
-            super(container);
-            open();
-        }
-
-        @Override
-        public void close() {
-            super.close();
-        }
-
-        @Override
-        protected LoadEntityTrackerPopup getThis() {
-            return this;
         }
     }
 }

@@ -10,7 +10,7 @@ import net.patchedpixel.scenecraft.common.replay.ReplayHandler;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.path.Keyframe;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.path.Path;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.path.Timeline;
-import net.patchedpixel.scenecraft.common.gui.utils.EventRegistrations;
+import net.patchedpixel.scenecraft.common.flamex.event.EventRegistrations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Timer;
 

@@ -24,6 +24,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.AbstractWidget;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.client.particle.Particle;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -144,7 +145,7 @@ public class MCVer {
         return getMinecraft().keyboardHandler.getClipboard();
     }
 
-    public static Component literalText(String str) {
+    public static MutableComponent literalText(String str) {
         return Component.literal(str);
     }
 
@@ -190,6 +191,10 @@ public class MCVer {
 
     public static void processKeyBinds() {
         ((MinecraftMethodAccessor) getMinecraft()).sceneCraftProcessKeyBinds();
+    }
+
+    public static void executeTaskQueue() {
+        ((MinecraftMethodAccessor) getMinecraft()).sceneCraftExecuteTaskQueue();
     }
 
     public interface MinecraftMethodAccessor {

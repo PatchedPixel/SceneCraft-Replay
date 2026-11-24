@@ -1,8 +1,14 @@
 package net.patchedpixel.scenecraft.common.simplepathing.gui;
 
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.CycleButton;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.patchedpixel.scenecraft.common.pathing.properties.CameraProperties;
 import net.patchedpixel.scenecraft.common.pathing.properties.TimestampProperty;
-import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.change.Change;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.change.CombinedChange;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.interpolation.CatmullRomSplineInterpolator;
@@ -17,38 +23,17 @@ import net.patchedpixel.scenecraft.common.simplepathing.SPTimeline;
 import net.patchedpixel.scenecraft.common.simplepathing.SPTimeline.SPPath;
 import net.patchedpixel.scenecraft.common.simplepathing.Setting;
 import net.patchedpixel.scenecraft.common.simplepathing.properties.ExplicitInterpolationProperty;
-import net.patchedpixel.scenecraft.common.gui.container.AbstractGuiContainer;
-import net.patchedpixel.scenecraft.common.gui.container.GuiPanel;
-import net.patchedpixel.scenecraft.common.gui.element.GuiButton;
-import net.patchedpixel.scenecraft.common.gui.element.GuiLabel;
-import net.patchedpixel.scenecraft.common.gui.element.GuiNumberField;
-import net.patchedpixel.scenecraft.common.gui.element.GuiTooltip;
-import net.patchedpixel.scenecraft.common.gui.element.IGuiClickable;
-import net.patchedpixel.scenecraft.common.gui.element.IGuiLabel;
-import net.patchedpixel.scenecraft.common.gui.element.advanced.GuiDropdownMenu;
-import net.patchedpixel.scenecraft.common.gui.function.Click;
-import net.patchedpixel.scenecraft.common.gui.function.KeyHandler;
-import net.patchedpixel.scenecraft.common.gui.function.KeyInput;
-import net.patchedpixel.scenecraft.common.gui.layout.GridLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.HorizontalLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.VerticalLayout;
-import net.patchedpixel.scenecraft.common.gui.popup.AbstractGuiPopup;
-import net.patchedpixel.scenecraft.common.gui.utils.Colors;
-import net.patchedpixel.scenecraft.common.gui.utils.Consumer;
-import net.minecraft.client.resources.language.I18n;
+import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.FlameX;
+import net.patchedpixel.scenecraft.common.flamex.widget.NumberBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
-import static net.patchedpixel.scenecraft.common.gui.utils.Utils.link;
-
-public abstract class GuiEditKeyframe<T extends GuiEditKeyframe<T>> extends AbstractGuiPopup<T> implements KeyHandler {
-    private static GuiNumberField newGuiNumberField() {
-        return new GuiNumberField().setPrecision(0).setValidateOnFocusChange(true);
-    }
-
+public abstract class GuiEditKeyframe extends FlameableScreen {
     protected static final Logger logger = LogManager.getLogger();
 
     protected final GuiPathing guiPathing;
@@ -57,54 +42,31 @@ public abstract class GuiEditKeyframe<T extends GuiEditKeyframe<T>> extends Abst
     protected final Keyframe keyframe;
     protected final Path path;
 
-    public final GuiLabel title = new GuiLabel();
+    public final NumberBox timeMinField = new NumberBox(30, 0);
+    public final NumberBox timeSecField = new NumberBox(30, 0);
+    public final NumberBox timeMSecField = new NumberBox(40, 0);
 
-    public final GuiPanel inputs = new GuiPanel();
-
-    public final GuiNumberField timeMinField = newGuiNumberField().setSize(30, 20).setMinValue(0);
-    public final GuiNumberField timeSecField = newGuiNumberField().setSize(20, 20).setMinValue(0).setMaxValue(59);
-    public final GuiNumberField timeMSecField = newGuiNumberField().setSize(30, 20).setMinValue(0).setMaxValue(999);
-
-    public final GuiPanel timePanel = new GuiPanel()
-            .setLayout(new HorizontalLayout(HorizontalLayout.Alignment.RIGHT).setSpacing(3))
-            .addElements(new HorizontalLayout.Data(0.5),
-                    new GuiLabel().setI18nText("scenecraft.gui.editkeyframe.timelineposition"),
-                    timeMinField, new GuiLabel().setI18nText("scenecraft.gui.minutes"),
-                    timeSecField, new GuiLabel().setI18nText("scenecraft.gui.seconds"),
-                    timeMSecField, new GuiLabel().setI18nText("scenecraft.gui.milliseconds"));
-
-    public final GuiButton saveButton = new GuiButton().setSize(150, 20).setI18nLabel("scenecraft.gui.save");
-
-    public final GuiButton cancelButton = new GuiButton()
-            .onClick(this::close).setSize(150, 20).setI18nLabel("scenecraft.gui.cancel");
-
-    public final GuiPanel buttons = new GuiPanel()
-            .setLayout(new HorizontalLayout(HorizontalLayout.Alignment.CENTER).setSpacing(7))
-            .addElements(new HorizontalLayout.Data(0.5), saveButton, cancelButton);
-
-    {
-        setBackgroundColor(Colors.DARK_TRANSPARENT);
-
-        popup.setLayout(new VerticalLayout().setSpacing(10))
-                .addElements(new VerticalLayout.Data(0.5, false), title, inputs, timePanel, buttons);
-    }
+    private Button saveButton;
 
     public GuiEditKeyframe(GuiPathing gui, SPPath path, long time, String type) {
-        super(SceneCraftReplay.instance.getReplayHandler().getOverlay());
+        super(Component.translatable("scenecraft.gui.editkeyframe.title." + type), MCVer.getMinecraft().screen, 10);
+        this.panel = true;
+        this.background = Background.DEFAULT;
         this.guiPathing = gui;
         this.time = time;
         this.path = gui.getMod().getCurrentTimeline().getPath(path);
         this.keyframe = this.path.getKeyframe(time);
 
-        Consumer<String> updateSaveButtonState = s -> saveButton.setEnabled(canSave());
-        timeMinField.setValue(time / 1000 / 60).onTextChanged(updateSaveButtonState);
-        timeSecField.setValue(time / 1000 % 60).onTextChanged(updateSaveButtonState);
-        timeMSecField.setValue(time % 1000).onTextChanged(updateSaveButtonState);
+        timeMinField.setNumber(time / 1000 / 60);
+        timeSecField.setNumber(time / 1000 % 60);
+        timeMSecField.setNumber(time % 1000);
+        timeMinField.setResponder(s -> updateSaveState());
+        timeSecField.setResponder(s -> updateSaveState());
+        timeMSecField.setResponder(s -> updateSaveState());
 
-        title.setI18nText("scenecraft.gui.editkeyframe.title." + type);
-        saveButton.onClick(() -> {
+        this.saveAction = () -> {
             Change change = save();
-            long newTime = (timeMinField.getInteger() * 60 + timeSecField.getInteger()) * 1000 + timeMSecField.getInteger();
+            long newTime = newTime();
             if(newTime != time) {
                 change = CombinedChange.createFromApplied(change,
                         gui.getMod().getCurrentTimeline().moveKeyframe(path, time, newTime));
@@ -114,11 +76,48 @@ public abstract class GuiEditKeyframe<T extends GuiEditKeyframe<T>> extends Abst
             }
             gui.getMod().getCurrentTimeline().getTimeline().pushChange(change);
             close();
-        });
+        };
+    }
+
+    private final Runnable saveAction;
+
+    protected long newTime() {
+        return (timeMinField.getLong() * 60 + timeSecField.getLong()) * 1000 + timeMSecField.getLong();
+    }
+
+    protected void buildInputs(LinearLayout root) {}
+
+    protected static LinearLayout timeRow(String labelKey, NumberBox min, NumberBox sec, NumberBox ms) {
+        LinearLayout row = FlameX.row(3);
+        row.addChild(FlameX.label(labelKey));
+        row.addChild(min);
+        row.addChild(FlameX.label("scenecraft.gui.minutes"));
+        row.addChild(sec);
+        row.addChild(FlameX.label("scenecraft.gui.seconds"));
+        row.addChild(ms);
+        row.addChild(FlameX.label("scenecraft.gui.milliseconds"));
+        return row;
+    }
+
+    @Override
+    protected void build(LinearLayout root) {
+        buildInputs(root);
+        root.addChild(timeRow("scenecraft.gui.editkeyframe.timelineposition", timeMinField, timeSecField, timeMSecField));
+
+        LinearLayout buttons = FlameX.row(7);
+        saveButton = FlameX.button("scenecraft.gui.save", 150, saveAction);
+        buttons.addChild(saveButton);
+        buttons.addChild(FlameX.button("scenecraft.gui.cancel", 150, this::close));
+        root.addChild(buttons);
+        updateSaveState();
+    }
+
+    private void updateSaveState() {
+        if(saveButton != null) saveButton.active = canSave();
     }
 
     private boolean canSave() {
-        long newTime = (timeMinField.getInteger() * 60 + timeSecField.getInteger()) * 1000 + timeMSecField.getInteger();
+        long newTime = newTime();
         if(newTime < 0 || newTime > guiPathing.timeline.getLength()) {
             return false;
         }
@@ -128,126 +127,155 @@ public abstract class GuiEditKeyframe<T extends GuiEditKeyframe<T>> extends Abst
         return true;
     }
 
-    @Override
-    public boolean handleKey(KeyInput keyInput) {
-        if(keyInput.isEscape()) {
-            cancelButton.onClick(new Click(-1, -1, 0, keyInput.modifiers));
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public void open() {
-        super.open();
+        display();
     }
 
     protected abstract Change save();
 
-    public static class Spectator extends GuiEditKeyframe<Spectator> {
+    public static class Spectator extends GuiEditKeyframe {
         public Spectator(GuiPathing gui, SPPath path, long keyframe) {
             super(gui, path, keyframe, "spec");
-
-            link(timeMinField, timeSecField, timeMSecField);
-
-            popup.invokeAll(IGuiLabel.class, e -> e.setColor(Colors.BLACK));
         }
 
         @Override
         protected Change save() {
             return CombinedChange.createFromApplied();
         }
-
-        @Override
-        protected Spectator getThis() {
-            return this;
-        }
     }
 
-    public static class Time extends GuiEditKeyframe<Time> {
-        public final GuiNumberField timestampMinField = newGuiNumberField().setSize(30, 20).setMinValue(0);
-        public final GuiNumberField timestampSecField = newGuiNumberField().setSize(20, 20).setMinValue(0).setMaxValue(59);
-        public final GuiNumberField timestampMSecField = newGuiNumberField().setSize(30, 20).setMinValue(0).setMaxValue(999);
-
-        {
-            inputs.setLayout(new HorizontalLayout(HorizontalLayout.Alignment.RIGHT).setSpacing(3))
-                    .addElements(new HorizontalLayout.Data(0.5),
-                            new GuiLabel().setI18nText("scenecraft.gui.editkeyframe.timestamp"),
-                            timestampMinField, new GuiLabel().setI18nText("scenecraft.gui.minutes"),
-                            timestampSecField, new GuiLabel().setI18nText("scenecraft.gui.seconds"),
-                            timestampMSecField, new GuiLabel().setI18nText("scenecraft.gui.milliseconds"));
-        }
+    public static class Time extends GuiEditKeyframe {
+        public final NumberBox timestampMinField = new NumberBox(30, 0);
+        public final NumberBox timestampSecField = new NumberBox(30, 0);
+        public final NumberBox timestampMSecField = new NumberBox(40, 0);
 
         public Time(GuiPathing gui, SPPath path, long keyframe) {
             super(gui, path, keyframe, "time");
 
             this.keyframe.getValue(TimestampProperty.PROPERTY).ifPresent(time -> {
-                timestampMinField.setValue(time / 1000 / 60);
-                timestampSecField.setValue(time / 1000 % 60);
-                timestampMSecField.setValue(time % 1000);
+                timestampMinField.setNumber(time / 1000 / 60);
+                timestampSecField.setNumber(time / 1000 % 60);
+                timestampMSecField.setNumber(time % 1000);
             });
+        }
 
-            link(timestampMinField, timestampSecField, timestampMSecField, timeMinField, timeSecField, timeMSecField);
-
-            popup.invokeAll(IGuiLabel.class, e -> e.setColor(Colors.BLACK));
+        @Override
+        protected void buildInputs(LinearLayout root) {
+            root.addChild(timeRow("scenecraft.gui.editkeyframe.timestamp", timestampMinField, timestampSecField, timestampMSecField));
         }
 
         @Override
         protected Change save() {
-            int time = (timestampMinField.getInteger() * 60 + timestampSecField.getInteger()) * 1000
-                    + timestampMSecField.getInteger();
+            int time = (int) ((timestampMinField.getLong() * 60 + timestampSecField.getLong()) * 1000
+                    + timestampMSecField.getLong());
             return guiPathing.getMod().getCurrentTimeline().updateTimeKeyframe(keyframe.getTime(), time);
-        }
-
-        @Override
-        protected Time getThis() {
-            return this;
         }
     }
 
-    public static class Position extends GuiEditKeyframe<Position> {
-        public final GuiNumberField xField = newGuiNumberField().setSize(60, 20).setPrecision(5);
-        public final GuiNumberField yField = newGuiNumberField().setSize(60, 20).setPrecision(5);
-        public final GuiNumberField zField = newGuiNumberField().setSize(60, 20).setPrecision(5);
+    public static class Position extends GuiEditKeyframe {
+        public final NumberBox xField = new NumberBox(60, 5);
+        public final NumberBox yField = new NumberBox(60, 5);
+        public final NumberBox zField = new NumberBox(60, 5);
 
-        public final GuiNumberField yawField = newGuiNumberField().setSize(60, 20).setPrecision(5);
-        public final GuiNumberField pitchField = newGuiNumberField().setSize(60, 20).setPrecision(5);
-        public final GuiNumberField rollField = newGuiNumberField().setSize(60, 20).setPrecision(5);
+        public final NumberBox yawField = new NumberBox(60, 5);
+        public final NumberBox pitchField = new NumberBox(60, 5);
+        public final NumberBox rollField = new NumberBox(60, 5);
 
-        public final InterpolationPanel interpolationPanel = new InterpolationPanel();
-
-        {
-            GuiPanel positionInputs = new GuiPanel()
-                    .setLayout(new GridLayout().setCellsEqualSize(false).setColumns(4).setSpacingX(3).setSpacingY(5))
-                    .addElements(new GridLayout.Data(1, 0.5),
-                            new GuiLabel().setI18nText("scenecraft.gui.editkeyframe.xpos"), xField,
-                            new GuiLabel().setI18nText("scenecraft.gui.editkeyframe.camyaw"), yawField,
-                            new GuiLabel().setI18nText("scenecraft.gui.editkeyframe.ypos"), yField,
-                            new GuiLabel().setI18nText("scenecraft.gui.editkeyframe.campitch"), pitchField,
-                            new GuiLabel().setI18nText("scenecraft.gui.editkeyframe.zpos"), zField,
-                            new GuiLabel().setI18nText("scenecraft.gui.editkeyframe.camroll"), rollField);
-
-            inputs.setLayout(new VerticalLayout().setSpacing(10)).addElements(new VerticalLayout.Data(0.5, false),
-                    positionInputs, interpolationPanel);
-        }
+        private InterpolatorType interpolatorType;
+        private boolean hasSegment;
+        private final NumberBox alphaField = new NumberBox(100, 5);
+        private CycleButton<InterpolatorType> typeButton;
+        private Interpolator loadedInterpolator;
 
         public Position(GuiPathing gui, SPPath path, long keyframe) {
             super(gui, path, keyframe, "pos");
 
             this.keyframe.getValue(CameraProperties.POSITION).ifPresent(pos -> {
-                xField.setValue(pos.getLeft());
-                yField.setValue(pos.getMiddle());
-                zField.setValue(pos.getRight());
+                xField.setNumber(pos.getLeft());
+                yField.setNumber(pos.getMiddle());
+                zField.setNumber(pos.getRight());
             });
             this.keyframe.getValue(CameraProperties.ROTATION).ifPresent(rot -> {
-                yawField.setValue(rot.getLeft());
-                pitchField.setValue(rot.getMiddle());
-                rollField.setValue(rot.getRight());
+                yawField.setNumber(rot.getLeft());
+                pitchField.setNumber(rot.getMiddle());
+                rollField.setNumber(rot.getRight());
             });
 
-            link(xField, yField, zField, yawField, pitchField, rollField, timeMinField, timeSecField, timeMSecField);
+            Optional<PathSegment> segment = this.path.getSegments().stream()
+                    .filter(s -> s.getStartKeyframe() == this.keyframe).findFirst();
+            hasSegment = segment.isPresent();
+            interpolatorType = InterpolatorType.DEFAULT;
+            if(segment.isPresent()) {
+                Interpolator interpolator = segment.get().getInterpolator();
+                InterpolatorType type = InterpolatorType.fromClass(interpolator.getClass());
+                if(this.keyframe.getValue(ExplicitInterpolationProperty.PROPERTY).isPresent()) {
+                    interpolatorType = type;
+                } else {
+                    type = InterpolatorType.DEFAULT;
+                }
+                if(typeNoDefault(type).getInterpolatorClass().isInstance(interpolator)) {
+                    loadedInterpolator = interpolator;
+                    if(interpolator instanceof CatmullRomSplineInterpolator) {
+                        alphaField.setNumber(((CatmullRomSplineInterpolator) interpolator).getAlpha());
+                    }
+                }
+            }
+        }
 
-            popup.invokeAll(IGuiLabel.class, e -> e.setColor(Colors.BLACK));
+        private InterpolatorType typeNoDefault(InterpolatorType type) {
+            if(type == InterpolatorType.DEFAULT || type == null) {
+                return InterpolatorType.fromString(
+                        guiPathing.getMod().getCore().getSettingsRegistry().get(Setting.DEFAULT_INTERPOLATION));
+            }
+            return type;
+        }
+
+        @Override
+        protected void buildInputs(LinearLayout root) {
+            GridLayout grid = new GridLayout();
+            grid.defaultCellSetting().padding(2).alignVerticallyMiddle();
+            String[] left = {"xpos", "ypos", "zpos"};
+            NumberBox[] leftFields = {xField, yField, zField};
+            String[] right = {"camyaw", "campitch", "camroll"};
+            NumberBox[] rightFields = {yawField, pitchField, rollField};
+            for(int i = 0; i < 3; i++) {
+                grid.addChild(FlameX.label("scenecraft.gui.editkeyframe." + left[i]), i, 0);
+                grid.addChild(leftFields[i], i, 1);
+                grid.addChild(FlameX.label("scenecraft.gui.editkeyframe." + right[i]), i, 2);
+                grid.addChild(rightFields[i], i, 3);
+            }
+            root.addChild(grid);
+
+            typeButton = CycleButton.<InterpolatorType>builder(t -> MCVer.literalText(I18n.get(t.getI18nName())))
+                    .withValues(List.of(InterpolatorType.values()))
+                    .withInitialValue(interpolatorType)
+                    .withTooltip(t -> Tooltip.create(Component.translatable(t.getI18nDescription())))
+                    .create(0, 0, 200, 20, Component.translatable("scenecraft.gui.editkeyframe.interpolator"),
+                            (b, t) -> {
+                                interpolatorType = t;
+                                updateAlphaVisibility();
+                            });
+            typeButton.active = hasSegment;
+            root.addChild(typeButton);
+
+            alphaField.setHint(Component.translatable("scenecraft.gui.editkeyframe.interpolator.catmullrom.alpha"));
+            root.addChild(alphaField);
+            updateAlphaVisibility();
+        }
+
+        private void updateAlphaVisibility() {
+            alphaField.visible = hasSegment && typeNoDefault(interpolatorType) == InterpolatorType.CATMULL_ROM;
+        }
+
+        private Interpolator createInterpolator() {
+            switch(typeNoDefault(interpolatorType)) {
+                case CATMULL_ROM:
+                    return new CatmullRomSplineInterpolator(alphaField.getDouble());
+                case CUBIC:
+                    return new CubicSplineInterpolator();
+                default:
+                    return new LinearInterpolator();
+            }
         }
 
         @Override
@@ -257,176 +285,15 @@ public abstract class GuiEditKeyframe<T extends GuiEditKeyframe<T>> extends Abst
                     xField.getDouble(), yField.getDouble(), zField.getDouble(),
                     yawField.getFloat(), pitchField.getFloat(), rollField.getFloat()
             );
-            if(interpolationPanel.getSettingsPanel() == null) {
-                // The last keyframe doesn't have interpolator settings because there is no segment following it
+            if(!hasSegment) {
                 return positionChange;
             }
-            Interpolator interpolator = interpolationPanel.getSettingsPanel().createInterpolator();
-            if(interpolationPanel.getInterpolatorType() == InterpolatorType.DEFAULT) {
+            Interpolator interpolator = createInterpolator();
+            if(interpolatorType == InterpolatorType.DEFAULT) {
                 return CombinedChange.createFromApplied(positionChange, timeline.setInterpolatorToDefault(time),
                         timeline.setDefaultInterpolator(interpolator));
             } else {
                 return CombinedChange.createFromApplied(positionChange, timeline.setInterpolator(time, interpolator));
-            }
-        }
-
-        @Override
-        protected Position getThis() {
-            return this;
-        }
-
-        public class InterpolationPanel extends AbstractGuiContainer<InterpolationPanel> {
-            private SettingsPanel settingsPanel;
-
-            private GuiDropdownMenu<InterpolatorType> dropdown;
-
-            public InterpolationPanel() {
-                setLayout(new VerticalLayout());
-
-                dropdown = new GuiDropdownMenu<InterpolatorType>()
-                        .setToString(s -> I18n.get(s.getI18nName()))
-                        .setValues(InterpolatorType.values()).setHeight(20)
-                        .onSelection(i -> setSettingsPanel(dropdown.getSelectedValue()));
-
-                // set hover tooltips
-                for(Map.Entry<InterpolatorType, IGuiClickable> e : dropdown.getDropdownEntries().entrySet()) {
-                    e.getValue().setTooltip(new GuiTooltip().setI18nText(e.getKey().getI18nDescription()));
-                }
-
-                GuiPanel dropdownPanel = new GuiPanel()
-                        .setLayout(new GridLayout().setCellsEqualSize(false).setColumns(2).setSpacingX(3).setSpacingY(5))
-                        .addElements(new GridLayout.Data(1, 0.5),
-                                new GuiLabel().setI18nText("scenecraft.gui.editkeyframe.interpolator"), dropdown);
-
-                addElements(new VerticalLayout.Data(0.5, false), dropdownPanel);
-
-                Optional<PathSegment> segment = path.getSegments().stream()
-                        .filter(s -> s.getStartKeyframe() == keyframe).findFirst();
-                if(segment.isPresent()) {
-                    Interpolator interpolator = segment.get().getInterpolator();
-                    InterpolatorType type = InterpolatorType.fromClass(interpolator.getClass());
-                    if(keyframe.getValue(ExplicitInterpolationProperty.PROPERTY).isPresent()) {
-                        dropdown.setSelected(type); // trigger the callback once to display settings panel
-                    } else {
-                        setSettingsPanel(InterpolatorType.DEFAULT);
-                        type = InterpolatorType.DEFAULT;
-                    }
-                    if(getInterpolatorTypeNoDefault(type).getInterpolatorClass().isInstance(interpolator)) {
-                        //noinspection unchecked
-                        settingsPanel.loadSettings(interpolator);
-                    }
-                } else {
-                    // Disable dropdown if this is the last keyframe
-                    dropdown.setDisabled();
-                }
-            }
-
-            public SettingsPanel getSettingsPanel() {
-                return settingsPanel;
-            }
-
-            public void setSettingsPanel(InterpolatorType type) {
-                removeElement(this.settingsPanel);
-
-                switch(getInterpolatorTypeNoDefault(type)) {
-                    case CATMULL_ROM:
-                        settingsPanel = new CatmullRomSettingsPanel();
-                        break;
-                    case CUBIC:
-                        settingsPanel = new CubicSettingsPanel();
-                        break;
-                    case LINEAR:
-                        settingsPanel = new LinearSettingsPanel();
-                        break;
-                }
-
-                addElements(new GridLayout.Data(0.5, 0.5), settingsPanel);
-            }
-
-            protected InterpolatorType getInterpolatorTypeNoDefault(InterpolatorType interpolatorType) {
-                if(interpolatorType == InterpolatorType.DEFAULT || interpolatorType == null) {
-                    InterpolatorType defaultType = InterpolatorType.fromString(
-                            guiPathing.getMod().getCore().getSettingsRegistry().get(Setting.DEFAULT_INTERPOLATION));
-                    return defaultType;
-                }
-                return interpolatorType;
-            }
-
-            public InterpolatorType getInterpolatorType() {
-                return dropdown.getSelectedValue();
-            }
-
-            @Override
-            protected InterpolationPanel getThis() {
-                return this;
-            }
-
-            public abstract class SettingsPanel<I extends Interpolator, T extends SettingsPanel<I, T>> extends AbstractGuiContainer<T> {
-
-                public abstract void loadSettings(I interpolator);
-
-                public abstract I createInterpolator();
-            }
-
-            public class CatmullRomSettingsPanel extends SettingsPanel<CatmullRomSplineInterpolator, CatmullRomSettingsPanel> {
-                public final GuiLabel alphaLabel = new GuiLabel().setColor(Colors.BLACK)
-                        .setI18nText("scenecraft.gui.editkeyframe.interpolator.catmullrom.alpha");
-                public final GuiNumberField alphaField = new GuiNumberField().setSize(100, 20).setPrecision(5)
-                        .setMinValue(0).setValidateOnFocusChange(true);
-
-                {
-                    setLayout(new HorizontalLayout(HorizontalLayout.Alignment.CENTER));
-                    addElements(new HorizontalLayout.Data(0.5), alphaLabel, alphaField);
-                }
-
-                @Override
-                public void loadSettings(CatmullRomSplineInterpolator interpolator) {
-                    alphaField.setValue(interpolator.getAlpha());
-                }
-
-                @Override
-                public CatmullRomSplineInterpolator createInterpolator() {
-                    return new CatmullRomSplineInterpolator(alphaField.getDouble());
-                }
-
-                @Override
-                protected CatmullRomSettingsPanel getThis() {
-                    return this;
-                }
-            }
-
-            public class CubicSettingsPanel extends SettingsPanel<CubicSplineInterpolator, CubicSettingsPanel> {
-
-                @Override
-                public void loadSettings(CubicSplineInterpolator interpolator) {
-                }
-
-                @Override
-                public CubicSplineInterpolator createInterpolator() {
-                    return new CubicSplineInterpolator();
-                }
-
-                @Override
-                protected CubicSettingsPanel getThis() {
-                    return this;
-                }
-            }
-
-            public class LinearSettingsPanel extends SettingsPanel<LinearInterpolator, LinearSettingsPanel> {
-
-                @Override
-                public void loadSettings(LinearInterpolator interpolator) {
-                }
-
-                @Override
-                public LinearInterpolator createInterpolator() {
-                    return new LinearInterpolator();
-                }
-
-                @Override
-                protected LinearSettingsPanel getThis() {
-                    return this;
-                }
             }
         }
     }

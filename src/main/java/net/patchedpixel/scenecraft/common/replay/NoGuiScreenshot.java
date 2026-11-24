@@ -3,7 +3,7 @@ package net.patchedpixel.scenecraft.common.replay;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
 import net.patchedpixel.scenecraft.common.SceneCraft;
-import net.patchedpixel.scenecraft.common.gui.versions.Image;
+import net.patchedpixel.scenecraft.common.flamex.util.Image;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Screenshot;

@@ -2,25 +2,15 @@ package net.patchedpixel.scenecraft.platform;
 
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.world.level.GameType;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
-import net.patchedpixel.scenecraft.common.gui.function.CharInput;
-import net.patchedpixel.scenecraft.common.gui.function.Click;
-import net.patchedpixel.scenecraft.common.gui.function.KeyInput;
-import net.patchedpixel.scenecraft.common.gui.versions.ScreenExt;
-import net.patchedpixel.scenecraft.common.gui.versions.callbacks.InitScreenCallback;
-import net.patchedpixel.scenecraft.common.gui.versions.callbacks.KeyboardCallback;
-import net.patchedpixel.scenecraft.common.gui.versions.callbacks.MouseCallback;
-import net.patchedpixel.scenecraft.common.gui.versions.callbacks.OpenGuiScreenCallback;
-import net.patchedpixel.scenecraft.common.gui.versions.callbacks.PostRenderScreenCallback;
-import net.minecraft.client.KeyMapping;
+import net.patchedpixel.scenecraft.common.flamex.event.callbacks.InitScreenCallback;
+import net.patchedpixel.scenecraft.common.flamex.event.callbacks.PostRenderScreenCallback;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.screens.Screen;
 import net.patchedpixel.scenecraft.common.core.events.PostRenderWorldCallback;
-import net.patchedpixel.scenecraft.common.gui.versions.callbacks.RenderHudCallback;
-import net.patchedpixel.scenecraft.common.gui.versions.callbacks.PreTickCallback;
+import net.patchedpixel.scenecraft.common.flamex.event.callbacks.RenderHudCallback;
+import net.patchedpixel.scenecraft.common.flamex.event.callbacks.PreTickCallback;
 import net.patchedpixel.scenecraft.common.replay.events.RenderHotbarCallback;
 import net.patchedpixel.scenecraft.common.replay.InputReplayTimer;
 import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;
@@ -32,70 +22,12 @@ import net.minecraftforge.event.TickEvent;
 import net.patchedpixel.scenecraft.common.render.hooks.EntityRendererHandler;
 import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GuiEventBridge {
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void onMousePressed(ScreenEvent.MouseButtonPressed.Pre event) {
-        Click click = new Click(event.getMouseX(), event.getMouseY(), event.getButton(), MCVer.currentModifiers());
-        if(MouseCallback.EVENT.invoker().mouseDown(click)) {
-            event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void onMouseReleased(ScreenEvent.MouseButtonReleased.Pre event) {
-        Click click = new Click(event.getMouseX(), event.getMouseY(), event.getButton(), MCVer.currentModifiers());
-        if(MouseCallback.EVENT.invoker().mouseUp(click)) {
-            event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void onMouseDragged(ScreenEvent.MouseDragged.Pre event) {
-        Click click = new Click(event.getMouseX(), event.getMouseY(), event.getMouseButton(), MCVer.currentModifiers());
-        if(MouseCallback.EVENT.invoker().mouseDrag(click, event.getDragX(), event.getDragY())) {
-            event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void onMouseScrolled(ScreenEvent.MouseScrolled.Pre event) {
-        if(MouseCallback.EVENT.invoker().mouseScroll(event.getMouseX(), event.getMouseY(), 0, event.getScrollDelta())) {
-            event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void onKeyPressed(ScreenEvent.KeyPressed.Pre event) {
-        KeyInput keyInput = new KeyInput(event.getKeyCode(), event.getScanCode(), event.getModifiers());
-        if(KeyboardCallback.EVENT.invoker().keyPressed(keyInput)) {
-            event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void onKeyReleased(ScreenEvent.KeyReleased.Pre event) {
-        KeyInput keyInput = new KeyInput(event.getKeyCode(), event.getScanCode(), event.getModifiers());
-        if(KeyboardCallback.EVENT.invoker().keyReleased(keyInput)) {
-            event.setCanceled(true);
-            if(event.getScreen() instanceof ScreenExt ext && ext.doesPassEvents()) {
-                KeyMapping.set(InputConstants.getKey(event.getKeyCode(), event.getScanCode()), false);
-            }
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.HIGH)
-    public void onCharTyped(ScreenEvent.CharacterTyped.Pre event) {
-        if(KeyboardCallback.EVENT.invoker().charTyped(new CharInput(event.getCodePoint(), event.getModifiers()))) {
-            event.setCanceled(true);
-        }
-    }
-
     @SubscribeEvent
     public void onRenderPost(ScreenEvent.Render.Post event) {
         GuiGraphics graphics = event.getGuiGraphics();
@@ -122,12 +54,6 @@ public class GuiEventBridge {
             }
         }
         InitScreenCallback.EVENT.invoker().initScreen(event.getScreen(), widgets);
-    }
-
-    @SubscribeEvent
-    public void onOpening(ScreenEvent.Opening event) {
-        Screen screen = event.getNewScreen();
-        OpenGuiScreenCallback.EVENT.invoker().openGuiScreen(screen);
     }
 
     @SubscribeEvent

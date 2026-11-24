@@ -5,7 +5,7 @@ import net.patchedpixel.scenecraft.common.core.Module;
 import net.patchedpixel.scenecraft.common.SceneCraft;
 import net.patchedpixel.scenecraft.common.core.SettingsRegistry;
 import net.patchedpixel.scenecraft.common.core.events.SettingsChangedCallback;
-import net.patchedpixel.scenecraft.common.gui.utils.EventRegistrations;
+import net.patchedpixel.scenecraft.common.flamex.event.EventRegistrations;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.patchedpixel.scenecraft.common.replay.ReplayHandler;
 import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;

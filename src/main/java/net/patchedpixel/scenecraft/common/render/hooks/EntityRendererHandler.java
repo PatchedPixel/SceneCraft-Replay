@@ -9,7 +9,7 @@ import net.patchedpixel.scenecraft.common.render.capturer.CaptureData;
 import net.patchedpixel.scenecraft.common.render.capturer.RenderInfo;
 import net.patchedpixel.scenecraft.common.render.capturer.WorldRenderer;
 import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;
-import net.patchedpixel.scenecraft.common.gui.utils.EventRegistrations;
+import net.patchedpixel.scenecraft.common.flamex.event.EventRegistrations;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;

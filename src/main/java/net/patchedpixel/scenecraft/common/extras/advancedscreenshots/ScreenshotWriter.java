@@ -8,8 +8,8 @@ import net.patchedpixel.scenecraft.common.render.frame.BitmapFrame;
 import net.patchedpixel.scenecraft.common.render.rendering.Channel;
 import net.patchedpixel.scenecraft.common.render.rendering.FrameConsumer;
 import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
-import net.patchedpixel.scenecraft.common.gui.versions.Image;
+import net.patchedpixel.scenecraft.common.flamex.util.geometry.Size;
+import net.patchedpixel.scenecraft.common.flamex.util.Image;
 import net.minecraft.CrashReport;
 
 import java.io.File;
@@ -30,10 +30,10 @@ public class ScreenshotWriter implements FrameConsumer<BitmapFrame> {
         // skip the first frame, in which not all chunks are properly loaded
         if(frame.getFrameId() == 0) return;
 
-        final ReadableDimension frameSize = frame.getSize();
-        try (Image img = new Image(frameSize.getWidth(), frameSize.getHeight())) {
-            for(int y = 0; y < frameSize.getHeight(); y++) {
-                for(int x = 0; x < frameSize.getWidth(); x++) {
+        final Size frameSize = frame.getSize();
+        try (Image img = new Image(frameSize.width(), frameSize.height())) {
+            for(int y = 0; y < frameSize.height(); y++) {
+                for(int x = 0; x < frameSize.width(); x++) {
                     byte b = frame.getByteBuffer().get();
                     byte g = frame.getByteBuffer().get();
                     byte r = frame.getByteBuffer().get();
@@ -53,7 +53,6 @@ public class ScreenshotWriter implements FrameConsumer<BitmapFrame> {
             CrashReport report = CrashReport.forThrowable(t, "Exporting frame");
 
             SceneCraft.instance.runLater(() -> Utils.error(SceneCraftExtras.LOGGER,
-                    SceneCraftReplay.instance.getReplayHandler().getOverlay(),
                     report, null));
         }
     }

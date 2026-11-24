@@ -8,8 +8,7 @@ import net.patchedpixel.scenecraft.common.replay.ReplayHandler;
 import net.patchedpixel.scenecraft.common.replay.events.ReplayClosedCallback;
 import net.patchedpixel.scenecraft.common.replay.events.ReplayOpenedCallback;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
-import net.patchedpixel.scenecraft.common.gui.container.VanillaGuiScreen;
-import net.patchedpixel.scenecraft.common.gui.utils.EventRegistrations;
+import net.patchedpixel.scenecraft.common.flamex.event.EventRegistrations;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
 import org.apache.commons.io.FileUtils;
@@ -88,9 +87,8 @@ public class SceneCraftRender extends EventRegistrations implements Module {
             RenderJob.writeQueue(replayFile, renderQueue);
         } catch(IOException e) {
             e.printStackTrace();
-            VanillaGuiScreen screen = VanillaGuiScreen.wrap(getCore().getMinecraft().screen);
             CrashReport report = CrashReport.forThrowable(e, "Reading timeline");
-            Utils.error(LOGGER, screen, report, () -> {});
+            Utils.error(LOGGER, report, () -> {});
         }
     }
 }

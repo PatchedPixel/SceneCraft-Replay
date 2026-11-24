@@ -12,15 +12,15 @@ import net.patchedpixel.scenecraft.common.scenestudio.protocol.State;
 import net.patchedpixel.scenecraft.common.scenestudio.protocol.PacketType;
 import net.patchedpixel.scenecraft.common.scenestudio.protocol.PacketTypeRegistry;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
-import net.patchedpixel.scenecraft.common.gui.utils.EventRegistrations;
-import net.patchedpixel.scenecraft.common.gui.versions.callbacks.PreTickCallback;
+import net.patchedpixel.scenecraft.common.flamex.event.EventRegistrations;
+import net.patchedpixel.scenecraft.common.flamex.event.callbacks.PreTickCallback;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.AlertScreen;
+import net.patchedpixel.scenecraft.common.flamex.popup.MessageScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.world.entity.Entity;
@@ -43,6 +43,7 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.lighting.LevelLightEngine;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.GameType;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
 import java.io.*;
 import java.util.*;
@@ -410,8 +411,8 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
                         } catch(IOException e) {
                             e.printStackTrace();
                         }
-                        mc.setScreen(new AlertScreen(
-                                () -> mc.setScreen(null),
+                        mc.setScreen(new MessageScreen(
+                                null, () -> mc.setScreen(null), null, null,
                                 Component.translatable("scenecraft.error.unknownrestriction1"),
                                 Component.translatable("scenecraft.error.unknownrestriction2", unknown)
                         ));
@@ -933,7 +934,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
     }
 
     private void executeTaskQueue() {
-        ((MinecraftMethodAccessor) mc).sceneCraftExecuteTaskQueue();
+        MCVer.executeTaskQueue();
         SceneCraft.instance.runTasks();
     }
 

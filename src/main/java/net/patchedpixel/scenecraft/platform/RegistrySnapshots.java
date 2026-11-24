@@ -9,6 +9,7 @@ import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.GameData;
 import net.minecraftforge.registries.RegistryManager;
 import org.slf4j.Logger;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -38,7 +39,7 @@ public final class RegistrySnapshots {
         Map<ResourceLocation, ForgeRegistry.Snapshot> snapshots = new HashMap<>();
 
         for(String key : root.getAllKeys()) {
-            snapshots.put(ResourceLocation.parse(key), ForgeRegistry.Snapshot.read(root.getCompound(key)));
+            snapshots.put(MCVer.identifier(key), ForgeRegistry.Snapshot.read(root.getCompound(key)));
         }
 
         Multimap<ResourceLocation, ResourceLocation> missing = GameData.injectSnapshot(snapshots, false, false);

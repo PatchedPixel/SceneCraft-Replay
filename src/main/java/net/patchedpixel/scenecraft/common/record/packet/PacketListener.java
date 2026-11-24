@@ -17,7 +17,6 @@ import net.patchedpixel.scenecraft.common.scenestudio.io.ReplayOutputStream;
 import net.patchedpixel.scenecraft.common.scenestudio.protocol.Packet;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayMetaData;
-import net.patchedpixel.scenecraft.common.gui.container.VanillaGuiScreen;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
@@ -234,7 +233,7 @@ public class PacketListener extends ChannelInboundHandlerAdapter {
                 } catch(Exception e) {
                     logger.error("Saving replay file:", e);
                     CrashReport crashReport = CrashReport.forThrowable(e, "Saving replay file");
-                    core.runLater(() -> Utils.error(logger, VanillaGuiScreen.wrap(mc.screen), crashReport, guiSavingReplay::close));
+                    core.runLater(() -> Utils.error(logger, crashReport, guiSavingReplay::close));
                     return;
                 }
             }
@@ -381,7 +380,7 @@ public class PacketListener extends ChannelInboundHandlerAdapter {
     private void inspectDecoded(Object msg) {
         if(msg instanceof ClientboundCustomPayloadPacket packet) {
             if(Restrictions.PLUGIN_CHANNEL.equals(packet.getIdentifier())) {
-                save(new ClientboundDisconnectPacket(net.minecraft.network.chat.Component.literal("Please update to view this replay.")));
+                save(new ClientboundDisconnectPacket(MCVer.literalText("Please update to view this replay.")));
             }
         }
 

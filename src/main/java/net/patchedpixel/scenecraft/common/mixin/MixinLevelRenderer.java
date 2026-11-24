@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import net.patchedpixel.scenecraft.common.gui.utils.color.ReadableColor;
+import net.patchedpixel.scenecraft.common.flamex.util.color.Color;
 
 @Mixin(LevelRenderer.class)
 public abstract class MixinLevelRenderer {
@@ -21,9 +21,9 @@ public abstract class MixinLevelRenderer {
     private void chromaKeyingSky(PoseStack poseStack, Matrix4f projectionMatrix, float partialTick, Camera camera, boolean isFoggy, Runnable skyFogSetup, CallbackInfo ci) {
         EntityRendererHandler handler = ((EntityRendererHandler.IEntityRenderer) MCVer.getMinecraft().gameRenderer).sceneCraftRender_getHandler();
         if(handler != null) {
-            ReadableColor color = handler.getSettings().getChromaKeyingColor();
+            Color color = handler.getSettings().getChromaKeyingColor();
             if(color != null) {
-                RenderSystem.clearColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, 1f);
+                RenderSystem.clearColor(color.red() / 255f, color.green() / 255f, color.blue() / 255f, 1f);
                 RenderSystem.clear(GL11.GL_COLOR_BUFFER_BIT, Minecraft.ON_OSX);
                 ci.cancel();
             }

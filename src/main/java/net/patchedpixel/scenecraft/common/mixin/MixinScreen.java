@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.common.mixin;
 
-import net.patchedpixel.scenecraft.common.gui.versions.ScreenExt;
+import net.patchedpixel.scenecraft.common.flamex.util.ScreenExt;
 import net.minecraft.client.gui.screens.Screen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

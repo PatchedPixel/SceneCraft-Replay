@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.common.core.events;
 
-import net.patchedpixel.scenecraft.common.gui.utils.Event;
+import net.patchedpixel.scenecraft.common.flamex.event.Event;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 public interface PostRenderWorldCallback {

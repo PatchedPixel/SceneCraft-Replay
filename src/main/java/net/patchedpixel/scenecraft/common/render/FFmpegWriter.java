@@ -1,18 +1,17 @@
 package net.patchedpixel.scenecraft.common.render;
-
-import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 import net.patchedpixel.scenecraft.common.render.frame.BitmapFrame;
 import net.patchedpixel.scenecraft.common.render.rendering.Channel;
 import net.patchedpixel.scenecraft.common.render.rendering.FrameConsumer;
 import net.patchedpixel.scenecraft.common.render.rendering.VideoRenderer;
 import net.patchedpixel.scenecraft.common.render.utils.ByteBufferPool;
 import net.patchedpixel.scenecraft.common.render.utils.StreamPipe;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
+import net.patchedpixel.scenecraft.common.flamex.util.geometry.Size;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.TeeOutputStream;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -163,8 +162,8 @@ public class FFmpegWriter implements FrameConsumer<BitmapFrame> {
             }
             CrashReport report = CrashReport.forThrowable(t, "Exporting frame");
             CrashReportCategory exportDetails = report.addCategory("Export details");
-            exportDetails.setDetail("Export command", settings::getExportCommand);
-            exportDetails.setDetail("Export args", commandArgs::toString);
+            MCVer.addDetail(exportDetails, "Export command", settings::getExportCommand);
+            MCVer.addDetail(exportDetails, "Export args", commandArgs::toString);
             MCVer.getMinecraft().delayCrash(report);
         } finally {
             channels.values().forEach(it -> ByteBufferPool.release(it.getByteBuffer()));
@@ -176,8 +175,8 @@ public class FFmpegWriter implements FrameConsumer<BitmapFrame> {
         return false;
     }
 
-    private void checkSize(ReadableDimension size) {
-        checkSize(size.getWidth(), size.getHeight());
+    private void checkSize(Size size) {
+        checkSize(size.width(), size.height());
     }
 
     private void checkSize(int width, int height) {

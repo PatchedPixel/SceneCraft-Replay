@@ -6,9 +6,7 @@ import net.patchedpixel.scenecraft.common.render.frame.GpuFrame;
 import net.patchedpixel.scenecraft.common.render.rendering.Frame;
 import net.patchedpixel.scenecraft.common.render.rendering.FrameCapturer;
 import net.patchedpixel.scenecraft.common.render.utils.ByteBufferPool;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.Dimension;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.WritableDimension;
+import net.patchedpixel.scenecraft.common.flamex.util.geometry.Size;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -36,29 +34,16 @@ public abstract class GpuFrameCapturer<F extends Frame, D extends CaptureData> i
         this.renderInfo = renderInfo;
     }
 
-    protected final ReadableDimension frameSize = new ReadableDimension() {
-        @Override
-        public int getWidth() {
-            return getFrameWidth();
-        }
-
-        @Override
-        public int getHeight() {
-            return getFrameHeight();
-        }
-
-        @Override
-        public void getSize(WritableDimension dest) {
-            dest.setSize(getWidth(), getHeight());
-        }
-    };
+    protected Size frameSize() {
+        return new Size(getFrameWidth(), getFrameHeight());
+    }
 
     protected int getFrameWidth() {
-        return renderInfo.getFrameSize().getWidth();
+        return renderInfo.getFrameSize().width();
     }
 
     protected int getFrameHeight() {
-        return renderInfo.getFrameSize().getHeight();
+        return renderInfo.getFrameSize().height();
     }
 
     protected RenderTarget frameBuffer() {
@@ -103,7 +88,7 @@ public abstract class GpuFrameCapturer<F extends Frame, D extends CaptureData> i
 
         buffer.rewind();
 
-        return new GpuFrame(frameId, new Dimension(getFrameWidth(), getFrameHeight()), 4, buffer);
+        return new GpuFrame(frameId, new Size(getFrameWidth(), getFrameHeight()), 4, buffer);
     }
 
     @Override

@@ -1,22 +1,18 @@
 package net.patchedpixel.scenecraft.common.record.gui;
 
-import net.patchedpixel.scenecraft.common.core.SettingsRegistry;
-import net.patchedpixel.scenecraft.common.record.Setting;
-import net.patchedpixel.scenecraft.common.gui.MinecraftGuiRenderer;
-import net.patchedpixel.scenecraft.common.gui.utils.EventRegistrations;
-import net.patchedpixel.scenecraft.common.gui.versions.callbacks.RenderHudCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
+import net.patchedpixel.scenecraft.common.core.SettingsRegistry;
+import net.patchedpixel.scenecraft.common.record.Setting;
+import net.patchedpixel.scenecraft.common.flamex.event.EventRegistrations;
+import net.patchedpixel.scenecraft.common.flamex.event.callbacks.RenderHudCallback;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
 import static net.patchedpixel.scenecraft.common.SceneCraft.TEXTURE;
 import static net.patchedpixel.scenecraft.common.SceneCraft.TEXTURE_SIZE;
 
-import net.minecraft.client.gui.GuiGraphics;
-
-/**
- * Renders overlay during record.
- */
 public class GuiRecordingOverlay extends EventRegistrations {
     private final Minecraft mc;
     private final SettingsRegistry settingsRegistry;
@@ -28,19 +24,15 @@ public class GuiRecordingOverlay extends EventRegistrations {
         this.guiControls = guiControls;
     }
 
-    /**
-     * Render the record icon and text in the top left corner of the screen.
-     */
     { on(RenderHudCallback.EVENT, (stack, partialTicks) -> renderRecordingIndicator(stack)); }
-    private void renderRecordingIndicator(GuiGraphics stack) {
+
+    private void renderRecordingIndicator(GuiGraphics graphics) {
         if(guiControls.isStopped()) return;
         if(settingsRegistry.get(Setting.INDICATOR)) {
-            Font fontRenderer = mc.font;
+            Font fontRenderer = MCVer.getFontRenderer();
             String text = guiControls.isPaused() ? I18n.get("scenecraft.gui.paused") : I18n.get("scenecraft.gui.record");
-            MinecraftGuiRenderer renderer = new MinecraftGuiRenderer(stack);
-            renderer.drawString(30, 18 - (fontRenderer.lineHeight / 2), 0xffffffff, text.toUpperCase());
-            renderer.bindTexture(TEXTURE);
-            renderer.drawTexturedRect(10, 10, 58, 20, 16, 16, 16, 16, TEXTURE_SIZE, TEXTURE_SIZE);
+            graphics.drawString(fontRenderer, text.toUpperCase(), 30, 18 - (fontRenderer.lineHeight / 2), 0xffffffff, false);
+            graphics.blit(TEXTURE, 10, 10, 16, 16, 58f, 20f, 16, 16, TEXTURE_SIZE, TEXTURE_SIZE);
         }
     }
 }

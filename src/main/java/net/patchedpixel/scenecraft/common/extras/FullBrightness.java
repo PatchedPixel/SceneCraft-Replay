@@ -8,10 +8,8 @@ import net.patchedpixel.scenecraft.common.replay.ReplayHandler;
 import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;
 import net.patchedpixel.scenecraft.common.replay.events.ReplayOpenedCallback;
 import net.patchedpixel.scenecraft.common.replay.gui.overlay.GuiReplayOverlay;
-import net.patchedpixel.scenecraft.common.gui.element.GuiImage;
-import net.patchedpixel.scenecraft.common.gui.element.IGuiImage;
-import net.patchedpixel.scenecraft.common.gui.layout.HorizontalLayout;
-import net.patchedpixel.scenecraft.common.gui.utils.EventRegistrations;
+import net.patchedpixel.scenecraft.common.flamex.widget.SpriteWidget;
+import net.patchedpixel.scenecraft.common.flamex.event.EventRegistrations;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -20,7 +18,7 @@ public class FullBrightness extends EventRegistrations implements Extra {
     private SceneCraft core;
     private SceneCraftReplay module;
 
-    private final IGuiImage indicator = new GuiImage().setTexture(SceneCraft.TEXTURE, 90, 20, 19, 16).setSize(19, 16);
+    private final SpriteWidget indicator = new SpriteWidget(SceneCraft.TEXTURE, 90, 20, 19, 16, SceneCraft.TEXTURE_SIZE, SceneCraft.TEXTURE_SIZE);
 
     private Minecraft mc;
     private boolean active;
@@ -107,9 +105,9 @@ public class FullBrightness extends EventRegistrations implements Extra {
     { on(ReplayOpenedCallback.EVENT, replayHandler -> { lightmapDirty = true; updateIndicator(replayHandler.getOverlay()); }); }
     private void updateIndicator(GuiReplayOverlay overlay) {
         if(active) {
-            overlay.statusIndicatorPanel.addElements(new HorizontalLayout.Data(1), indicator);
+            overlay.addStatusIndicator(indicator);
         } else {
-            overlay.statusIndicatorPanel.removeElement(indicator);
+            overlay.removeStatusIndicator(indicator);
         }
     }
 

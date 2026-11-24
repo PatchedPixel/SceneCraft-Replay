@@ -6,14 +6,13 @@ import net.patchedpixel.scenecraft.common.replay.ReplayHandler;
 import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;
 import net.patchedpixel.scenecraft.common.replay.events.ReplayOpenedCallback;
 import net.patchedpixel.scenecraft.common.replay.gui.overlay.GuiReplayOverlay;
-import net.patchedpixel.scenecraft.common.gui.element.GuiImage;
-import net.patchedpixel.scenecraft.common.gui.layout.HorizontalLayout;
-import net.patchedpixel.scenecraft.common.gui.utils.EventRegistrations;
+import net.patchedpixel.scenecraft.common.flamex.widget.SpriteWidget;
+import net.patchedpixel.scenecraft.common.flamex.event.EventRegistrations;
 
 public class QuickMode extends EventRegistrations implements Extra {
     private SceneCraftReplay module;
 
-    private final GuiImage indicator = new GuiImage().setTexture(SceneCraft.TEXTURE, 40, 100, 16, 16).setSize(16, 16);
+    private final SpriteWidget indicator = new SpriteWidget(SceneCraft.TEXTURE, 40, 100, 16, 16, SceneCraft.TEXTURE_SIZE, SceneCraft.TEXTURE_SIZE);
 
     @Override
     public void register(final SceneCraft mod) {
@@ -44,9 +43,9 @@ public class QuickMode extends EventRegistrations implements Extra {
 
     private void updateIndicator(GuiReplayOverlay overlay, boolean enabled) {
         if(enabled) {
-            overlay.statusIndicatorPanel.addElements(new HorizontalLayout.Data(1), indicator);
+            overlay.addStatusIndicator(indicator);
         } else {
-            overlay.statusIndicatorPanel.removeElement(indicator);
+            overlay.removeStatusIndicator(indicator);
         }
     }
 }

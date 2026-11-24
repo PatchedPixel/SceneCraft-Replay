@@ -1,7 +1,7 @@
 package net.patchedpixel.scenecraft.common.core.events;
 
 import net.patchedpixel.scenecraft.common.core.SettingsRegistry;
-import net.patchedpixel.scenecraft.common.gui.utils.Event;
+import net.patchedpixel.scenecraft.common.flamex.event.Event;
 
 public interface SettingsChangedCallback {
     Event<SettingsChangedCallback> EVENT = Event.create((listeners) ->

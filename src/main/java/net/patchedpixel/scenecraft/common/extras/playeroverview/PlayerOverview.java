@@ -10,7 +10,7 @@ import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;
 import net.patchedpixel.scenecraft.common.replay.camera.CameraEntity;
 import net.patchedpixel.scenecraft.common.replay.events.ReplayClosedCallback;
 import net.patchedpixel.scenecraft.common.replay.events.ReplayOpenedCallback;
-import net.patchedpixel.scenecraft.common.gui.utils.EventRegistrations;
+import net.patchedpixel.scenecraft.common.flamex.event.EventRegistrations;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 

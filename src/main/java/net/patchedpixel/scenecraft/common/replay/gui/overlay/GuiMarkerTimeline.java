@@ -1,34 +1,26 @@
 package net.patchedpixel.scenecraft.common.replay.gui.overlay;
 
-import net.patchedpixel.scenecraft.common.SceneCraft;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.language.I18n;
+import net.patchedpixel.scenecraft.common.SceneCraft;
 import net.patchedpixel.scenecraft.common.replay.ReplayHandler;
 import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;
 import net.patchedpixel.scenecraft.common.replay.camera.CameraEntity;
 import net.patchedpixel.scenecraft.common.scenestudio.data.Marker;
 import net.patchedpixel.scenecraft.common.scenestudio.util.Location;
-import net.patchedpixel.scenecraft.common.gui.GuiRenderer;
-import net.patchedpixel.scenecraft.common.gui.RenderInfo;
-import net.patchedpixel.scenecraft.common.gui.element.advanced.AbstractGuiTimeline;
-import net.patchedpixel.scenecraft.common.gui.function.Click;
-import net.patchedpixel.scenecraft.common.gui.function.Draggable;
-import net.patchedpixel.scenecraft.common.gui.function.KeyHandler;
-import net.patchedpixel.scenecraft.common.gui.function.KeyInput;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.Point;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
-import net.minecraft.client.resources.language.I18n;
+import net.patchedpixel.scenecraft.common.flamex.widget.TimelineWidget;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import static net.patchedpixel.scenecraft.common.gui.utils.Utils.clamp;
-
-public class GuiMarkerTimeline extends AbstractGuiTimeline<GuiMarkerTimeline> implements Draggable, KeyHandler {
+public class GuiMarkerTimeline extends TimelineWidget {
     protected static final int TEXTURE_MARKER_X = 109;
     protected static final int TEXTURE_MARKER_Y = 20;
     protected static final int TEXTURE_MARKER_SELECTED_X = 114;
@@ -40,8 +32,6 @@ public class GuiMarkerTimeline extends AbstractGuiTimeline<GuiMarkerTimeline> im
     private final Consumer<Set<Marker>> saveMarkers;
     protected Set<Marker> markers;
 
-    private ReadableDimension lastSize;
-
     private Marker selectedMarker;
     private int draggingStartX;
     private int draggingTimeDelta;
@@ -49,6 +39,7 @@ public class GuiMarkerTimeline extends AbstractGuiTimeline<GuiMarkerTimeline> im
     private long lastClickTime;
 
     public GuiMarkerTimeline(@Nonnull ReplayHandler replayHandler) {
+        super(100, 20);
         this.replayHandler = replayHandler;
         try {
             this.markers = replayHandler.getReplayFile().getMarkers().orElseGet(HashSet::new);
@@ -66,42 +57,28 @@ public class GuiMarkerTimeline extends AbstractGuiTimeline<GuiMarkerTimeline> im
     }
 
     public GuiMarkerTimeline(Set<Marker> markers, Consumer<Set<Marker>> saveMarkers) {
+        super(100, 20);
         this.replayHandler = null;
         this.markers = markers;
         this.saveMarkers = saveMarkers;
     }
 
     @Override
-    protected GuiMarkerTimeline getThis() {
-        return this;
-    }
-
-    @Override
-    public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
-        lastSize = size;
-        super.draw(renderer, size, renderInfo);
-
-        drawMarkers(renderer, size);
-    }
-
-    protected void drawMarkers(GuiRenderer renderer, ReadableDimension size) {
-        renderer.bindTexture(SceneCraft.TEXTURE);
-
+    protected void drawContent(GuiGraphics graphics, int mouseX, int mouseY) {
         for(Marker marker : markers) {
-            drawMarker(renderer, size, marker);
+            drawMarker(graphics, marker);
         }
     }
 
-    protected void drawMarker(GuiRenderer renderer, ReadableDimension size, Marker marker) {
+    protected void drawMarker(GuiGraphics graphics, Marker marker) {
         int visibleLength = (int) (getLength() * getZoom());
-        int markerPos = clamp(marker.getTime(), getOffset(), getOffset() + visibleLength);
-        double positionInVisible = markerPos - getOffset();
-        double fractionOfVisible = positionInVisible / visibleLength;
-        int markerX = (int) (BORDER_LEFT + fractionOfVisible * (size.getWidth() - BORDER_LEFT - BORDER_RIGHT));
-        drawMarker(renderer, size, marker, markerX);
+        if(visibleLength <= 0) return;
+        int markerPos = Math.max(getOffset(), Math.min(getOffset() + visibleLength, marker.getTime()));
+        int markerX = getX() + xOffsetFor(markerPos);
+        drawMarker(graphics, marker, markerX);
     }
 
-    protected void drawMarker(GuiRenderer renderer, ReadableDimension size, Marker marker, int markerX) {
+    protected void drawMarker(GuiGraphics graphics, Marker marker, int markerX) {
         int textureX, textureY;
         if(marker.equals(selectedMarker)) {
             textureX = TEXTURE_MARKER_SELECTED_X;
@@ -110,38 +87,23 @@ public class GuiMarkerTimeline extends AbstractGuiTimeline<GuiMarkerTimeline> im
             textureX = TEXTURE_MARKER_X;
             textureY = TEXTURE_MARKER_Y;
         }
-        renderer.drawTexturedRect(markerX - 2, size.getHeight() - BORDER_BOTTOM - MARKER_SIZE,
+        graphics.blit(SceneCraft.TEXTURE, markerX - 2, getY() + getHeight() - BORDER_BOTTOM - MARKER_SIZE,
                 textureX, textureY, MARKER_SIZE, MARKER_SIZE);
     }
 
-    /**
-     * Returns the marker which the mouse is at.
-     * @param mouseX X coordinate of the mouse
-     * @param mouseY Y coordinate of the mouse
-     * @return The marker or {@code null} if the mouse isn't on a marker
-     */
-    protected Marker getMarkerAt(int mouseX, int mouseY) {
-        if(lastSize == null) {
+    /** @return the marker at the absolute mouse position, or null */
+    protected Marker getMarkerAt(double mouseX, double mouseY) {
+        double mx = mouseX - getX();
+        double my = mouseY - getY();
+        if(mx < 0 || my < getHeight() - BORDER_BOTTOM - MARKER_SIZE
+                || mx > getWidth() || my > getHeight() - BORDER_BOTTOM) {
             return null;
         }
-        Point mouse = new Point(mouseX, mouseY);
-        getContainer().convertFor(this, mouse);
-        mouseX = mouse.getX();
-        mouseY = mouse.getY();
-
-        if(mouseX < 0 || mouseY < lastSize.getHeight() - BORDER_BOTTOM - MARKER_SIZE
-                || mouseX > lastSize.getWidth() || mouseY > lastSize.getHeight() - BORDER_BOTTOM) {
-            return null;
-        }
-
         int visibleLength = (int) (getLength() * getZoom());
-        int contentWidth = lastSize.getWidth() - BORDER_LEFT - BORDER_RIGHT;
+        if(visibleLength <= 0) return null;
         for(Marker marker : markers) {
-            int markerPos = clamp(marker.getTime(), getOffset(), getOffset() + visibleLength);
-            double positionInVisible = markerPos - getOffset();
-            double fractionOfVisible = positionInVisible / visibleLength;
-            int markerX = (int) (BORDER_LEFT + fractionOfVisible * contentWidth);
-            if(Math.abs(markerX - mouseX) < 3) {
+            int markerPos = Math.max(getOffset(), Math.min(getOffset() + visibleLength, marker.getTime()));
+            if(Math.abs(xOffsetFor(markerPos) - mx) < 3) {
                 return marker;
             }
         }
@@ -149,24 +111,26 @@ public class GuiMarkerTimeline extends AbstractGuiTimeline<GuiMarkerTimeline> im
     }
 
     @Override
-    public boolean mouseClick(Click click) {
-        Marker marker = getMarkerAt(click.x, click.y);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if(!active || !visible || !isMouseOver(mouseX, mouseY)) return false;
+        Marker marker = getMarkerAt(mouseX, mouseY);
         if(marker != null) {
-            if(click.button == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_LEFT) { // Left click
+            if(button == InputConstants.MOUSE_BUTTON_LEFT) {
                 long now = System.currentTimeMillis();
                 selectedMarker = marker;
                 if(Math.abs(lastClickTime - now) > 500) { // Single click
-                    draggingStartX = click.x;
-                    draggingTimeDelta = marker.getTime() - getTimeAt(click.x, click.y);
+                    draggingStartX = (int) mouseX;
+                    draggingTimeDelta = marker.getTime() - getTimeAt(mouseX, mouseY);
                 } else { // Double click
-                    new GuiEditMarkerPopup(getContainer(), marker, (updatedMarker) -> {
+                    Minecraft mc = MCVer.getMinecraft();
+                    mc.setScreen(new GuiEditMarkerPopup(mc.screen, marker, (updatedMarker) -> {
                         markers.remove(marker);
                         markers.add(updatedMarker);
                         saveMarkers.accept(markers);
-                    }).open();
+                    }));
                 }
                 lastClickTime = now;
-            } else if(click.button == com.mojang.blaze3d.platform.InputConstants.MOUSE_BUTTON_RIGHT) { // Right click
+            } else if(button == InputConstants.MOUSE_BUTTON_RIGHT) {
                 selectedMarker = null;
                 if(replayHandler != null) {
                     CameraEntity cameraEntity = replayHandler.getCameraEntity();
@@ -185,18 +149,18 @@ public class GuiMarkerTimeline extends AbstractGuiTimeline<GuiMarkerTimeline> im
         } else {
             selectedMarker = null;
         }
-        return super.mouseClick(click);
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override
-    public boolean mouseDrag(Click click) {
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dx, double dy) {
         if(selectedMarker != null) {
-            int diff = click.y - draggingStartX;
+            int diff = (int) mouseX - draggingStartX;
             if(Math.abs(diff) > MARKER_SIZE) {
                 dragging = true;
             }
             if(dragging) {
-                int timeAt = getTimeAt(click.x, click.y);
+                int timeAt = getTimeAt(mouseX, mouseY);
                 if(timeAt != -1) {
                     selectedMarker.setTime(draggingTimeDelta + timeAt);
                 }
@@ -207,25 +171,23 @@ public class GuiMarkerTimeline extends AbstractGuiTimeline<GuiMarkerTimeline> im
     }
 
     @Override
-    public boolean mouseRelease(Click click) {
-        if(selectedMarker != null) {
-            mouseDrag(click);
-            if(dragging) {
-                dragging = false;
-                saveMarkers.accept(markers);
-                return true;
-            }
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if(selectedMarker != null && dragging) {
+            mouseDragged(mouseX, mouseY, button, 0, 0);
+            dragging = false;
+            saveMarkers.accept(markers);
+            return true;
         }
         return false;
     }
 
     @Override
-    protected String getTooltipText(RenderInfo renderInfo) {
-        Marker marker = getMarkerAt(renderInfo.mouseX, renderInfo.mouseY);
+    protected String getTooltipText(int mouseX, int mouseY) {
+        Marker marker = getMarkerAt(mouseX, mouseY);
         if(marker != null) {
             return marker.getName() != null ? marker.getName() : I18n.get("scenecraft.gui.ingame.unnamedmarker");
         }
-        return super.getTooltipText(renderInfo);
+        return super.getTooltipText(mouseX, mouseY);
     }
 
     public void setSelectedMarker(Marker selectedMarker) {
@@ -237,24 +199,18 @@ public class GuiMarkerTimeline extends AbstractGuiTimeline<GuiMarkerTimeline> im
     }
 
     @Override
-    public boolean handleKey(KeyInput keyInput) {
-        if(keyInput.key == InputConstants.KEY_DELETE && selectedMarker != null) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if(keyCode == InputConstants.KEY_DELETE && selectedMarker != null) {
             markers.remove(selectedMarker);
             saveMarkers.accept(markers);
-
+            selectedMarker = null;
             return true;
         }
-
         return false;
     }
 
     public void addMarker(Marker marker) {
         markers.add(marker);
         saveMarkers.accept(markers);
-    }
-
-    @Override
-    public ReadableDimension getLastSize() {
-        return super.getLastSize();
     }
 }

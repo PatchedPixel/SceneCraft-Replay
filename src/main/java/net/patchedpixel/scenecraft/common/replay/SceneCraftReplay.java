@@ -20,7 +20,6 @@ import net.patchedpixel.scenecraft.common.replay.gui.screen.GuiModCompatWarning;
 import net.patchedpixel.scenecraft.common.replay.handler.GuiHandler;
 import net.patchedpixel.scenecraft.common.scenestudio.data.Marker;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
-import net.patchedpixel.scenecraft.common.gui.function.Click;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.KeyMapping;
 import org.apache.logging.log4j.LogManager;
@@ -101,7 +100,7 @@ public class SceneCraftReplay implements Module {
         }, true);
         keyPlayPause = registry.registerKeyBinding("scenecraft.input.playpause", InputConstants.KEY_P, () -> {
             if(replayHandler != null) {
-                replayHandler.getOverlay().playPauseButton.onClick(new Click(-1, -1, 0, 0));
+                replayHandler.getOverlay().playPauseButton.onPress();
             }
         }, true);
         core.getKeyBindingRegistry().registerKeyBinding("scenecraft.input.rollclockwise", InputConstants.KEY_L, () -> {
@@ -150,8 +149,7 @@ public class SceneCraftReplay implements Module {
         if(checkModCompat) {
             ModCompat.ModInfoDifference modDifference = new ModCompat.ModInfoDifference(replayFile.getModInfo());
             if(!modDifference.getMissing().isEmpty() || !modDifference.getDiffering().isEmpty()) {
-                GuiModCompatWarning screen = new GuiModCompatWarning(modDifference);
-                screen.loadButton.onClick(() -> {
+                GuiModCompatWarning screen = new GuiModCompatWarning(modDifference, () -> {
                     try {
                         startReplay(replayFile, false, asyncMode);
                     } catch(IOException e) {

@@ -25,8 +25,7 @@ import net.patchedpixel.scenecraft.common.replay.ReplayHandler;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.path.Keyframe;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.path.Path;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.path.Timeline;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.Dimension;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
+import net.patchedpixel.scenecraft.common.flamex.util.geometry.Size;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import com.mojang.blaze3d.platform.Window;
@@ -198,7 +197,7 @@ public class VideoRenderer implements RenderInfo {
 
     @Override
     public float updateForNextFrame() {
-        // because the jGui lib uses Minecraft's displayWidth and displayHeight values, update these temporarily
+        // screens are laid out from the window size, so swap in the virtual window temporarily
         guiWindow.bind();
 
         if(!settings.isHighPerformance() || framesDone % fps == 0) {
@@ -283,7 +282,7 @@ public class VideoRenderer implements RenderInfo {
             cameraPathExporter.setup(totalFrames);
         }
 
-        gui.toMinecraft().init(mc, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
+        gui.init(mc, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
 
         forceChunkLoadingHook = new ForceChunkLoadingHook(mc.levelRenderer);
     }
@@ -336,7 +335,7 @@ public class VideoRenderer implements RenderInfo {
         while(true) {
             while(mc.getOverlay() != null) {
                 drawGui();
-                ((MinecraftMethodAccessor) mc).sceneCraftExecuteTaskQueue();
+                MCVer.executeTaskQueue();
 
             }
 
@@ -348,9 +347,9 @@ public class VideoRenderer implements RenderInfo {
             }
             break;
         }
-        ((MinecraftMethodAccessor) mc).sceneCraftExecuteTaskQueue();
+        MCVer.executeTaskQueue();
 
-        mc.screen = gui.toMinecraft();
+        mc.screen = gui;
     }
 
     private void tick() {
@@ -371,7 +370,7 @@ public class VideoRenderer implements RenderInfo {
 
             RenderSystem.clear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);
 
-            gui.toMinecraft().init(mc, window.getGuiScaledWidth(), window.getGuiScaledHeight());
+            gui.init(mc, window.getGuiScaledWidth(), window.getGuiScaledHeight());
 
             int mouseX = (int) mc.mouseHandler.xpos() * window.getGuiScaledWidth() / Math.max(window.getScreenWidth(), 1);
             int mouseY = (int) mc.mouseHandler.ypos() * window.getGuiScaledHeight() / Math.max(window.getScreenHeight(), 1);
@@ -392,7 +391,7 @@ public class VideoRenderer implements RenderInfo {
             if(mc.getOverlay() != null) {
                 Screen orgScreen = mc.screen;
                 try {
-                    mc.screen = gui.toMinecraft();
+                    mc.screen = gui;
                     mc.getOverlay().render(
                             drawContext,
                             mouseX, mouseY, 0);
@@ -400,8 +399,8 @@ public class VideoRenderer implements RenderInfo {
                     mc.screen = orgScreen;
                 }
             } else {
-                gui.toMinecraft().tick();
-                gui.toMinecraft().renderWithTooltip(
+                gui.tick();
+                gui.renderWithTooltip(
                         drawContext,
                         mouseX, mouseY, 0);
             }
@@ -429,8 +428,8 @@ public class VideoRenderer implements RenderInfo {
     }
 
     @Override
-    public ReadableDimension getFrameSize() {
-        return new Dimension(settings.getVideoWidth(), settings.getVideoHeight());
+    public Size getFrameSize() {
+        return new Size(settings.getVideoWidth(), settings.getVideoHeight());
     }
 
     public int getTotalFrames() {

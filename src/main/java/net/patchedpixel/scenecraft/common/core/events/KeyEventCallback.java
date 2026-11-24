@@ -1,7 +1,7 @@
 package net.patchedpixel.scenecraft.common.core.events;
 
-import net.patchedpixel.scenecraft.common.gui.function.KeyInput;
-import net.patchedpixel.scenecraft.common.gui.utils.Event;
+import net.patchedpixel.scenecraft.common.flamex.event.input.KeyInput;
+import net.patchedpixel.scenecraft.common.flamex.event.Event;
 
 public interface KeyEventCallback {
     Event<KeyEventCallback> EVENT = Event.create((listeners) ->

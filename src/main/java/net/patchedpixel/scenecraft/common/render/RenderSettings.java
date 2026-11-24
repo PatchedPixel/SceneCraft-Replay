@@ -4,8 +4,7 @@ import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
 import net.patchedpixel.scenecraft.common.utils.FileTypeAdapter;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
-import net.patchedpixel.scenecraft.common.gui.utils.color.Color;
-import net.patchedpixel.scenecraft.common.gui.utils.color.ReadableColor;
+import net.patchedpixel.scenecraft.common.flamex.util.color.Color;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.Util;
 import net.patchedpixel.scenecraft.platform.ModLoader;
@@ -200,7 +199,7 @@ public class RenderSettings {
             boolean stabilizeYaw,
             boolean stabilizePitch,
             boolean stabilizeRoll,
-            ReadableColor chromaKeyingColor,
+            Color chromaKeyingColor,
             int sphericalFovX,
             int sphericalFovY,
             boolean injectSphericalMetadata,
@@ -223,7 +222,7 @@ public class RenderSettings {
         this.stabilizeYaw = stabilizeYaw;
         this.stabilizePitch = stabilizePitch;
         this.stabilizeRoll = stabilizeRoll;
-        this.chromaKeyingColor = chromaKeyingColor == null ? null : new Color(chromaKeyingColor);
+        this.chromaKeyingColor = chromaKeyingColor;
         this.sphericalFovX = sphericalFovX;
         this.sphericalFovY = sphericalFovY;
         this.injectSphericalMetadata = injectSphericalMetadata;
@@ -421,7 +420,7 @@ public class RenderSettings {
         return stabilizeRoll;
     }
 
-    public ReadableColor getChromaKeyingColor() {
+    public Color getChromaKeyingColor() {
         return chromaKeyingColor;
     }
 

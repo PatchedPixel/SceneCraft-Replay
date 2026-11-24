@@ -1,16 +1,10 @@
 package net.patchedpixel.scenecraft.common.replay.handler;
 
 import net.patchedpixel.scenecraft.common.compat.SceneCraftCompat;
-import net.patchedpixel.scenecraft.common.core.gui.GuiReplayButton;
 import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;
 import net.patchedpixel.scenecraft.common.replay.Setting;
-import net.patchedpixel.scenecraft.common.gui.container.VanillaGuiScreen;
-import net.patchedpixel.scenecraft.common.gui.element.GuiTooltip;
-import net.patchedpixel.scenecraft.common.gui.layout.CustomLayout;
-import net.patchedpixel.scenecraft.common.gui.utils.EventRegistrations;
-import net.patchedpixel.scenecraft.common.gui.container.GuiScreen;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.Point;
-import net.patchedpixel.scenecraft.common.gui.versions.callbacks.InitScreenCallback;
+import net.patchedpixel.scenecraft.common.flamex.event.EventRegistrations;
+import net.patchedpixel.scenecraft.common.flamex.event.callbacks.InitScreenCallback;
 import net.patchedpixel.scenecraft.common.replay.gui.screen.GuiReplayViewer;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.TitleScreen;
@@ -22,6 +16,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.patchedpixel.scenecraft.common.core.versions.ScreenWidgets;
 import net.minecraft.network.chat.Component;
 import net.minecraft.client.gui.components.Button;
+import net.patchedpixel.scenecraft.common.flamex.widget.LogoButton;
 import net.patchedpixel.scenecraft.platform.ModLoader;
 
 import java.io.IOException;
@@ -181,7 +176,7 @@ public class GuiHandler extends EventRegistrations {
             }
         }
 
-        Point pos;
+        ButtonPos pos;
         if(buttonPosition == MainMenuButtonPosition.BIG) {
             int x = screen.width / 2 - 100;
             // We want to position our button below the realms button
@@ -202,7 +197,7 @@ public class GuiHandler extends EventRegistrations {
                     Integer.MIN_VALUE, y,
                     -24);
 
-            pos = new Point(x, y);
+            pos = new ButtonPos(x, y);
         } else {
             pos = determineButtonPos(buttonPosition, screen, buttonList);
         }
@@ -211,7 +206,7 @@ public class GuiHandler extends EventRegistrations {
         if(buttonPosition == MainMenuButtonPosition.BIG) {
             replayViewerButton = new InjectedButton(
                     screen, BUTTON_REPLAY_VIEWER,
-                    pos.getX(), pos.getY(),
+                    pos.x(), pos.y(),
                     200, 20,
                     "scenecraft.gui.replayviewer",
                     null,
@@ -220,26 +215,26 @@ public class GuiHandler extends EventRegistrations {
         } else {
             replayViewerButton = new InjectedButton(
                     screen, BUTTON_REPLAY_VIEWER,
-                    pos.getX(), pos.getY(),
+                    pos.x(), pos.y(),
                     20, 20,
                     "",
                     "scenecraft.gui.replayviewer",
                     this::onButton
             ) {
                 @Override
-                public void renderWidget(GuiGraphics context, int mouseX, int mouseY, float delta) {
-                    super.renderWidget(context, mouseX, mouseY, delta);
+                public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+                    super.renderWidget(graphics, mouseX, mouseY, delta);
 
-                    context.setColor(1.0F, 1.0F, 1.0F, this.alpha);
-                    context.blit(
-                            GuiReplayButton.ICON,
+                    graphics.setColor(1.0F, 1.0F, 1.0F, this.alpha);
+                    graphics.blit(
+                            LogoButton.ICON,
                             this.getX() + 3, this.getY() + 3,
                             this.width - 6, this.height - 6,
                             0, 0,
                             1, 1,
                             1, 1
                     );
-                    context.setColor(1.0F, 1.0F, 1.0F, 1.0F);
+                    graphics.setColor(1.0F, 1.0F, 1.0F, 1.0F);
                 }
             };
         }
@@ -263,27 +258,11 @@ public class GuiHandler extends EventRegistrations {
 
         MainMenuButtonPosition buttonPosition = MainMenuButtonPosition.valueOf(mod.getCore().getSettingsRegistry().get(Setting.MAIN_MENU_BUTTON));
         if(buttonPosition != MainMenuButtonPosition.BIG && !isCustomMainMenuMod) {
-            VanillaGuiScreen vanillaGui = VanillaGuiScreen.wrap(guiScreen);
-
-            GuiReplayButton replayButton = new GuiReplayButton();
-            replayButton
-                    .onClick(() -> new GuiReplayViewer(mod).display())
-                    .setTooltip(new GuiTooltip().setI18nText("scenecraft.gui.replayviewer"));
-
-            vanillaGui.setLayout(new CustomLayout<GuiScreen>(vanillaGui.getLayout()) {
-                private Point pos;
-
-                @Override
-                protected void layout(GuiScreen container, int width, int height) {
-                    if(pos == null) {
-                        // Delaying computation so we can take into account buttons
-                        // added after our callback.
-                        pos = determineButtonPos(buttonPosition, guiScreen, buttonList);
-                    }
-                    size(replayButton, 20, 20);
-                    pos(replayButton, pos.getX(), pos.getY());
-                }
-            }).addElements(null, replayButton);
+            ButtonPos pos = determineButtonPos(buttonPosition, guiScreen, buttonList);
+            LogoButton replayButton = new LogoButton(20, () -> new GuiReplayViewer(mod).display());
+            replayButton.setTooltip(Tooltip.create(Component.translatable("scenecraft.gui.replayviewer")));
+            replayButton.setPosition(pos.x(), pos.y());
+            ScreenWidgets.getWidgets(guiScreen).add(replayButton);
             return;
         }
 
@@ -319,11 +298,13 @@ public class GuiHandler extends EventRegistrations {
         addButton(guiScreen, button);
     }
 
-    private Point determineButtonPos(MainMenuButtonPosition buttonPosition, Screen guiScreen, Collection<AbstractWidget> buttonList) {
-        Point topRight = new Point(guiScreen.width - 20 - 5, 5);
+    private record ButtonPos(int x, int y) {}
+
+    private ButtonPos determineButtonPos(MainMenuButtonPosition buttonPosition, Screen guiScreen, Collection<AbstractWidget> buttonList) {
+        ButtonPos topRight = new ButtonPos(guiScreen.width - 20 - 5, 5);
 
         if(buttonPosition == MainMenuButtonPosition.TOP_LEFT) {
-            return new Point(5, 5);
+            return new ButtonPos(5, 5);
         } else if(buttonPosition == MainMenuButtonPosition.TOP_RIGHT) {
             return topRight;
         } else if(buttonPosition == MainMenuButtonPosition.DEFAULT) {
@@ -344,7 +325,7 @@ public class GuiHandler extends EventRegistrations {
                     // then take the bottom-most and if there's two, the right-most
                     .max(Comparator.<AbstractWidget>comparingInt(it -> it.getY()).thenComparingInt(it -> it.getX()))
                     // and place ourselves next to it
-                    .map(it -> new Point(it.getX() + it.getWidth() + 4, it.getY()))
+                    .map(it -> new ButtonPos(it.getX() + it.getWidth() + 4, it.getY()))
                     // if all fails, just go with TOP_RIGHT
                     .orElse(topRight);
         } else {
@@ -369,7 +350,7 @@ public class GuiHandler extends EventRegistrations {
                     case RIGHT_OF_SINGLEPLAYER:
                     case RIGHT_OF_MULTIPLAYER:
                     case RIGHT_OF_REALMS:
-                        return new Point(button.getX() + button.getWidth() + 4, button.getY());
+                        return new ButtonPos(button.getX() + button.getWidth() + 4, button.getY());
                 }
                 throw new RuntimeException();
             }).orElse(topRight);

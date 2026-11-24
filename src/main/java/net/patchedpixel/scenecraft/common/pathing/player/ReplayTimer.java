@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.common.pathing.player;
 
-import net.patchedpixel.scenecraft.common.gui.utils.Event;
+import net.patchedpixel.scenecraft.common.flamex.event.Event;
 import net.minecraft.client.Timer;
 
 public class ReplayTimer extends Timer {

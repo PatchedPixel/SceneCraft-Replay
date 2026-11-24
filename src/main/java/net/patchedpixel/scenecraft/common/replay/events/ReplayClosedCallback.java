@@ -1,7 +1,7 @@
 package net.patchedpixel.scenecraft.common.replay.events;
 
 import net.patchedpixel.scenecraft.common.replay.ReplayHandler;
-import net.patchedpixel.scenecraft.common.gui.utils.Event;
+import net.patchedpixel.scenecraft.common.flamex.event.Event;
 
 public interface ReplayClosedCallback {
     Event<ReplayClosedCallback> EVENT = Event.create((listeners) ->

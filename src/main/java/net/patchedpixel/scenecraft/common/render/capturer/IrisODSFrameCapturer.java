@@ -6,7 +6,7 @@ import net.patchedpixel.scenecraft.common.render.frame.ODSGpuFrame;
 import net.patchedpixel.scenecraft.common.render.frame.GpuFrame;
 import net.patchedpixel.scenecraft.common.render.rendering.Channel;
 import net.patchedpixel.scenecraft.common.render.rendering.FrameCapturer;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
+import net.patchedpixel.scenecraft.common.flamex.util.geometry.Size;
 import net.irisshaders.iris.Iris;
 import net.irisshaders.iris.config.IrisConfig;
 
@@ -28,7 +28,7 @@ public class IrisODSFrameCapturer implements FrameCapturer<ODSGpuFrame> {
             private int call;
             private float partialTicks;
             @Override
-            public ReadableDimension getFrameSize() {
+            public Size getFrameSize() {
                 return renderInfo.getFrameSize();
             }
 

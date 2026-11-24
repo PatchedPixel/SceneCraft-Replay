@@ -5,8 +5,7 @@ import net.patchedpixel.scenecraft.common.render.RenderSettings;
 import net.patchedpixel.scenecraft.common.render.capturer.RenderInfo;
 import net.patchedpixel.scenecraft.common.render.hooks.ForceChunkLoadingHook;
 import net.patchedpixel.scenecraft.common.render.rendering.Pipelines;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.Dimension;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
+import net.patchedpixel.scenecraft.common.flamex.util.geometry.Size;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.platform.Window;
 import net.minecraft.CrashReport;
@@ -48,8 +47,8 @@ public class ScreenshotRenderer implements RenderInfo {
     }
 
     @Override
-    public ReadableDimension getFrameSize() {
-        return new Dimension(settings.getVideoWidth(), settings.getVideoHeight());
+    public Size getFrameSize() {
+        return new Size(settings.getVideoWidth(), settings.getVideoHeight());
     }
 
     @Override

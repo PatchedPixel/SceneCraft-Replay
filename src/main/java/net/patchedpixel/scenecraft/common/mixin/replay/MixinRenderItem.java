@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.RenderStateShard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
 @Mixin(RenderStateShard.class)
 public class MixinRenderItem {
@@ -16,6 +17,6 @@ public class MixinRenderItem {
         if(replayHandler != null) {
             return replayHandler.getReplaySender().currentTimeStamp();
         }
-        return Util.getMillis();
+        return MCVer.milliTime();
     }
 }

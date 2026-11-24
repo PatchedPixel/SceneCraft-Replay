@@ -1,25 +1,11 @@
 package net.patchedpixel.scenecraft.common.utils;
 
+import net.patchedpixel.scenecraft.common.flamex.util.geometry.Size;
 import com.google.common.base.Throwables;
 import com.google.common.net.PercentEscaper;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.Dimension;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
-import net.patchedpixel.scenecraft.common.gui.GuiRenderer;
-import net.patchedpixel.scenecraft.common.gui.RenderInfo;
-import net.patchedpixel.scenecraft.common.gui.container.AbstractGuiScrollable;
-import net.patchedpixel.scenecraft.common.gui.container.GuiContainer;
-import net.patchedpixel.scenecraft.common.gui.container.GuiPanel;
-import net.patchedpixel.scenecraft.common.gui.container.GuiScrollable;
-import net.patchedpixel.scenecraft.common.gui.element.GuiButton;
-import net.patchedpixel.scenecraft.common.gui.element.GuiElement;
-import net.patchedpixel.scenecraft.common.gui.element.GuiLabel;
-import net.patchedpixel.scenecraft.common.gui.layout.HorizontalLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.VerticalLayout;
-import net.patchedpixel.scenecraft.common.gui.popup.GuiInfoPopup;
-import net.patchedpixel.scenecraft.common.gui.utils.Colors;
-import net.patchedpixel.scenecraft.common.gui.versions.Image;
-import net.patchedpixel.scenecraft.common.core.versions.MCVer;
+import net.patchedpixel.scenecraft.common.flamex.util.Image;
 import net.minecraft.CrashReport;
+import net.patchedpixel.scenecraft.common.flamex.popup.CrashReportScreen;
 import net.minecraft.Util;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FilenameUtils;
@@ -48,7 +34,6 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.function.Consumer;
 
@@ -69,7 +54,7 @@ public class Utils {
     static {
         Image thumbnail;
         try {
-            thumbnail = Image.read(getResourceAsStream("/assets/scenecraft/logo.png"));
+            thumbnail = Image.read(getResourceAsStream("/assets/scenecraft/unknown.png"));
         } catch(Exception e) {
             thumbnail = new Image(1, 1);
             e.printStackTrace();
@@ -125,12 +110,12 @@ public class Utils {
         return builder.toString();
     }
 
-    public static Dimension fitIntoBounds(ReadableDimension toFit, ReadableDimension bounds) {
-        int width = toFit.getWidth();
-        int height = toFit.getHeight();
+    public static Size fitIntoBounds(Size toFit, Size bounds) {
+        int width = toFit.width();
+        int height = toFit.height();
 
-        float w = (float) width / bounds.getWidth();
-        float h = (float) height / bounds.getHeight();
+        float w = (float) width / bounds.width();
+        float h = (float) height / bounds.height();
 
         if(w > h) {
             height = (int) (height / w);
@@ -140,7 +125,7 @@ public class Utils {
             width = (int) (width / h);
         }
 
-        return new Dimension(width, height);
+        return new Size(width, height);
     }
 
     private static final PercentEscaper REPLAY_NAME_ENCODER = new PercentEscaper(".-_ ", false);
@@ -211,7 +196,8 @@ public class Utils {
         return InputConstants.isKeyDown(getMinecraft().getWindow().getWindow(), mac ? InputConstants.KEY_LWIN : InputConstants.KEY_LCONTROL) || InputConstants.isKeyDown(getMinecraft().getWindow().getWindow(), mac ? InputConstants.KEY_RWIN : InputConstants.KEY_RCONTROL);
     }
 
-    public static GuiInfoPopup error(Logger logger, GuiContainer container, CrashReport crashReport, Runnable onClose) {
+    /** Logs and saves the crash report and shows it in a {@link CrashReportScreen} on top of the current screen. */
+    public static void error(Logger logger, CrashReport crashReport, Runnable onClose) {
         // Convert crash report to string
         String crashReportStr = crashReport.getFriendlyReport();
 
@@ -232,50 +218,13 @@ public class Utils {
             logger.debug("Not saving crash report as file already exists: {}", crashReport.getSaveFile());
         }
 
-        logger.trace("Opening crash report popup GUI");
-        GuiCrashReportPopup popup = new GuiCrashReportPopup(container, crashReportStr);
-        popup.onClosed(() -> {
-            logger.trace("Crash report popup closed");
+        logger.trace("Opening crash report screen");
+        getMinecraft().setScreen(new CrashReportScreen(getMinecraft().screen, crashReportStr, () -> {
+            logger.trace("Crash report screen closed");
             if(onClose != null) {
                 onClose.run();
             }
-        });
-        return popup;
-    }
-    private static class GuiCrashReportPopup extends GuiInfoPopup {
-        private final GuiScrollable scrollable;
-
-        public GuiCrashReportPopup(GuiContainer container, String crashReport) {
-            super(container);
-            setBackgroundColor(Colors.DARK_TRANSPARENT);
-
-            // Add crash report to scrollable info
-            getInfo().addElements(new VerticalLayout.Data(0.5),
-                    new GuiLabel().setColor(Colors.BLACK).setI18nText("scenecraft.gui.unknownerror"),
-                    scrollable = new GuiScrollable().setScrollDirection(AbstractGuiScrollable.Direction.VERTICAL)
-                            .setLayout(new VerticalLayout().setSpacing(2))
-                            .addElements(null,Arrays.stream(crashReport.replace("\t", "    ").split("\n")).map(
-                                    l -> new GuiLabel().setText(l).setColor(Colors.BLACK)).toArray(GuiElement[]::new)));
-
-            // Replace close button with panel containing close and copy buttons
-            GuiButton copyToClipboardButton = new GuiButton().setI18nLabel("chat.copy").onClick(() ->
-                    MCVer.setClipboardString(crashReport)).setSize(150, 20);
-            GuiButton closeButton = getCloseButton();
-            popup.removeElement(closeButton);
-            popup.addElements(new VerticalLayout.Data(1),
-                    new GuiPanel().setLayout(new HorizontalLayout().setSpacing(5)).setSize(305, 20)
-                            .addElements(null, copyToClipboardButton, closeButton));
-
-            // And open it
-            open();
-        }
-
-        @Override
-        public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
-            // Re-size the scrollable containing the crash report to 3/4 of the screen
-            scrollable.setSize(size.getWidth() * 3 / 4, size.getHeight() * 3 / 4);
-            super.draw(renderer, size, renderInfo);
-        }
+        }));
     }
 
     public static <T> T configure(T instance, Consumer<T> configure) {

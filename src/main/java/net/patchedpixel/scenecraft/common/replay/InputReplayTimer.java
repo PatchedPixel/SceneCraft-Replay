@@ -4,7 +4,7 @@ import net.patchedpixel.scenecraft.common.SceneCraft;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 import net.patchedpixel.scenecraft.common.replay.camera.CameraController;
 import net.patchedpixel.scenecraft.common.replay.camera.CameraEntity;
-import net.patchedpixel.scenecraft.common.gui.versions.ScreenExt;
+import net.patchedpixel.scenecraft.common.flamex.util.ScreenExt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ReceivingLevelScreen;
 

@@ -3,7 +3,7 @@ package net.patchedpixel.scenecraft.common.render.processor;
 import net.patchedpixel.scenecraft.common.render.frame.CubicGpuFrame;
 import net.patchedpixel.scenecraft.common.render.frame.BitmapFrame;
 import net.patchedpixel.scenecraft.common.render.utils.ByteBufferPool;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.Dimension;
+import net.patchedpixel.scenecraft.common.flamex.util.geometry.Size;
 import net.patchedpixel.scenecraft.common.render.utils.Utils;
 
 import java.nio.ByteBuffer;
@@ -11,7 +11,7 @@ import java.nio.ByteBuffer;
 public class CubicToBitmapProcessor extends AbstractFrameProcessor<CubicGpuFrame, BitmapFrame> {
     @Override
     public BitmapFrame process(CubicGpuFrame rawFrame) {
-        int size = rawFrame.getLeft().getSize().getWidth();
+        int size = rawFrame.getLeft().getSize().width();
         int bpp = rawFrame.getLeft().getBytesPerPixel();
         int width = size * 4;
         int height = size * 3;
@@ -28,6 +28,6 @@ public class CubicToBitmapProcessor extends AbstractFrameProcessor<CubicGpuFrame
         ByteBufferPool.release(rawFrame.getBack().getByteBuffer());
         ByteBufferPool.release(rawFrame.getTop().getByteBuffer());
         ByteBufferPool.release(rawFrame.getBottom().getByteBuffer());
-        return new BitmapFrame(rawFrame.getFrameId(), new Dimension(width, height), bpp, result);
+        return new BitmapFrame(rawFrame.getFrameId(), new Size(width, height), bpp, result);
     }
 }

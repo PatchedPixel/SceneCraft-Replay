@@ -45,7 +45,7 @@ public class SceneCraftPlatform {
                     if(this.mod == null) {
                         return parent;
                     }
-                    return new GuiReplaySettings(parent, this.mod.getSettingsRegistry()).toMinecraft();
+                    return new GuiReplaySettings(parent, this.mod.getSettingsRegistry());
                 })
         );
     }

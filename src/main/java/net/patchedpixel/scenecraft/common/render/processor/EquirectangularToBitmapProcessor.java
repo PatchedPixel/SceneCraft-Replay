@@ -3,7 +3,7 @@ package net.patchedpixel.scenecraft.common.render.processor;
 import net.patchedpixel.scenecraft.common.render.frame.CubicGpuFrame;
 import net.patchedpixel.scenecraft.common.render.frame.BitmapFrame;
 import net.patchedpixel.scenecraft.common.render.utils.ByteBufferPool;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.Dimension;
+import net.patchedpixel.scenecraft.common.flamex.util.geometry.Size;
 import org.apache.commons.lang3.Validate;
 
 import java.nio.ByteBuffer;
@@ -104,8 +104,8 @@ public class EquirectangularToBitmapProcessor extends AbstractFrameProcessor<Cub
 
     @Override
     public BitmapFrame process(CubicGpuFrame rawFrame) {
-        Validate.isTrue(rawFrame.getLeft().getSize().getWidth() == frameSize, "Frame size must be %d but was %d",
-                frameSize, rawFrame.getLeft().getSize().getWidth());
+        Validate.isTrue(rawFrame.getLeft().getSize().width() == frameSize, "Frame size must be %d but was %d",
+                frameSize, rawFrame.getLeft().getSize().width());
         int bpp = rawFrame.getLeft().getBytesPerPixel();
         ByteBuffer result = ByteBufferPool.allocate(width * height * bpp);
         ByteBuffer[] images = {
@@ -135,7 +135,7 @@ public class EquirectangularToBitmapProcessor extends AbstractFrameProcessor<Cub
         ByteBufferPool.release(rawFrame.getBack().getByteBuffer());
         ByteBufferPool.release(rawFrame.getTop().getByteBuffer());
         ByteBufferPool.release(rawFrame.getBottom().getByteBuffer());
-        return new BitmapFrame(rawFrame.getFrameId(), new Dimension(width, height), bpp, result);
+        return new BitmapFrame(rawFrame.getFrameId(), new Size(width, height), bpp, result);
     }
 
     public int getFrameSize() {

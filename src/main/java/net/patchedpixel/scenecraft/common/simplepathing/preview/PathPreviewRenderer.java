@@ -17,7 +17,7 @@ import net.patchedpixel.scenecraft.common.scenestudio.util.Location;
 import net.patchedpixel.scenecraft.common.simplepathing.SceneCraftSimplePathing;
 import net.patchedpixel.scenecraft.common.simplepathing.SPTimeline;
 import net.patchedpixel.scenecraft.common.simplepathing.gui.GuiPathing;
-import net.patchedpixel.scenecraft.common.gui.utils.EventRegistrations;
+import net.patchedpixel.scenecraft.common.flamex.event.EventRegistrations;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.world.entity.Entity;

@@ -1,32 +1,25 @@
 package net.patchedpixel.scenecraft.common.record.gui;
 
+import net.minecraft.CrashReport;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.patchedpixel.scenecraft.common.SceneCraft;
-import net.patchedpixel.scenecraft.common.utils.Utils;
+import net.patchedpixel.scenecraft.common.core.gui.GuiBackgroundProcesses;
 import net.patchedpixel.scenecraft.common.record.Setting;
 import net.patchedpixel.scenecraft.common.replay.gui.screen.GuiReplayViewer;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayMetaData;
-import net.patchedpixel.scenecraft.common.gui.container.AbstractGuiScreen;
-import net.patchedpixel.scenecraft.common.gui.container.GuiContainer;
-import net.patchedpixel.scenecraft.common.gui.container.GuiPanel;
-import net.patchedpixel.scenecraft.common.gui.container.GuiScreen;
-import net.patchedpixel.scenecraft.common.gui.container.VanillaGuiScreen;
-import net.patchedpixel.scenecraft.common.gui.element.GuiButton;
-import net.patchedpixel.scenecraft.common.gui.element.GuiLabel;
-import net.patchedpixel.scenecraft.common.gui.element.GuiTextField;
-import net.patchedpixel.scenecraft.common.gui.element.GuiTooltip;
-import net.patchedpixel.scenecraft.common.gui.element.advanced.GuiProgressBar;
-import net.patchedpixel.scenecraft.common.gui.function.Focusable;
-import net.patchedpixel.scenecraft.common.gui.layout.CustomLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.HorizontalLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.VerticalLayout;
-import net.patchedpixel.scenecraft.common.gui.utils.Colors;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.Dimension;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
-import net.minecraft.client.Minecraft;
-import net.minecraft.CrashReport;
+import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.FlameX;
+import net.patchedpixel.scenecraft.common.flamex.widget.ProgressBarWidget;
+import net.patchedpixel.scenecraft.common.utils.Utils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -35,23 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static net.patchedpixel.scenecraft.common.core.versions.MCVer.getMinecraft;
-import static net.patchedpixel.scenecraft.common.gui.utils.Utils.link;
 
 public class GuiSavingReplay {
     private static final Minecraft mc = getMinecraft();
     private static final Logger logger = LogManager.getLogger();
 
-    private final GuiLabel label = new GuiLabel()
-            .setI18nText("scenecraft.gui.replaysaving.title")
-            .setColor(Colors.BLACK);
-
-    private final GuiProgressBar progressBar = new GuiProgressBar()
-            .setHeight(14);
-
-    private final GuiPanel panel = new GuiPanel()
-            .setLayout(new VerticalLayout().setSpacing(2))
-            .addElements(new VerticalLayout.Data(0.5), label, progressBar);
-
+    private final GuiBackgroundProcesses.Process process = new GuiBackgroundProcesses.Process("scenecraft.gui.replaysaving.title");
     private final SceneCraft core;
     private final List<Runnable> apply = new ArrayList<>();
 
@@ -60,84 +42,70 @@ public class GuiSavingReplay {
     }
 
     public void open() {
-        core.getBackgroundProcesses().addProcess(panel);
+        core.getBackgroundProcesses().addProcess(process);
     }
 
     public void close() {
-        core.getBackgroundProcesses().removeProcess(panel);
-        AbstractGuiScreen<?> currentScreen = GuiScreen.from(mc.screen);
-        if(currentScreen instanceof GuiReplayViewer) {
-            ((GuiReplayViewer) currentScreen).list.load();
+        core.getBackgroundProcesses().removeProcess(process);
+        if(mc.screen instanceof GuiReplayViewer viewer) {
+            viewer.list.load();
         }
     }
 
-    public GuiProgressBar getProgressBar() {
-        return progressBar;
+    public ProgressBarWidget getProgressBar() {
+        return process.getProgressBar();
     }
 
     public void presentRenameDialog(List<Pair<Path, ReplayMetaData>> outputPaths) {
-        panel.removeElement(progressBar);
-
-        link(outputPaths.stream().map(it -> addOutput(it.getKey(), it.getValue())).toArray(Focusable[]::new));
-
-        GuiButton applyButton = new GuiButton()
-                .setSize(150, 20)
-                .setI18nLabel("scenecraft.gui.done")
-                .onClick(this::apply);
-
-        panel.addElements(new VerticalLayout.Data(0.5), applyButton);
-
+        core.getBackgroundProcesses().removeProcess(process);
         if(!core.getSettingsRegistry().get(Setting.RENAME_DIALOG)) {
+            for(Pair<Path, ReplayMetaData> output : outputPaths) {
+                applyOutput(output.getKey(), Utils.fileNameToReplayName(output.getKey().getFileName().toString()));
+            }
+            close();
+            return;
+        }
+        mc.setScreen(new RenameScreen(mc.screen, outputPaths));
+    }
+
+    private class RenameScreen extends FlameableScreen {
+        private final List<Pair<Path, ReplayMetaData>> outputs;
+        private final List<EditBox> fields = new ArrayList<>();
+
+        RenameScreen(Screen parent, List<Pair<Path, ReplayMetaData>> outputs) {
+            super("scenecraft.gui.replaysaving.title", parent, 4);
+            this.outputs = outputs;
+        }
+
+        @Override
+        protected void build(LinearLayout root) {
+            fields.clear();
+            for(Pair<Path, ReplayMetaData> output : outputs) {
+                Path path = output.getKey();
+                EditBox field = FlameX.textField(130, Utils.fileNameToReplayName(path.getFileName().toString()), null, null);
+                field.setHint(Component.translatable("scenecraft.gui.delete"));
+                field.setTooltip(Tooltip.create(MCVer.literalText(path.getFileName().toString())));
+                fields.add(field);
+                LinearLayout row = FlameX.row(0);
+                row.addChild(field);
+                row.addChild(FlameX.button(MCVer.literalText("X"), 20, "scenecraft.gui.delete", () -> field.setValue("")));
+                root.addChild(row);
+            }
+            root.addChild(FlameX.button("scenecraft.gui.done", 150, this::apply));
+        }
+
+        private void apply() {
+            for(int i = 0; i < outputs.size(); i++) {
+                applyOutput(outputs.get(i).getKey(), fields.get(i).getValue());
+            }
+            GuiSavingReplay.this.close();
+            MCVer.getMinecraft().setScreen(parent);
+        }
+
+        @Override
+        public void onClose() {
             apply();
         }
-    }
-
-    private GuiTextField addOutput(Path path, ReplayMetaData metaData) {
-        String originalName = Utils.fileNameToReplayName(path.getFileName().toString());
-        GuiTextField textField = new GuiTextField()
-                .setSize(130, 20)
-                .setText(originalName)
-                .setI18nHint("scenecraft.gui.delete")
-                .setTextColorDisabled(Colors.RED)
-                .onEnter(this::apply)
-                .setTooltip(createTooltip(path, metaData));
-        GuiButton clearButton = new GuiButton()
-                .setSize(20, 20)
-                .setLabel("X")
-                .setTooltip(new GuiTooltip().setI18nText("scenecraft.gui.delete"))
-                .onClick(() -> textField.setText(""));
-        GuiPanel row = new GuiPanel()
-                .setLayout(new HorizontalLayout())
-                .addElements(null, textField, clearButton);
-        panel.addElements(new VerticalLayout.Data(0.5), row);
-
-        apply.add(() -> applyOutput(path, textField.getText()));
-
-        return textField;
-    }
-
-    private GuiPanel createTooltip(Path path, ReplayMetaData metaData) {
-        GuiTooltip tooltip = new GuiTooltip();
-        GuiReplayViewer.GuiReplayEntry entry = new GuiReplayViewer.GuiReplayEntry(path.toFile(), metaData, null, new ArrayList<>());
-        return new GuiPanel().setLayout(new CustomLayout<GuiPanel>() {
-            @Override
-            protected void layout(GuiPanel container, int width, int height) {
-                pos(entry, 4, 4);
-                size(entry, width - 8, height - 8);
-                size(tooltip, width, height);
-            }
-
-            @Override
-            public ReadableDimension calcMinSize(GuiContainer<?> container) {
-                ReadableDimension size = entry.calcMinSize();
-                return new Dimension(size.getWidth() + 8, size.getHeight() + 8);
-            }
-        }).addElements(null, tooltip, entry);
-    }
-
-    private void apply() {
-        apply.forEach(Runnable::run);
-        close();
     }
 
     private void applyOutput(Path path, String newName) {
@@ -147,11 +115,10 @@ public class GuiSavingReplay {
             } catch(IOException e) {
                 logger.error("Deleting replay file:", e);
                 CrashReport crashReport = CrashReport.forThrowable(e, "Deleting replay file");
-                core.runLater(() -> Utils.error(logger, VanillaGuiScreen.wrap(mc.screen), crashReport, () -> {}));
+                core.runLater(() -> Utils.error(logger, crashReport, () -> {}));
             }
             return;
         }
-
         try {
             Path replaysFolder = core.folders.getReplayFolder();
             Path newPath = Utils.replayNameToPath(replaysFolder, newName);
@@ -162,7 +129,7 @@ public class GuiSavingReplay {
         } catch(IOException e) {
             logger.error("Renaming replay file:", e);
             CrashReport crashReport = CrashReport.forThrowable(e, "Renaming replay file");
-            core.runLater(() -> Utils.error(logger, VanillaGuiScreen.wrap(mc.screen), crashReport, () -> {}));
+            core.runLater(() -> Utils.error(logger, crashReport, () -> {}));
         }
     }
 }

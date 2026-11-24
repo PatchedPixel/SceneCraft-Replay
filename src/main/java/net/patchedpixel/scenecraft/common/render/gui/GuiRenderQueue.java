@@ -2,52 +2,39 @@ package net.patchedpixel.scenecraft.common.render.gui;
 
 import com.google.common.collect.Iterables;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.CrashReport;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.patchedpixel.scenecraft.common.SceneCraft;
-import net.patchedpixel.scenecraft.common.utils.Result;
-import net.patchedpixel.scenecraft.common.utils.Utils;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
+import net.patchedpixel.scenecraft.common.render.FFmpegWriter;
 import net.patchedpixel.scenecraft.common.render.RenderSettings;
 import net.patchedpixel.scenecraft.common.render.SceneCraftRender;
-import net.patchedpixel.scenecraft.common.render.FFmpegWriter;
 import net.patchedpixel.scenecraft.common.render.rendering.VideoRenderer;
 import net.patchedpixel.scenecraft.common.render.utils.RenderJob;
 import net.patchedpixel.scenecraft.common.replay.ReplayHandler;
-import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;
 import net.patchedpixel.scenecraft.common.replay.ReplaySender;
+import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.path.Timeline;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
-import net.patchedpixel.scenecraft.common.gui.GuiRenderer;
-import net.patchedpixel.scenecraft.common.gui.RenderInfo;
-import net.patchedpixel.scenecraft.common.gui.container.AbstractGuiClickableContainer;
-import net.patchedpixel.scenecraft.common.gui.container.AbstractGuiScreen;
-import net.patchedpixel.scenecraft.common.gui.container.GuiContainer;
-import net.patchedpixel.scenecraft.common.gui.container.GuiPanel;
-import net.patchedpixel.scenecraft.common.gui.container.GuiVerticalList;
-import net.patchedpixel.scenecraft.common.gui.element.GuiButton;
-import net.patchedpixel.scenecraft.common.gui.element.GuiElement;
-import net.patchedpixel.scenecraft.common.gui.element.GuiLabel;
-import net.patchedpixel.scenecraft.common.gui.element.GuiTooltip;
-import net.patchedpixel.scenecraft.common.gui.function.Click;
-import net.patchedpixel.scenecraft.common.gui.function.KeyHandler;
-import net.patchedpixel.scenecraft.common.gui.function.KeyInput;
-import net.patchedpixel.scenecraft.common.gui.layout.CustomLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.GridLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.HorizontalLayout;
-import net.patchedpixel.scenecraft.common.gui.popup.AbstractGuiPopup;
-import net.patchedpixel.scenecraft.common.gui.popup.GuiInfoPopup;
-import net.patchedpixel.scenecraft.common.gui.utils.Colors;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.Dimension;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
-import net.minecraft.client.Minecraft;
-import net.minecraft.CrashReport;
+import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.FlameX;
+import net.patchedpixel.scenecraft.common.utils.Result;
+import net.patchedpixel.scenecraft.common.utils.Utils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -55,114 +42,90 @@ import java.util.stream.Collectors;
 
 import static net.patchedpixel.scenecraft.common.render.SceneCraftRender.LOGGER;
 
-public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements KeyHandler {
-    private final GuiLabel title = new GuiLabel().setI18nText("scenecraft.gui.renderqueue.title").setColor(Colors.BLACK);
-    private final GuiVerticalList list = new GuiVerticalList().setDrawShadow(true).setDrawSlider(true);
-    private final GuiButton addButton = new GuiButton().setI18nLabel("scenecraft.gui.renderqueue.add").setSize(150, 20);
-    private final GuiButton editButton = new GuiButton().setI18nLabel("scenecraft.gui.edit").setSize(73, 20);
-    private final GuiButton removeButton = new GuiButton().setI18nLabel("scenecraft.gui.remove").setSize(73, 20);
-    private final GuiButton renderButton = new GuiButton().setSize(150, 20);
-    private final GuiButton closeButton = new GuiButton().setI18nLabel("scenecraft.gui.close").setSize(150, 20).onClick(this::close);
-
-    /*
-
-    |---------------------------------|
-    |       Add       |     Render    |
-    |---------------------------------|
-    |  Edit  | Remove |     Close     |
-    |---------------------------------|
-
-     */
-    private final GuiPanel buttonPanel = new GuiPanel()
-            .setLayout(new GridLayout().setSpacingX(5).setSpacingY(5).setColumns(2))
-            .addElements(null,
-                    addButton,
-                    renderButton,
-                    new GuiPanel().setLayout(new HorizontalLayout().setSpacing(4)).addElements(null,
-                            editButton, removeButton),
-                    closeButton);
-
-    private final AbstractGuiScreen<?> container;
+public class GuiRenderQueue extends FlameableScreen {
+    private final Screen container;
     private final ReplayHandler replayHandler;
-    private final Set<Entry> selectedEntries = new HashSet<>();
     private final Supplier<Result<Timeline, String[]>> timelineSupplier;
-    private boolean opened;
-
-    {
-        popup.setLayout(new CustomLayout<GuiPanel>() {
-            @Override
-            protected void layout(GuiPanel container, int width, int height) {
-                pos(title, width / 2 - width(title) / 2, 0);
-                pos(list, 0, y(title) + height(title) + 5);
-                pos(buttonPanel, width / 2 - width(buttonPanel) / 2, height - height(buttonPanel));
-                size(list, width, y(buttonPanel) - y(list) - 10);
-            }
-
-            @Override
-            public ReadableDimension calcMinSize(GuiContainer<?> container) {
-                ReadableDimension screenSize = GuiRenderQueue.this.container.getMinSize();
-                return new Dimension(screenSize.getWidth() - 40,
-                        screenSize.getHeight() - 20 - buttonPanel.getMinSize().getHeight() - title.getMinSize().getHeight());
-            }
-        }).addElements(null, title, list, buttonPanel);
-    }
-
     private final SceneCraftRender mod = SceneCraftRender.instance;
     private final List<RenderJob> jobs = mod.getRenderQueue();
+    private final Set<JobEntry> selectedEntries = new LinkedHashSet<>();
+    private boolean opened;
 
-    public GuiRenderQueue(AbstractGuiScreen<?> container, ReplayHandler replayHandler, Supplier<Result<Timeline, String[]>> timelineSupplier) {
-        super(container);
+    private JobList list;
+    private Button addButton, editButton, removeButton, renderButton;
+
+    public GuiRenderQueue(Screen container, ReplayHandler replayHandler, Supplier<Result<Timeline, String[]>> timelineSupplier) {
+        super("scenecraft.gui.renderqueue.title", container);
+        this.panel = true;
         this.container = container;
         this.replayHandler = replayHandler;
         this.timelineSupplier = timelineSupplier;
         LOGGER.trace("Opening render queue popup");
+        this.background = Background.DEFAULT;
+    }
 
-        setBackgroundColor(Colors.DARK_TRANSPARENT);
+    @Override
+    protected void build(LinearLayout root) {}
 
+    @Override
+    protected void init() {
+        list = new JobList();
         for(RenderJob renderJob : jobs) {
-            LOGGER.trace("Adding {} to job queue list", renderJob);
-            list.getListPanel().addElements(null, new Entry(renderJob));
+            list.add(new JobEntry(renderJob));
         }
+        selectedEntries.removeIf(e -> !jobs.contains(e.job));
 
-        addButton.onClick(() -> addButtonClicked().ifErr(lines -> GuiInfoPopup.open(container, lines)));
-
-        editButton.onClick(() -> {
-            Entry job = selectedEntries.iterator().next();
-            GuiRenderSettings gui = job.edit();
-            gui.open();
+        addButton = FlameX.button("scenecraft.gui.renderqueue.add", 150, () ->
+                addButtonClicked().ifErr(lines -> MCVer.getMinecraft().setScreen(FlameX.info(this::display, lines))));
+        renderButton = FlameX.button("scenecraft.gui.renderqueue.renderall", 150, this::renderClicked);
+        editButton = FlameX.button("scenecraft.gui.edit", 73, () -> {
+            JobEntry job = selectedEntries.iterator().next();
+            job.edit().open();
         });
-
-        removeButton.onClick(() -> {
-            for(Entry entry : selectedEntries) {
+        removeButton = FlameX.button("scenecraft.gui.remove", 73, () -> {
+            for(JobEntry entry : selectedEntries) {
                 LOGGER.trace("Remove button clicked for {}", entry.job);
-                list.getListPanel().removeElement(entry);
                 jobs.remove(entry.job);
             }
             selectedEntries.clear();
-            updateButtons();
             mod.saveRenderQueue();
+            rebuildWidgets();
         });
+        Button closeButton = FlameX.button("scenecraft.gui.close", 150, this::close);
 
-        renderButton.onClick(() -> {
-            LOGGER.trace("Render button clicked");
-            List<RenderJob> renderQueue = new ArrayList<>();
-            if(selectedEntries.isEmpty()) {
-                renderQueue.addAll(jobs);
-            } else {
-                Set<RenderJob> selectedJobs = selectedEntries.stream().map(it -> it.job).collect(Collectors.toSet());
-                for(RenderJob job : jobs) {
-                    if(selectedJobs.contains(job)) {
-                        renderQueue.add(job);
-                    }
-                }
-            }
-            SceneCraft.instance.runLaterWithoutLock(() -> processQueue(container, replayHandler, renderQueue, () -> {}));
-        });
-
+        int bottom = height - 10;
+        int row2 = bottom - 20;
+        int row1 = row2 - 25;
+        addButton.setPosition(width / 2 - 155, row1);
+        renderButton.setPosition(width / 2 + 5, row1);
+        editButton.setPosition(width / 2 - 155, row2);
+        removeButton.setPosition(width / 2 - 77, row2);
+        closeButton.setPosition(width / 2 + 5, row2);
+        list.updateSize(width, row1 - 10 - 35, 35, row1 - 10);
+        addRenderableWidget(list);
+        for(Button b : new Button[]{addButton, renderButton, editButton, removeButton, closeButton}) {
+            addRenderableWidget(b);
+        }
         updateButtons();
     }
 
-    private static void processQueue(AbstractGuiScreen<?> container, ReplayHandler replayHandler, Iterable<RenderJob> queue, Runnable done) {
+    private void renderClicked() {
+        LOGGER.trace("Render button clicked");
+        List<RenderJob> renderQueue = new ArrayList<>();
+        if(selectedEntries.isEmpty()) {
+            renderQueue.addAll(jobs);
+        } else {
+            Set<RenderJob> selectedJobs = selectedEntries.stream().map(it -> it.job).collect(Collectors.toSet());
+            for(RenderJob job : jobs) {
+                if(selectedJobs.contains(job)) {
+                    renderQueue.add(job);
+                }
+            }
+        }
+        SceneCraft.instance.runLaterWithoutLock(() -> processQueue(container, replayHandler, renderQueue, () -> {}));
+    }
+
+    private static void processQueue(Screen container, ReplayHandler replayHandler, Iterable<RenderJob> queue, Runnable done) {
         Minecraft mc = MCVer.getMinecraft();
 
         // Close all GUIs (so settings in GuiRenderSettings are saved)
@@ -176,7 +139,7 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
                 videoRenderer.renderVideo();
             } catch(FFmpegWriter.NoFFmpegException e) {
                 LOGGER.error("Rendering video:", e);
-                mc.setScreen(new GuiNoFfmpeg(container::display).toMinecraft());
+                mc.setScreen(new GuiNoFfmpeg(() -> mc.setScreen(container)));
                 return;
             } catch(FFmpegWriter.FFmpegStartupException e) {
                 int jobsToSkip = jobsDone;
@@ -188,8 +151,8 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
                 });
                 return;
             } catch(Throwable t) {
-                Utils.error(LOGGER, container, CrashReport.forThrowable(t, "Rendering video"), () -> {});
-                container.display(); // Re-show the queue popup and the new error popup
+                Utils.error(LOGGER, CrashReport.forThrowable(t, "Rendering video"), () -> {});
+                mc.setScreen(container); // Re-show the queue and the new error popup
                 return;
             }
             jobsDone++;
@@ -198,7 +161,7 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
     }
 
     public static void processMultipleReplays(
-            AbstractGuiScreen<?> container,
+            Screen container,
             SceneCraftReplay mod,
             Iterator<Pair<File, List<RenderJob>>> queue,
             Runnable done
@@ -216,8 +179,8 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
             replayFile = mod.getCore().files.open(next.getKey().toPath());
             replayHandler = mod.startReplay(replayFile, false, false);
         } catch(IOException e) {
-            Utils.error(LOGGER, container, CrashReport.forThrowable(e, "Opening replay"), () -> {});
-            container.display(); // Re-show the queue popup and the new error popup
+            Utils.error(LOGGER, CrashReport.forThrowable(e, "Opening replay"), () -> {});
+            MCVer.getMinecraft().setScreen(container);
             IOUtils.closeQuietly(replayFile);
             return;
         }
@@ -246,8 +209,8 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
             try {
                 replayHandler.endReplay();
             } catch(IOException e) {
-                Utils.error(LOGGER, container, CrashReport.forThrowable(e, "Closing replay"), () -> {});
-                container.display(); // Re-show the queue popup and the new error popup
+                Utils.error(LOGGER, CrashReport.forThrowable(e, "Closing replay"), () -> {});
+                mc.setScreen(container);
                 return;
             }
             processMultipleReplays(container, mod, queue, done);
@@ -263,156 +226,153 @@ public class GuiRenderQueue extends AbstractGuiPopup<GuiRenderQueue> implements 
     }
 
     public GuiRenderSettings addJob(Timeline timeline) {
-        return new GuiRenderSettings(container, replayHandler, timeline) {
-            {
-                if(!jobs.isEmpty()) {
-                    buttonPanel.removeElement(renderButton);
-                }
-                queueButton.onClick(click -> {
-                    RenderSettings settings = save(false, click.hasCtrl());
-
-                    RenderJob newJob = new RenderJob();
-                    newJob.setSettings(settings);
-                    newJob.setTimeline(timeline);
-                    LOGGER.trace("Adding new job: {}", newJob);
-                    jobs.add(newJob);
-                    list.getListPanel().addElements(null, new Entry(newJob));
-                    updateButtons();
-                    mod.saveRenderQueue();
-
-                    // Need to close the inner popup before we can open the outer one
-                    close();
-                    if(!opened) {
-                        GuiRenderQueue.this.open();
-                    }
-                });
-            }
-
-            @Override
-            public void close() {
-                super.close();
-                if(!opened && jobs.isEmpty()) {
-                    GuiRenderQueue.this.close();
-                }
-            }
-        };
+        return addJob(timeline, null);
     }
 
-    @Override
-    public void open() {
+        public GuiRenderSettings addJob(Timeline timeline, Runnable afterAdd) {
+        Screen settingsParent = opened ? this : container;
+        GuiRenderSettings settings = new GuiRenderSettings(settingsParent, replayHandler, timeline);
+        if(!jobs.isEmpty()) {
+            settings.hideRenderButton();
+        }
+        settings.setQueueButton("scenecraft.gui.rendersettings.addtoqueue", ctrl -> {
+            RenderSettings s = settings.save(false, ctrl);
+
+            RenderJob newJob = new RenderJob();
+            newJob.setSettings(s);
+            newJob.setTimeline(timeline);
+            LOGGER.trace("Adding new job: {}", newJob);
+            jobs.add(newJob);
+            mod.saveRenderQueue();
+
+            settings.saveSettings();
+            if(!opened) {
+                display();
+                opened = true;
+            } else {
+                settings.close();
+            }
+            if(afterAdd != null) {
+                afterAdd.run();
+            }
+        });
+        return settings;
+    }
+
+        public void open() {
         if(jobs.isEmpty() && timelineSupplier != null) {
             addButtonClicked().ifErr(lines ->
-                    GuiInfoPopup.open(container, lines).onClosed(this::close));
+                    MCVer.getMinecraft().setScreen(FlameX.info(() -> MCVer.getMinecraft().setScreen(container), lines)));
             return;
         }
-
-        super.open();
+        display();
         opened = true;
     }
 
     @Override
-    protected void close() {
-        if(opened) {
-            super.close();
-        }
+    public void close() {
         opened = false;
-    }
-
-    @Override
-    protected GuiRenderQueue getThis() {
-        return this;
+        super.close();
     }
 
     public void updateButtons() {
+        if(addButton == null) return;
         int selected = selectedEntries.size();
-        addButton.setEnabled(timelineSupplier != null);
-        editButton.setEnabled(selected == 1);
-        removeButton.setEnabled(selected >= 1);
-        renderButton.setEnabled(!jobs.isEmpty());
-        renderButton.setI18nLabel("scenecraft.gui.renderqueue.render" + (selected > 0 ? "selected" : "all"));
+        addButton.active = timelineSupplier != null;
+        editButton.active = selected == 1;
+        removeButton.active = selected >= 1;
+        renderButton.active = jobs.size() > 0;
+        renderButton.setMessage(Component.translatable("scenecraft.gui.renderqueue.render" + (selected > 0 ? "selected" : "all")));
+        renderButton.setTooltip(null);
 
         String[] compatError = VideoRenderer.checkCompat(jobs.stream().map(RenderJob::getSettings));
         if(compatError != null) {
-            renderButton.setDisabled().setTooltip(new GuiTooltip().setText(compatError));
+            renderButton.active = false;
+            renderButton.setTooltip(Tooltip.create(MCVer.literalText(String.join("\n", compatError))));
         }
     }
 
     @Override
-    public boolean handleKey(KeyInput keyInput) {
-        if(keyInput.hasCtrl() && keyInput.key == InputConstants.KEY_A) {
-            if(selectedEntries.size() < list.getListPanel().getChildren().size()) {
-                for(GuiElement<?> child : list.getListPanel().getChildren()) {
-                    if(child instanceof Entry) {
-                        selectedEntries.add((Entry) child);
-                    }
-                }
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if(Screen.hasControlDown() && keyCode == InputConstants.KEY_A) {
+            if(selectedEntries.size() < list.children().size()) {
+                selectedEntries.addAll(list.children());
             } else {
                 selectedEntries.clear();
             }
             updateButtons();
             return true;
         }
-        return false;
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
-    public class Entry extends AbstractGuiClickableContainer<Entry> {
-        public final GuiLabel label = new GuiLabel(this);
-        public final RenderJob job;
+    private class JobList extends ObjectSelectionList<JobEntry> {
+        JobList() {
+            super(MCVer.getMinecraft(), 100, 100, 35, 100, 18);
+            setRenderBackground(false);
+            setRenderTopAndBottom(false);
+        }
 
-        public Entry(RenderJob job) {
-            this.job = job;
-
-            setLayout(new CustomLayout<Entry>() {
-                @Override
-                protected void layout(Entry container, int width, int height) {
-                    pos(label, 5, height / 2 - height(label) / 2);
-                }
-
-                @Override
-                public ReadableDimension calcMinSize(GuiContainer<?> container) {
-                    return new Dimension(buttonPanel.calcMinSize().getWidth(), 16);
-                }
-            });
-            label.setText(job.getName());
+        void add(JobEntry e) {
+            addEntry(e);
         }
 
         @Override
-        protected void onClick(Click click) {
-            if(!click.hasCtrl()) {
+        public int getRowWidth() {
+            return 300;
+        }
+
+        @Override
+        protected boolean isSelectedItem(int index) {
+            return index >= 0 && index < children().size() && selectedEntries.contains(children().get(index));
+        }
+    }
+
+    public class JobEntry extends ObjectSelectionList.Entry<JobEntry> {
+        public final RenderJob job;
+
+        public JobEntry(RenderJob job) {
+            this.job = job;
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int index, int top, int left, int width, int height,
+                           int mouseX, int mouseY, boolean hovered, float partialTick) {
+            if(selectedEntries.contains(this)) {
+                graphics.fill(left, top, left + width, top + height, 0xFF000000);
+                graphics.fill(left, top, left + 2, top + height, 0xFFFFFFFF);
+            }
+            graphics.drawString(MCVer.getFontRenderer(), job.getName(), left + 5, top + 4, 0xFFFFFFFF, true);
+        }
+
+        @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            if(button != 0) return false;
+            if(!Screen.hasControlDown()) {
                 selectedEntries.clear();
             }
-            if(selectedEntries.contains(this)) {
-                selectedEntries.remove(this);
-            } else {
+            if(!selectedEntries.remove(this)) {
                 selectedEntries.add(this);
             }
             updateButtons();
+            return true;
         }
 
         @Override
-        public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
-            if(selectedEntries.contains(this)) {
-                renderer.drawRect(0, 0, size.getWidth(), size.getHeight(), Colors.BLACK);
-                renderer.drawRect(0, 0, 2, size.getHeight(), Colors.WHITE);
-            }
-            super.draw(renderer, size, renderInfo);
-        }
-
-        @Override
-        protected Entry getThis() {
-            return this;
+        public Component getNarration() {
+            return MCVer.literalText(job.getName());
         }
 
         public GuiRenderSettings edit() {
-            GuiRenderSettings gui = new GuiRenderSettings(container, replayHandler, job.getTimeline());
-            gui.buttonPanel.removeElement(gui.renderButton);
-            gui.queueButton.setI18nLabel("scenecraft.gui.done").onClick(click -> {
-                job.setSettings(gui.save(false, click.hasCtrl()));
-                label.setText(job.getName());
+            GuiRenderSettings gui = new GuiRenderSettings(GuiRenderQueue.this, replayHandler, job.getTimeline());
+            gui.hideRenderButton();
+            gui.setQueueButton("scenecraft.gui.done", ctrl -> {
+                job.setSettings(gui.save(false, ctrl));
                 mod.saveRenderQueue();
                 gui.close();
             });
             gui.load(job.getSettings());
+            gui.setCloseHook(GuiRenderQueue.this::rebuildWidgets);
             return gui;
         }
     }

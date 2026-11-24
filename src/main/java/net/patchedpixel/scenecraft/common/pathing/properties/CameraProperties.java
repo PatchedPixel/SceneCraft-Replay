@@ -9,7 +9,7 @@ import net.patchedpixel.scenecraft.common.scenestudio.pathing.property.AbstractP
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.property.AbstractPropertyGroup;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.property.PropertyPart;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.property.PropertyParts;
-import net.patchedpixel.scenecraft.common.gui.utils.NonNull;
+import net.patchedpixel.scenecraft.common.flamex.util.NonNull;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.io.IOException;

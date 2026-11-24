@@ -15,13 +15,6 @@ import net.patchedpixel.scenecraft.common.replay.gui.overlay.GuiReplayOverlay;
 import net.patchedpixel.scenecraft.common.scenestudio.data.Marker;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
 import net.patchedpixel.scenecraft.common.scenestudio.util.Location;
-import net.patchedpixel.scenecraft.common.gui.container.AbstractGuiScreen;
-import net.patchedpixel.scenecraft.common.gui.container.GuiContainer;
-import net.patchedpixel.scenecraft.common.gui.container.GuiScreen;
-import net.patchedpixel.scenecraft.common.gui.element.GuiLabel;
-import net.patchedpixel.scenecraft.common.gui.element.advanced.GuiProgressBar;
-import net.patchedpixel.scenecraft.common.gui.layout.HorizontalLayout;
-import net.patchedpixel.scenecraft.common.gui.popup.AbstractGuiPopup;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;
@@ -32,6 +25,7 @@ import net.patchedpixel.scenecraft.platform.RegistrySnapshots;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientHandshakePacketListenerImpl;
 import net.minecraft.CrashReport;
+import net.patchedpixel.scenecraft.common.flamex.popup.ProgressPopup;
 import net.minecraft.Util;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -233,8 +227,9 @@ public class ReplayHandler {
     public void ensureQuickModeInitialized(Runnable andThen) {
         ListenableFuture<Void> future = quickReplaySender.getInitializationPromise();
         if(future == null) {
-            InitializingQuickModePopup popup = new InitializingQuickModePopup(overlay);
-            future = quickReplaySender.initialize(progress -> popup.progressBar.setProgress(progress.floatValue()));
+            ProgressPopup popup = new ProgressPopup("scenecraft.gui.loadquickmode");
+            popup.open();
+            future = quickReplaySender.initialize(progress -> popup.setProgress(progress.floatValue()));
             Futures.addCallback(future, new FutureCallback<Void>() {
                 @Override
                 public void onSuccess(@Nullable Void result) {
@@ -244,7 +239,7 @@ public class ReplayHandler {
                 @Override
                 public void onFailure(@Nonnull Throwable t) {
                     String message = "Failed to initialize quick mode. It will not be available.";
-                    Utils.error(LOGGER, overlay, CrashReport.forThrowable(t, message), popup::close);
+                    Utils.error(LOGGER, CrashReport.forThrowable(t, message), popup::close);
                 }
             }, Runnable::run);
         }
@@ -259,26 +254,6 @@ public class ReplayHandler {
                 // Exception already printed in callback added above
             }
         }, Runnable::run);
-    }
-
-    private class InitializingQuickModePopup extends AbstractGuiPopup<InitializingQuickModePopup> {
-        private final GuiProgressBar progressBar = new GuiProgressBar(popup).setSize(300, 20)
-                .setI18nLabel("scenecraft.gui.loadquickmode");
-
-        public InitializingQuickModePopup(GuiContainer container) {
-            super(container);
-            open();
-        }
-
-        @Override
-        public void close() {
-            super.close();
-        }
-
-        @Override
-        protected InitializingQuickModePopup getThis() {
-            return this;
-        }
     }
 
     public void setQuickMode(boolean quickMode) {
@@ -461,17 +436,13 @@ public class ReplayHandler {
                 }
             } else { // We either have to restart the replay or send a significant amount of packets
                 // Render our please-wait-screen
-                GuiScreen guiScreen = new GuiScreen();
-                guiScreen.setBackground(AbstractGuiScreen.Background.DIRT);
-                guiScreen.setLayout(new HorizontalLayout(HorizontalLayout.Alignment.CENTER));
-                guiScreen.addElements(new HorizontalLayout.Data(0.5),
-                        new GuiLabel().setI18nText("scenecraft.gui.pleasewait"));
+                net.minecraft.client.gui.screens.Screen guiScreen = new net.patchedpixel.scenecraft.common.flamex.popup.PleaseWaitScreen();
 
                 // Make sure that the replaysender changes into sync mode
                 replaySender.setSyncModeAndWait();
 
                 net.minecraft.client.gui.screens.Screen orgScreen = mc.screen;
-                mc.setScreen(guiScreen.toMinecraft());
+                mc.setScreen(guiScreen);
                 mc.gameRenderer.render(mc.getFrameTime(), Util.getNanos(), true);
                 mc.getWindow().updateDisplay();
                 mc.setScreen(orgScreen);

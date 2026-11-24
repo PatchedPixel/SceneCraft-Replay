@@ -6,7 +6,7 @@ import net.patchedpixel.scenecraft.common.render.frame.StereoscopicGpuFrame;
 public class StereoscopicPboGpuFrameCapturer extends PboGpuFrameCapturer<StereoscopicGpuFrame, StereoscopicGpuFrameCapturer.Data> {
     public StereoscopicPboGpuFrameCapturer(WorldRenderer worldRenderer, RenderInfo renderInfo) {
         super(worldRenderer, renderInfo, StereoscopicGpuFrameCapturer.Data.class,
-                renderInfo.getFrameSize().getWidth() / 2 * renderInfo.getFrameSize().getHeight());
+                renderInfo.getFrameSize().width() / 2 * renderInfo.getFrameSize().height());
     }
 
     @Override

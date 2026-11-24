@@ -1,52 +1,43 @@
 package net.patchedpixel.scenecraft.common.replay.gui.screen;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.ChatFormatting;
+import net.minecraft.CrashReport;
+import net.minecraft.ReportedException;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.patchedpixel.scenecraft.common.SceneCraft;
+import net.patchedpixel.scenecraft.common.core.SettingsRegistry;
+import net.patchedpixel.scenecraft.common.core.gui.GuiReplaySettings;
 import net.patchedpixel.scenecraft.common.render.gui.GuiRenderQueue;
 import net.patchedpixel.scenecraft.common.render.rendering.VideoRenderer;
 import net.patchedpixel.scenecraft.common.render.utils.RenderJob;
-import net.patchedpixel.scenecraft.common.gui.GuiRenderer;
-import net.patchedpixel.scenecraft.common.gui.RenderInfo;
-import net.patchedpixel.scenecraft.common.gui.function.CharHandler;
-import net.patchedpixel.scenecraft.common.gui.function.CharInput;
-import net.patchedpixel.scenecraft.common.gui.function.Click;
-import net.patchedpixel.scenecraft.common.gui.function.KeyHandler;
-import net.patchedpixel.scenecraft.common.gui.function.KeyInput;
-import net.patchedpixel.scenecraft.common.gui.versions.Image;
 import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;
-import net.minecraft.client.gui.Font;
-import net.minecraft.ChatFormatting;
-import net.patchedpixel.scenecraft.common.core.SettingsRegistry;
-import net.patchedpixel.scenecraft.common.core.gui.GuiReplaySettings;
-import net.patchedpixel.scenecraft.common.utils.Utils;
-import net.patchedpixel.scenecraft.common.core.versions.MCVer;
-import com.mojang.blaze3d.platform.InputConstants;
 import net.patchedpixel.scenecraft.common.replay.Setting;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayMetaData;
-import net.patchedpixel.scenecraft.common.gui.container.AbstractGuiContainer;
-import net.patchedpixel.scenecraft.common.gui.container.GuiContainer;
-import net.patchedpixel.scenecraft.common.gui.container.GuiPanel;
-import net.patchedpixel.scenecraft.common.gui.container.GuiScreen;
-import net.patchedpixel.scenecraft.common.gui.element.*;
-import net.patchedpixel.scenecraft.common.gui.element.advanced.AbstractGuiResourceLoadingList;
-import net.patchedpixel.scenecraft.common.gui.layout.CustomLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.HorizontalLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.VerticalLayout;
-import net.patchedpixel.scenecraft.common.gui.popup.GuiYesNoPopup;
-import net.patchedpixel.scenecraft.common.gui.utils.Colors;
-import net.patchedpixel.scenecraft.common.gui.utils.Consumer;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.Dimension;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
-import net.minecraft.client.gui.screens.AlertScreen;
-import net.minecraft.CrashReport;
-import net.minecraft.ReportedException;
-import net.minecraft.client.gui.screens.Screen;
+import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.popup.MessageScreen;
+import net.patchedpixel.scenecraft.common.flamex.popup.PopupScreen;
+import net.patchedpixel.scenecraft.common.flamex.FlameX;
+import net.patchedpixel.scenecraft.common.flamex.util.Image;
+import net.patchedpixel.scenecraft.common.flamex.widget.SpriteButton;
+import net.patchedpixel.scenecraft.common.utils.Utils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -60,311 +51,477 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
+import static net.patchedpixel.scenecraft.common.core.versions.MCVer.identifier;
 import static net.patchedpixel.scenecraft.common.replay.SceneCraftReplay.LOGGER;
-import static net.patchedpixel.scenecraft.common.core.versions.MCVer.getFontRenderer;
 
-public class GuiReplayViewer extends GuiScreen implements KeyHandler {
+public class GuiReplayViewer extends FlameableScreen {
+        public static final class ExtraButton {
+        public final String labelKey;
+        public final BiConsumer<GuiReplayViewer, File> action;
+
+        public ExtraButton(String labelKey, BiConsumer<GuiReplayViewer, File> action) {
+            this.labelKey = labelKey;
+            this.action = action;
+        }
+    }
+
+    public static final List<ExtraButton> EXTRA_BUTTONS = new ArrayList<>();
+
     private final SceneCraftReplay mod;
     private Screen parentScreen;
 
-    public final GuiReplayList list = new GuiReplayList(this).onSelectionChanged(this::updateButtons).onSelectionDoubleClicked(() -> {
-        if(this.loadButton.isEnabled()) {
-            this.loadButton.onClick(new Click(-1, -1, 0, 0));
-        }
-    });
+    public final GuiReplayList list;
+    private boolean loading = false;
 
-    @Override
-    public void display() {
-        Screen currentScreen = getMinecraft().screen;
-
-        if(currentScreen != null && currentScreen != toMinecraft()) {
-            parentScreen = currentScreen;
-        }
-
-        super.display();
-    }
-
-    @Override
-    protected boolean handleClose() {
-        close();
-        return true;
-    }
-
-    private void close() {
-        getMinecraft().setScreen(parentScreen);
-    }
-
-    public final GuiButton loadButton = new GuiButton().onClick(new Runnable() {
-        private boolean loading = false;
-
-        @Override
-        public void run() {
-            // Prevent the player from opening the replay twice at the same time
-            if(loading) {
-                return;
-            }
-            loading = true;
-            loadButton.setDisabled(); // visual hint
-
-            List<GuiReplayEntry> selected = list.getSelected();
-            if(selected.size() == 1) {
-                File file = selected.get(0).file;
-                LOGGER.info("Opening replay in viewer: " + file);
-                try {
-                    mod.startReplay(file);
-                } catch(IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                Iterator<Pair<File, List<RenderJob>>> replays = selected.stream()
-                        .filter(it -> !it.renderQueue.isEmpty())
-                        .<Pair<File, List<RenderJob>>>map(it -> Pair.of(it.file, it.renderQueue))
-                        .iterator();
-                GuiRenderQueue.processMultipleReplays(GuiReplayViewer.this, mod, replays, () -> {
-                    loading = false;
-                    updateButtons();
-                    display();
-                });
-            }
-        }
-    }).setSize(150, 20);
-
-    public final GuiButton folderButton = new GuiButton().onClick(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                File folder = mod.getCore().folders.getReplayFolder().toFile();
-
-                MCVer.openFile(folder);
-            } catch(IOException e) {
-                mod.getLogger().error("Cannot open file", e);
-            }
-        }
-    }).setSize(150, 20).setI18nLabel("scenecraft.gui.viewer.replayfolder");
-
-    public final GuiButton renameButton = new GuiButton().onClick(new Runnable() {
-        @Override
-        public void run() {
-            final Path path = list.getSelected().get(0).file.toPath();
-            String name = Utils.fileNameToReplayName(path.getFileName().toString());
-            final GuiTextField nameField = new GuiTextField().setSize(200, 20).setFocused(true).setText(name);
-            final GuiYesNoPopup popup = GuiYesNoPopup.open(GuiReplayViewer.this,
-                    new GuiLabel().setI18nText("scenecraft.gui.viewer.rename.name").setColor(Colors.BLACK),
-                    nameField
-            ).setYesI18nLabel("scenecraft.gui.rename").setNoI18nLabel("scenecraft.gui.cancel");
-            ((VerticalLayout) popup.getInfo().getLayout()).setSpacing(7);
-            nameField.onEnter(new Runnable() {
-                @Override
-                public void run() {
-                    if(popup.getYesButton().isEnabled()) {
-                        popup.getYesButton().onClick(new Click(-1, -1, 0, 0));
-                    }
-                }
-            }).onTextChanged(obj -> {
-                popup.getYesButton().setEnabled(!nameField.getText().isEmpty()
-                        && Files.notExists(Utils.replayNameToPath(path.getParent(), nameField.getText())));
-            });
-            popup.onAccept(() -> {
-                // Sanitize their input
-                String newName = nameField.getText().trim();
-                // This file is what they want
-                Path targetPath = Utils.replayNameToPath(path.getParent(), newName);
-                try {
-                    // Finally, try to move it
-                    Files.move(path, targetPath);
-                } catch(IOException e) {
-                    // We failed (might also be their OS)
-                    e.printStackTrace();
-                    getMinecraft().setScreen(new AlertScreen(
-                            GuiReplayViewer.this::display,
-                            net.minecraft.network.chat.Component.translatable("scenecraft.gui.viewer.delete.failed1"),
-                            net.minecraft.network.chat.Component.translatable("scenecraft.gui.viewer.delete.failed2")
-                    ));
-
-                    return;
-                }
-                list.load();
-            });
-        }
-    }).setSize(73, 20).setI18nLabel("scenecraft.gui.rename").setDisabled();
-    public final GuiButton deleteButton = new GuiButton().onClick(() -> {
-        for(GuiReplayEntry entry : list.getSelected()) {
-            String name = entry.name.getText();
-            GuiYesNoPopup.open(GuiReplayViewer.this,
-                    new GuiLabel().setI18nText("scenecraft.gui.viewer.delete.linea").setColor(Colors.BLACK),
-                    new GuiLabel().setI18nText("scenecraft.gui.viewer.delete.lineb", name + ChatFormatting.RESET).setColor(Colors.BLACK)
-            ).setYesI18nLabel("scenecraft.gui.delete").setNoI18nLabel("scenecraft.gui.cancel").onAccept(() -> {
-                try {
-                    FileUtils.forceDelete(entry.file);
-                } catch(IOException e) {
-                    e.printStackTrace();
-                }
-                list.load();
-            });
-        }
-    }).setSize(73, 20).setI18nLabel("scenecraft.gui.delete").setDisabled();
-
-    public final GuiButton settingsButton = new GuiButton(this)
-            .setSize(20, 20)
-            .setTexture(SceneCraft.TEXTURE, SceneCraft.TEXTURE_SIZE).setSpriteUV(20, 0)
-            .setTooltip(new GuiTooltip().setI18nText("scenecraft.gui.settings"))
-            .onClick(() -> new GuiReplaySettings(toMinecraft(), getMod().getCore().getSettingsRegistry()).display());
-
-    public final GuiButton cancelButton = new GuiButton()
-            .onClick(this::close)
-            .setSize(73, 20)
-            .setI18nLabel("scenecraft.gui.cancel");
-
-    public final List<GuiButton> replaySpecificButtons = new ArrayList<>();
-    { replaySpecificButtons.addAll(Arrays.asList(renameButton)); }
-    public final GuiPanel editorButton = new GuiPanel();
-
-    public final GuiPanel upperButtonPanel = new GuiPanel().setLayout(new HorizontalLayout().setSpacing(5))
-            .addElements(null, loadButton);
-    public final GuiPanel lowerButtonPanel = new GuiPanel().setLayout(new HorizontalLayout().setSpacing(5))
-            .addElements(null, renameButton, deleteButton, editorButton, cancelButton);
-    public final GuiPanel buttonPanel = new GuiPanel(this).setLayout(new VerticalLayout().setSpacing(5))
-            .addElements(null, upperButtonPanel, lowerButtonPanel);
+    private Button loadButton;
+    private Button renameButton;
+    private Button deleteButton;
+    private final List<Button> replaySpecificButtons = new ArrayList<>();
 
     public GuiReplayViewer(SceneCraftReplay mod) {
+        super("scenecraft.gui.replayviewer", null);
         this.mod = mod;
-
+        this.list = new GuiReplayList(this);
+        this.list.onSelectionChanged = this::updateButtons;
+        this.list.onDoubleClick = () -> {
+            if(loadButton != null && loadButton.active) {
+                loadButton.onPress();
+            }
+        };
         try {
             list.setFolder(mod.getCore().folders.getReplayFolder().toFile());
         } catch(IOException e) {
             throw new ReportedException(CrashReport.forThrowable(e, "Getting replay folder"));
         }
-
-        setTitle(new GuiLabel().setI18nText("scenecraft.gui.replayviewer"));
-
-        setLayout(new CustomLayout<GuiScreen>() {
-            @Override
-            protected void layout(GuiScreen container, int width, int height) {
-                pos(buttonPanel, width / 2 - width(buttonPanel) / 2, height - 10 - height(buttonPanel));
-
-                pos(list, 0, 30);
-                size(list, width, y(buttonPanel) - 10 - y(list));
-
-                pos(settingsButton, width - width(settingsButton) - 5, 5);
-            }
-        });
-
-        updateButtons();
+        list.load();
     }
 
     public SceneCraftReplay getMod() {
         return mod;
     }
 
-    private void updateButtons() {
-        List<GuiReplayEntry> selected = list.getSelected();
-        int count = selected.size();
-
-        replaySpecificButtons.forEach(b -> b.setEnabled(count == 1));
-        deleteButton.setEnabled(count > 0);
-        if(count > 1) {
-            Set<RenderJob> jobs = selected.stream().flatMap(entry -> entry.renderQueue.stream()).collect(Collectors.toSet());
-            String[] tooltipLines = jobs.stream().map(RenderJob::getName).toArray(String[]::new);
-            loadButton.setI18nLabel("scenecraft.gui.viewer.bulkrender", jobs.size());
-            loadButton.setTooltip(new GuiTooltip().setText(tooltipLines));
-            loadButton.setEnabled(!jobs.isEmpty());
-
-            String[] compatError = VideoRenderer.checkCompat(jobs.stream().map(RenderJob::getSettings));
-            if(compatError != null) {
-                loadButton.setDisabled().setTooltip(new GuiTooltip().setText(compatError));
-            }
-        } else {
-            loadButton.setI18nLabel("scenecraft.gui.load");
-            loadButton.setTooltip(null);
-            loadButton.setEnabled(count == 1 && !selected.get(0).incompatible);
+    @Override
+    public void display() {
+        Screen currentScreen = MCVer.getMinecraft().screen;
+        if(currentScreen != null && currentScreen != this) {
+            parentScreen = currentScreen;
         }
+        super.display();
     }
-
-    private static final GuiImage DEFAULT_THUMBNAIL = new GuiImage().setTexture(Utils.DEFAULT_THUMBNAIL);
 
     @Override
-    public boolean handleKey(KeyInput keyInput) {
-        if(keyInput.key == InputConstants.KEY_ESCAPE) {
-            close();
-            return true;
-        }
-
-        return false;
+    public void close() {
+        MCVer.getMinecraft().setScreen(parentScreen);
     }
 
-    public static class GuiReplayList extends AbstractGuiResourceLoadingList<GuiReplayList, GuiReplayEntry> implements KeyHandler, CharHandler {
+    @Override
+    protected void build(LinearLayout root) {}
+
+    @Override
+    protected void init() {
+        replaySpecificButtons.clear();
+
+        loadButton = FlameX.button(Component.translatable("scenecraft.gui.load"), 150, this::loadSelected);
+        renameButton = FlameX.button("scenecraft.gui.rename", 73, this::rename);
+        deleteButton = FlameX.button("scenecraft.gui.delete", 73, this::deleteSelected);
+        Button cancelButton = FlameX.button("scenecraft.gui.cancel", 73, this::close);
+        replaySpecificButtons.add(renameButton);
+
+        List<Button> lower = new ArrayList<>(List.of(renameButton, deleteButton));
+        for(ExtraButton extra : EXTRA_BUTTONS) {
+            Button b = FlameX.button(extra.labelKey, 73, () -> {
+                List<GuiReplayEntry> selected = list.getSelectedEntries();
+                if(selected.size() == 1) {
+                    extra.action.accept(this, selected.get(0).file);
+                }
+            });
+            replaySpecificButtons.add(b);
+            lower.add(b);
+        }
+        lower.add(cancelButton);
+
+        int lowerWidth = lower.size() * 73 + (lower.size() - 1) * 5;
+        int bottom = height - 10;
+        int lowerY = bottom - 20;
+        int upperY = lowerY - 25;
+        loadButton.setPosition(width / 2 - 75, upperY);
+        int x = width / 2 - lowerWidth / 2;
+        for(Button b : lower) {
+            b.setPosition(x, lowerY);
+            x += 78;
+        }
+        addRenderableWidget(loadButton);
+        lower.forEach(this::addRenderableWidget);
+
+        SpriteButton settingsButton = new SpriteButton(20, 20, SceneCraft.TEXTURE, SceneCraft.TEXTURE_SIZE, 20,
+                () -> new GuiReplaySettings(this, getMod().getCore().getSettingsRegistry()).display()).uv(20, 0);
+        settingsButton.setTooltip(net.minecraft.client.gui.components.Tooltip.create(Component.translatable("scenecraft.gui.settings")));
+        settingsButton.setPosition(width - 20 - 5, 5);
+        addRenderableWidget(settingsButton);
+
+        list.updateSize(width, upperY - 10 - 30, 30, upperY - 10);
+        addRenderableWidget(list);
+        updateButtons();
+    }
+
+    private void updateButtons() {
+        if(loadButton == null) return;
+        List<GuiReplayEntry> selected = list.getSelectedEntries();
+        int count = selected.size();
+        replaySpecificButtons.forEach(b -> b.active = count == 1);
+        deleteButton.active = count > 0;
+        if(count > 1) {
+            Set<RenderJob> jobs = selected.stream().flatMap(entry -> entry.renderQueue.stream()).collect(Collectors.toSet());
+            String tooltipLines = jobs.stream().map(RenderJob::getName).collect(Collectors.joining("\n"));
+            loadButton.setMessage(Component.translatable("scenecraft.gui.viewer.bulkrender", jobs.size()));
+            loadButton.setTooltip(net.minecraft.client.gui.components.Tooltip.create(MCVer.literalText(tooltipLines)));
+            loadButton.active = !jobs.isEmpty();
+            String[] compatError = VideoRenderer.checkCompat(jobs.stream().map(RenderJob::getSettings));
+            if(compatError != null) {
+                loadButton.active = false;
+                loadButton.setTooltip(net.minecraft.client.gui.components.Tooltip.create(MCVer.literalText(String.join("\n", compatError))));
+            }
+        } else {
+            loadButton.setMessage(Component.translatable("scenecraft.gui.load"));
+            loadButton.setTooltip(null);
+            loadButton.active = count == 1 && !selected.get(0).incompatible;
+        }
+    }
+
+    private void loadSelected() {
+        // Prevent the player from opening the replay twice at the same time
+        if(loading) {
+            return;
+        }
+        loading = true;
+        loadButton.active = false;
+
+        List<GuiReplayEntry> selected = list.getSelectedEntries();
+        if(selected.size() == 1) {
+            File file = selected.get(0).file;
+            LOGGER.info("Opening replay in viewer: " + file);
+            try {
+                mod.startReplay(file);
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            Iterator<Pair<File, List<RenderJob>>> replays = selected.stream()
+                    .filter(it -> !it.renderQueue.isEmpty())
+                    .<Pair<File, List<RenderJob>>>map(it -> Pair.of(it.file, it.renderQueue))
+                    .iterator();
+            GuiRenderQueue.processMultipleReplays(GuiReplayViewer.this, mod, replays, () -> {
+                loading = false;
+                updateButtons();
+                display();
+            });
+        }
+    }
+
+    private void rename() {
+        final Path path = list.getSelectedEntries().get(0).file.toPath();
+        String name = Utils.fileNameToReplayName(path.getFileName().toString());
+        MCVer.getMinecraft().setScreen(new RenameScreen(this, path, name));
+    }
+
+    private class RenameScreen extends PopupScreen {
+        private final Path path;
+        private final String initialName;
+        private EditBox nameField;
+        private Button renameButton;
+
+        RenameScreen(Screen parent, Path path, String initialName) {
+            super(parent, 7);
+            this.path = path;
+            this.initialName = initialName;
+        }
+
+        @Override
+        protected void build(LinearLayout root) {
+            root.addChild(PopupScreen.label(Component.translatable("scenecraft.gui.viewer.rename.name")));
+            nameField = FlameX.textField(200, initialName, null, s -> updateState());
+            root.addChild(nameField);
+            LinearLayout buttons = FlameX.row(5);
+            renameButton = FlameX.button("scenecraft.gui.rename", 98, this::accept);
+            buttons.addChild(renameButton);
+            buttons.addChild(FlameX.button("scenecraft.gui.cancel", 98, this::close));
+            root.addChild(buttons);
+            updateState();
+        }
+
+        @Override
+        protected void afterLayout() {
+            setInitialFocus(nameField);
+        }
+
+        private void updateState() {
+            if(renameButton == null) return;
+            renameButton.active = !nameField.getValue().isEmpty()
+                    && Files.notExists(Utils.replayNameToPath(path.getParent(), nameField.getValue()));
+        }
+
+        @Override
+        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+            if((keyCode == InputConstants.KEY_RETURN || keyCode == InputConstants.KEY_NUMPADENTER) && renameButton.active) {
+                accept();
+                return true;
+            }
+            return super.keyPressed(keyCode, scanCode, modifiers);
+        }
+
+        private void accept() {
+            // Sanitize their input
+            String newName = nameField.getValue().trim();
+            // This file is what they want
+            Path targetPath = Utils.replayNameToPath(path.getParent(), newName);
+            try {
+                // Finally, try to move it
+                Files.move(path, targetPath);
+            } catch(IOException e) {
+                // We failed (might also be their OS)
+                e.printStackTrace();
+                MCVer.getMinecraft().setScreen(new MessageScreen(
+                        GuiReplayViewer.this, GuiReplayViewer.this::display, null, null,
+                        Component.translatable("scenecraft.gui.viewer.delete.failed1"),
+                        Component.translatable("scenecraft.gui.viewer.delete.failed2")
+                ));
+                return;
+            }
+            list.load();
+            MCVer.getMinecraft().setScreen(GuiReplayViewer.this);
+        }
+    }
+
+    private void deleteSelected() {
+        List<GuiReplayEntry> selected = new ArrayList<>(list.getSelectedEntries());
+        confirmDelete(selected, 0);
+    }
+
+    private void confirmDelete(List<GuiReplayEntry> entries, int index) {
+        if(index >= entries.size()) {
+            list.load();
+            MCVer.getMinecraft().setScreen(this);
+            return;
+        }
+        GuiReplayEntry entry = entries.get(index);
+        MCVer.getMinecraft().setScreen(new MessageScreen(this, () -> {
+            try {
+                FileUtils.forceDelete(entry.file);
+            } catch(IOException e) {
+                e.printStackTrace();
+            }
+            confirmDelete(entries, index + 1);
+        }, "scenecraft.gui.delete", "scenecraft.gui.cancel",
+                Component.translatable("scenecraft.gui.viewer.delete.linea"),
+                Component.translatable("scenecraft.gui.viewer.delete.lineb", entry.getName() + ChatFormatting.RESET))
+                .onDecline(() -> confirmDelete(entries, index + 1)));
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if(keyCode == InputConstants.KEY_F1) {
+            SettingsRegistry reg = SceneCraft.instance.getSettingsRegistry();
+            reg.set(Setting.SHOW_SERVER_IPS, !reg.get(Setting.SHOW_SERVER_IPS));
+            reg.save();
+            list.load();
+            return true;
+        }
+        if(keyCode == InputConstants.KEY_BACKSPACE && !list.filter.isEmpty()) {
+            list.setFilter(list.filter.substring(0, list.filter.length() - 1));
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public boolean charTyped(char codePoint, int modifiers) {
+        if(!Character.isISOControl(codePoint)) {
+            list.setFilter(list.filter + codePoint);
+            return true;
+        }
+        return super.charTyped(codePoint, modifiers);
+    }
+
+    @Override
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        super.render(graphics, mouseX, mouseY, partialTicks);
+        String filter = list.filter;
+        if(!filter.isEmpty()) {
+            var font = MCVer.getFontRenderer();
+            boolean anyMatches = !list.children().isEmpty();
+            int filterTextWidth = font.width(filter);
+            int filterTextHeight = font.lineHeight;
+            int right = width - 3;
+            int bottom = list.getBottom() - 3;
+            graphics.fill(right - 2 - filterTextWidth - 2, bottom - 2 - filterTextHeight - 2, right, bottom, 0xFFFFFFFF);
+            graphics.drawString(font, filter, right - 2 - filterTextWidth, bottom - 2 - filterTextHeight,
+                    anyMatches ? 0xFF000000 : 0xFFAA0000, false);
+        }
+    }
+
+    private static DynamicTexture defaultThumbnail;
+    private static ResourceLocation defaultThumbnailLocation;
+    private static final AtomicInteger TEXTURE_COUNTER = new AtomicInteger();
+
+    private static ResourceLocation defaultThumbnail() {
+        if(defaultThumbnailLocation == null) {
+            defaultThumbnail = Utils.DEFAULT_THUMBNAIL.toTexture();
+            defaultThumbnailLocation = identifier(SceneCraft.MOD_ID, "viewer/default_thumbnail");
+            MCVer.getMinecraft().getTextureManager().register(defaultThumbnailLocation, defaultThumbnail);
+        }
+        return defaultThumbnailLocation;
+    }
+
+    public static class GuiReplayList extends ObjectSelectionList<GuiReplayEntry> {
+        private final GuiReplayViewer screen;
         private File folder = null;
+        private final List<GuiReplayEntry> all = new ArrayList<>();
+        private final Set<GuiReplayEntry> selection = new LinkedHashSet<>();
+        private GuiReplayEntry anchor;
+        private long lastClickTime;
+        private GuiReplayEntry lastClicked;
+        private int generation;
+        String filter = "";
+        Runnable onSelectionChanged = () -> {};
+        Runnable onDoubleClick = () -> {};
 
-        // Not actually a child of this element, we just use it for text manipulation
-        private final GuiTextField filterTextField = new GuiTextField()
-                .setFocused(true);
-
-        public GuiReplayList(GuiContainer container) {
-            super(container);
+        GuiReplayList(GuiReplayViewer screen) {
+            super(MCVer.getMinecraft(), 100, 100, 30, 100, 36);
+            this.screen = screen;
+            setRenderBackground(false);
+            setRenderTopAndBottom(false);
         }
 
-        {
-            onLoad((Consumer<Supplier<GuiReplayEntry>> results) -> {
-                File[] files = folder.listFiles((FileFilter) new SuffixFileFilter(".mcpr", IOCase.INSENSITIVE));
-                if(files == null) {
-                    LOGGER.warn("Failed to list files in {}", folder);
-                    return;
-                }
-                if(files.length == 0) {
-                    return;
-                }
-                Map<File, Long> lastModified = new HashMap<>();
-                Arrays.sort(files, Comparator.<File>comparingLong(f -> lastModified.computeIfAbsent(f, File::lastModified)).reversed());
+        public void setFolder(File folder) {
+            this.folder = folder;
+        }
 
-                int threads = Mth.clamp(files.length, 1, Math.min(8, Runtime.getRuntime().availableProcessors()));
-                AtomicInteger counter = new AtomicInteger();
-                ExecutorService pool = Executors.newFixedThreadPool(threads, runnable -> {
-                    Thread thread = new Thread(runnable, "SceneCraft-ReplayLoader-" + counter.incrementAndGet());
-                    thread.setDaemon(true);
-                    return thread;
-                });
+        public List<GuiReplayEntry> getSelectedEntries() {
+            return new ArrayList<>(selection);
+        }
 
-                try {
-                    List<Future<?>> futures = new ArrayList<>(files.length);
-                    for(final File file : files) {
-                        futures.add(pool.submit(() -> loadEntry(file, results)));
-                    }
-                    for(Future<?> future : futures) {
-                        try {
-                            future.get();
-                        } catch(ExecutionException e) {
-                            LOGGER.error("Could not load Replay File", e.getCause());
-                        }
-                    }
-                } catch(InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                } finally {
-                    pool.shutdownNow();
-                    boolean interrupted = Thread.interrupted();
+        @Override
+        public int getRowWidth() {
+            return 310;
+        }
+
+        @Override
+        protected boolean isSelectedItem(int index) {
+            return index >= 0 && index < children().size() && selection.contains(children().get(index));
+        }
+
+        @Override
+        public void setSelected(GuiReplayEntry entry) {
+            selection.clear();
+            if(entry != null) selection.add(entry);
+            anchor = entry;
+            onSelectionChanged.run();
+        }
+
+        void entryClicked(GuiReplayEntry entry) {
+            long now = System.currentTimeMillis();
+            boolean doubleClick = entry == lastClicked && now - lastClickTime < 250;
+            lastClicked = entry;
+            lastClickTime = now;
+            if(Screen.hasControlDown()) {
+                if(!selection.remove(entry)) selection.add(entry);
+                anchor = entry;
+            } else if(Screen.hasShiftDown() && anchor != null && children().contains(anchor)) {
+                int a = children().indexOf(anchor);
+                int b = children().indexOf(entry);
+                selection.clear();
+                for(int i = Math.min(a, b); i <= Math.max(a, b); i++) {
+                    selection.add(children().get(i));
+                }
+            } else {
+                selection.clear();
+                selection.add(entry);
+                anchor = entry;
+            }
+            onSelectionChanged.run();
+            if(doubleClick && selection.size() == 1) {
+                onDoubleClick.run();
+            }
+        }
+
+        void setFilter(String filter) {
+            this.filter = filter;
+            applyFilter();
+            setScrollAmount(0); // ensure we scroll to top if most entries are filtered
+        }
+
+        private void applyFilter() {
+            String f = filter.toLowerCase();
+            List<GuiReplayEntry> visible = all.stream()
+                    .filter(e -> f.isEmpty() || e.getName().toLowerCase().contains(f))
+                    .collect(Collectors.toList());
+            replaceEntries(visible);
+            selection.retainAll(visible);
+            onSelectionChanged.run();
+        }
+
+                public void load() {
+            final int gen = ++generation;
+            for(GuiReplayEntry entry : all) entry.release();
+            all.clear();
+            selection.clear();
+            replaceEntries(new ArrayList<>());
+            onSelectionChanged.run();
+            if(folder == null) return;
+            Thread loader = new Thread(() -> loadAll(gen), "SceneCraft-ReplayList-Loader");
+            loader.setDaemon(true);
+            loader.start();
+        }
+
+        private void loadAll(int gen) {
+            File[] files = folder.listFiles((FileFilter) new SuffixFileFilter(".mcpr", IOCase.INSENSITIVE));
+            if(files == null) {
+                LOGGER.warn("Failed to list files in {}", folder);
+                return;
+            }
+            if(files.length == 0) {
+                return;
+            }
+            Map<File, Long> lastModified = new HashMap<>();
+            Arrays.sort(files, Comparator.<File>comparingLong(f -> lastModified.computeIfAbsent(f, File::lastModified)).reversed());
+            int threads = Mth.clamp(files.length, 1, Math.min(8, Runtime.getRuntime().availableProcessors()));
+            AtomicInteger counter = new AtomicInteger();
+            ExecutorService pool = Executors.newFixedThreadPool(threads, runnable -> {
+                Thread thread = new Thread(runnable, "SceneCraft-ReplayLoader-" + counter.incrementAndGet());
+                thread.setDaemon(true);
+                return thread;
+            });
+            try {
+                List<Future<?>> futures = new ArrayList<>(files.length);
+                for(final File file : files) {
+                    futures.add(pool.submit(() -> loadEntry(file, gen)));
+                }
+                for(Future<?> future : futures) {
                     try {
-                        pool.awaitTermination(30, TimeUnit.SECONDS);
-                    } catch(InterruptedException e) {
-                        interrupted = true;
-                    } finally {
-                        if(interrupted) {
-                            Thread.currentThread().interrupt();
-                        }
+                        future.get();
+                    } catch(ExecutionException e) {
+                        LOGGER.error("Could not load Replay File", e.getCause());
                     }
                 }
-            }).setDrawShadow(true).setDrawSlider(true);
+            } catch(InterruptedException e) {
+                Thread.currentThread().interrupt();
+            } finally {
+                pool.shutdownNow();
+            }
         }
 
-        private void loadEntry(File file, Consumer<Supplier<GuiReplayEntry>> results) {
-            if(Thread.currentThread().isInterrupted()) {
+        private void loadEntry(File file, int gen) {
+            if(Thread.currentThread().isInterrupted() || gen != generation) {
                 return;
             }
             try (ReplayFile replayFile = SceneCraft.instance.files.open(file.toPath())) {
@@ -382,10 +539,11 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
                 if(converted[0]) {
                     replayFile.save();
                 }
+
                 final ReplayMetaData metaData = replayFile.getMetaData();
                 List<RenderJob> renderQueue = RenderJob.readQueue(replayFile);
 
-                if(Thread.currentThread().isInterrupted()) {
+                if(Thread.currentThread().isInterrupted() || gen != generation) {
                     if(thumb != null) {
                         thumb.close();
                     }
@@ -393,14 +551,16 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
                 }
 
                 if(metaData != null) {
-                    results.consume(() -> new GuiReplayEntry(file, metaData, thumb, renderQueue) {
-                        @Override
-                        public ReadableDimension calcMinSize() {
-                            if(isFiltered(this)) {
-                                return new Dimension(-4, -4);
-                            }
-                            return super.calcMinSize();
+                    // Texture creation must happen on the main thread
+                    MCVer.getMinecraft().execute(() -> {
+                        if(gen != generation) {
+                            if(thumb != null) thumb.close();
+                            return;
                         }
+                        GuiReplayEntry entry = new GuiReplayEntry(this, file, metaData, thumb, renderQueue);
+                        all.add(entry);
+                        all.sort(Comparator.naturalOrder());
+                        applyFilter();
                     });
                 } else if(thumb != null) {
                     thumb.close();
@@ -409,179 +569,113 @@ public class GuiReplayViewer extends GuiScreen implements KeyHandler {
                 LOGGER.error("Could not load Replay File {}", file.getName(), e);
             }
         }
-
-        public void setFolder(File folder) {
-            this.folder = folder;
-        }
-
-        private boolean isFiltered(GuiReplayEntry entry) {
-            String filter = filterTextField.getText().toLowerCase();
-            if(filter.isEmpty()) {
-                return false;
-            }
-            return !entry.name.getText().toLowerCase().contains(filter);
-        }
-
-        @Override
-        public boolean handleKey(KeyInput keyInput) {
-            if(keyInput.key == InputConstants.KEY_F1) {
-                SettingsRegistry reg = SceneCraft.instance.getSettingsRegistry();
-                reg.set(Setting.SHOW_SERVER_IPS, !reg.get(Setting.SHOW_SERVER_IPS));
-                reg.save();
-                load();
-            }
-
-            boolean filterHasPriority = !filterTextField.getText().isEmpty();
-            if(filterHasPriority && filterTextField.handleKey(keyInput)) {
-                scrollY(0); // ensure we scroll to top if most entries are filtered
-                return true;
-            }
-
-            if(super.handleKey(keyInput)) {
-                return true;
-            }
-
-            if(!filterHasPriority && filterTextField.handleKey(keyInput)) {
-                scrollY(0); // ensure we scroll to top if most entries are filtered
-                return true;
-            }
-
-            return false;
-        }
-
-        @Override
-        public boolean handleChar(CharInput charInput) {
-            if(filterTextField.handleChar(charInput)) {
-                scrollY(0); // ensure we scroll to top if most entries are filtered
-                return true;
-            }
-
-            return false;
-        }
-
-        @Override
-        public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
-            super.draw(renderer, size, renderInfo);
-
-            String filter = filterTextField.getText();
-            if(!filter.isEmpty()) {
-                boolean anyMatches = getListPanel().calcMinSize().getHeight() > 0;
-
-                Font fontRenderer = getFontRenderer();
-                int filterTextWidth = fontRenderer.width(filter);
-                int filterTextHeight = fontRenderer.lineHeight;
-                renderer.drawRect(
-                        size.getWidth() - 3 - 2 - filterTextWidth - 2,
-                        size.getHeight() - 3 - 2 - filterTextHeight - 2,
-                        2 + filterTextWidth + 2,
-                        2 + filterTextHeight + 2,
-                        Colors.WHITE
-                );
-                renderer.drawString(
-                        size.getWidth() - 3 - 2 - filterTextWidth,
-                        size.getHeight() - 3 - 2 - filterTextHeight,
-                        anyMatches ? Colors.BLACK : Colors.DARK_RED,
-                        filter
-                );
-            }
-        }
-
-        @Override
-        protected GuiReplayList getThis() {
-            return this;
-        }
     }
 
-    public static class GuiReplayEntry extends AbstractGuiContainer<GuiReplayEntry> implements Comparable<GuiReplayEntry> {
+    public static class GuiReplayEntry extends ObjectSelectionList.Entry<GuiReplayEntry> implements Comparable<GuiReplayEntry> {
+        private static final int THUMB_H = 30;
+        private static final int THUMB_W = THUMB_H * 16 / 9;
+
         public final File file;
-        public final GuiLabel name = new GuiLabel();
-        public final GuiLabel server = new GuiLabel().setColor(Colors.LIGHT_GRAY);
-        public final GuiLabel date = new GuiLabel().setColor(Colors.LIGHT_GRAY);
-        public final GuiPanel infoPanel = new GuiPanel(this).setLayout(new VerticalLayout().setSpacing(2))
-                .addElements(null, name, server, date);
-        public final GuiLabel version = new GuiLabel(this).setColor(Colors.RED);
-        public final GuiImage thumbnail;
-        public final GuiLabel duration = new GuiLabel();
-        public final GuiPanel durationPanel = new GuiPanel().setBackgroundColor(Colors.HALF_TRANSPARENT)
-                .addElements(null, duration).setLayout(new CustomLayout<GuiPanel>() {
-                    @Override
-                    protected void layout(GuiPanel container, int width, int height) {
-                        pos(duration, 2, 2);
-                    }
-
-                    @Override
-                    public ReadableDimension calcMinSize(GuiContainer<?> container) {
-                        ReadableDimension dimension = duration.calcMinSize();
-                        return new Dimension(dimension.getWidth() + 2, dimension.getHeight() + 2);
-                    }
-                });
-        public final GuiImage renderQueueIcon = new GuiImage()
-                .setSize(10, 10)
-                .setTexture(SceneCraft.TEXTURE, 40, 0, 20, 20);
-
+        private final GuiReplayList list;
+        private final String name;
+        private final String server;
+        private final int serverColor;
+        private final String date;
+        private final String version;
+        private final String duration;
         private final long dateMillis;
-        private final boolean incompatible;
-        private final List<RenderJob> renderQueue;
+        public final boolean incompatible;
+        public final List<RenderJob> renderQueue;
+        private ResourceLocation thumbnailLocation;
+        private int thumbW = 1, thumbH = 1;
+        private boolean ownsThumbnail;
 
-        public GuiReplayEntry(File file, ReplayMetaData metaData, Image thumbImage, List<RenderJob> renderQueue) {
+        public GuiReplayEntry(GuiReplayList list, File file, ReplayMetaData metaData, Image thumbImage, List<RenderJob> renderQueue) {
+            this.list = list;
             this.file = file;
             this.renderQueue = renderQueue;
-
-            name.setText(ChatFormatting.UNDERLINE + Utils.fileNameToReplayName(file.getName()));
+            this.name = Utils.fileNameToReplayName(file.getName());
+            int color = 0xFFAAAAAA;
             if(!StringUtils.isEmpty(metaData.getCustomServerName())) {
-                server.setText(metaData.getCustomServerName());
+                server = metaData.getCustomServerName();
             } else if(StringUtils.isEmpty(metaData.getServerName())
                     || !SceneCraft.instance.getSettingsRegistry().get(Setting.SHOW_SERVER_IPS)) {
-                server.setI18nText("scenecraft.gui.iphidden").setColor(Colors.DARK_RED);
+                server = net.minecraft.client.resources.language.I18n.get("scenecraft.gui.iphidden");
+                color = 0xFFAA0000;
             } else {
-                server.setText(metaData.getServerName());
+                server = metaData.getServerName();
             }
+            serverColor = color;
             incompatible = !SceneCraft.isCompatible(metaData.getFileFormatVersion(), metaData.getRawProtocolVersionOr0());
-            if(incompatible) {
-                version.setText("Minecraft " + metaData.getMcVersion());
-            }
+            version = incompatible ? "Minecraft " + metaData.getMcVersion() : "";
             dateMillis = metaData.getDate();
-            date.setText(new SimpleDateFormat().format(new Date(dateMillis)));
+            date = new SimpleDateFormat().format(new Date(dateMillis));
+            duration = Utils.convertSecondsToShortString(metaData.getDuration() / 1000);
             if(thumbImage == null) {
-                thumbnail = new GuiImage(DEFAULT_THUMBNAIL).setSize(30 * 16 / 9, 30);
-                addElements(null, thumbnail);
+                thumbnailLocation = defaultThumbnail();
+                thumbW = Utils.DEFAULT_THUMBNAIL.getWidth();
+                thumbH = Utils.DEFAULT_THUMBNAIL.getHeight();
             } else {
-                thumbnail = new GuiImage(this).setTexture(thumbImage).setSize(30 * 16 / 9, 30);
+                DynamicTexture texture = thumbImage.toTexture();
+                thumbW = thumbImage.getWidth();
+                thumbH = thumbImage.getHeight();
+                thumbnailLocation = identifier(SceneCraft.MOD_ID, "viewer/thumb_" + TEXTURE_COUNTER.incrementAndGet());
+                MCVer.getMinecraft().getTextureManager().register(thumbnailLocation, texture);
+                ownsThumbnail = true;
             }
-            duration.setText(Utils.convertSecondsToShortString(metaData.getDuration() / 1000));
-            addElements(null, durationPanel);
+        }
 
-            if(!renderQueue.isEmpty()) {
-                renderQueueIcon.setTooltip(new GuiTooltip()
-                        .setText(renderQueue.stream().map(RenderJob::getName).toArray(String[]::new)));
-                addElements(null, renderQueueIcon);
+        public String getName() {
+            return name;
+        }
+
+        void release() {
+            if(ownsThumbnail && thumbnailLocation != null) {
+                MCVer.getMinecraft().getTextureManager().release(thumbnailLocation);
+                ownsThumbnail = false;
             }
-
-            setLayout(new CustomLayout<GuiReplayEntry>() {
-                @Override
-                protected void layout(GuiReplayEntry container, int width, int height) {
-                    pos(thumbnail, 0, 0);
-                    x(durationPanel, width(thumbnail) - width(durationPanel));
-                    y(durationPanel, height(thumbnail) - height(durationPanel));
-
-                    pos(infoPanel, width(thumbnail) + 5, 0);
-                    pos(version, width - width(version), 0);
-
-                    if(renderQueueIcon.getContainer() != null) {
-                        pos(renderQueueIcon, width(thumbnail) - width(renderQueueIcon), 0);
-                    }
-                }
-
-                @Override
-                public ReadableDimension calcMinSize(GuiContainer<?> container) {
-                    return new Dimension(300, thumbnail.getMinSize().getHeight());
-                }
-            });
         }
 
         @Override
-        protected GuiReplayEntry getThis() {
-            return this;
+        public void render(GuiGraphics graphics, int index, int top, int left, int width, int height,
+                           int mouseX, int mouseY, boolean hovered, float partialTick) {
+            var font = MCVer.getFontRenderer();
+            graphics.blit(thumbnailLocation, left, top, THUMB_W, THUMB_H, 0f, 0f, thumbW, thumbH, thumbW, thumbH);
+            int durationWidth = font.width(duration);
+            graphics.fill(left + THUMB_W - durationWidth - 4, top + THUMB_H - font.lineHeight - 4, left + THUMB_W, top + THUMB_H, 0x80000000);
+            graphics.drawString(font, duration, left + THUMB_W - durationWidth - 2, top + THUMB_H - font.lineHeight - 2, 0xFFFFFFFF, true);
+            int x = left + THUMB_W + 5;
+            graphics.drawString(font, ChatFormatting.UNDERLINE + name, x, top, 0xFFFFFFFF, true);
+            graphics.drawString(font, server, x, top + font.lineHeight + 2, serverColor, true);
+            graphics.drawString(font, date, x, top + 2 * (font.lineHeight + 2), 0xFFAAAAAA, true);
+            if(!version.isEmpty()) {
+                graphics.drawString(font, version, left + width - font.width(version), top, 0xFFFF5555, true);
+            }
+            if(!renderQueue.isEmpty()) {
+                int ix = left + THUMB_W - 10;
+                graphics.blit(SceneCraft.TEXTURE, ix, top, 10, 10, 40f, 0f, 20, 20, SceneCraft.TEXTURE_SIZE, SceneCraft.TEXTURE_SIZE);
+                if(mouseX >= ix && mouseX < ix + 10 && mouseY >= top && mouseY < top + 10) {
+                    Screen screen = MCVer.getMinecraft().screen;
+                    if(screen != null) {
+                        String text = renderQueue.stream().map(RenderJob::getName).collect(Collectors.joining("\n"));
+                        screen.setTooltipForNextRenderPass(font.split(MCVer.literalText(text), 250));
+                    }
+                }
+            }
+        }
+
+        @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            if(button == 0) {
+                list.entryClicked(this);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public Component getNarration() {
+            return MCVer.literalText(name);
         }
 
         @Override

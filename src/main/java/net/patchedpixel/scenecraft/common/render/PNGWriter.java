@@ -6,8 +6,8 @@ import net.patchedpixel.scenecraft.common.render.frame.BitmapFrame;
 import net.patchedpixel.scenecraft.common.render.rendering.Channel;
 import net.patchedpixel.scenecraft.common.render.rendering.FrameConsumer;
 import net.patchedpixel.scenecraft.common.render.utils.ByteBufferPool;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
-import net.patchedpixel.scenecraft.common.gui.versions.Image;
+import net.patchedpixel.scenecraft.common.flamex.util.geometry.Size;
+import net.patchedpixel.scenecraft.common.flamex.util.Image;
 import net.minecraft.CrashReport;
 
 import java.io.IOException;
@@ -50,9 +50,9 @@ public class PNGWriter implements FrameConsumer<BitmapFrame> {
     private void withImage(BitmapFrame frame, IOConsumer<Image> consumer) throws IOException {
         byte alphaMask = (byte) (keepAlpha ? 0 : 0xff);
         ByteBuffer buffer = frame.getByteBuffer();
-        ReadableDimension size = frame.getSize();
-        int width = size.getWidth();
-        int height = size.getHeight();
+        Size size = frame.getSize();
+        int width = size.width();
+        int height = size.height();
         try (Image image = new Image(width, height)) {
             for(int y = 0; y < height; y++) {
                 for(int x = 0; x < width; x++) {

@@ -1,114 +1,61 @@
 package net.patchedpixel.scenecraft.common.extras.advancedscreenshots;
 
+import net.minecraft.client.gui.layouts.LinearLayout;
 import net.patchedpixel.scenecraft.common.SceneCraft;
 import net.patchedpixel.scenecraft.common.core.SettingsRegistry;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 import net.patchedpixel.scenecraft.common.extras.Setting;
-import net.patchedpixel.scenecraft.common.gui.utils.color.ReadableColor;
 import net.patchedpixel.scenecraft.common.render.RenderSettings;
-import net.patchedpixel.scenecraft.common.gui.container.GuiContainer;
-import net.patchedpixel.scenecraft.common.gui.container.GuiPanel;
-import net.patchedpixel.scenecraft.common.gui.element.GuiButton;
-import net.patchedpixel.scenecraft.common.gui.element.GuiCheckbox;
-import net.patchedpixel.scenecraft.common.gui.element.GuiLabel;
-import net.patchedpixel.scenecraft.common.gui.layout.HorizontalLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.VerticalLayout;
-import net.patchedpixel.scenecraft.common.gui.popup.AbstractGuiPopup;
+import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.FlameX;
 
 import java.net.URI;
 
-public class GuiUploadScreenshot extends AbstractGuiPopup<GuiUploadScreenshot> {
+public class GuiUploadScreenshot extends FlameableScreen {
     public final SceneCraft mod;
-
     public final RenderSettings renderSettings;
+    private boolean neverOpen;
 
-    public final GuiLabel successLabel = new GuiLabel()
-            .setI18nText("scenecraft.gui.advancedscreenshots.finished.description")
-            .setColor(ReadableColor.BLACK);
-
-    public final GuiLabel veerLabel = new GuiLabel()
-            .setI18nText("scenecraft.gui.advancedscreenshots.finished.description.veer")
-            .setColor(ReadableColor.BLACK);
-
-    public final GuiButton veerUploadButton = new GuiButton()
-            .setSize(150, 20)
-            .setI18nLabel("scenecraft.gui.advancedscreenshots.finished.upload.veer");
-
-    public final GuiButton showOnDiskButton = new GuiButton()
-            .setSize(150, 20)
-            .setI18nLabel("scenecraft.gui.advancedscreenshots.finished.showfile");
-
-    public final GuiButton closeButton = new GuiButton()
-            .setSize(150, 20)
-            .setI18nLabel("scenecraft.gui.close");
-
-    public final GuiCheckbox neverOpenCheckbox = new GuiCheckbox();
-
-    public final GuiLabel neverOpenLabel = new GuiLabel()
-            .setI18nText("scenecraft.gui.notagain")
-            .setColor(ReadableColor.BLACK);
-
-    public final GuiPanel checkboxPanel = GuiPanel.builder()
-            .layout(new HorizontalLayout(HorizontalLayout.Alignment.RIGHT).setSpacing(5))
-            .with(neverOpenCheckbox, new HorizontalLayout.Data(0.5))
-            .with(neverOpenLabel, new HorizontalLayout.Data(0.5))
-            .build();
-
-    public GuiUploadScreenshot(GuiContainer container, SceneCraft mod, RenderSettings renderSettings) {
-        super(container);
+    public GuiUploadScreenshot(SceneCraft mod, RenderSettings renderSettings) {
+        super("scenecraft.gui.advancedscreenshots.finished.title", null, 6);
+        this.panel = true;
         this.mod = mod;
         this.renderSettings = renderSettings;
-
-        boolean veer = renderSettings.getRenderMethod() == RenderSettings.RenderMethod.EQUIRECTANGULAR;
-
-        if(renderSettings.getRenderMethod() == RenderSettings.RenderMethod.EQUIRECTANGULAR) {
-            successLabel.setI18nText("scenecraft.gui.advancedscreenshots.finished.description.360");
-        }
-
-        if(veer) {
-            veerUploadButton.onClick(() -> MCVer.openURL(URI.create("https://veer.tv/upload")));
-        }
-
-        showOnDiskButton.onClick(() -> MCVer.openFile(renderSettings.getOutputFile().getParentFile()));
-
-        closeButton.onClick(() -> {
-            if(neverOpenCheckbox.isChecked()) {
-                SettingsRegistry settingsRegistry = mod.getSettingsRegistry();
-                settingsRegistry.set(Setting.SKIP_POST_SCREENSHOT_GUI, true);
-                settingsRegistry.save();
-            }
-            close();
-        });
-
-        popup.addElements(new VerticalLayout.Data(0.5), successLabel);
-
-        if(veer) {
-            popup.addElements(new VerticalLayout.Data(0.5),
-                    veerLabel,
-                    veerUploadButton);
-        }
-
-        popup.addElements(new VerticalLayout.Data(0.5),
-                successLabel,
-                showOnDiskButton,
-                closeButton);
-
-        popup.addElements(new VerticalLayout.Data(1),
-                checkboxPanel);
-
-        popup.setLayout(new VerticalLayout().setSpacing(5));
+        this.background = Background.NONE;
     }
 
     @Override
-    protected void open() {
+    protected void build(LinearLayout root) {
+        boolean veer = renderSettings.getRenderMethod() == RenderSettings.RenderMethod.EQUIRECTANGULAR;
+
+        root.addChild(FlameX.label(veer
+                ? "scenecraft.gui.advancedscreenshots.finished.description.360"
+                : "scenecraft.gui.advancedscreenshots.finished.description"));
+        if(veer) {
+            root.addChild(FlameX.label("scenecraft.gui.advancedscreenshots.finished.description.veer"));
+            root.addChild(FlameX.button("scenecraft.gui.advancedscreenshots.finished.upload.veer", 150,
+                    () -> MCVer.openURL(URI.create("https://veer.tv/upload"))));
+        }
+        root.addChild(FlameX.button("scenecraft.gui.advancedscreenshots.finished.showfile", 150,
+                () -> MCVer.openFile(renderSettings.getOutputFile().getParentFile())));
+        root.addChild(FlameX.checkbox("scenecraft.gui.notagain", neverOpen, v -> neverOpen = v));
+        root.addChild(FlameX.button("scenecraft.gui.close", 150, this::close));
+    }
+
+    public void open() {
         if(mod.getSettingsRegistry().get(Setting.SKIP_POST_SCREENSHOT_GUI)) {
             return;
         }
-        super.open();
+        display();
     }
 
     @Override
-    protected GuiUploadScreenshot getThis() {
-        return this;
+    public void close() {
+        if(neverOpen) {
+            SettingsRegistry settingsRegistry = mod.getSettingsRegistry();
+            settingsRegistry.set(Setting.SKIP_POST_SCREENSHOT_GUI, true);
+            settingsRegistry.save();
+        }
+        MCVer.getMinecraft().setScreen(null);
     }
 }

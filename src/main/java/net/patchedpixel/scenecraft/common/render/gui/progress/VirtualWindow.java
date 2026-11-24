@@ -2,7 +2,7 @@ package net.patchedpixel.scenecraft.common.render.gui.progress;
 
 import net.patchedpixel.scenecraft.common.render.hooks.FramebufferDelegateHolder;
 import net.patchedpixel.scenecraft.common.render.hooks.WindowDelegateHolder;
-import net.patchedpixel.scenecraft.common.gui.function.Closeable;
+import java.io.Closeable;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.pipeline.RenderTarget;
 import com.mojang.blaze3d.platform.Window;

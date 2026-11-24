@@ -3,8 +3,8 @@ package net.patchedpixel.scenecraft.platform;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.patchedpixel.scenecraft.common.core.events.PreRenderCallback;
-import net.patchedpixel.scenecraft.common.gui.function.KeyInput;
-import net.patchedpixel.scenecraft.common.gui.utils.EventRegistrations;
+import net.patchedpixel.scenecraft.common.flamex.event.input.KeyInput;
+import net.patchedpixel.scenecraft.common.flamex.event.EventRegistrations;
 import net.patchedpixel.scenecraft.common.core.events.KeyBindingEventCallback;
 import net.patchedpixel.scenecraft.common.core.events.KeyEventCallback;
 import net.minecraft.client.KeyMapping;
@@ -14,6 +14,7 @@ import net.minecraft.ReportedException;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
 import static net.patchedpixel.scenecraft.common.SceneCraft.MOD_ID;
 import static net.patchedpixel.scenecraft.common.core.versions.MCVer.identifier;
@@ -36,8 +37,8 @@ public class KeyBindingRegistry extends EventRegistrations {
     private final List<KeyMapping> pendingMappings = new ArrayList<>();
 
     private final Map<String, Binding> bindings = new HashMap<>();
-    private Set<KeyMapping> onlyInReplay = new HashSet<>();
-    private Multimap<Integer, Function<KeyInput, Boolean>> rawHandlers = ArrayListMultimap.create();
+    private final Set<KeyMapping> onlyInReplay = new HashSet<>();
+    private final Multimap<Integer, Function<KeyInput, Boolean>> rawHandlers = ArrayListMultimap.create();
 
     public Binding registerKeyBinding(String name, int keyCode, Runnable whenPressed, boolean onlyInRepay) {
         Binding binding = registerKeyBinding(name, keyCode, onlyInRepay);
@@ -115,8 +116,8 @@ public class KeyBindingRegistry extends EventRegistrations {
             } catch(Throwable cause) {
                 CrashReport crashReport = CrashReport.forThrowable(cause, "Handling Key Binding");
                 CrashReportCategory category = crashReport.addCategory("Key Binding");
-                category.setDetail("Key Binding", () -> binding.name);
-                category.setDetail("Handler", runnable::toString);
+                MCVer.addDetail(category, "Key Binding", () -> binding.name);
+                MCVer.addDetail(category, "Handler", runnable::toString);
                 throw new ReportedException(crashReport);
             }
         }
@@ -133,8 +134,8 @@ public class KeyBindingRegistry extends EventRegistrations {
             } catch(Throwable cause) {
                 CrashReport crashReport = CrashReport.forThrowable(cause, "Handling Raw Key Binding");
                 CrashReportCategory category = crashReport.addCategory("Key Binding");
-                category.setDetail("Key Code", () -> "" + keyInput.key);
-                category.setDetail("Handler", handler::toString);
+                MCVer.addDetail(category, "Key Code", () -> "" + keyInput.key);
+                MCVer.addDetail(category, "Handler", handler::toString);
                 throw new ReportedException(crashReport);
             }
         }

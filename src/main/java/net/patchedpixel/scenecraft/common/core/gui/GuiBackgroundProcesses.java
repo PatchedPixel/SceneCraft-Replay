@@ -1,135 +1,89 @@
 package net.patchedpixel.scenecraft.common.core.gui;
 
-import net.patchedpixel.scenecraft.common.gui.GuiRenderer;
-import net.patchedpixel.scenecraft.common.gui.RenderInfo;
-import net.patchedpixel.scenecraft.common.gui.container.AbstractGuiContainer;
-import net.patchedpixel.scenecraft.common.gui.container.GuiPanel;
-import net.patchedpixel.scenecraft.common.gui.container.GuiScreen;
-import net.patchedpixel.scenecraft.common.gui.container.VanillaGuiScreen;
-import net.patchedpixel.scenecraft.common.gui.element.GuiElement;
-import net.patchedpixel.scenecraft.common.gui.layout.CustomLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.VerticalLayout;
-import net.patchedpixel.scenecraft.common.gui.utils.EventRegistrations;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.Dimension;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
-import net.patchedpixel.scenecraft.common.gui.versions.callbacks.InitScreenCallback;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.language.I18n;
+import net.patchedpixel.scenecraft.common.SceneCraft;
+import net.patchedpixel.scenecraft.common.flamex.event.EventRegistrations;
+import net.patchedpixel.scenecraft.common.flamex.event.callbacks.PostRenderScreenCallback;
+import net.patchedpixel.scenecraft.common.flamex.widget.ProgressBarWidget;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
-import static net.patchedpixel.scenecraft.common.core.versions.MCVer.getMinecraft;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class GuiBackgroundProcesses extends EventRegistrations {
-    private GuiPanel panel = new GuiPanel().setLayout(new VerticalLayout().setSpacing(10));
-    private boolean reentrant;
+    public static class Process {
+        private final String titleKey;
+        private final ProgressBarWidget progressBar = new ProgressBarWidget(150, 14);
 
-    { on(InitScreenCallback.EVENT, (screen, buttons) -> onGuiInit(screen)); }
-    private void onGuiInit(net.minecraft.client.gui.screens.Screen guiScreen) {
-        if(guiScreen != getMinecraft().screen) return; // people tend to construct GuiScreens without opening them
-
-        VanillaGuiScreen vanillaGui;
-        // TODO Workaround for #473 and #501 where another mod opens a new gui in response to the MCGuiScreen.init we
-        //      call from VanillaGuiScreen.register.
-        //      Ideally, we don't have an hidden inner MCGuiScreen and instead have a common parent class for
-        //      AbstractGuiScreen, AbstractGuiOverlay and VanillaGuiScreen which deals with the common things. That's
-        //      quite a bit of changes though, so I'll keep that for 2.7 and have this workaround until then.
-        if(reentrant) return;
-        try {
-            reentrant = true;
-            vanillaGui = VanillaGuiScreen.wrap(guiScreen);
-        } finally {
-            reentrant = false;
+        public Process(String titleKey) {
+            this.titleKey = titleKey;
         }
-        vanillaGui.setLayout(new CustomLayout<GuiScreen>(vanillaGui.getLayout()) {
-            @Override
-            protected void layout(GuiScreen container, int width, int height) {
-                pos(panel, width - 5 - width(panel), 5);
-            }
-        }).addElements(null, panel);
-    }
 
-    public void addProcess(GuiElement<?> element) {
-        panel.addElements(new VerticalLayout.Data(1.0),
-                new Element(element));
-    }
-
-    public void removeProcess(GuiElement<?> element) {
-        for(GuiElement child : panel.getChildren()) {
-            if(((Element) child).inner == element) {
-                panel.removeElement(child);
-                return;
-            }
+        public ProgressBarWidget getProgressBar() {
+            return progressBar;
         }
     }
 
-    private static class Element extends AbstractGuiContainer<Element> {
-        private GuiElement inner;
+    private final List<Process> processes = new CopyOnWriteArrayList<>();
 
-        Element(GuiElement inner) {
-            this.inner = inner;
-            addElements(null, inner);
+    { on(PostRenderScreenCallback.EVENT, this::render); }
 
-            setLayout(new CustomLayout<Element>() {
-                @Override
-                protected void layout(Element container, int width, int height) {
-                    pos(inner, 10, 10);
-                    size(inner, width - 20, height - 20);
-                }
-            });
+    private void render(GuiGraphics graphics, float partialTicks) {
+        if(processes.isEmpty()) return;
+        Minecraft mc = MCVer.getMinecraft();
+        if(mc.screen == null) return;
+        Font font = MCVer.getFontRenderer();
+        int screenWidth = mc.getWindow().getGuiScaledWidth();
+        int y = 5;
+        for(Process process : new ArrayList<>(processes)) {
+            String title = I18n.get(process.titleKey);
+            int innerWidth = Math.max(font.width(title), process.progressBar.getWidth());
+            int width = innerWidth + 20;
+            int height = font.lineHeight + 2 + process.progressBar.getHeight() + 20;
+            int x = screenWidth - 5 - width;
+            panel(graphics, x, y, width, height);
+            graphics.drawString(font, title, x + 10 + (innerWidth - font.width(title)) / 2, y + 10, 0xFF000000, false);
+            process.progressBar.setPosition(x + 10, y + 10 + font.lineHeight + 2);
+            process.progressBar.setWidth(innerWidth);
+            process.progressBar.render(graphics, -1, -1, partialTicks);
+            y += height + 10;
         }
+    }
 
-        @Override
-        public int getLayer() {
-            return 1;
+    private static void panel(GuiGraphics graphics, int x, int y, int w, int h) {
+        final int u0 = 0, v0 = 39;
+        graphics.blit(SceneCraft.TEXTURE, x, y, u0, v0, 5, 5);
+        graphics.blit(SceneCraft.TEXTURE, x + w - 5, y, u0 + 12, v0, 5, 5);
+        graphics.blit(SceneCraft.TEXTURE, x, y + h - 5, u0, v0 + 12, 5, 5);
+        graphics.blit(SceneCraft.TEXTURE, x + w - 5, y + h - 5, u0 + 12, v0 + 12, 5, 5);
+        for(int px = 5; px < w - 5; px += 5) {
+            int rx = Math.min(5, w - 5 - px);
+            graphics.blit(SceneCraft.TEXTURE, x + px, y, u0 + 6, v0, rx, 5);
+            graphics.blit(SceneCraft.TEXTURE, x + px, y + h - 5, u0 + 6, v0 + 12, rx, 5);
         }
-
-        @Override
-        public ReadableDimension getMinSize() {
-            ReadableDimension minSize = inner.getMinSize();
-            return new Dimension(minSize.getWidth() + 20, minSize.getHeight() + 20);
+        for(int py = 5; py < h - 5; py += 5) {
+            int ry = Math.min(5, h - 5 - py);
+            graphics.blit(SceneCraft.TEXTURE, x, y + py, u0, v0 + 6, 5, ry);
+            graphics.blit(SceneCraft.TEXTURE, x + w - 5, y + py, u0 + 12, v0 + 6, 5, ry);
         }
-
-        @Override
-        public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
-            final int u0 = 0;
-            final int v0 = 39;
-            renderer.bindTexture(TEXTURE);
-
-            int w = size.getWidth();
-            int h = size.getHeight();
-
-            // Corners
-            renderer.drawTexturedRect(0, 0, u0, v0, 5, 5); // Top left
-            renderer.drawTexturedRect(w - 5, 0, u0 + 12, v0, 5, 5); // Top right
-            renderer.drawTexturedRect(0, h - 5, u0, v0 + 12, 5, 5); // Bottom left
-            renderer.drawTexturedRect(w - 5, h - 5, u0 + 12, v0 + 12, 5, 5); // Bottom right
-
-            // Top and bottom edge
-            for(int x = 5; x < w - 5; x += 5) {
-                int rx = Math.min(5, w - 5 - x);
-                renderer.drawTexturedRect(x, 0, u0 + 6, v0, rx, 5); // Top
-                renderer.drawTexturedRect(x, h - 5, u0 + 6, v0 + 12, rx, 5); // Bottom
+        for(int px = 5; px < w - 5; px += 5) {
+            for(int py = 5; py < h - 5; py += 5) {
+                int rx = Math.min(5, w - 5 - px);
+                int ry = Math.min(5, h - 5 - py);
+                graphics.blit(SceneCraft.TEXTURE, x + px, y + py, u0 + 6, v0 + 6, rx, ry);
             }
-
-            // Left and right edge
-            for(int y = 5; y < h - 5; y += 5) {
-                int ry = Math.min(5, h - 5 - y);
-                renderer.drawTexturedRect(0, y, u0, v0 + 6, 5, ry); // Left
-                renderer.drawTexturedRect(w - 5, y, u0 + 12, v0 + 6, 5, ry); // Right
-            }
-
-            // Center
-            for(int x = 5; x < w - 5; x += 5) {
-                for(int y = 5; y < h - 5; y += 5) {
-                    int rx = Math.min(5, w - 5 - x);
-                    int ry = Math.min(5, h - 5 - y);
-                    renderer.drawTexturedRect(x, y, u0 + 6, v0 + 6, rx, ry);
-                }
-            }
-
-            super.draw(renderer, size, renderInfo);
         }
+    }
 
-        @Override
-        protected Element getThis() {
-            return this;
-        }
+    public void addProcess(Process process) {
+        processes.add(process);
+    }
+
+    public void removeProcess(Process process) {
+        processes.remove(process);
     }
 }

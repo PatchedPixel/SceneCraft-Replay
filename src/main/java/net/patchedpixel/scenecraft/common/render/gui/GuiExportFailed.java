@@ -3,25 +3,21 @@ package net.patchedpixel.scenecraft.common.render.gui;
 import net.patchedpixel.scenecraft.common.SceneCraft;
 import net.patchedpixel.scenecraft.common.render.RenderSettings;
 import net.patchedpixel.scenecraft.common.render.FFmpegWriter;
-import net.patchedpixel.scenecraft.common.gui.container.GuiPanel;
-import net.patchedpixel.scenecraft.common.gui.container.GuiScreen;
-import net.patchedpixel.scenecraft.common.gui.container.GuiVerticalList;
-import net.patchedpixel.scenecraft.common.gui.element.GuiButton;
-import net.patchedpixel.scenecraft.common.gui.element.GuiElement;
-import net.patchedpixel.scenecraft.common.gui.element.GuiLabel;
-import net.patchedpixel.scenecraft.common.gui.layout.CustomLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.HorizontalLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.VerticalLayout;
 import net.minecraft.CrashReport;
 import net.minecraft.CrashReportCategory;
 import net.minecraft.ReportedException;
 
-import java.util.Arrays;
 import java.util.function.Consumer;
 
 import static net.patchedpixel.scenecraft.common.render.SceneCraftRender.LOGGER;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.network.chat.Component;
+import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.FlameX;
+import net.patchedpixel.scenecraft.common.flamex.widget.TextListWidget;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
-public class GuiExportFailed extends GuiScreen {
+public class GuiExportFailed extends FlameableScreen {
     public static GuiExportFailed tryToRecover(FFmpegWriter.FFmpegStartupException e, Consumer<RenderSettings> doRestart) {
         // Always log the error first
         LOGGER.error("Rendering video:", e);
@@ -32,8 +28,8 @@ public class GuiExportFailed extends GuiScreen {
             // If they haven't, then this is probably a faulty ffmpeg installation and there's nothing we can do
             CrashReport crashReport = CrashReport.forThrowable(e, "Exporting video");
             CrashReportCategory details = crashReport.addCategory("Export details");
-            details.setDetail("Settings", settings::toString);
-            details.setDetail("FFmpeg log", e::getLog);
+            MCVer.addDetail(details, "Settings", settings::toString);
+            MCVer.addDetail(details, "FFmpeg log", e::getLog);
             throw new ReportedException(crashReport);
         } else {
             // If they have, ask them whether it was intentional
@@ -43,43 +39,20 @@ public class GuiExportFailed extends GuiScreen {
         }
     }
 
-    private final GuiLabel logLabel = new GuiLabel(this)
-            .setI18nText("scenecraft.gui.rendering.error.ffmpeglog");
-    private final GuiVerticalList logList = new GuiVerticalList(this).setDrawShadow(true);
-    private final GuiButton resetButton = new GuiButton().setI18nLabel("gui.yes").setSize(100, 20);
-    private final GuiButton abortButton = new GuiButton().setI18nLabel("gui.no").setSize(100, 20);
-    private final GuiPanel info = new GuiPanel(this)
-            .setLayout(new VerticalLayout().setSpacing(4))
-            .addElements(new VerticalLayout.Data(0.5),
-                    new GuiLabel().setI18nText("scenecraft.gui.rendering.error.ffmpegargs.1"),
-                    new GuiLabel().setI18nText("scenecraft.gui.rendering.error.ffmpegargs.2"),
-                    new GuiLabel(),
-                    new GuiPanel().setLayout(new HorizontalLayout(HorizontalLayout.Alignment.CENTER).setSpacing(5))
-                            .addElements(null, resetButton, abortButton)
-            );
-
-    {
-        setLayout(new CustomLayout<GuiScreen>() {
-            @Override
-            protected void layout(GuiScreen container, int width, int height) {
-                pos(info, width/2 - width(info)/2, (height/2 - height(info) - 30) / 2 + 30);
-                pos(logLabel, width/2 - width(logLabel)/2, height/2 + 4);
-                pos(logList, 10, y(logLabel) + height(logLabel) + 4);
-                size(logList, width - 10 - x(logList), height - 10 - y(logList));
-            }
-        });
-
-        setTitle(new GuiLabel().setI18nText("scenecraft.gui.rendering.error.title"));
-        setBackground(Background.DIRT);
-    }
+    private final FFmpegWriter.FFmpegStartupException exception;
+    private final Consumer<RenderSettings> doRestart;
+    private TextListWidget logList;
 
     public GuiExportFailed(FFmpegWriter.FFmpegStartupException e, Consumer<RenderSettings> doRestart) {
-        logList.getListPanel().addElements(null,
-                Arrays.stream(e.getLog().replace("\t", "    ").split("\n"))
-                        .map(l -> new GuiLabel().setText(l))
-                        .toArray(GuiElement[]::new));
+        super("scenecraft.gui.rendering.error.title", null);
+        this.exception = e;
+        this.doRestart = doRestart;
+        this.background = Background.DIRT;
+    }
 
-        resetButton.onClick(() -> SceneCraft.instance.runLater(() -> {
+    private void restart() {
+        FFmpegWriter.FFmpegStartupException e = exception;
+        SceneCraft.instance.runLater(() -> {
             RenderSettings oldSettings = e.getSettings();
             doRestart.accept(new RenderSettings(
                     oldSettings.getRenderMethod(),
@@ -105,11 +78,36 @@ public class GuiExportFailed extends GuiScreen {
                     oldSettings.getEncodingPreset().getValue(),
                     oldSettings.isHighPerformance()
             ));
-        }));
-
-        abortButton.onClick(() -> {
-            // Assume they know what they're doing
-            getMinecraft().setScreen(null);
         });
+    }
+
+    @Override
+    protected void build(LinearLayout root) {}
+
+    @Override
+    protected void init() {
+        // Info block and buttons centered in the upper half, ffmpeg log below
+        LinearLayout info = FlameX.column(4);
+        info.addChild(FlameX.label("scenecraft.gui.rendering.error.ffmpegargs.1"));
+        info.addChild(FlameX.label("scenecraft.gui.rendering.error.ffmpegargs.2"));
+        info.addChild(FlameX.label(Component.empty()));
+        LinearLayout buttons = FlameX.row(5);
+        buttons.addChild(FlameX.button("gui.yes", 100, this::restart));
+        buttons.addChild(FlameX.button("gui.no", 100, () -> MCVer.getMinecraft().setScreen(null)));
+        info.addChild(buttons);
+        info.visitWidgets(this::addRenderableWidget);
+        info.arrangeElements();
+        info.setPosition(width / 2 - info.getWidth() / 2, (height / 2 - info.getHeight() - 30) / 2 + 30);
+
+        var logLabel = FlameX.label("scenecraft.gui.rendering.error.ffmpeglog");
+        addRenderableWidget(logLabel);
+        logLabel.setPosition(width / 2 - logLabel.getWidth() / 2, height / 2 + 4);
+        int top = logLabel.getY() + logLabel.getHeight() + 4;
+        logList = new TextListWidget(width - 20, height - 10 - top, top, height - 10);
+        logList.setLeftPos(10);
+        for(String line : exception.getLog().replace("\t", "    ").split("\n")) {
+            logList.addLine(MCVer.literalText(line));
+        }
+        addRenderableWidget(logList);
     }
 }

@@ -5,7 +5,7 @@ import net.patchedpixel.scenecraft.common.render.frame.GpuFrame;
 public class SimplePboGpuFrameCapturer extends PboGpuFrameCapturer<GpuFrame, SimplePboGpuFrameCapturer.SinglePass> {
     public SimplePboGpuFrameCapturer(WorldRenderer worldRenderer, RenderInfo renderInfo) {
         super(worldRenderer, renderInfo, SinglePass.class,
-                renderInfo.getFrameSize().getWidth() * renderInfo.getFrameSize().getHeight());
+                renderInfo.getFrameSize().width() * renderInfo.getFrameSize().height());
     }
 
     @Override

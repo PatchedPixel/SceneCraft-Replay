@@ -7,7 +7,7 @@ import net.patchedpixel.scenecraft.common.replay.ReplaySender;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.property.AbstractProperty;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.property.PropertyPart;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.property.PropertyParts;
-import net.patchedpixel.scenecraft.common.gui.utils.NonNull;
+import net.patchedpixel.scenecraft.common.flamex.util.NonNull;
 
 import java.io.IOException;
 import java.util.Collection;

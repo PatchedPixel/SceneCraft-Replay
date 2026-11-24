@@ -1,6 +1,6 @@
 package net.patchedpixel.scenecraft.common.replay.events;
 
-import net.patchedpixel.scenecraft.common.gui.utils.Event;
+import net.patchedpixel.scenecraft.common.flamex.event.Event;
 
 public interface RenderSpectatorCrosshairCallback {
     Event<RenderSpectatorCrosshairCallback> EVENT = Event.create((listeners) ->

@@ -5,7 +5,7 @@ import net.patchedpixel.scenecraft.common.render.frame.BitmapFrame;
 import net.patchedpixel.scenecraft.common.render.rendering.Channel;
 import net.patchedpixel.scenecraft.common.render.rendering.FrameConsumer;
 import net.patchedpixel.scenecraft.common.render.utils.ByteBufferPool;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
+import net.patchedpixel.scenecraft.common.flamex.util.geometry.Size;
 import net.minecraft.CrashReport;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.util.tinyexr.EXRChannelInfo;
@@ -55,10 +55,10 @@ public class EXRWriter implements FrameConsumer<BitmapFrame> {
         BitmapFrame depthFrame = channels.get(Channel.DEPTH);
 
         Path path = outputFolder.resolve(bgraFrame.getFrameId() + ".exr");
-        ReadableDimension size = bgraFrame.getSize();
+        Size size = bgraFrame.getSize();
         ByteBuffer bgra = bgraFrame.getByteBuffer();
-        int width = size.getWidth();
-        int height = size.getHeight();
+        int width = size.width();
+        int height = size.height();
         int numChannels = 4 + (depthFrame != null ? 1 : 0);
 
         stackPush();

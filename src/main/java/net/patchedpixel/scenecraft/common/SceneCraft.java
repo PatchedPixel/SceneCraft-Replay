@@ -164,9 +164,9 @@ public class SceneCraft implements net.patchedpixel.scenecraft.common.core.Modul
             Style coloredDarkGray = Style.EMPTY.withColor(ChatFormatting.DARK_GRAY);
             Style coloredGold = Style.EMPTY.withColor(ChatFormatting.GOLD);
             Style alert = Style.EMPTY.withColor(warning ? ChatFormatting.RED : ChatFormatting.DARK_GREEN);
-            Component text = Component.literal("[").setStyle(coloredDarkGray)
+            Component text = MCVer.literalText("[").setStyle(coloredDarkGray)
                     .append(Component.translatable("scenecraft.title").setStyle(coloredGold))
-                    .append(Component.literal("] "))
+                    .append(MCVer.literalText("] "))
                     .append(Component.translatable(message, args).setStyle(alert));
             // Send message to chat GUI
             // The in game GUI is initialized at startup, therefore this is possible before the client is connected

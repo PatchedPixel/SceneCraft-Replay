@@ -1,125 +1,123 @@
 package net.patchedpixel.scenecraft.common.render.gui;
 
-import net.patchedpixel.scenecraft.common.SceneCraft;
-import net.patchedpixel.scenecraft.common.gui.utils.color.Color;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.Dimension;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
-
-import net.patchedpixel.scenecraft.common.utils.Utils;
-import net.patchedpixel.scenecraft.common.render.rendering.VideoRenderer;
-import net.patchedpixel.scenecraft.common.gui.GuiRenderer;
-import net.patchedpixel.scenecraft.common.gui.RenderInfo;
-import net.patchedpixel.scenecraft.common.gui.container.GuiPanel;
-import net.patchedpixel.scenecraft.common.gui.container.GuiScreen;
-import net.patchedpixel.scenecraft.common.gui.element.GuiButton;
-import net.patchedpixel.scenecraft.common.gui.element.GuiCheckbox;
-import net.patchedpixel.scenecraft.common.gui.element.GuiLabel;
-import net.patchedpixel.scenecraft.common.gui.element.advanced.GuiProgressBar;
-import net.patchedpixel.scenecraft.common.gui.function.Click;
-import net.patchedpixel.scenecraft.common.gui.function.Tickable;
-import net.patchedpixel.scenecraft.common.gui.layout.CustomLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.HorizontalLayout;
+import com.mojang.blaze3d.platform.NativeImage;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Checkbox;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import com.mojang.blaze3d.platform.NativeImage;
+import net.patchedpixel.scenecraft.common.SceneCraft;
+import net.patchedpixel.scenecraft.common.render.rendering.VideoRenderer;
+import net.patchedpixel.scenecraft.common.flamex.FlameX;
+import net.patchedpixel.scenecraft.common.flamex.util.geometry.Size;
+import net.patchedpixel.scenecraft.common.flamex.widget.ProgressBarWidget;
+import net.patchedpixel.scenecraft.common.utils.Utils;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
 import java.nio.ByteBuffer;
 
 import static net.patchedpixel.scenecraft.common.core.versions.MCVer.identifier;
 
-public class GuiVideoRenderer extends GuiScreen implements Tickable {
-    private static final ResourceLocation NO_PREVIEW_TEXTURE = identifier(SceneCraft.MOD_ID, "logo.png");
+public class GuiVideoRenderer extends Screen {
+    private static final ResourceLocation NO_PREVIEW_TEXTURE = identifier(SceneCraft.MOD_ID, "unknown.png");
 
     private final VideoRenderer renderer;
 
-    public final GuiLabel title = new GuiLabel().setI18nText("scenecraft.gui.rendering.title");
-    public final GuiPanel imagePanel = new GuiPanel(){
-        @Override
-        public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
-            if(previewCheckbox.isChecked()) {
-                renderPreview(renderer, size);
-            } else {
-                renderNoPreview(renderer, size);
-            }
-        }
-    }.setSize(Integer.MAX_VALUE, Integer.MAX_VALUE);
-    public final GuiCheckbox previewCheckbox = new GuiCheckbox().setI18nLabel("scenecraft.gui.rendering.preview");
-    public final GuiLabel renderTime = new GuiLabel();
-    public final GuiLabel remainingTime = new GuiLabel();
-    public final GuiProgressBar progressBar = new GuiProgressBar();
-    public final GuiPanel buttonPanel = new GuiPanel().setLayout(new HorizontalLayout().setSpacing(4));
-    public final GuiButton pauseButton = new GuiButton(buttonPanel).onClick(new Runnable() {
-        @Override
-        public void run() {
-            if(renderer.isPaused()) {
-                pauseButton.setI18nLabel("scenecraft.gui.rendering.pause");
-                renderer.setPaused(false);
-            } else {
-                pauseButton.setI18nLabel("scenecraft.gui.rendering.resume");
-                renderer.setPaused(true);
-            }
-        }
-    }).setI18nLabel("scenecraft.gui.rendering.pause").setSize(150, 20);
+    private boolean preview;
+    private String renderTimeText = "";
+    private String remainingTimeText = "";
+    private boolean waitingForConfirmation;
 
-    public final GuiButton cancelButton = new GuiButton(buttonPanel){
-        boolean waitingForConfirmation;
-
-        @Override
-        public boolean mouseClick(Click click) {
-            boolean result = super.mouseClick(click);
-            if(waitingForConfirmation && !result) {
-                setI18nLabel("scenecraft.gui.rendering.cancel");
-                waitingForConfirmation = false;
-            }
-            return result;
-        }
-
-        @Override
-        public void onClick(Click click) {
-            super.onClick(click);
-            if(!waitingForConfirmation) {
-                setI18nLabel("scenecraft.gui.rendering.cancel.callback");
-                waitingForConfirmation = true;
-            } else {
-                renderer.cancel();
-            }
-        }
-    }.setI18nLabel("scenecraft.gui.rendering.cancel").setSize(150, 20);
+    private final ProgressBarWidget progressBar = new ProgressBarWidget(200, 20);
+    private final Checkbox previewCheckbox;
+    private final Button pauseButton;
+    private final Button cancelButton;
 
     private DynamicTexture previewTexture;
     private boolean previewTextureDirty;
 
-    {
-        final GuiPanel contentPanel = new GuiPanel(this).setLayout(new CustomLayout<GuiPanel>() {
-            @Override
-            protected void layout(GuiPanel container, int width, int height) {
-                size(progressBar, width, 20);
-                pos(title, width / 2 - width(title) / 2, 0);
-                pos(imagePanel, 0, y(title) + height(title) + 5);
-                pos(buttonPanel, width / 2 - width(buttonPanel) / 2, height - height(buttonPanel));
-                pos(progressBar, width / 2 - width(progressBar) / 2, y(buttonPanel) - 5 - height(progressBar));
-                pos(renderTime, 0, y(progressBar) - 2 - height(renderTime));
-                pos(remainingTime, width - width(remainingTime), y(progressBar) - 2 - height(renderTime));
-                pos(previewCheckbox, width / 2 - width(previewCheckbox) / 2, y(renderTime) - 10 - height(previewCheckbox));
-                size(imagePanel, width, y(previewCheckbox) - 5 - y(imagePanel));
-            }
-        }).addElements(null, title, imagePanel, previewCheckbox, renderTime, remainingTime, progressBar, buttonPanel);
-        setLayout(new CustomLayout<GuiScreen>() {
-            @Override
-            protected void layout(GuiScreen container, int width, int height) {
-                // Make sure we have some space around our central GUI components
-                pos(contentPanel, 5, 3);
-                size(contentPanel, width - 10, height - 10);
+    public GuiVideoRenderer(VideoRenderer renderer) {
+        super(Component.translatable("scenecraft.gui.rendering.title"));
+        this.renderer = renderer;
+        previewCheckbox = FlameX.checkbox("scenecraft.gui.rendering.preview", false, v -> preview = v);
+        pauseButton = FlameX.button("scenecraft.gui.rendering.pause", 150, () -> {
+            if(renderer.isPaused()) {
+                pauseButton().setMessage(Component.translatable("scenecraft.gui.rendering.pause"));
+                renderer.setPaused(false);
+            } else {
+                pauseButton().setMessage(Component.translatable("scenecraft.gui.rendering.resume"));
+                renderer.setPaused(true);
             }
         });
-        // FIXME default background doesn't work during rendering because the blur effect relies on the framebuffer
-        setBackground(Background.NONE);
-        setBackgroundColor(new Color(32, 32, 32));
+        cancelButton = FlameX.button("scenecraft.gui.rendering.cancel", 150, () -> {
+            if(!waitingForConfirmation) {
+                cancelButton().setMessage(Component.translatable("scenecraft.gui.rendering.cancel.callback"));
+                waitingForConfirmation = true;
+            } else {
+                renderer.cancel();
+            }
+        });
     }
 
-    public GuiVideoRenderer(VideoRenderer renderer) {
-        this.renderer = renderer;
+    private Button pauseButton() {
+        return pauseButton;
+    }
+
+    private Button cancelButton() {
+        return cancelButton;
+    }
+
+    @Override
+    protected void init() {
+        int bottom = height - 8;
+        pauseButton.setPosition(width / 2 - 154, bottom - 20);
+        cancelButton.setPosition(width / 2 + 4, bottom - 20);
+        progressBar.setWidth(Math.min(width - 10, 400));
+        progressBar.setPosition(width / 2 - progressBar.getWidth() / 2, bottom - 20 - 5 - 20);
+        previewCheckbox.setPosition(width / 2 - previewCheckbox.getWidth() / 2, progressBar.getY() - 12 - 20 - 10);
+        addRenderableWidget(previewCheckbox);
+        addRenderableWidget(progressBar);
+        addRenderableWidget(pauseButton);
+        addRenderableWidget(cancelButton);
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        boolean result = super.mouseClicked(mouseX, mouseY, button);
+        if(waitingForConfirmation && !cancelButton.isMouseOver(mouseX, mouseY)) {
+            cancelButton.setMessage(Component.translatable("scenecraft.gui.rendering.cancel"));
+            waitingForConfirmation = false;
+        }
+        return result;
+    }
+
+    @Override
+    public boolean shouldCloseOnEsc() {
+        return false;
+    }
+
+    @Override
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        // FIXME default background doesn't work during rendering because the blur effect relies on the framebuffer
+        graphics.fill(0, 0, width, height, 0xFF202020);
+        graphics.drawCenteredString(font, title, width / 2, 8, 0xFFFFFF);
+
+        int areaTop = 8 + font.lineHeight + 5;
+        int areaBottom = previewCheckbox.getY() - 5;
+        Size area = new Size(width - 10, Math.max(1, areaBottom - areaTop));
+        if(preview) {
+            renderPreview(graphics, area, 5, areaTop);
+        } else {
+            renderTexture(graphics, NO_PREVIEW_TEXTURE, area, 5, areaTop, 1280, 720);
+        }
+
+        int textY = progressBar.getY() - 2 - font.lineHeight;
+        graphics.drawString(font, renderTimeText, 5, textY, 0xFFFFFF, true);
+        graphics.drawString(font, remainingTimeText, width - 5 - font.width(remainingTimeText), textY, 0xFFFFFF, true);
+        super.render(graphics, mouseX, mouseY, partialTicks);
     }
 
     //the total render time
@@ -207,11 +205,11 @@ public class GuiVideoRenderer extends GuiScreen implements Tickable {
             prevRenderedFrames = renderer.getFramesDone();
         }
 
-        renderTime.setText(I18n.get("scenecraft.gui.rendering.timetaken") + ": " + secToString(renderTimeTaken/1000));
-        remainingTime.setText(I18n.get("scenecraft.gui.rendering.timeleft") + ": " + secToString(renderTimeLeft));
+        renderTimeText = I18n.get("scenecraft.gui.rendering.timetaken") + ": " + secToString(renderTimeTaken/1000);
+        remainingTimeText = I18n.get("scenecraft.gui.rendering.timeleft") + ": " + secToString(renderTimeLeft);
 
         int framesDone = renderer.getFramesDone(), framesTotal = renderer.getTotalFrames();
-        progressBar.setI18nLabel("scenecraft.gui.rendering.progress", framesDone, framesTotal);
+        progressBar.setLabel(I18n.get("scenecraft.gui.rendering.progress", framesDone, framesTotal));
         progressBar.setProgress((float) framesDone / framesTotal);
     }
 
@@ -228,13 +226,15 @@ public class GuiVideoRenderer extends GuiScreen implements Tickable {
         return builder.toString();
     }
 
-    private synchronized void renderPreview(GuiRenderer guiRenderer, ReadableDimension size) {
-        ReadableDimension videoSize = renderer.getFrameSize();
-        final int videoWidth = videoSize.getWidth();
-        final int videoHeight = videoSize.getHeight();
+    private synchronized void renderPreview(GuiGraphics graphics, Size size, int ox, int oy) {
+        Size videoSize = renderer.getFrameSize();
+        final int videoWidth = videoSize.width();
+        final int videoHeight = videoSize.height();
 
         if(previewTexture == null) {
             previewTexture = new DynamicTexture(videoWidth, videoHeight, true);
+            previewLocation = MCVer.getMinecraft().getTextureManager()
+                    .register("scenecraft_render_preview", previewTexture);
         }
 
         if(previewTextureDirty) {
@@ -242,29 +242,25 @@ public class GuiVideoRenderer extends GuiScreen implements Tickable {
             previewTextureDirty = false;
         }
 
-        guiRenderer.bindTexture(previewTexture);
-        renderPreviewTexture(guiRenderer, size, videoWidth, videoHeight);
+        renderTexture(graphics, previewLocation, size, ox, oy, videoWidth, videoHeight);
     }
 
-    private void renderNoPreview(GuiRenderer guiRenderer, ReadableDimension size) {
-        guiRenderer.bindTexture(NO_PREVIEW_TEXTURE);
-        renderPreviewTexture(guiRenderer, size, 1280, 720);
+    private ResourceLocation previewLocation;
+
+    private void renderTexture(GuiGraphics graphics, ResourceLocation tex, Size size, int ox, int oy,
+                               int videoWidth, int videoHeight) {
+        Size dimension = Utils.fitIntoBounds(new Size(videoWidth, videoHeight), size);
+
+        int w = dimension.width();
+        int h = dimension.height();
+        int x = ox + (size.width() - w) / 2;
+        int y = oy + (size.height() - h) / 2;
+
+        graphics.blit(tex, x, y, w, h, 0f, 0f, videoWidth, videoHeight, videoWidth, videoHeight);
     }
 
-    private void renderPreviewTexture(GuiRenderer guiRenderer, ReadableDimension size,
-                                      int videoWidth, int videoHeight) {
-        Dimension dimension = Utils.fitIntoBounds(new Dimension(videoWidth, videoHeight), size);
-
-        int width = dimension.getWidth();
-        int height = dimension.getHeight();
-        int x = (size.getWidth() - width) / 2;
-        int y = (size.getHeight() - height) / 2;
-
-        guiRenderer.drawTexturedRect(x, y, 0, 0, width, height, videoWidth, videoHeight, videoWidth, videoHeight);
-    }
-
-    public void updatePreview(ByteBuffer buffer, ReadableDimension size) {
-        if(previewCheckbox.isChecked() && previewTexture != null) {
+    public void updatePreview(ByteBuffer buffer, Size size) {
+        if(preview && previewTexture != null) {
             buffer.mark();
             synchronized(this) {
                 NativeImage data = previewTexture.getPixels();
@@ -272,8 +268,8 @@ public class GuiVideoRenderer extends GuiScreen implements Tickable {
                 // Note: Optifine changes the texture data array to be three times as long (for use by shaders),
                 //       we only want to initialize the first third and since we use our frame size, not the array size,
                 //       we're good to go.
-                int width = size.getWidth();
-                for(int y = 0; y < size.getHeight(); y++) {
+                int width = size.width();
+                for(int y = 0; y < size.height(); y++) {
                     for(int x = 0; x < width; x++) {
                         int b = buffer.get() & 0xff;
                         int g = buffer.get() & 0xff;

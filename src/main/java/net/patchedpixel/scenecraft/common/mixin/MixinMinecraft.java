@@ -6,7 +6,7 @@ import com.mojang.blaze3d.platform.Window;
 import net.patchedpixel.scenecraft.common.core.events.PostRenderCallback;
 import net.patchedpixel.scenecraft.common.core.events.PreRenderCallback;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
-import net.patchedpixel.scenecraft.common.gui.versions.ScreenExt;
+import net.patchedpixel.scenecraft.common.flamex.util.ScreenExt;
 import net.patchedpixel.scenecraft.common.render.gui.progress.VirtualWindow;
 import net.patchedpixel.scenecraft.common.render.hooks.FramebufferDelegateHolder;
 import net.patchedpixel.scenecraft.common.render.hooks.WindowDelegateHolder;

@@ -15,7 +15,7 @@ public class Utils {
      */
     public static void gpuBytesToBitmap(GpuFrame source, int xOffset, int yOffset, ByteBuffer to, int width) {
         gpuBytesToBitmap(
-                source.getByteBuffer(), source.getSize().getWidth(), source.getBytesPerPixel(),
+                source.getByteBuffer(), source.getSize().width(), source.getBytesPerPixel(),
                 xOffset, yOffset, to, width);
     }
 

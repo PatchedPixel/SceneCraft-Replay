@@ -1,7 +1,7 @@
 package net.patchedpixel.scenecraft.common.render.events;
 
 import net.patchedpixel.scenecraft.common.render.rendering.VideoRenderer;
-import net.patchedpixel.scenecraft.common.gui.utils.Event;
+import net.patchedpixel.scenecraft.common.flamex.event.Event;
 
 public interface ReplayRenderCallback {
     interface Pre {

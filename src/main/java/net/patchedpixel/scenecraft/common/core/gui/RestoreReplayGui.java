@@ -10,18 +10,12 @@ import net.patchedpixel.scenecraft.common.scenestudio.io.ReplayOutputStream;
 import net.patchedpixel.scenecraft.common.scenestudio.protocol.State;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayMetaData;
-import net.patchedpixel.scenecraft.common.gui.container.AbstractGuiScreen;
-import net.patchedpixel.scenecraft.common.gui.container.GuiPanel;
-import net.patchedpixel.scenecraft.common.gui.container.GuiScreen;
-import net.patchedpixel.scenecraft.common.gui.container.VanillaGuiScreen;
-import net.patchedpixel.scenecraft.common.gui.element.GuiButton;
-import net.patchedpixel.scenecraft.common.gui.element.GuiLabel;
-import net.patchedpixel.scenecraft.common.gui.element.advanced.GuiProgressBar;
-import net.patchedpixel.scenecraft.common.gui.layout.CustomLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.HorizontalLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.VerticalLayout;
-import net.patchedpixel.scenecraft.common.gui.utils.Colors;
 import net.minecraft.CrashReport;
+import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
@@ -35,37 +29,34 @@ import java.util.function.Consumer;
 import static net.patchedpixel.scenecraft.common.scenestudio.util.Utils.readInt;
 import static net.patchedpixel.scenecraft.common.scenestudio.util.Utils.writeInt;
 
-public class RestoreReplayGui extends AbstractGuiScreen<RestoreReplayGui> {
+public class RestoreReplayGui extends FlameableScreen {
     private static Logger LOGGER = LogManager.getLogger();
 
-    public final GuiScreen parent;
     public final File file;
-    public final GuiPanel textPanel = new GuiPanel().setLayout(new VerticalLayout().setSpacing(3));
-    public final GuiPanel buttonPanel = new GuiPanel().setLayout(new HorizontalLayout().setSpacing(5));
-    public final GuiPanel contentPanel = new GuiPanel(this).addElements(new VerticalLayout.Data(0.5),
-            textPanel, buttonPanel).setLayout(new VerticalLayout().setSpacing(20));
-    public final GuiButton yesButton = new GuiButton(buttonPanel).setSize(150, 20).setI18nLabel("gui.yes");
-    public final GuiButton noButton = new GuiButton(buttonPanel).setSize(150, 20).setI18nLabel("gui.no");
     private final SceneCraft core;
 
-    public RestoreReplayGui(SceneCraft core, GuiScreen parent, File file) {
+    public RestoreReplayGui(SceneCraft core, Screen parent, File file) {
+        super(Component.empty(), parent, 20);
         this.core = core;
-        this.parent = parent;
         this.file = file;
-
-        textPanel.addElements(new VerticalLayout.Data(0.5),
-                    new GuiLabel().setI18nText("scenecraft.gui.restorereplay1"),
-                    new GuiLabel().setI18nText("scenecraft.gui.restorereplay2", Files.getNameWithoutExtension(file.getName())),
-                    new GuiLabel().setI18nText("scenecraft.gui.restorereplay3"));
-
         LOGGER.info("Found partially saved replay, offering recovery: " + file);
+    }
 
-        yesButton.onClick(() -> {
+    @Override
+    protected void build(LinearLayout root) {
+        LinearLayout text = FlameX.column(3);
+        text.addChild(FlameX.label("scenecraft.gui.restorereplay1"));
+        text.addChild(FlameX.label(FlameX.t("scenecraft.gui.restorereplay2", Files.getNameWithoutExtension(file.getName()))));
+        text.addChild(FlameX.label("scenecraft.gui.restorereplay3"));
+        root.addChild(text);
+
+        LinearLayout buttons = FlameX.row(5);
+        buttons.addChild(FlameX.button("gui.yes", 150, () -> {
             LOGGER.info("Attempting recovery: " + file);
             recoverInBackground();
-            parent.display();
-        });
-        noButton.onClick(() -> {
+            MCVer.getMinecraft().setScreen(parent);
+        }));
+        buttons.addChild(FlameX.button("gui.no", 150, () -> {
             LOGGER.info("Recovery rejected, marking for deletion: " + file);
             try {
                 File tmp = new File(file.getParentFile(), file.getName() + ".tmp");
@@ -77,36 +68,21 @@ public class RestoreReplayGui extends AbstractGuiScreen<RestoreReplayGui> {
             } catch(IOException e) {
                 e.printStackTrace();
             }
-            parent.display();
-        });
-
-        setLayout(new CustomLayout<RestoreReplayGui>() {
-            @Override
-            protected void layout(RestoreReplayGui container, int width, int height) {
-                pos(contentPanel, width / 2 - width(contentPanel) / 2, height / 2 - height(contentPanel) / 2);
-            }
-        });
-    }
-
-    @Override
-    protected RestoreReplayGui getThis() {
-        return this;
+            MCVer.getMinecraft().setScreen(parent);
+        }));
+        root.addChild(buttons);
     }
 
     private void recoverInBackground() {
-        GuiLabel label = new GuiLabel().setI18nText("scenecraft.gui.replaysaving.title").setColor(Colors.BLACK);
-        GuiProgressBar progressBar = new GuiProgressBar().setHeight(14);
-        GuiPanel savingProcess = new GuiPanel()
-                .setLayout(new VerticalLayout())
-                .addElements(new VerticalLayout.Data(0.5), label, progressBar);
+        GuiBackgroundProcesses.Process savingProcess = new GuiBackgroundProcesses.Process("scenecraft.gui.replaysaving.title");
         new Thread(() -> {
             core.runLater(() -> core.getBackgroundProcesses().addProcess(savingProcess));
             try {
-                tryRecover(progressBar::setProgress);
+                tryRecover(savingProcess.getProgressBar()::setProgress);
             } catch(IOException e) {
                 LOGGER.error("Recovering replay file:", e);
                 CrashReport crashReport = CrashReport.forThrowable(e, "Recovering replay file");
-                core.runLater(() -> Utils.error(LOGGER, VanillaGuiScreen.wrap(getMinecraft().screen), crashReport, () -> {}));
+                core.runLater(() -> Utils.error(LOGGER, crashReport, () -> {}));
             } finally {
                 core.runLater(() -> core.getBackgroundProcesses().removeProcess(savingProcess));
             }

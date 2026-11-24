@@ -34,6 +34,7 @@ import net.minecraft.ReportedException;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.tuple.Triple;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -672,7 +673,7 @@ public class SPTimeline implements PathingRegistry {
         } catch(IOException e) {
             CrashReport crash = CrashReport.forThrowable(e, "Serializing interpolator");
             CrashReportCategory category = crash.addCategory("Serializing interpolator");
-            category.setDetail("Interpolator", interpolator::toString);
+            MCVer.addDetail(category, "Interpolator", interpolator::toString);
             throw new ReportedException(crash);
         }
 
@@ -687,7 +688,7 @@ public class SPTimeline implements PathingRegistry {
         } catch(IOException e) {
             CrashReport crash = CrashReport.forThrowable(e, "De-serializing interpolator");
             CrashReportCategory category = crash.addCategory("De-serializing interpolator");
-            category.setDetail("Interpolator", json::toString);
+            MCVer.addDetail(category, "Interpolator", json::toString);
             throw new ReportedException(crash);
         }
     }

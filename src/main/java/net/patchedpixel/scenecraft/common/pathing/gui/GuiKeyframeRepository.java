@@ -2,8 +2,14 @@ package net.patchedpixel.scenecraft.common.pathing.gui;
 
 import com.google.common.util.concurrent.SettableFuture;
 import com.mojang.blaze3d.platform.InputConstants;
+import net.minecraft.CrashReport;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.patchedpixel.scenecraft.common.SceneCraft;
-import net.patchedpixel.scenecraft.common.utils.Utils;
 import net.patchedpixel.scenecraft.common.render.gui.GuiRenderQueue;
 import net.patchedpixel.scenecraft.common.render.gui.GuiRenderSettings;
 import net.patchedpixel.scenecraft.common.replay.ReplayHandler;
@@ -13,255 +19,31 @@ import net.patchedpixel.scenecraft.common.scenestudio.pathing.path.Path;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.path.Timeline;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.serialize.TimelineSerialization;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
-import net.patchedpixel.scenecraft.common.gui.GuiRenderer;
-import net.patchedpixel.scenecraft.common.gui.RenderInfo;
-import net.patchedpixel.scenecraft.common.gui.container.AbstractGuiClickableContainer;
-import net.patchedpixel.scenecraft.common.gui.container.GuiContainer;
-import net.patchedpixel.scenecraft.common.gui.container.GuiPanel;
-import net.patchedpixel.scenecraft.common.gui.container.GuiScreen;
-import net.patchedpixel.scenecraft.common.gui.container.GuiVerticalList;
-import net.patchedpixel.scenecraft.common.gui.element.GuiButton;
-import net.patchedpixel.scenecraft.common.gui.element.GuiElement;
-import net.patchedpixel.scenecraft.common.gui.element.GuiLabel;
-import net.patchedpixel.scenecraft.common.gui.element.GuiTextField;
-import net.patchedpixel.scenecraft.common.gui.function.Click;
-import net.patchedpixel.scenecraft.common.gui.function.Closeable;
-import net.patchedpixel.scenecraft.common.gui.function.KeyHandler;
-import net.patchedpixel.scenecraft.common.gui.function.KeyInput;
-import net.patchedpixel.scenecraft.common.gui.layout.CustomLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.GridLayout;
-import net.patchedpixel.scenecraft.common.gui.layout.VerticalLayout;
-import net.patchedpixel.scenecraft.common.gui.popup.GuiYesNoPopup;
-import net.patchedpixel.scenecraft.common.gui.utils.Colors;
-import net.patchedpixel.scenecraft.common.gui.utils.Consumer;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.Dimension;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
-import net.minecraft.CrashReport;
+import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.FlameX;
+import net.patchedpixel.scenecraft.common.flamex.popup.PromptScreen;
+import net.patchedpixel.scenecraft.common.utils.Utils;
+import net.minecraft.client.gui.layouts.LinearLayout;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static net.patchedpixel.scenecraft.common.core.versions.MCVer.getClipboardString;
 import static net.patchedpixel.scenecraft.common.core.versions.MCVer.setClipboardString;
 
-/**
- * Gui for loading and saving {@link Timeline Timelines}.
- */
-public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHandler {
+public class GuiKeyframeRepository extends FlameableScreen {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    public final GuiPanel contentPanel = new GuiPanel(this).setBackgroundColor(Colors.DARK_TRANSPARENT);
-    public final GuiLabel title = new GuiLabel(contentPanel).setI18nText("scenecraft.gui.keyframerepository.title");
-    public final GuiVerticalList list = new GuiVerticalList(contentPanel).setDrawShadow(true).setDrawSlider(true);
-    public final GuiButton overwriteButton = new GuiButton().onClick(new Runnable() {
-        @Override
-        public void run() {
-            GuiYesNoPopup.open(GuiKeyframeRepository.this,
-                    new GuiLabel().setI18nText("scenecraft.gui.keyframerepo.overwrite").setColor(Colors.BLACK)
-            ).setYesI18nLabel("gui.yes").setNoI18nLabel("gui.no").onAccept(() -> {
-                for(Entry entry : selectedEntries) {
-                    timelines.put(entry.name, currentTimeline);
-                }
-                overwriteButton.setDisabled();
-                save();
-            });
-        }
-    }).setSize(75, 20).setI18nLabel("scenecraft.gui.overwrite").setDisabled();
-    public final GuiButton saveAsButton = new GuiButton().onClick(new Runnable() {
-        @Override
-        public void run() {
-            final GuiTextField nameField = new GuiTextField().setSize(200, 20).setFocused(true);
-            final GuiYesNoPopup popup = GuiYesNoPopup.open(GuiKeyframeRepository.this,
-                    new GuiLabel().setI18nText("scenecraft.gui.saveas").setColor(Colors.BLACK),
-                    nameField
-            ).setYesI18nLabel("scenecraft.gui.save").setNoI18nLabel("scenecraft.gui.cancel");
-            popup.getYesButton().setDisabled();
-            ((VerticalLayout) popup.getInfo().getLayout()).setSpacing(7);
-            nameField.onEnter(new Runnable() {
-                @Override
-                public void run() {
-                    if(popup.getYesButton().isEnabled()) {
-                        popup.getYesButton().onClick(new Click(-1, -1, 0, 0));
-                    }
-                }
-            }).onTextChanged(new Consumer<String>() {
-                @Override
-                public void consume(String obj) {
-                    popup.getYesButton().setEnabled(!nameField.getText().isEmpty()
-                            && !timelines.containsKey(nameField.getText()));
-                }
-            });
-            popup.onAccept(() -> {
-                String name = nameField.getText();
-                timelines.put(name, currentTimeline);
-                list.getListPanel().addElements(null, new Entry(name));
-                save();
-            });
-        }
-    }).setSize(75, 20).setI18nLabel("scenecraft.gui.saveas");
-    public final GuiButton loadButton = new GuiButton().onClick(new Runnable() {
-        @Override
-        public void run() {
-            getMinecraft().setScreen(null);
-            try {
-                Timeline timeline = timelines.get(selectedEntries.iterator().next().name);
-                for(Path path : timeline.getPaths()) {
-                    path.updateAll();
-                }
-                future.set(timeline);
-            } catch(Throwable t) {
-                future.setException(t);
-            }
-        }
-    }).setSize(75, 20).setI18nLabel("scenecraft.gui.load").setDisabled();
-    public final GuiButton renameButton = new GuiButton().onClick(new Runnable() {
-        @Override
-        public void run() {
-            Entry selectedEntry = selectedEntries.iterator().next();
-            final GuiTextField nameField = new GuiTextField().setSize(200, 20).setFocused(true).setText(selectedEntry.name);
-            final GuiYesNoPopup popup = GuiYesNoPopup.open(GuiKeyframeRepository.this,
-                    new GuiLabel().setI18nText("scenecraft.gui.rename").setColor(Colors.BLACK),
-                    nameField
-            ).setYesI18nLabel("scenecraft.gui.done").setNoI18nLabel("scenecraft.gui.cancel");
-            popup.getYesButton().setDisabled();
-            ((VerticalLayout) popup.getInfo().getLayout()).setSpacing(7);
-            nameField.onEnter(new Runnable() {
-                @Override
-                public void run() {
-                    if(popup.getYesButton().isEnabled()) {
-                        popup.getYesButton().onClick(new Click(-1, -1, 0, 0));
-                    }
-                }
-            }).onTextChanged(new Consumer<String>() {
-                @Override
-                public void consume(String obj) {
-                    popup.getYesButton().setEnabled(!nameField.getText().isEmpty()
-                            && !timelines.containsKey(nameField.getText()));
-                }
-            });
-            popup.onAccept(() -> {
-                String name = nameField.getText();
-                timelines.put(name, timelines.remove(selectedEntry.name));
-                selectedEntry.name = name;
-                selectedEntry.label.setText(name);
-                save();
-            });
-        }
-    }).setSize(75, 20).setI18nLabel("scenecraft.gui.rename").setDisabled();
-    public final GuiButton removeButton = new GuiButton().onClick(new Runnable() {
-        @Override
-        public void run() {
-            GuiYesNoPopup.open(GuiKeyframeRepository.this,
-                    new GuiLabel().setI18nText("scenecraft.gui.keyframerepo.delete").setColor(Colors.BLACK)
-            ).setYesI18nLabel("scenecraft.gui.delete").setNoI18nLabel("scenecraft.gui.cancel").onAccept(() -> {
-                for(Entry entry : selectedEntries) {
-                    timelines.remove(entry.name);
-                    list.getListPanel().removeElement(entry);
-                }
-
-                selectedEntries.clear();
-                updateButtons();
-                save();
-            });
-        }
-    }).setSize(75, 20).setI18nLabel("scenecraft.gui.remove").setDisabled();
-
-    public final GuiButton copyButton = new GuiButton().onClick(new Runnable() {
-        @Override
-        public void run() {
-            Map<String, Timeline> toBeSerialized = new HashMap<>();
-            for(Entry entry : selectedEntries) {
-                toBeSerialized.put(entry.name, timelines.get(entry.name));
-            }
-            try {
-                TimelineSerialization serialization = new TimelineSerialization(registry, null);
-                setClipboardString(serialization.serialize(toBeSerialized));
-            } catch(Throwable t) {
-                t.printStackTrace();
-                CrashReport report = CrashReport.forThrowable(t, "Copying timeline(s)");
-                Utils.error(LOGGER, GuiKeyframeRepository.this, report, () -> {});
-            }
-        }
-    }).setSize(75, 20).setI18nLabel("scenecraft.gui.copy").setDisabled();
-
-    public final GuiButton pasteButton = new GuiButton().onClick(new Runnable() {
-        @Override
-        public void run() {
-            try {
-                TimelineSerialization serialization = new TimelineSerialization(registry, null);
-                for(Map.Entry<String, Timeline> entry : serialization.deserialize(getClipboardString()).entrySet()) {
-                    String name = entry.getKey();
-                    while(timelines.containsKey(name)) {
-                        name += " (Copy)";
-                    }
-                    timelines.put(name, entry.getValue());
-                    list.getListPanel().addElements(null, new Entry(name));
-                }
-                save();
-            } catch(Throwable t) {
-                // Intentionally not making a fuzz about it cause this will likely happen when they have anything
-                // else in their clipboard.
-                // If it's actually not working, they'll go complain and we'll just check the log.
-                t.printStackTrace();
-            }
-        }
-    }).setSize(75, 20).setI18nLabel("scenecraft.gui.paste");
-
-    public final GuiButton addToQueueButton = new GuiButton().onClick(new Runnable() {
-        @Override
-        public void run() {
-            ReplayHandler replayHandler = SceneCraftReplay.instance.getReplayHandler();
-            GuiRenderQueue queue = new GuiRenderQueue(GuiKeyframeRepository.this, replayHandler, null);
-            queue.open();
-
-            Set<String> selected = selectedEntries.stream().map(e -> e.name).collect(Collectors.toSet());
-            ArrayDeque<Map.Entry<String, Timeline>> toBeAdded = new ArrayDeque<>();
-            // Iterating over timelines to get consistent ordering (cause selectedEntries is an unordered set)
-            // and we need to get the Timelines anyway.
-            for(Map.Entry<String, Timeline> entry : timelines.entrySet()) {
-                if(selected.contains(entry.getKey())) {
-                    toBeAdded.offerLast(entry);
-                }
-            }
-            new Runnable() {
-                @Override
-                public void run() {
-                    Map.Entry<String, Timeline> entry = toBeAdded.pollFirst();
-                    if(entry == null) {
-                        return;
-                    }
-                    String name = entry.getKey();
-                    Timeline timeline = entry.getValue();
-                    GuiRenderSettings settingsGui = queue.addJob(timeline);
-                    settingsGui.buttonPanel.removeElement(settingsGui.renderButton);
-                    settingsGui.setOutputFileBaseName(name);
-                    Consumer<Click> orgOnClick = settingsGui.queueButton.getOnClick();
-                    settingsGui.queueButton.onClick(click -> {
-                        orgOnClick.consume(click);
-                        this.run();
-                    });
-                    settingsGui.open();
-                }
-            }.run();
-        }
-    }).setSize(75, 20).setI18nLabel("scenecraft.gui.rendersettings.addtoqueue");
-
-    public final GuiPanel buttonPanel = new GuiPanel(contentPanel)
-            .setLayout(new GridLayout()
-                    .setColumns(4)
-                    .setSpacingX(5)
-                    .setSpacingY(5))
-            .addElements(null,
-                    overwriteButton, saveAsButton, renameButton, removeButton,
-                    loadButton, addToQueueButton, copyButton, pasteButton);
+    private Button overwriteButton, saveAsButton, loadButton, renameButton, removeButton, copyButton, pasteButton, addToQueueButton;
+    private NameList list;
 
     private final Map<String, Timeline> timelines = new LinkedHashMap<>();
     private final Timeline currentTimeline;
@@ -269,57 +51,189 @@ public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHa
     private final PathingRegistry registry;
     private final ReplayFile replayFile;
 
-    private final Set<Entry> selectedEntries = new HashSet<>();
-
-    {
-        setBackground(Background.NONE);
-        setLayout(new CustomLayout<GuiScreen>() {
-            @Override
-            protected void layout(GuiScreen container, int width, int height) {
-                pos(contentPanel, width / 2 - width(contentPanel) / 2, height / 2 - height(contentPanel) / 2);
-            }
-        });
-        contentPanel.setLayout(new CustomLayout<GuiPanel>() {
-            @Override
-            protected void layout(GuiPanel container, int width, int height) {
-                pos(title, width / 2 - width(title) / 2, 5);
-                size(list, width, height - 10 - height(buttonPanel) - 10 - y(title) - height(title) - 5);
-                pos(list, width / 2 - width(list) / 2, y(title) + height(title) + 5);
-                pos(buttonPanel, width / 2 - width(buttonPanel) / 2, y(list) + height(list) + 10);
-            }
-
-            @Override
-            public ReadableDimension calcMinSize(GuiContainer<?> container) {
-                ReadableDimension screenSize = getMinSize();
-                return new Dimension(screenSize.getWidth() - 10, screenSize.getHeight() - 10);
-            }
-        });
-    }
+    private final Set<String> selected = new LinkedHashSet<>();
 
     public GuiKeyframeRepository(PathingRegistry registry, ReplayFile replayFile, Timeline currentTimeline) throws IOException {
+        super("scenecraft.gui.keyframerepository.title", null);
+        this.background = Background.NONE;
         this.registry = registry;
         this.replayFile = replayFile;
         this.currentTimeline = currentTimeline;
 
         timelines.putAll(replayFile.getTimelines(registry));
+    }
 
-        for(Map.Entry<String, Timeline> entry : timelines.entrySet()) {
-            if(entry.getKey().isEmpty()) continue; // don't show auto-save slot
-            list.getListPanel().addElements(null, new Entry(entry.getKey()));
+    @Override
+    protected void build(LinearLayout root) {}
+
+    @Override
+    protected void init() {
+        selected.retainAll(timelines.keySet());
+        list = new NameList();
+        for(String name : timelines.keySet()) {
+            if(name.isEmpty()) continue;
+            list.add(new NameEntry(name));
         }
 
+        overwriteButton = FlameX.button("scenecraft.gui.overwrite", 75, this::overwrite);
+        saveAsButton = FlameX.button("scenecraft.gui.saveas", 75, () ->
+                MCVer.getMinecraft().setScreen(new PromptScreen(this, "scenecraft.gui.saveas", "",
+                        "scenecraft.gui.save", "scenecraft.gui.cancel",
+                        n -> !n.isEmpty() && !timelines.containsKey(n),
+                        name -> {
+                            timelines.put(name, currentTimeline);
+                            save();
+                            rebuildWidgets();
+                        })));
+        loadButton = FlameX.button("scenecraft.gui.load", 75, this::load);
+        renameButton = FlameX.button("scenecraft.gui.rename", 75, this::rename);
+        removeButton = FlameX.button("scenecraft.gui.remove", 75, () ->
+                MCVer.getMinecraft().setScreen(FlameX.confirm(this, "scenecraft.gui.keyframerepo.delete",
+                        "scenecraft.gui.delete", "scenecraft.gui.cancel", () -> {
+                            for(String name : selected) {
+                                timelines.remove(name);
+                            }
+                            selected.clear();
+                            save();
+                            rebuildWidgets();
+                        })));
+        copyButton = FlameX.button("scenecraft.gui.copy", 75, this::copy);
+        pasteButton = FlameX.button("scenecraft.gui.paste", 75, this::paste);
+        addToQueueButton = FlameX.button("scenecraft.gui.rendersettings.addtoqueue", 75, this::addToQueue);
+
+        GridLayout grid = new GridLayout();
+        grid.defaultCellSetting().padding(2);
+        Button[] buttons = {overwriteButton, saveAsButton, renameButton, removeButton,
+                loadButton, addToQueueButton, copyButton, pasteButton};
+        for(int i = 0; i < buttons.length; i++) {
+            grid.addChild(buttons[i], i / 4, i % 4);
+        }
+        grid.arrangeElements();
+        grid.setPosition(width / 2 - grid.getWidth() / 2, height - 10 - grid.getHeight());
+
+        list.updateSize(Math.min(width - 10, 400), grid.getY() - 10 - 35, 35, grid.getY() - 10);
+        list.setLeftPos(width / 2 - list.getWidth() / 2);
+        addRenderableWidget(list);
+        grid.visitWidgets(this::addRenderableWidget);
         updateButtons();
     }
 
-    private void updateButtons() {
-        int selected = selectedEntries.size();
+    @Override
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        graphics.fill(5, 5, width - 5, height - 5, 0xC0000000);
+        super.render(graphics, mouseX, mouseY, partialTicks);
+    }
 
-        overwriteButton.setEnabled(selected >= 1);
-        loadButton.setEnabled(selected == 1);
-        renameButton.setEnabled(selected == 1);
-        removeButton.setEnabled(selected >= 1);
-        copyButton.setEnabled(selected >= 1);
-        addToQueueButton.setEnabled(selected >= 1);
+    private void overwrite() {
+        MCVer.getMinecraft().setScreen(FlameX.confirm(this, "scenecraft.gui.keyframerepo.overwrite", "gui.yes", "gui.no", () -> {
+            for(String name : selected) {
+                timelines.put(name, currentTimeline);
+            }
+            overwriteButton.active = false;
+            save();
+        }));
+    }
+
+    private void load() {
+        MCVer.getMinecraft().setScreen(null);
+        try {
+            Timeline timeline = timelines.get(selected.iterator().next());
+            for(Path path : timeline.getPaths()) {
+                path.updateAll();
+            }
+            future.set(timeline);
+        } catch(Throwable t) {
+            future.setException(t);
+        }
+    }
+
+    private void rename() {
+        String old = selected.iterator().next();
+        MCVer.getMinecraft().setScreen(new PromptScreen(this, "scenecraft.gui.rename", old,
+                "scenecraft.gui.done", "scenecraft.gui.cancel",
+                n -> !n.isEmpty() && !timelines.containsKey(n),
+                name -> {
+                    Map<String, Timeline> reordered = new LinkedHashMap<>();
+                    for(Map.Entry<String, Timeline> e : timelines.entrySet()) {
+                        reordered.put(e.getKey().equals(old) ? name : e.getKey(), e.getValue());
+                    }
+                    timelines.clear();
+                    timelines.putAll(reordered);
+                    selected.clear();
+                    selected.add(name);
+                    save();
+                    rebuildWidgets();
+                }));
+    }
+
+    private void copy() {
+        Map<String, Timeline> toBeSerialized = new HashMap<>();
+        for(String name : selected) {
+            toBeSerialized.put(name, timelines.get(name));
+        }
+        try {
+            TimelineSerialization serialization = new TimelineSerialization(registry, null);
+            setClipboardString(serialization.serialize(toBeSerialized));
+        } catch(Throwable t) {
+            t.printStackTrace();
+            CrashReport report = CrashReport.forThrowable(t, "Copying timeline(s)");
+            Utils.error(LOGGER, report, () -> {});
+        }
+    }
+
+    private void paste() {
+        try {
+            TimelineSerialization serialization = new TimelineSerialization(registry, null);
+            for(Map.Entry<String, Timeline> entry : serialization.deserialize(getClipboardString()).entrySet()) {
+                String name = entry.getKey();
+                while(timelines.containsKey(name)) {
+                    name += " (Copy)";
+                }
+                timelines.put(name, entry.getValue());
+            }
+            save();
+            rebuildWidgets();
+        } catch(Throwable t) {
+            t.printStackTrace();
+        }
+    }
+
+    private void addToQueue() {
+        ReplayHandler replayHandler = SceneCraftReplay.instance.getReplayHandler();
+        GuiRenderQueue queue = new GuiRenderQueue(this, replayHandler, null);
+        queue.open();
+
+        ArrayDeque<Map.Entry<String, Timeline>> toBeAdded = new ArrayDeque<>();
+        for(Map.Entry<String, Timeline> entry : timelines.entrySet()) {
+            if(selected.contains(entry.getKey())) {
+                toBeAdded.offerLast(entry);
+            }
+        }
+        new Runnable() {
+            @Override
+            public void run() {
+                Map.Entry<String, Timeline> entry = toBeAdded.pollFirst();
+                if(entry == null) {
+                    return;
+                }
+                GuiRenderSettings settingsGui = queue.addJob(entry.getValue(), this);
+                settingsGui.hideRenderButton();
+                settingsGui.setOutputFileBaseName(entry.getKey());
+                settingsGui.open();
+            }
+        }.run();
+    }
+
+    private void updateButtons() {
+        if(loadButton == null) return;
+        int count = selected.size();
+
+        overwriteButton.active = count >= 1;
+        loadButton.active = count == 1;
+        renameButton.active = count == 1;
+        removeButton.active = count >= 1;
+        copyButton.active = count >= 1;
+        addToQueueButton.active = count >= 1;
     }
 
     @Override
@@ -329,7 +243,7 @@ public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHa
     }
 
     @Override
-    public void close() {
+    public void removed() {
         SceneCraftReplay.instance.getReplayHandler().getOverlay().setVisible(true);
     }
 
@@ -347,78 +261,85 @@ public class GuiKeyframeRepository extends GuiScreen implements Closeable, KeyHa
     }
 
     @Override
-    public boolean handleKey(KeyInput keyInput) {
-        if(keyInput.hasCtrl()) {
-            switch(keyInput.key) {
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if(Screen.hasControlDown()) {
+            switch(keyCode) {
                 case InputConstants.KEY_A:
-                    if(selectedEntries.size() < timelines.size()) {
-                        for(GuiElement<?> child : list.getListPanel().getChildren()) {
-                            if(child instanceof Entry) {
-                                selectedEntries.add((Entry) child);
-                            }
+                    if(selected.size() < timelines.size()) {
+                        for(String name : timelines.keySet()) {
+                            if(!name.isEmpty()) selected.add(name);
                         }
                     } else {
-                        selectedEntries.clear();
+                        selected.clear();
                     }
                     updateButtons();
                     return true;
                 case InputConstants.KEY_C:
-                    copyButton.onClick(new Click(-1, -1, 0, 0));
+                    if(copyButton.active) copy();
                     return true;
                 case InputConstants.KEY_V:
-                    pasteButton.onClick(new Click(-1, -1, 0, 0));
+                    paste();
                     return true;
             }
         }
-        return false;
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
-    public class Entry extends AbstractGuiClickableContainer<Entry> {
-        public final GuiLabel label = new GuiLabel(this);
-        private String name;
+    private class NameList extends ObjectSelectionList<NameEntry> {
+        NameList() {
+            super(MCVer.getMinecraft(), 100, 100, 35, 100, 18);
+            setRenderBackground(false);
+            setRenderTopAndBottom(false);
+        }
 
-        public Entry(String name) {
-            this.name = name;
-
-            setLayout(new CustomLayout<Entry>() {
-                @Override
-                protected void layout(Entry container, int width, int height) {
-                    pos(label, 5, height / 2 - height(label) / 2);
-                }
-
-                @Override
-                public ReadableDimension calcMinSize(GuiContainer<?> container) {
-                    return new Dimension(buttonPanel.calcMinSize().getWidth(), 16);
-                }
-            });
-            label.setText(name);
+        void add(NameEntry e) {
+            addEntry(e);
         }
 
         @Override
-        protected void onClick(Click click) {
-            if(!click.hasCtrl()) {
-                selectedEntries.clear();
+        public int getRowWidth() {
+            return Math.min(getWidth() - 10, 380);
+        }
+
+        @Override
+        protected boolean isSelectedItem(int index) {
+            return index >= 0 && index < children().size() && selected.contains(children().get(index).name);
+        }
+    }
+
+    public class NameEntry extends ObjectSelectionList.Entry<NameEntry> {
+        private final String name;
+
+        public NameEntry(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int index, int top, int left, int width, int height,
+                           int mouseX, int mouseY, boolean hovered, float partialTick) {
+            if(selected.contains(name)) {
+                graphics.fill(left, top, left + width, top + height, 0xFF000000);
+                graphics.fill(left, top, left + 2, top + height, 0xFFFFFFFF);
             }
-            if(selectedEntries.contains(this)) {
-                selectedEntries.remove(this);
-            } else {
-                selectedEntries.add(this);
+            graphics.drawString(MCVer.getFontRenderer(), name, left + 5, top + 4, 0xFFFFFFFF, true);
+        }
+
+        @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            if(button != 0) return false;
+            if(!Screen.hasControlDown()) {
+                selected.clear();
+            }
+            if(!selected.remove(name)) {
+                selected.add(name);
             }
             updateButtons();
+            return true;
         }
 
         @Override
-        public void draw(GuiRenderer renderer, ReadableDimension size, RenderInfo renderInfo) {
-            if(selectedEntries.contains(this)) {
-                renderer.drawRect(0, 0, size.getWidth(), size.getHeight(), Colors.BLACK);
-                renderer.drawRect(0, 0, 2, size.getHeight(), Colors.WHITE);
-            }
-            super.draw(renderer, size, renderInfo);
-        }
-
-        @Override
-        protected Entry getThis() {
-            return this;
+        public Component getNarration() {
+            return MCVer.literalText(name);
         }
     }
 }

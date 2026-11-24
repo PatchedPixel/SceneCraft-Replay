@@ -5,7 +5,6 @@ import net.patchedpixel.scenecraft.common.core.gui.RestoreReplayGui;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ZipReplayFile;
 import net.patchedpixel.scenecraft.common.scenestudio.studio.SceneStudio;
-import net.patchedpixel.scenecraft.common.gui.container.GuiScreen;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
@@ -98,7 +97,7 @@ public class ReplayFilesService {
                         Files.delete(noRecoverMarker);
                         continue;
                     }
-                    new RestoreReplayGui(core, GuiScreen.wrap(core.getMinecraft().screen), original.toFile()).display();
+                    new RestoreReplayGui(core, core.getMinecraft().screen, original.toFile()).display();
                 }
             }
         } catch(IOException e) {

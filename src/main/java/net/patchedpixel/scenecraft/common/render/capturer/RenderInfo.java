@@ -1,10 +1,10 @@
 package net.patchedpixel.scenecraft.common.render.capturer;
 
 import net.patchedpixel.scenecraft.common.render.RenderSettings;
-import net.patchedpixel.scenecraft.common.gui.utils.geometry.ReadableDimension;
+import net.patchedpixel.scenecraft.common.flamex.util.geometry.Size;
 
 public interface RenderInfo {
-    ReadableDimension getFrameSize();
+    Size getFrameSize();
 
     int getFramesDone();
 
