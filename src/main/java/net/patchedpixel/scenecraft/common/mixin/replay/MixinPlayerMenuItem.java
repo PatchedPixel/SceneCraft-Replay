@@ -30,11 +30,13 @@ public abstract class MixinPlayerMenuItem {
         if(replayHandler == null) {
             return;
         }
+
         ci.cancel();
         Minecraft mc = MCVer.getMinecraft();
         if(mc.level == null) {
             return;
         }
+
         Player player = mc.level.getPlayerByUUID(this.profile.getId());
         if(player != null) {
             replayHandler.spectateCamera();
@@ -42,6 +44,7 @@ public abstract class MixinPlayerMenuItem {
             if(camera != null) {
                 camera.setCameraPosRot(player);
             }
+
             menu.exit();
         }
     }

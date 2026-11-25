@@ -11,7 +11,7 @@ public interface ReplaySender {
      * Whether the replay is currently paused.
      * @return {@code true} if it is paused, {@code false} otherwise
      */
-    public default boolean paused() {
+    default boolean paused() {
         Minecraft mc = getMinecraft();
         return mc.timer.msPerTick == Float.POSITIVE_INFINITY;
     }

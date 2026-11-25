@@ -4,6 +4,8 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.SettableFuture;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
 import net.patchedpixel.scenecraft.common.scenestudio.protocol.Packet;
 import net.patchedpixel.scenecraft.common.scenestudio.protocol.PacketType;
 import net.patchedpixel.scenecraft.common.scenestudio.protocol.State;
@@ -17,7 +19,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerAdapter;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
 import net.patchedpixel.scenecraft.common.scenestudio.protocol.packets.PacketEntityTeleport;
 import net.patchedpixel.scenecraft.common.scenestudio.util.Location;
 
@@ -76,7 +77,7 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
                         Location loc =
                                 PacketEntityTeleport.getLocation(packet);
                         packet.release();
-                        net.minecraft.network.FriendlyByteBuf teleportBuf = new net.minecraft.network.FriendlyByteBuf(Unpooled.buffer());
+                        FriendlyByteBuf teleportBuf = new FriendlyByteBuf(Unpooled.buffer());
                         teleportBuf.writeVarInt(entityId);
                         teleportBuf.writeDouble(loc.getX());
                         teleportBuf.writeDouble(loc.getY());
@@ -84,7 +85,7 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
                         teleportBuf.writeByte((byte) ((int) (loc.getYaw() * 256.0F / 360.0F)));
                         teleportBuf.writeByte((byte) ((int) (loc.getPitch() * 256.0F / 360.0F)));
                         teleportBuf.writeBoolean(false);
-                        channel.pipeline().fireChannelRead(new net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket(teleportBuf));
+                        channel.pipeline().fireChannelRead(new ClientboundTeleportEntityPacket(teleportBuf));
                         teleportBuf.release();
                         return;
                     } catch(IOException e) {
@@ -141,17 +142,19 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
             try {
                 long start = System.currentTimeMillis();
                 replay.load(progress);
-                LOGGER.info("Initialized quick replay sender in " + (System.currentTimeMillis() - start) + "ms");
+                LOGGER.info("Initialized quick replay sender in {}ms", System.currentTimeMillis() - start);
             } catch(Throwable e) {
                 LOGGER.error("Initializing quick replay sender:", e);
                 mod.getCore().runLaterWithoutLock(() -> {
                     mod.getCore().printWarningToChat("Error initializing quick replay sender: %s", e.getLocalizedMessage());
                     promise.setException(e);
                 });
+
                 return;
             }
             mod.getCore().runLaterWithoutLock(() -> promise.set(null));
         }).start();
+
         return promise;
     }
 
@@ -160,6 +163,7 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
             LOGGER.warn("QuickReplaySender used without prior initialization!", new Throwable());
             initialize(progress -> {});
         }
+
         Futures.addCallback(initPromise, new FutureCallback<Void>() {
             @Override
             public void onSuccess(@Nullable Void result) {
@@ -188,8 +192,10 @@ public class QuickReplaySender extends ChannelHandlerAdapter implements ReplaySe
             if(paused() && asyncMode) {
                 lastAsyncUpdateTime = System.currentTimeMillis();
             }
+
             this.replaySpeed = factor;
         }
+
         mc.timer.msPerTick = DEFAULT_MS_PER_TICK / (float) factor;
     }
 

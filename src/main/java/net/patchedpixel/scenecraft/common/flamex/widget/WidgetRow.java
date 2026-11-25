@@ -44,6 +44,7 @@ public class WidgetRow {
             w.setPosition(cx, y + (h - w.getHeight()) / 2);
             cx += w.getWidth() + spacing;
         }
+
         this.width = widgets.isEmpty() ? 0 : cx - x - spacing;
         this.height = h;
     }

@@ -41,16 +41,18 @@ public class PacketUpdateLight {
         }
         PacketUpdateLight updateLight = new PacketUpdateLight();
         try (Packet.Reader reader = packet.reader()) {
-            updateLight.read(packet, reader);
+            updateLight.read(reader);
         }
+
         return updateLight;
     }
 
     public Packet write(PacketTypeRegistry registry) throws IOException {
         Packet packet = new Packet(registry, PacketType.UpdateLight);
         try (Packet.Writer writer = packet.overwrite()) {
-            write(packet, writer);
+            write(writer);
         }
+
         return packet;
     }
 
@@ -87,13 +89,13 @@ public class PacketUpdateLight {
         return this.data.blockLight;
     }
 
-    private void read(Packet packet, Packet.Reader in) throws IOException {
+    private void read(Packet.Reader in) throws IOException {
         this.x = in.readVarInt();
         this.z = in.readVarInt();
-        this.data = readData(packet, in);
+        this.data = readData(in);
     }
 
-    static Data readData(Packet packet, Packet.Reader in) throws IOException {
+    static Data readData(Packet.Reader in) throws IOException {
         Data data = new Data();
 
         BitSet skyLightMask = in.readBitSet();
@@ -145,13 +147,13 @@ public class PacketUpdateLight {
         return data;
     }
 
-    private void write(Packet packet, Packet.Writer out) throws IOException {
+    private void write(Packet.Writer out) throws IOException {
         out.writeVarInt(this.x);
         out.writeVarInt(this.z);
-        writeData(packet, out, this.data);
+        writeData(out, this.data);
     }
 
-    static void writeData(Packet packet, Packet.Writer out, Data data) throws IOException {
+    static void writeData(Packet.Writer out, Data data) throws IOException {
         BitSet skyLightMask = new BitSet();
         BitSet blockLightMask = new BitSet();
         BitSet emptySkyLightMask = new BitSet();
@@ -206,8 +208,7 @@ public class PacketUpdateLight {
         public List<byte[]> skyLight;
         public List<byte[]> blockLight;
 
-        public Data() {
-        }
+        public Data() {}
 
         public Data(List<byte[]> skyLight, List<byte[]> blockLight) {
             this.skyLight = skyLight;

@@ -36,6 +36,7 @@ public class PacketUpdateSimulationDistance {
         try (Packet.Writer out = packet.overwrite()) {
             out.writeVarInt(distance);
         }
+
         return packet;
     }
 }

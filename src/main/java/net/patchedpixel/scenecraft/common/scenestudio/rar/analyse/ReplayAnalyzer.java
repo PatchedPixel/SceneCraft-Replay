@@ -184,7 +184,7 @@ public class ReplayAnalyzer {
                     break;
                 }
                 case JoinGame: {
-                    PacketJoinGame joinGame = PacketJoinGame.read(packet, registries);
+                    PacketJoinGame joinGame = PacketJoinGame.read(packet);
                     registries = joinGame.registries;
                     replay.newWorld(time, new World.Info(joinGame, joinGame.registries));
                     currentViewChunkX = currentViewChunkZ = 0;

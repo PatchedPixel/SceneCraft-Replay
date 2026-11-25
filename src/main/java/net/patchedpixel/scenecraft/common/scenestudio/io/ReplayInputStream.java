@@ -138,14 +138,14 @@ public class ReplayInputStream extends InputStream {
 
             switch(type) {
                 case JoinGame:
-                    PacketJoinGame joinGame = PacketJoinGame.read(packet, mcRegistries);
+                    PacketJoinGame joinGame = PacketJoinGame.read(packet);
                     mcRegistries = joinGame.registries;
                     // Set entity id to an arbitrary negative value (which are invalid to use, so we know it's unused).
                     // Using the bitwise negation because we still want to be able to read the id later in SquashFilter.
                     joinGame.entityId = ~joinGame.entityId;
                     joinGame.gameMode = 3; // Spectator
                     try (Packet.Writer writer = packet.overwrite()) {
-                        joinGame.write(packet, writer);
+                        joinGame.write(writer);
                     }
                     break;
                 default:

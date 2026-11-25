@@ -57,6 +57,7 @@ public class PacketDestroyEntities {
                 out.writeVarInt(entityId);
             }
         }
+
         return packet;
     }
 }

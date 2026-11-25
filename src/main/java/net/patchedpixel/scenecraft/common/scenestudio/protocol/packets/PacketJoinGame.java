@@ -50,8 +50,7 @@ public class PacketJoinGame {
     public IGlobalPosition lastDeathPosition;
     public int portalCooldown;
 
-    public PacketJoinGame() {
-    }
+    public PacketJoinGame() {}
 
     public PacketJoinGame(PacketJoinGame other) {
         this.entityId = other.entityId;
@@ -75,15 +74,16 @@ public class PacketJoinGame {
         this.portalCooldown = other.portalCooldown;
     }
 
-    public static PacketJoinGame read(Packet packet, Registries registries) throws IOException {
+    public static PacketJoinGame read(Packet packet) throws IOException {
         try (Packet.Reader in = packet.reader()) {
             PacketJoinGame joinGame = new PacketJoinGame();
-            joinGame.read(packet, in);
+            joinGame.read(in);
+
             return joinGame;
         }
     }
 
-    public void read(Packet packet, Packet.Reader in) throws IOException {
+    public void read(Packet.Reader in) throws IOException {
         this.entityId = in.readInt();
         this.hardcore = in.readBoolean();
         this.gameMode = in.readByte();
@@ -120,13 +120,13 @@ public class PacketJoinGame {
     public Packet write(PacketTypeRegistry registry) throws IOException {
         Packet packet = new Packet(registry, PacketType.JoinGame);
         try (Packet.Writer out = packet.overwrite()) {
-            write(packet, out);
+            write(out);
         }
 
         return packet;
     }
 
-    public void write(Packet packet, Packet.Writer out) throws IOException {
+    public void write(Packet.Writer out) throws IOException {
         out.writeInt(this.entityId);
         out.writeBoolean(this.hardcore);
         out.writeByte(this.gameMode);

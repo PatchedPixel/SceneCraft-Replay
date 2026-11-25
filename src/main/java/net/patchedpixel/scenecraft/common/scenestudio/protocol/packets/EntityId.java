@@ -100,8 +100,7 @@ public class EntityId {
                 in.readVarInt(); // duration
                 return null;
             }
-            default:
-                return null;
+            default: return null;
         }
     }
 }

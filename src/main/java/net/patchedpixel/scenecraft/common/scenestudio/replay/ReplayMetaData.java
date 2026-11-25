@@ -19,33 +19,20 @@
 package net.patchedpixel.scenecraft.common.scenestudio.replay;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 /**
- * Meta data for replay files.
+ * Metadata for replay files.
  */
 public class ReplayMetaData {
     public static final int CURRENT_FILE_FORMAT_VERSION = 14;
 
     /**
      * Mapping from replay file version to protocol version for versions prior to 10.
-     * For 10+ see https://github.com/ReplayMod/ReplayStudio/issues/9 (i.e. {@link #protocol}).
+     * For 10+ see <a href="https://github.com/ReplayMod/ReplayStudio/issues/9">https://github.com/ReplayMod/ReplayStudio/issues/9</a> (i.e. {@link #protocol}).
      */
-    public static final Map<Integer, Integer> PROTOCOL_FOR_FILE_FORMAT = Collections.unmodifiableMap(new HashMap<Integer, Integer>() {{
-        put(0, 47);
-        put(1, 47);
-        put(2, 110);
-        put(3, 210);
-        put(4, 315);
-        put(5, 316);
-        put(6, 335);
-        put(7, 338);
-        put(8, 5);
-        put(9, 340);
-    }});
+    public static final Map<Integer, Integer> PROTOCOL_FOR_FILE_FORMAT = Map.of(0, 47, 1, 47, 2, 110, 3, 210, 4, 315, 5, 316, 6, 335, 7, 338, 8, 5, 9, 340);
 
     /**
      * Whether this is a singleplayer recording.
@@ -76,7 +63,7 @@ public class ReplayMetaData {
     /**
      * Minecraft version. (E.g. 1.8)
      */
-    private String mcversion;
+    private String mcVersion;
 
     /**
      * File format. Defaults to 'MCPR'
@@ -119,7 +106,7 @@ public class ReplayMetaData {
         customServerName = other.customServerName;
         duration = other.duration;
         date = other.date;
-        mcversion = other.mcversion;
+        mcVersion = other.mcVersion;
         fileFormat = other.fileFormat;
         fileFormatVersion = other.fileFormatVersion;
         generator = other.generator;
@@ -148,7 +135,7 @@ public class ReplayMetaData {
     }
 
     public String getMcVersion() {
-        return mcversion;
+        return mcVersion;
     }
 
     public String getFileFormat() {
@@ -207,7 +194,7 @@ public class ReplayMetaData {
     }
 
     public void setMcVersion(String mcVersion) {
-        this.mcversion = mcVersion;
+        this.mcVersion = mcVersion;
     }
 
     public void setFileFormat(String fileFormat) {
@@ -236,15 +223,14 @@ public class ReplayMetaData {
 
     public boolean equals(Object o) {
         if(o == this) return true;
-        if(!(o instanceof ReplayMetaData)) return false;
-        final ReplayMetaData other = (ReplayMetaData) o;
+        if(!(o instanceof ReplayMetaData other)) return false;
         if(!other.canEqual(this)) return false;
         if(this.singleplayer != other.singleplayer) return false;
         if(!Objects.equals(this.serverName, other.serverName)) return false;
         if(!Objects.equals(this.customServerName, other.customServerName)) return false;
         if(this.duration != other.duration) return false;
         if(this.date != other.date) return false;
-        if(!Objects.equals(this.mcversion, other.mcversion)) return false;
+        if(!Objects.equals(this.mcVersion, other.mcVersion)) return false;
         if(!Objects.equals(this.fileFormat, other.fileFormat)) return false;
         if(this.fileFormatVersion != other.fileFormatVersion) return false;
         if(!Objects.equals(this.protocol, other.protocol)) return false;
@@ -255,18 +241,20 @@ public class ReplayMetaData {
 
     public int hashCode() {
         int result = 1;
+
         result = result * 59 + (this.singleplayer ? 79 : 97);
         result = result * 59 + (serverName == null ? 0 : serverName.hashCode());
         result = result * 59 + (customServerName == null ? 0 : customServerName.hashCode());
         result = result * 59 + this.duration;
         result = result * 59 + Long.hashCode(date);
-        result = result * 59 + (mcversion == null ? 0 : mcversion.hashCode());
+        result = result * 59 + (mcVersion == null ? 0 : mcVersion.hashCode());
         result = result * 59 + (fileFormat == null ? 0 : fileFormat.hashCode());
         result = result * 59 + this.fileFormatVersion;
         result = result * 59 + (protocol == null ? 0 : protocol.hashCode());
         result = result * 59 + (generator == null ? 0 : generator.hashCode());
         result = result * 59 + this.selfId;
         result = result * 59 + Arrays.deepHashCode(this.players);
+
         return result;
     }
 
@@ -282,7 +270,7 @@ public class ReplayMetaData {
                 ", customServerName='" + customServerName + '\'' +
                 ", duration=" + duration +
                 ", date=" + date +
-                ", mcversion='" + mcversion + '\'' +
+                ", mcversion='" + mcVersion + '\'' +
                 ", fileFormat='" + fileFormat + '\'' +
                 ", fileFormatVersion=" + fileFormatVersion +
                 ", protocol=" + protocol +

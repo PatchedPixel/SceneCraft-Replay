@@ -374,7 +374,7 @@ public class SquashFilter implements StreamFilter {
             }
             case JoinGame:
                 clearStateAtJoinGame();
-                PacketJoinGame packetJoinGame = PacketJoinGame.read(packet, registries);
+                PacketJoinGame packetJoinGame = PacketJoinGame.read(packet);
                 recordingPlayerEntityId = ~packetJoinGame.entityId; // inverted, see ReplayInputStream
                 registries = packetJoinGame.registries;
                 dimension = packetJoinGame.dimension;

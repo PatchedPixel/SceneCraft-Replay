@@ -13,8 +13,8 @@ import java.util.function.Function;
  * beyond the point where it can no longer achieve interactive frame rates) in exchange for a noticeable boost to
  * quality.
  * In particular also to force-load all chunks with Canvas/Sodium/Bobby.
- *
- * See https://github.com/grondag/frex/pull/9
+ * <p>
+ * See <a href="https://github.com/grondag/frex/pull/9">https://github.com/grondag/frex/pull/9</a>
  */
 public class FlawlessFrames {
     private static final List<Consumer<Boolean>> CONSUMERS = new CopyOnWriteArrayList<>();

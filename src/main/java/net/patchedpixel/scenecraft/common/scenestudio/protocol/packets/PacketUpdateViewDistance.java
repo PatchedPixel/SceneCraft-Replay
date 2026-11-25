@@ -36,6 +36,7 @@ public class PacketUpdateViewDistance {
         try (Packet.Writer out = packet.overwrite()) {
             out.writeVarInt(distance);
         }
+
         return packet;
     }
 }

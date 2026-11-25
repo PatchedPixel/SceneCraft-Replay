@@ -18,7 +18,7 @@
  */
 package net.patchedpixel.scenecraft.common.scenestudio.pathing.property;
 
-import net.patchedpixel.scenecraft.common.scenestudio.util.I18n;
+import net.minecraft.client.resources.language.I18n;
 
 /**
  * Abstract base class for most properties.
@@ -41,7 +41,7 @@ public abstract class AbstractProperty<T> implements Property<T> {
 
     @Override
     public String getLocalizedName() {
-        return I18n.format(localizationKey);
+        return I18n.get(localizationKey);
     }
 
     @Override

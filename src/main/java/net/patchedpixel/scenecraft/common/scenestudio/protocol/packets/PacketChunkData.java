@@ -46,7 +46,7 @@ public class PacketChunkData {
         PacketChunkData chunkData = new PacketChunkData();
         try (Packet.Reader reader = packet.reader()) {
             if(packet.getType() == PacketType.UnloadChunk) {
-                chunkData.readUnload(packet, reader);
+                chunkData.readUnload(reader);
             } else {
                 chunkData.readLoad(packet, reader, sections);
             }
@@ -57,7 +57,7 @@ public class PacketChunkData {
     public static PacketChunkData readUnload(Packet packet) throws IOException {
         PacketChunkData chunkData = new PacketChunkData();
         try (Packet.Reader reader = packet.reader()) {
-            chunkData.readUnload(packet, reader);
+            chunkData.readUnload(reader);
         }
         return chunkData;
     }
@@ -66,7 +66,7 @@ public class PacketChunkData {
         Packet packet = new Packet(registry, isUnload ? PacketType.UnloadChunk : PacketType.ChunkData);
         try (Packet.Writer writer = packet.overwrite()) {
             if(isUnload) {
-                writeUnload(packet, writer);
+                writeUnload(writer);
             } else {
                 writeLoad(packet, writer);
             }
@@ -89,8 +89,7 @@ public class PacketChunkData {
         return chunkData;
     }
 
-    private PacketChunkData() {
-    }
+    private PacketChunkData() {}
 
     public Column getColumn() {
         return column;
@@ -108,13 +107,13 @@ public class PacketChunkData {
         return unloadZ;
     }
 
-    private void readUnload(Packet packet, NetInput in) throws IOException {
+    private void readUnload(NetInput in) throws IOException {
         this.isUnload = true;
         this.unloadX = in.readInt();
         this.unloadZ = in.readInt();
     }
 
-    private void writeUnload(Packet packet, Packet.Writer out) throws IOException {
+    private void writeUnload(Packet.Writer out) {
         out.writeInt(this.unloadX);
         out.writeInt(this.unloadZ);
     }
@@ -123,39 +122,39 @@ public class PacketChunkData {
         int x = in.readInt();
         int z = in.readInt();
 
-        Heightmaps heightmaps = new Heightmaps(packet, in);
+        Heightmaps heightmaps = new Heightmaps(in);
 
         byte[] data = in.readBytes(in.readVarInt());
         this.column = readColumn(packet, data, x, z, sections, heightmaps);
 
         TileEntity[] tileEntities = new TileEntity[in.readVarInt()];
         for(int i = 0; i < tileEntities.length; i++) {
-            tileEntities[i] = new TileEntity(packet, in);
+            tileEntities[i] = new TileEntity(in);
         }
         this.column.tileEntities = tileEntities;
 
-        this.column.lightData = PacketUpdateLight.readData(packet, in);
+        this.column.lightData = PacketUpdateLight.readData(in);
     }
 
     private void writeLoad(Packet packet, Packet.Writer out) throws IOException {
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
         NetOutput netOut = new StreamNetOutput(byteOut);
-        writeColumn(packet, netOut, this.column);
+        writeColumn(netOut, this.column);
 
         out.writeInt(this.column.x);
         out.writeInt(this.column.z);
 
-        this.column.heightmaps.write(packet, out);
+        this.column.heightmaps.write(out);
 
         int len = byteOut.size();
         out.writeVarInt(len);
         out.writeBytes(byteOut.toByteArray(), len);
         out.writeVarInt(this.column.tileEntities.length);
         for(TileEntity tileEntity : this.column.tileEntities) {
-            tileEntity.write(packet, out);
+            tileEntity.write(out);
         }
 
-        PacketUpdateLight.writeData(packet, out, this.column.lightData);
+        PacketUpdateLight.writeData(out, this.column.lightData);
     }
 
     private static Column readColumn(Packet packet, byte[] data, int x, int z, int sections, Heightmaps heightmaps) throws IOException {
@@ -167,10 +166,10 @@ public class PacketChunkData {
         return new Column(x, z, chunks, null, null, heightmaps, null, true, null);
     }
 
-    private static void writeColumn(Packet packet, NetOutput out, Column column) throws IOException {
+    private static void writeColumn(NetOutput out, Column column) throws IOException {
         for(Chunk chunk : column.chunks) {
             if(chunk != null) {
-                chunk.write(packet, out);
+                chunk.write(out);
             }
         }
     }
@@ -232,11 +231,11 @@ public class PacketChunkData {
     public static class Heightmaps {
         public CompoundTag tag;
 
-        public Heightmaps(Packet packet, Packet.Reader in) throws IOException {
+        public Heightmaps(Packet.Reader in) throws IOException {
             tag = in.readNBTCompound();
         }
 
-        public void write(Packet packet, Packet.Writer out) throws IOException {
+        public void write(Packet.Writer out) throws IOException {
             out.writeNBT(tag);
         }
     }
@@ -264,11 +263,11 @@ public class PacketChunkData {
             this.biomes = new PalettedStorage(PaletteType.BIOMES, packet, in);
         }
 
-        void write(Packet packet, NetOutput out) throws IOException {
+        void write(NetOutput out) throws IOException {
             out.writeShort(this.blockCount + this.blocks.countDelta);
 
-            this.blocks.write(packet, out);
-            this.biomes.write(packet, out);
+            this.blocks.write(out);
+            this.biomes.write(out);
         }
 
         public Chunk copy() {
@@ -293,7 +292,7 @@ public class PacketChunkData {
                 this.states = new ArrayList<>(from.states);
             }
             if(from.storage != null) {
-                this.storage = FlexibleStorage.from(registry, bitsPerEntry, from.storage.entries, from.storage.data.clone());
+                this.storage = FlexibleStorage.from(bitsPerEntry, from.storage.entries, from.storage.data.clone());
             }
         }
 
@@ -305,7 +304,7 @@ public class PacketChunkData {
             this.states = new ArrayList<>();
             this.states.add(0);
 
-            this.storage = FlexibleStorage.empty(registry, bitsPerEntry, type.size());
+            this.storage = FlexibleStorage.empty(bitsPerEntry, type.size());
         }
 
         PalettedStorage(PaletteType type, Packet packet, NetInput in) throws IOException {
@@ -327,10 +326,10 @@ public class PacketChunkData {
 
             long[] data = in.readLongs(in.readVarInt());
 
-            this.storage = FlexibleStorage.from(registry, bitsPerEntry, type.size(), data);
+            this.storage = FlexibleStorage.from(bitsPerEntry, type.size(), data);
         }
 
-        void write(Packet packet, NetOutput out) throws IOException {
+        void write(NetOutput out) throws IOException {
             out.writeByte(this.bitsPerEntry);
             if(this.bitsPerEntry == 0) {
                 out.writeVarInt(this.states.get(0));
@@ -378,7 +377,7 @@ public class PacketChunkData {
                     }
 
                     FlexibleStorage oldStorage = this.storage;
-                    this.storage = FlexibleStorage.empty(this.registry, this.bitsPerEntry, this.storage.entries);
+                    this.storage = FlexibleStorage.empty(this.bitsPerEntry, this.storage.entries);
                     boolean global = this.bitsPerEntry > type.highestBitsPerValue();
                     for(int index = 0; index < this.storage.entries; index++) {
                         int old = oldStorage.get(index);
@@ -407,7 +406,7 @@ public class PacketChunkData {
                 this.bitsPerEntry = 32 - Integer.numberOfLeadingZeros(id);
                 // Convert old storage to new entry size
                 FlexibleStorage oldStorage = this.storage;
-                this.storage = FlexibleStorage.empty(this.registry, this.bitsPerEntry, this.storage.entries);
+                this.storage = FlexibleStorage.empty(this.bitsPerEntry, this.storage.entries);
                 for(int i = 0; i < this.storage.entries; i++) {
                     this.storage.set(i, oldStorage.get(i));
                 }
@@ -436,11 +435,11 @@ public class PacketChunkData {
         public abstract int get(int index);
         public abstract void set(int index, int value);
 
-        static FlexibleStorage empty(PacketTypeRegistry registry, int bitsPerEntry, int entries) {
+        static FlexibleStorage empty(int bitsPerEntry, int entries) {
             return new PaddedFlexibleStorage(bitsPerEntry, entries);
         }
 
-        static FlexibleStorage from(PacketTypeRegistry registry, int bitsPerEntry, int entries, long[] data) {
+        static FlexibleStorage from(int bitsPerEntry, int entries, long[] data) {
             return new PaddedFlexibleStorage(bitsPerEntry, entries, data);
         }
     }
@@ -503,7 +502,7 @@ public class PacketChunkData {
         public int type;
         public CompoundTag tag;
 
-        TileEntity(Packet packet, Packet.Reader in) throws IOException {
+        TileEntity(Packet.Reader in) throws IOException {
             this.xz = in.readByte();
             this.y = in.readShort();
             this.type = in.readVarInt();
@@ -511,7 +510,7 @@ public class PacketChunkData {
             this.tag = in.readNBTCompound();
         }
 
-        void write(Packet packet, Packet.Writer out) throws IOException {
+        void write(Packet.Writer out) throws IOException {
             out.writeByte(this.xz);
             out.writeShort(this.y);
             out.writeVarInt(this.type);

@@ -21,6 +21,7 @@ package net.patchedpixel.scenecraft.common.scenestudio.replay;
 import com.google.common.io.Closeables;
 import net.patchedpixel.scenecraft.common.scenestudio.Studio;
 import net.patchedpixel.scenecraft.common.scenestudio.util.Utils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -86,7 +87,7 @@ public class ZipReplayFile extends AbstractReplayFile {
             shouldSaveInputFile = true;
         } else if(input == null && sourceFile.exists()) {
             // Recover input file
-            input = new File(new String(readAllBytes(sourceFile.toPath()), StandardCharsets.UTF_8));
+            input = new File(readString(sourceFile.toPath()));
             if(!input.exists()) {
                 throw new IOException("Recovered source file no longer exists.");
             }
@@ -155,7 +156,6 @@ public class ZipReplayFile extends AbstractReplayFile {
 
     /**
      * Saves the input file path to the source file in the temp folder structure.
-     * @throws IOException
      */
     private void saveInputFile() throws IOException {
         if(shouldSaveInputFile) {
@@ -256,7 +256,7 @@ public class ZipReplayFile extends AbstractReplayFile {
                 }
 
                 @Override
-                public void write(byte[] b, int off, int len) throws IOException {
+                public void write(byte @NotNull [] b, int off, int len) throws IOException {
                     recordingCrc.update(b, off, len);
                     inner.write(b, off, len);
                 }
@@ -392,6 +392,7 @@ public class ZipReplayFile extends AbstractReplayFile {
                 delete(child);
             }
         }
+
         Files.deleteIfExists(file.toPath());
     }
 }

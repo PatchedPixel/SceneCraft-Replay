@@ -32,8 +32,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public final class Nbt {
-    private Nbt() {
-    }
+    private Nbt() {}
 
     public static Tag readNetwork(NetInput in) throws IOException {
         int type = in.readUnsignedByte();
@@ -79,6 +78,7 @@ public final class Nbt {
         if(compound instanceof CompoundTag tag && tag.contains(key, 99)) {
             return tag.getInt(key);
         }
+
         return def;
     }
 }

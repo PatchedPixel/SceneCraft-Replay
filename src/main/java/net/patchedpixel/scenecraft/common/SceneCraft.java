@@ -19,7 +19,6 @@ import net.patchedpixel.scenecraft.common.record.SceneCraftRecorder;
 import net.patchedpixel.scenecraft.common.render.SceneCraftRender;
 import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;
 import net.patchedpixel.scenecraft.common.scenestudio.studio.SceneStudio;
-import net.patchedpixel.scenecraft.common.scenestudio.util.I18n;
 import net.patchedpixel.scenecraft.common.simplepathing.SceneCraftSimplePathing;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Style;
@@ -60,8 +59,6 @@ public class SceneCraft implements net.patchedpixel.scenecraft.common.core.Modul
 
     public SceneCraft(SceneCraftPlatform backend) {
         this.backend = backend;
-
-        I18n.setI18n(net.minecraft.client.resources.language.I18n::get);
 
         // Register all modules
         modules.add(this);

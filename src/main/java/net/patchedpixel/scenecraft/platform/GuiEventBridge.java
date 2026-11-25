@@ -68,7 +68,14 @@ public class GuiEventBridge {
         if(((EntityRendererHandler.IEntityRenderer) MCVer.getMinecraft().gameRenderer).sceneCraftRender_getHandler() != null) {
             return;
         }
-        RenderHudCallback.EVENT.invoker().renderHud(event.getGuiGraphics(), event.getPartialTick());
+        GuiGraphics graphics = event.getGuiGraphics();
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, 400);
+        try {
+            RenderHudCallback.EVENT.invoker().renderHud(graphics, event.getPartialTick());
+        } finally {
+            graphics.pose().popPose();
+        }
     }
 
     @SubscribeEvent

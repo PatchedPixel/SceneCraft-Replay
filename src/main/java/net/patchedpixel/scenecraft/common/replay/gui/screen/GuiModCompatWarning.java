@@ -7,10 +7,9 @@ import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import net.patchedpixel.scenecraft.common.flamex.widget.TextListWidget;
 import net.patchedpixel.scenecraft.common.utils.ModCompat;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
+import net.minecraft.client.resources.language.I18n;
 
 import java.util.Map;
-
-import static net.patchedpixel.scenecraft.common.scenestudio.util.I18n.format;
 
 public class GuiModCompatWarning extends FlameableScreen {
     private final ModCompat.ModInfoDifference difference;
@@ -43,16 +42,16 @@ public class GuiModCompatWarning extends FlameableScreen {
             content.addBlank();
             content.addLine(FlameX.t("scenecraft.gui.modwarning.missing"), true);
             for(ModInfo modInfo : difference.getMissing()) {
-                addModInfo(content, modInfo, format("scenecraft.gui.modwarning.version.expected") + ": " + modInfo.getVersion());
+                addModInfo(content, modInfo, I18n.get("scenecraft.gui.modwarning.version.expected") + ": " + modInfo.getVersion());
             }
         }
         if(!difference.getDiffering().isEmpty()) {
             content.addBlank();
             content.addLine(FlameX.t("scenecraft.gui.modwarning.version"), true);
             for(Map.Entry<ModInfo, String> entry : difference.getDiffering().entrySet()) {
-                addModInfo(content, entry.getKey(), format("scenecraft.gui.modwarning.version.expected")
+                addModInfo(content, entry.getKey(), I18n.get("scenecraft.gui.modwarning.version.expected")
                         + ": " + entry.getKey().getVersion()
-                        + ", " + format("scenecraft.gui.modwarning.version.found")
+                        + ", " + I18n.get("scenecraft.gui.modwarning.version.found")
                         + ": " + entry.getValue());
             }
         }
@@ -61,8 +60,8 @@ public class GuiModCompatWarning extends FlameableScreen {
 
     private static void addModInfo(TextListWidget content, ModInfo modInfo, String versionLine) {
         content.addBlank();
-        content.addLine(MCVer.literalText(format("scenecraft.gui.modwarning.name") + " " + modInfo.getName()), true);
-        content.addLine(MCVer.literalText(format("scenecraft.gui.modwarning.id") + " " + modInfo.getId()), true);
+        content.addLine(MCVer.literalText(I18n.get("scenecraft.gui.modwarning.name") + " " + modInfo.getName()), true);
+        content.addLine(MCVer.literalText(I18n.get("scenecraft.gui.modwarning.id") + " " + modInfo.getId()), true);
         content.addLine(MCVer.literalText(versionLine), true);
     }
 }

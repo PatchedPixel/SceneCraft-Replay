@@ -1,5 +1,6 @@
 package net.patchedpixel.scenecraft.common.flamex.widget;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
@@ -64,11 +65,15 @@ public class TimelineWidget extends AbstractWidget {
         int cursor = Math.max(offset, Math.min(offset + visibleLength, cursorPosition));
         int cursorX = getX() + xOffsetFor(cursor);
 
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
         graphics.blit(FlameXTheme.GUI_TEXTURE, cursorX - 2, getY() + BORDER_TOP - 1, 64, 0, 5, 4);
         for(int y = BORDER_TOP - 1; y < getHeight() - BORDER_BOTTOM; y += 11) {
             int segH = Math.min(11, getHeight() - BORDER_BOTTOM - y);
             graphics.blit(FlameXTheme.GUI_TEXTURE, cursorX - 2, getY() + y, 64, 4, 5, segH);
         }
+
+        RenderSystem.disableBlend();
     }
 
     protected void drawTimeMarkers(GuiGraphics graphics) {

@@ -46,6 +46,7 @@ import net.minecraft.world.InteractionHand;
 
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.entity.player.PlayerModelPart;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
@@ -60,9 +61,7 @@ import static net.patchedpixel.scenecraft.common.core.versions.MCVer.*;
  * Camera movement is controlled by a separate {@link CameraController}.
  */
 @SuppressWarnings("EntityConstructor")
-public class CameraEntity
-        extends LocalPlayer
-{
+public class CameraEntity extends LocalPlayer {
     private static final UUID CAMERA_UUID = UUID.nameUUIDFromBytes("SceneCraftCamera".getBytes(StandardCharsets.UTF_8));
 
     /**
@@ -81,7 +80,7 @@ public class CameraEntity
 
     /**
      * The hashCode and equals methods of Entity are not stable.
-     * Therefore we cannot register any event handlers directly in the CameraEntity class and
+     * Therefore, we cannot register any event handlers directly in the CameraEntity class and
      * instead have this inner class.
      */
     private EventHandler eventHandler = new EventHandler();
@@ -90,16 +89,16 @@ public class CameraEntity
             Minecraft mcIn,
             ClientLevel worldIn,
             ClientPacketListener netHandlerPlayClient,
-            StatsCounter statisticsManager
-            , ClientRecipeBook recipeBook
+            StatsCounter statisticsManager,
+            ClientRecipeBook recipeBook
     ) {
         super(mcIn,
                 worldIn,
                 netHandlerPlayClient,
-                statisticsManager
-                , recipeBook
-                , false
-                , false
+                statisticsManager,
+                recipeBook,
+                false,
+                false
         );
         setUUID(CAMERA_UUID);
         eventHandler.register();
@@ -196,6 +195,7 @@ public class CameraEntity
         if(view != null && view != this) {
             return this.yRotO + (this.getYRot() - this.yRotO) * tickDelta;
         }
+
         return super.getViewYRot(tickDelta);
     }
 
@@ -205,6 +205,7 @@ public class CameraEntity
         if(view != null && view != this) {
             return this.xRotO + (this.getXRot() - this.xRotO) * tickDelta;
         }
+
         return super.getViewXRot(tickDelta);
     }
 
@@ -223,7 +224,7 @@ public class CameraEntity
         if(view != null) {
             // Make sure we're always spectating the right entity
             // This is important if the spectated player respawns as their
-            // entity is recreated and we have to spectate a new entity
+            // entity is recreated, and we have to spectate a new entity
             UUID spectating = SceneCraftReplay.instance.getReplayHandler().getSpectatedUUID();
             // FIXME remap bug: Pattern doesn't work when these two are inlined
             Level cameraWorld = this.level();
@@ -244,7 +245,7 @@ public class CameraEntity
                     return;
                 }
             }
-            // Move cmera to their position so when we exit the first person view
+            // Move camera to their position so when we exit the first person view
             // we don't jump back to where we entered it
             if(view != this) {
                 setCameraPosRot(view);
@@ -259,6 +260,7 @@ public class CameraEntity
             // FIXME cannot use Patters because `setWorld` is `protected` in 1.20
             this.setLevel(this.minecraft.level);
         }
+
         super.resetPos();
     }
 
@@ -276,9 +278,7 @@ public class CameraEntity
     }
 
     @Override
-    public boolean isEyeInFluid(
-            TagKey<Fluid> fluid
-    ) {
+    public boolean isEyeInFluid(@NotNull TagKey<Fluid> fluid) {
         return falseUnlessSpectating(entity -> entity.isEyeInFluid(fluid));
     }
 
@@ -297,6 +297,7 @@ public class CameraEntity
         if(view != null && view != this) {
             return property.apply(view);
         }
+
         return false;
     }
 
@@ -332,6 +333,7 @@ public class CameraEntity
         if(view != this && view instanceof AbstractClientPlayer) {
             return ((AbstractClientPlayer) view).getFieldOfViewModifier();
         }
+
         return 1;
     }
 
@@ -341,15 +343,17 @@ public class CameraEntity
         if(view != this) {
             return view.isInvisible();
         }
+
         return super.isInvisible();
     }
 
     @Override
-    public ResourceLocation getSkinTextureLocation() {
+    public @NotNull ResourceLocation getSkinTextureLocation() {
         Entity view = this.minecraft.getCameraEntity();
         if(view != this && view instanceof AbstractClientPlayer) {
             return ((AbstractClientPlayer) view).getSkinTextureLocation();
         }
+
         return super.getSkinTextureLocation();
     }
 
@@ -359,6 +363,7 @@ public class CameraEntity
         if(view != this && view instanceof AbstractClientPlayer) {
             return ((AbstractClientPlayer) view).getCloakTextureLocation();
         }
+
         return super.getCloakTextureLocation();
     }
 
@@ -368,6 +373,7 @@ public class CameraEntity
         if(view != this && view instanceof AbstractClientPlayer) {
             return ((AbstractClientPlayer) view).getElytraTextureLocation();
         }
+
         return super.getElytraTextureLocation();
     }
 
@@ -377,33 +383,37 @@ public class CameraEntity
         if(view != this && view instanceof AbstractClientPlayer) {
             return ((AbstractClientPlayer) view).isCapeLoaded();
         }
+
         return super.isCapeLoaded();
     }
 
     @Override
-    public String getModelName() {
+    public @NotNull String getModelName() {
         Entity view = this.minecraft.getCameraEntity();
         if(view != this && view instanceof AbstractClientPlayer) {
             return ((AbstractClientPlayer) view).getModelName();
         }
+
         return super.getModelName();
     }
 
     @Override
-    public boolean isModelPartShown(PlayerModelPart modelPart) {
+    public boolean isModelPartShown(@NotNull PlayerModelPart modelPart) {
         Entity view = this.minecraft.getCameraEntity();
         if(view != this && view instanceof Player) {
             return ((Player) view).isModelPartShown(modelPart);
         }
+
         return super.isModelPartShown(modelPart);
     }
 
     @Override
-    public HumanoidArm getMainArm() {
+    public @NotNull HumanoidArm getMainArm() {
         Entity view = this.minecraft.getCameraEntity();
         if(view != this && view instanceof Player) {
             return ((Player) view).getMainArm();
         }
+
         return super.getMainArm();
     }
 
@@ -413,6 +423,7 @@ public class CameraEntity
         if(view != this && view instanceof Player) {
             return ((Player) view).getAttackAnim(renderPartialTicks);
         }
+
         return 0;
     }
 
@@ -422,6 +433,7 @@ public class CameraEntity
         if(view != this && view instanceof Player) {
             return ((Player) view).getCurrentItemAttackStrengthDelay();
         }
+
         return 1;
     }
 
@@ -431,16 +443,18 @@ public class CameraEntity
         if(view != this && view instanceof Player) {
             return ((Player) view).getAttackStrengthScale(adjustTicks);
         }
+
         // Default to 1 as to not render the cooldown indicator (renders for < 1)
         return 1;
     }
 
     @Override
-    public InteractionHand getUsedItemHand() {
+    public @NotNull InteractionHand getUsedItemHand() {
         Entity view = this.minecraft.getCameraEntity();
         if(view != this && view instanceof Player) {
             return ((Player) view).getUsedItemHand();
         }
+
         return super.getUsedItemHand();
     }
 
@@ -450,21 +464,21 @@ public class CameraEntity
         if(view != this && view instanceof Player) {
             return ((Player) view).isUsingItem();
         }
+
         return super.isUsingItem();
     }
 
     @Override
-    public void onEquipItem(EquipmentSlot slot, ItemStack stack, ItemStack itemStack) {
+    public void onEquipItem(@NotNull EquipmentSlot slot, @NotNull ItemStack stack, @NotNull ItemStack itemStack) {
         // Suppress equip sounds
     }
 
     @Override
-    public HitResult pick(double maxDistance, float tickDelta, boolean fluids) {
+    public @NotNull HitResult pick(double maxDistance, float tickDelta, boolean fluids) {
         HitResult result = super.pick(maxDistance, tickDelta, fluids);
 
         // Make sure we can never look at blocks (-> no outline)
-        if(result instanceof BlockHitResult) {
-            BlockHitResult blockResult = (BlockHitResult) result;
+        if(result instanceof BlockHitResult blockResult) {
             result = BlockHitResult.miss(result.getLocation(), blockResult.getDirection(), blockResult.getBlockPos());
         }
 
@@ -472,7 +486,7 @@ public class CameraEntity
     }
 
     @Override
-    public void remove(RemovalReason reason) {
+    public void remove(@NotNull RemovalReason reason) {
         super.remove(reason);
         if(eventHandler != null) {
             eventHandler.unregister();
@@ -498,10 +512,10 @@ public class CameraEntity
 
         Map<String, KeyBindingRegistry.Binding> keyBindings = SceneCraft.instance.getKeyBindingRegistry().getBindings();
         if(keyBindings.get("scenecraft.input.rollclockwise").keyBinding.isDown()) {
-            roll += Utils.isCtrlDown() ? 0.2 : 1;
+            roll += Utils.isCtrlDown() ? (float) 0.2 : 1;
         }
         if(keyBindings.get("scenecraft.input.rollcounterclockwise").keyBinding.isDown()) {
-            roll -= Utils.isCtrlDown() ? 0.2 : 1;
+            roll -= Utils.isCtrlDown() ? (float) 0.2 : 1;
         }
 
         this.noPhysics = this.isSpectator();
@@ -530,8 +544,7 @@ public class CameraEntity
     private void handleInputEvents() {
         if(this.minecraft.options.keyAttack.consumeClick() || this.minecraft.options.keyUse.consumeClick()) {
             if(this.minecraft.screen == null && canSpectate(this.minecraft.crosshairPickEntity)) {
-                SceneCraftReplay.instance.getReplayHandler().spectateEntity(
-                        this.minecraft.crosshairPickEntity);
+                SceneCraftReplay.instance.getReplayHandler().spectateEntity(this.minecraft.crosshairPickEntity);
                 // Make sure we don't exit right away
                 //noinspection StatementWithEmptyBody
                 while(this.minecraft.options.keyShift.consumeClick());
@@ -568,8 +581,7 @@ public class CameraEntity
     }
 
     public boolean canSpectate(Entity e) {
-        return e != null
-                && !e.isInvisible();
+        return e != null && !e.isInvisible();
     }
 
     private
@@ -615,10 +627,9 @@ public class CameraEntity
         private boolean onRenderHand() {
             // Unless we are spectating another player, don't render our hand
             Entity view = mc.getCameraEntity();
-            if(view == CameraEntity.this || !(view instanceof Player)) {
+            if(view == CameraEntity.this || !(view instanceof Player player)) {
                 return true; // cancel hand rendering
             } else {
-                Player player = (Player) view;
                 // When the spectated player has changed, force equip their items to prevent the equip animation
                 if(lastHandRendered != player) {
                     lastHandRendered = player;

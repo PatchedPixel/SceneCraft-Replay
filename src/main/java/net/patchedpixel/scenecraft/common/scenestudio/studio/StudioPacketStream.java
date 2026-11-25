@@ -21,7 +21,6 @@ package net.patchedpixel.scenecraft.common.scenestudio.studio;
 import net.patchedpixel.scenecraft.common.scenestudio.PacketData;
 import net.patchedpixel.scenecraft.common.scenestudio.io.ReplayInputStream;
 import net.patchedpixel.scenecraft.common.scenestudio.stream.AbstractPacketStream;
-
 import com.mojang.logging.LogUtils;
 import org.slf4j.Logger;
 

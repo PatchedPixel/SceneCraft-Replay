@@ -54,8 +54,8 @@ public abstract class FlameableScreen extends Screen {
         if(panel && !title.getString().isEmpty()) root.addChild(FlameX.label(title));
         build(root);
         if(panel) {
-            root.visitWidgets(w -> {
-                if(w instanceof StringWidget label) label.setColor(FlameXTheme.TEXT_ON_PANEL);
+            root.visitWidgets(widget -> {
+                if(widget instanceof StringWidget label) label.setColor(FlameXTheme.TEXT_ON_PANEL);
             });
         }
 

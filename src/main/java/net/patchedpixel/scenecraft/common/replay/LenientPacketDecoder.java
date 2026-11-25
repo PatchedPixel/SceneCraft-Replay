@@ -40,6 +40,7 @@ public class LenientPacketDecoder extends ByteToMessageDecoder {
         if(in.readableBytes() == 0) {
             return;
         }
+
         FriendlyByteBuf buf = new FriendlyByteBuf(in);
         int id = buf.readVarInt();
         ConnectionProtocol protocol = ctx.channel().attr(Connection.ATTRIBUTE_PROTOCOL).get();
@@ -47,6 +48,7 @@ public class LenientPacketDecoder extends ByteToMessageDecoder {
         if(packet == null) {
             throw new IOException("Bad packet id " + id);
         }
+
         int extra = buf.readableBytes();
         if(extra > 0) {
             buf.skipBytes(extra);
@@ -61,6 +63,7 @@ public class LenientPacketDecoder extends ByteToMessageDecoder {
                 return;
             }
         }
+
         out.add(packet);
     }
 }

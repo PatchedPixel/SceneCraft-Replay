@@ -27,7 +27,6 @@ import net.patchedpixel.scenecraft.common.flamex.FlameXTheme;
 import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import net.patchedpixel.scenecraft.common.flamex.util.color.Color;
-import net.patchedpixel.scenecraft.common.flamex.widget.NineSlice;
 import net.patchedpixel.scenecraft.common.flamex.widget.ScrollView;
 import net.patchedpixel.scenecraft.common.flamex.widget.StepSlider;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
@@ -132,12 +131,12 @@ public class GuiRenderSettings extends FlameableScreen {
         return this;
     }
 
-        public GuiRenderSettings setCloseHook(Runnable hook) {
+    public GuiRenderSettings setCloseHook(Runnable hook) {
         this.closeHook = hook;
         return this;
     }
 
-        protected void setRenderAction(Consumer<Boolean> action) {
+    protected void setRenderAction(Consumer<Boolean> action) {
         this.renderAction = action;
     }
 
@@ -150,7 +149,7 @@ public class GuiRenderSettings extends FlameableScreen {
         return MCVer.getMinecraft();
     }
 
-        protected boolean isScreenshotMode() {
+    protected boolean isScreenshotMode() {
         return false;
     }
 
@@ -188,7 +187,7 @@ public class GuiRenderSettings extends FlameableScreen {
             buildCommand(command);
             content.addChild(command);
         }
-        scrollView = new ScrollView(content, Math.max(100, width - 50), Math.max(60, height - 85));
+        scrollView = new ScrollView(content, Math.max(100, width - 40), Math.max(60, height - 85));
         root.addChild(scrollView);
 
         LinearLayout buttons = FlameX.row(4);
@@ -227,7 +226,6 @@ public class GuiRenderSettings extends FlameableScreen {
         } else {
             renderBackground(graphics);
         }
-        NineSlice.panel(graphics, 10, 10, width - 20, height - 20);
         graphics.fill(20, 20, width - 20, height - 20, FlameXTheme.SCRIM);
         super.render(graphics, mouseX, mouseY, partialTicks);
     }
@@ -248,7 +246,7 @@ public class GuiRenderSettings extends FlameableScreen {
     }
 
     private boolean guarded(double mouseX, double mouseY, java.util.function.BooleanSupplier action) {
-        boolean block = !scrollView.contains(mouseX, mouseY);
+        boolean block = !scrollView.contains(mouseX, mouseY) && !scrollView.isDragging();
         if(block) scrollView.setInputEnabled(false);
         try {
             return action.getAsBoolean();
@@ -315,7 +313,7 @@ public class GuiRenderSettings extends FlameableScreen {
             bitRateUnitButton = FlameX.cycle(Component.empty(), List.of("bps", "kbps", "mbps"),
                     List.of("bps", "kbps", "mbps").get(bitRateUnit), Component::literal, 50, v -> bitRateUnit = List.of("bps", "kbps", "mbps").indexOf(v));
             frameRateSlider = new StepSlider(100, 20, 110).setText(v ->
-                    MCVer.literalText(I18n.get("scenecraft.gui.rendersettings.framerate") + ": " + (v + 10)))
+                            MCVer.literalText(I18n.get("scenecraft.gui.rendersettings.framerate") + ": " + (v + 10)))
                     .onValueChanged(() -> {});
             frameRateSlider.setValue(frameRate - 10);
             frameRateSlider.onValueChanged(() -> frameRate = frameRateSlider.getValue() + 10);
@@ -728,7 +726,7 @@ public class GuiRenderSettings extends FlameableScreen {
         return SceneCraftRender.instance.getRenderSettingsPath();
     }
 
-        public void saveSettings() {
+    public void saveSettings() {
         RenderSettings settings = save(true, false);
         String json = new Gson().toJson(settings);
         try {
@@ -779,7 +777,7 @@ public class GuiRenderSettings extends FlameableScreen {
         return parent == null ? new File(".") : parent;
     }
 
-        private class OutputFileScreen extends FlameableScreen {
+    private class OutputFileScreen extends FlameableScreen {
         private EditBox folderBox, nameBox;
         private Button saveButton;
 

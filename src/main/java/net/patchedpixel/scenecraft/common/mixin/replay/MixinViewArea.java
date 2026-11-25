@@ -16,7 +16,7 @@ public abstract class MixinViewArea {
                     target = "Lnet/minecraft/client/renderer/chunk/ChunkRenderDispatcher$RenderChunk;setOrigin(III)V"
             )
     )
-    private void replayModReplay_updatePositionAndMarkForUpdate(RenderChunk renderChunk, int x, int y, int z) {
+    private void sceneCraftReplay_updatePositionAndMarkForUpdate(RenderChunk renderChunk, int x, int y, int z) {
         BlockPos pos = new BlockPos(x, y, z);
         if (!pos.equals(renderChunk.getOrigin())) {
             renderChunk.setOrigin(x, y, z);

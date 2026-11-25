@@ -14,9 +14,7 @@ public class Utils {
      * @param width Target image width
      */
     public static void gpuBytesToBitmap(GpuFrame source, int xOffset, int yOffset, ByteBuffer to, int width) {
-        gpuBytesToBitmap(
-                source.getByteBuffer(), source.getSize().width(), source.getBytesPerPixel(),
-                xOffset, yOffset, to, width);
+        gpuBytesToBitmap(source.getByteBuffer(), source.getSize().width(), source.getBytesPerPixel(), xOffset, yOffset, to, width);
     }
 
     /**
@@ -38,6 +36,7 @@ public class Utils {
             to.position(((yOffset + rows - i - 1) * width + xOffset) * bbp);
             to.put(rowBuf);
         }
+
         to.rewind();
     }
 }

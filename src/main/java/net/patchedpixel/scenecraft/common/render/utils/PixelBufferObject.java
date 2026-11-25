@@ -29,6 +29,7 @@ public class PixelBufferObject implements AutoCloseable {
         if(buffer == null) {
             throw new IllegalStateException("Failed to map pixel buffer object");
         }
+
         return buffer;
     }
 

@@ -205,16 +205,16 @@ public abstract class AbstractPacketStream implements PacketStream {
     }
 
     private void buildPipe() {
-        Iterator<StreamElement> iter = filters.iterator();
+        Iterator<StreamElement> iterator = filters.iterator();
         StreamElement l = null;
-        while(iter.hasNext()) {
-            StreamElement e = iter.next();
+        while(iterator.hasNext()) {
+            StreamElement element = iterator.next();
             if(l == null) {
-                firstElement = e;
+                firstElement = element;
             } else {
-                l.next = e;
+                l.next = element;
             }
-            l = e;
+            l = element;
         }
         if(l == null) {
             firstElement = new StreamElementEnd();
@@ -281,17 +281,17 @@ public abstract class AbstractPacketStream implements PacketStream {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("PacketStream[");
-        StreamElement e = firstElement;
-        while(e != null) {
-            sb.append(e);
-            if(e.next != null) {
-                sb.append(" -> ");
+        StringBuilder builder = new StringBuilder("PacketStream[");
+        StreamElement element = firstElement;
+        while(element != null) {
+            builder.append(element);
+            if(element.next != null) {
+                builder.append(" -> ");
             }
-            e = e.next;
+            element = element.next;
         }
 
-        sb.append("]");
-        return sb.toString();
+        builder.append("]");
+        return builder.toString();
     }
 }

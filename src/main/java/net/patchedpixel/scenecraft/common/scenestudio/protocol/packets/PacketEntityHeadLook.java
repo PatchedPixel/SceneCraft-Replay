@@ -40,6 +40,7 @@ public class PacketEntityHeadLook {
 
             out.writeByte((int) (yaw / 360 * 256));
         }
+
         return packet;
     }
 }

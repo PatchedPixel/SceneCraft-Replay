@@ -40,8 +40,7 @@ public abstract class MixinCamera {
 
     @Inject(method = "setup", at = @At("RETURN"))
     private void sceneCraftRender_setupCubicFrameRotation(CallbackInfo ci) {
-        if(getHandler() == null || !(getHandler().data instanceof CubicGpuFrameCapturer.Data)) return;
-        CubicGpuFrameCapturer.Data data = (CubicGpuFrameCapturer.Data) getHandler().data;
+        if(getHandler() == null || !(getHandler().data instanceof CubicGpuFrameCapturer.Data data)) return;
         switch(data) {
             case FRONT:
                 break;
@@ -61,6 +60,7 @@ public abstract class MixinCamera {
                 this.rotation.rotateX(-PI_OVER_2_f);
                 break;
         }
+
         this.forwards.set(0.0F, 0.0F, 1.0F).rotate(this.rotation);
         this.up.set(0.0F, 1.0F, 0.0F).rotate(this.rotation);
         this.left.set(1.0F, 0.0F, 0.0F).rotate(this.rotation);
@@ -68,8 +68,7 @@ public abstract class MixinCamera {
 
     @Inject(method = "setup", at = @At("RETURN"))
     private void sceneCraftRender_offsetStereoscopicEye(CallbackInfo ci) {
-        if(getHandler() == null || !(getHandler().data instanceof StereoscopicGpuFrameCapturer.Data)) return;
-        StereoscopicGpuFrameCapturer.Data data = (StereoscopicGpuFrameCapturer.Data) getHandler().data;
+        if(getHandler() == null || !(getHandler().data instanceof StereoscopicGpuFrameCapturer.Data data)) return;
         move(0f, 0f, 0.1f * (data == StereoscopicGpuFrameCapturer.Data.LEFT_EYE ? -1 : 1));
     }
 
@@ -84,6 +83,7 @@ public abstract class MixinCamera {
                 xRot = 0f;
             }
         }
+
         original.call(instance, yRot, xRot);
     }
 

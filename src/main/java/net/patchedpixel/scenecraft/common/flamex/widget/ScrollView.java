@@ -13,10 +13,14 @@ import java.util.List;
 
 public class ScrollView extends AbstractWidget {
     private static final int STEP = 20;
+    private static final int PADDING = 5;
+    private static final int SLIDER_WIDTH = 6;
+    private static final int SLIDER_GAP = 3;
 
     private final LinearLayout content;
     private final List<AbstractWidget> widgets = new ArrayList<>();
     private int scroll;
+    private boolean draggingSlider;
 
     public ScrollView(LinearLayout content, int width, int height) {
         super(0, 0, width, height, Component.empty());
@@ -32,11 +36,27 @@ public class ScrollView extends AbstractWidget {
     public void place() {
         content.arrangeElements();
         scroll = Math.max(0, Math.min(scroll, maxScroll()));
-        content.setPosition(getX() + (getWidth() - content.getWidth()) / 2, getY() - scroll);
+        content.setPosition(getX() + (getWidth() - content.getWidth()) / 2, getY() + PADDING - scroll);
     }
 
     private int maxScroll() {
-        return Math.max(0, content.getHeight() - getHeight());
+        return Math.max(0, content.getHeight() + PADDING * 2 - getHeight());
+    }
+
+    public boolean isDragging() {
+        return draggingSlider;
+    }
+
+    private int sliderX() {
+        return getX() + (getWidth() + content.getWidth()) / 2 + SLIDER_GAP;
+    }
+
+    private int contentHeight() {
+        return content.getHeight() + PADDING * 2;
+    }
+
+    private boolean onSlider(double x, double y) {
+        return maxScroll() > 0 && x >= sliderX() && x < sliderX() + SLIDER_WIDTH && y >= getY() && y < getY() + getHeight();
     }
 
     public boolean contains(double x, double y) {
@@ -59,11 +79,15 @@ public class ScrollView extends AbstractWidget {
             widget.visible = wasVisible;
         }
         graphics.disableScissor();
-        int max = maxScroll();
-        if(max > 0) {
-            int barHeight = Math.max(16, getHeight() * getHeight() / content.getHeight());
-            int barY = getY() + (getHeight() - barHeight) * scroll / max;
-            graphics.fill(getX() + getWidth() - 3, barY, getX() + getWidth(), barY + barHeight, FlameXTheme.SCROLL_THUMB);
+        if(maxScroll() > 0) {
+            int x = sliderX();
+            int height = getHeight();
+            int barY = getY() + scroll * height / contentHeight();
+            int barHeight = height * height / contentHeight();
+            graphics.fill(x, getY(), x + SLIDER_WIDTH, getY() + height, FlameXTheme.SLIDER_TRACK);
+            graphics.fill(x, barY, x + SLIDER_WIDTH, barY + barHeight, FlameXTheme.SLIDER_THUMB);
+            graphics.fill(x + SLIDER_WIDTH - 1, barY, x + SLIDER_WIDTH, barY + barHeight, FlameXTheme.SLIDER_SHADOW);
+            graphics.fill(x, barY + barHeight - 1, x + SLIDER_WIDTH, barY + barHeight, FlameXTheme.SLIDER_SHADOW);
         }
     }
 
@@ -78,7 +102,26 @@ public class ScrollView extends AbstractWidget {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if(button == 0 && onSlider(mouseX, mouseY)) {
+            draggingSlider = true;
+            return true;
+        }
         return false;
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dx, double dy) {
+        if(!draggingSlider) return false;
+        scroll = Math.max(0, Math.min(maxScroll(), scroll + (int) Math.round(dy * contentHeight() / getHeight())));
+        place();
+        return true;
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        boolean was = draggingSlider;
+        draggingSlider = false;
+        return was;
     }
 
     @Override

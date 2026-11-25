@@ -72,7 +72,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
     );
 
     private static final List<Class<?>> BAD_PACKETS = Arrays.asList(
-            ClientboundHelloPacket.class, // workaround for an issue where SceneCraft prior to 2.6.20 would record these
+            ClientboundHelloPacket.class, // workaround for an issue where ReplayMod prior to 2.6.20 would record these
             ClientboundCustomQueryPacket.class,
             ClientboundLoginCompressionPacket.class,
             ClientboundBlockChangedAckPacket.class,
@@ -538,7 +538,6 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
 
             schedulePacketHandler(new Runnable() {
                 @Override
-                @SuppressWarnings("unchecked")
                 public void run() {
                     // FIXME: world shouldn't ever be null at this point, now that we use the packet queue
                     //        probably fine to remove on the next non-patch version (don't want to break stuff now)
@@ -619,6 +618,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
             this.realTimeStartSpeed = d;
             this.realTimeStart = System.currentTimeMillis() - (long) (lastTimeStamp / d);
         }
+
         mc.timer.msPerTick = DEFAULT_MS_PER_TICK / (float) d;
     }
 
@@ -649,7 +649,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
     /**
      * Runnable which performs timed dispatching of packets from the input stream.
      */
-    private Runnable asyncSender = new Runnable() {
+    private final Runnable asyncSender = new Runnable() {
         public void run() {
             try {
                 REPLAY_LOOP:
@@ -1029,7 +1029,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
             }
             type = packetType;
             // Workaround for ReplayMod 2.7.16-17 saving the LoginSuccess packet with an incorrect packet id
-            // A fake one will have been sythesized by SceneStudo, so we can simply drop the broken one.
+            // A fake one will have been synthesized by SceneStudio, so we can simply drop the broken one.
             if(packet.getId() == -1) {
                 bytes = new byte[0];
                 return;
@@ -1051,6 +1051,7 @@ public class FullReplaySender extends ChannelInboundHandlerAdapter implements Re
                 byteBuf.resetReaderIndex(); // Reset reader & writer index for next use
                 byteBuf.resetWriterIndex();
             }
+
             packet.getBuf().release();
         }
     }

@@ -123,8 +123,7 @@ public abstract class AbstractReplayFile implements ReplayFile {
             for(Map.Entry<String, JsonElement> e : array.entrySet()) {
                 try {
                     index.put(Integer.parseInt(e.getKey()), e.getValue().getAsString());
-                } catch(NumberFormatException ignored) {
-                }
+                } catch(NumberFormatException ignored) {}
             }
         }
 
@@ -249,6 +248,7 @@ public abstract class AbstractReplayFile implements ReplayFile {
                     JsonObject obj = element.getAsJsonObject();
                     JsonObject value = obj.getAsJsonObject("value");
                     JsonObject position = value.getAsJsonObject("position");
+
                     Marker marker = new Marker();
                     marker.setTime(obj.get("realTimestamp").getAsInt());
                     marker.setX(position.get("x").getAsDouble());
@@ -257,6 +257,7 @@ public abstract class AbstractReplayFile implements ReplayFile {
                     marker.setYaw(position.get("yaw").getAsFloat());
                     marker.setPitch(position.get("pitch").getAsFloat());
                     marker.setRoll(position.get("roll").getAsFloat());
+
                     if(value.has("name")) {
                         marker.setName(value.get("name").getAsString());
                     }

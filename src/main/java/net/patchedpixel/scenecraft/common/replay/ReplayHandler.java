@@ -12,7 +12,6 @@ import net.patchedpixel.scenecraft.common.replay.events.ReplayClosedCallback;
 import net.patchedpixel.scenecraft.common.replay.events.ReplayClosingCallback;
 import net.patchedpixel.scenecraft.common.replay.events.ReplayOpenedCallback;
 import net.patchedpixel.scenecraft.common.replay.gui.overlay.GuiReplayOverlay;
-import net.patchedpixel.scenecraft.common.scenestudio.data.Marker;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
 import net.patchedpixel.scenecraft.common.scenestudio.util.Location;
 import io.netty.channel.ChannelHandlerContext;
@@ -40,6 +39,8 @@ import java.util.*;
 
 import net.minecraft.client.gui.screens.LevelLoadingScreen;
 import net.minecraft.network.protocol.PacketFlow;
+import org.jetbrains.annotations.NotNull;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -50,7 +51,7 @@ import static net.patchedpixel.scenecraft.common.replay.SceneCraftReplay.LOGGER;
 public class ReplayHandler {
     public static final String PACKET_HANDLER_NAME = "SceneCraftReplay_packetHandler";
 
-    private static Minecraft mc = getMinecraft();
+    private static final Minecraft mc = getMinecraft();
 
     /**
      * The file currently being played.
@@ -69,15 +70,13 @@ public class ReplayHandler {
      */
     private Restrictions restrictions = new Restrictions();
 
-    private Set<Marker> markers;
-
     private final GuiReplayOverlay overlay;
 
     private EmbeddedChannel channel;
 
     private boolean registriesApplied;
 
-    private int replayDuration;
+    private final int replayDuration;
 
     /**
      * The position at which the camera should be located after the next jump.
@@ -91,8 +90,6 @@ public class ReplayHandler {
         this.replayFile = replayFile;
 
         replayDuration = replayFile.getMetaData().getDuration();
-
-        markers = replayFile.getMarkers().orElse(Collections.emptySet());
 
         fullReplaySender = new FullReplaySender(this, replayFile);
         quickReplaySender = new QuickReplaySender(SceneCraftReplay.instance, replayFile);
@@ -163,7 +160,7 @@ public class ReplayHandler {
 
         Connection networkManager = new Connection(PacketFlow.CLIENTBOUND) {
             @Override
-            public void exceptionCaught(ChannelHandlerContext ctx, Throwable t) {
+            public void exceptionCaught(@NotNull ChannelHandlerContext ctx, Throwable t) {
                 t.printStackTrace();
             }
         };
@@ -300,29 +297,29 @@ public class ReplayHandler {
     /**
      * Spectate the specified entity.
      * When the entity is {@code null} or the camera entity, the camera becomes the view entity.
-     * @param e The entity to spectate
+     * @param entity The entity to spectate
      */
-    public void spectateEntity(Entity e) {
+    public void spectateEntity(Entity entity) {
         CameraEntity cameraEntity = getCameraEntity();
         if(cameraEntity == null) {
             return; // Cannot spectate if we have no camera
         }
-        if(e == null || e == cameraEntity) {
+        if(entity == null || entity == cameraEntity) {
             spectating = null;
-            e = cameraEntity;
-        } else if(e instanceof Player) {
-            spectating = e.getUUID();
+            entity = cameraEntity;
+        } else if(entity instanceof Player) {
+            spectating = entity.getUUID();
         }
 
-        if(e == cameraEntity) {
+        if(entity == cameraEntity) {
             cameraEntity.setCameraController(SceneCraftReplay.instance.createCameraController(cameraEntity));
         } else {
             cameraEntity.setCameraController(new SpectatorCameraController(cameraEntity));
         }
 
-        if(mc.getCameraEntity() != e) {
-            mc.setCameraEntity(e);
-            cameraEntity.setCameraPosRot(e);
+        if(mc.getCameraEntity() != entity) {
+            mc.setCameraEntity(entity);
+            cameraEntity.setCameraPosRot(entity);
         }
     }
 
@@ -438,7 +435,7 @@ public class ReplayHandler {
                 // Render our please-wait-screen
                 net.minecraft.client.gui.screens.Screen guiScreen = new net.patchedpixel.scenecraft.common.flamex.popup.PleaseWaitScreen();
 
-                // Make sure that the replaysender changes into sync mode
+                // Make sure that the replay sender changes into sync mode
                 replaySender.setSyncModeAndWait();
 
                 net.minecraft.client.gui.screens.Screen orgScreen = mc.screen;
@@ -455,8 +452,7 @@ public class ReplayHandler {
                 replaySender.setAsyncMode(true);
                 replaySender.setReplaySpeed(0);
 
-                mc.getConnection().getConnection()
-                        .tick();
+                mc.getConnection().getConnection().tick();
 
                 // If the packets we just sent somehow caused the client to disconnect, then the above connection tick
                 // call will have unloaded the world, and we'll have to abort what we were doing.
@@ -484,8 +480,7 @@ public class ReplayHandler {
     }
 
     private void skipTeleportInterpolation(Entity entity) {
-        if(entity instanceof LivingEntity && !(entity instanceof CameraEntity)) {
-            LivingEntity living = (LivingEntity) entity;
+        if(entity instanceof LivingEntity living && !(entity instanceof CameraEntity)) {
             if(living.lerpSteps > 0) {
                 living.setPos(living.lerpX, living.lerpY, living.lerpZ);
                 living.setYRot((float) living.lerpYRot);
@@ -501,7 +496,7 @@ public class ReplayHandler {
             // The embedded channel's event loop will consider every thread to be in it and as such provides no
             // guarantees that only one thread is using the pipeline at any one time.
             // For reading the replay sender (either sync or async) is the only thread ever writing.
-            // For writing it may very well happen that multiple threads want to use the pipline at the same time.
+            // For writing, it may very well happen that multiple threads want to use the pipeline at the same time.
             // It's unclear whether the EmbeddedChannel is supposed to be thread-safe (the behavior of the event loop
             // does suggest that). However it seems like it either isn't (likely) or there is a race condition.
             // See: https://www.replaymod.com/forum/thread/1752#post8045 (https://paste.replaymod.com/lotacatuwo)

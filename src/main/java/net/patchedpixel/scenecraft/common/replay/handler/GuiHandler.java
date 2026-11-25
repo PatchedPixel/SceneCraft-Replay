@@ -41,8 +41,8 @@ public class GuiHandler extends EventRegistrations {
         this.mod = mod;
     }
 
-    { on(InitScreenCallback.EVENT, this::injectIntoIngameMenu); }
-    private void injectIntoIngameMenu(Screen guiScreen, Collection<AbstractWidget> buttonList) {
+    { on(InitScreenCallback.EVENT, this::injectIntoInGameMenu); }
+    private void injectIntoInGameMenu(Screen guiScreen, Collection<AbstractWidget> buttonList) {
         if(!(guiScreen instanceof PauseScreen)) {
             return;
         }
@@ -187,15 +187,12 @@ public class GuiHandler extends EventRegistrations {
 
             int y = targetButton
                     // if we found some button, put our button at its position (we'll move it out of the way shortly)
-                    .map(it -> it.getY())
+                    .map(AbstractWidget::getY)
                     // and if we can't even find that one, then just guess
                     .orElse(screen.height / 4 + 10 + 4 * 24);
 
-            // Move all buttons above or at our one upwards
-            moveAllButtonsInRect(buttonList,
-                    x, x + 200,
-                    Integer.MIN_VALUE, y,
-                    -24);
+            // Move all buttons above or at our one upward
+            moveAllButtonsInRect(buttonList, x, x + 200, Integer.MIN_VALUE, y, -24);
 
             pos = new ButtonPos(x, y);
         } else {
@@ -273,7 +270,7 @@ public class GuiHandler extends EventRegistrations {
                 // or, if someone removed the realms button, we'll alternatively take the multiplayer one
                 .orElse(findButton(buttonList, "menu.multiplayer", 2))
                 // if we found some button, put our button at its position (we'll move it out of the way shortly)
-                .map(it -> it.getY())
+                .map(AbstractWidget::getY)
                 // and if we can't even find that one, then just guess
                 .orElse(guiScreen.height / 4 + 10 + 4 * 24);
 
@@ -323,7 +320,7 @@ public class GuiHandler extends EventRegistrations {
                                     && button.getY() + button.getHeight() >= it.getY()
                     ))
                     // then take the bottom-most and if there's two, the right-most
-                    .max(Comparator.<AbstractWidget>comparingInt(it -> it.getY()).thenComparingInt(it -> it.getX()))
+                    .max(Comparator.<AbstractWidget>comparingInt(AbstractWidget::getY).thenComparingInt(AbstractWidget::getX))
                     // and place ourselves next to it
                     .map(it -> new ButtonPos(it.getX() + it.getWidth() + 4, it.getY()))
                     // if all fails, just go with TOP_RIGHT
@@ -375,6 +372,7 @@ public class GuiHandler extends EventRegistrations {
 
             index++;
         }
+
         return bestIndex;
     }
 
@@ -403,12 +401,10 @@ public class GuiHandler extends EventRegistrations {
     public static class InjectedButton extends Button {
         public final Screen guiScreen;
         public final int id;
-        private Consumer<InjectedButton> onClick;
         public InjectedButton(Screen guiScreen, int buttonId, int x, int y, int width, int height, String buttonText, String tooltip, Consumer<InjectedButton> onClick) {
             super(x, y, width, height, Component.translatable(buttonText), self -> onClick.accept((InjectedButton) self), Button.DEFAULT_NARRATION);
             this.guiScreen = guiScreen;
             this.id = buttonId;
-            this.onClick = onClick;
 
             if(tooltip != null) {
                 setTooltip(Tooltip.create(Component.translatable(tooltip)));

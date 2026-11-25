@@ -28,9 +28,9 @@ public class ClassicCameraController implements CameraController {
     @Override
     public void update(float partialTicksPassed) {
         boolean forward = false, backward = false, left = false, right = false, up = false, down = false;
-        for(KeyMapping kb : MCVer.getMinecraft().options.keyMappings) {
-            if(!kb.isDown()) continue;
-            switch(kb.getName()) {
+        for(KeyMapping key : MCVer.getMinecraft().options.keyMappings) {
+            if(!key.isDown()) continue;
+            switch(key.getName()) {
                 case "key.forward" -> forward = true;
                 case "key.back" -> backward = true;
                 case "key.left" -> left = true;
@@ -104,6 +104,7 @@ public class ClassicCameraController implements CameraController {
         if(result.lengthSquared() > 0) {
             result.normalize();
         }
+
         return result;
     }
 
@@ -113,6 +114,7 @@ public class ClassicCameraController implements CameraController {
         float f3 = Mth.sin(-yaw * f1 - (float) Math.PI);
         float f4 = -Mth.cos(-pitch * f1);
         float f5 = Mth.sin(-pitch * f1);
+
         return new Vector3f(f3 * f4, f5, f2 * f4);
     }
 }

@@ -49,6 +49,7 @@ public class PacketEntityTeleport {
             out.writeByte((int) (location.getPitch() / 360 * 256));
             out.writeBoolean(onGround);
         }
+
         return packet;
     }
 }
