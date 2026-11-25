@@ -13,7 +13,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardWatchEventKinds;
@@ -49,7 +48,7 @@ class SettingsRegistryBackend {
         String config;
         if(Files.exists(configFile)) {
             try {
-                config = new String(Files.readAllBytes(configFile), StandardCharsets.UTF_8);
+                config = Files.readString(configFile);
             } catch(IOException e) {
                 e.printStackTrace();
                 return;
@@ -183,7 +182,7 @@ class SettingsRegistryBackend {
         String config = gson.toJson(root);
         try {
             ensureDirectoryExists(configFile.getParent());
-            Files.write(configFile, config.getBytes(StandardCharsets.UTF_8));
+            Files.writeString(configFile, config);
         } catch(IOException e) {
             e.printStackTrace();
         }
