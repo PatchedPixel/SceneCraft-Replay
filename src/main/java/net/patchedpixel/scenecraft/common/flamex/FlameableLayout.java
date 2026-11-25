@@ -9,12 +9,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class FlameableLinear extends LinearLayout {
+public final class FlameableLayout extends LinearLayout {
     private final boolean horizontal;
     private final int childPadding;
     private final List<LayoutElement> elements = new ArrayList<>();
 
-    public FlameableLinear(Orientation orientation, int childPadding) {
+    public FlameableLayout(Orientation orientation, int childPadding) {
         super(0, 0, orientation);
         this.horizontal = orientation == Orientation.HORIZONTAL;
         this.childPadding = childPadding;

@@ -116,10 +116,10 @@ public final class FlameX {
     }
 
     public static LinearLayout row(int spacing) {
-        return new FlameableLinear(LinearLayout.Orientation.HORIZONTAL, Math.max(0, spacing / 2));
+        return new FlameableLayout(LinearLayout.Orientation.HORIZONTAL, Math.max(0, spacing / 2));
     }
 
     public static LinearLayout column(int spacing) {
-        return new FlameableLinear(LinearLayout.Orientation.VERTICAL, Math.max(0, spacing / 2));
+        return new FlameableLayout(LinearLayout.Orientation.VERTICAL, Math.max(0, spacing / 2));
     }
 }
