@@ -4,37 +4,37 @@ scenecraft.title=SceneCraft
 scenecraft.chat.recordingstarted=Perekaman dimulai
 scenecraft.chat.recordingfailed=Gagal memulai perekaman
 
-scenecraft.chat.savingthumb=Menyimpan Gambar Sampul...
-scenecraft.chat.savedthumb=Gambar Sampul berhasil disimpan
-scenecraft.chat.failedthumb=Gambar Sampul gagal disimpan
+scenecraft.chat.savingthumb=Menyimpan thumbnail...
+scenecraft.chat.savedthumb=Thumbnail berhasil disimpan
+scenecraft.chat.failedthumb=Thumbnail tidak dapat disimpan
 
-scenecraft.chat.addedmarker=Penanda Kejadian telah ditambahkan
+scenecraft.chat.addedmarker=Penanda peristiwa telah ditambahkan
 
 #Chat messages displayed in Replay Viewer
 scenecraft.chat.morekeyframes=Dibutuhkan minimal 2 keyframe posisi dan 2 keyframe waktu
-scenecraft.chat.pathstarted=Jalur Kamera dimulai
-scenecraft.chat.pathfinished=Jalur Kamera selesai
-scenecraft.chat.pathinterrupted=Jalur Kamera dibatalkan
+scenecraft.chat.pathstarted=Jalur kamera dimulai
+scenecraft.chat.pathfinished=Jalur kamera selesai
+scenecraft.chat.pathinterrupted=Jalur kamera dibatalkan
 
 #Common GUI-related strings
 scenecraft.gui.cancel=Batal
 scenecraft.gui.back=Kembali
 scenecraft.gui.load=Muat
 scenecraft.gui.save=Simpan
-scenecraft.gui.rename=Ubah Nama
+scenecraft.gui.rename=Ganti Nama
 scenecraft.gui.remove=Hapus
-scenecraft.gui.delete=Hapus
+scenecraft.gui.delete=Hapus Permanen
 scenecraft.gui.record=Merekam
-scenecraft.gui.paused=Jeda
+scenecraft.gui.paused=Dijeda
 scenecraft.gui.speed=Kecepatan
 scenecraft.gui.pleasewait=Mohon tunggu
 scenecraft.gui.render=Render
-scenecraft.gui.iphidden=IP Server Tersembunyi
+scenecraft.gui.iphidden=IP Server Disembunyikan
 scenecraft.gui.overwrite=Timpa
 scenecraft.gui.saveas=Simpan sebagai...
 scenecraft.gui.done=Selesai
 scenecraft.gui.close=Tutup
-scenecraft.gui.notagain=Jangan tampilkan ini lagi
+scenecraft.gui.notagain=Jangan tampilkan lagi
 scenecraft.gui.edit=Edit
 scenecraft.gui.copy=Salin
 scenecraft.gui.paste=Tempel
@@ -44,15 +44,15 @@ scenecraft.gui.record.pause=Jeda Perekaman
 scenecraft.gui.record.stop=Hentikan Perekaman
 scenecraft.gui.record.start=Mulai Perekaman
 
-scenecraft.gui.renderdonetitle=Video Selesai Dirender
+scenecraft.gui.renderdonetitle=Video selesai dirender
 scenecraft.gui.openfolder=Buka Folder Video
 scenecraft.gui.youtubeupload=Unggah ke YouTube
 scenecraft.gui.renderdone1=Videomu berhasil dirender.
-scenecraft.gui.renderdone2=Langkah apa yang ingin kamu lakukan selanjutnya?
+scenecraft.gui.renderdone2=Apa yang ingin kamu lakukan selanjutnya?
 scenecraft.gui.videotitle=Judul
 scenecraft.gui.videodescription=Deskripsi
-scenecraft.gui.videotags=Tag, Tag, Tag
-scenecraft.gui.videothumbnail=Gambar Sampul Video
+scenecraft.gui.videotags=Tag,Tag,Tag
+scenecraft.gui.videothumbnail=Thumbnail Video
 scenecraft.gui.videovisibility.private=Pribadi
 scenecraft.gui.videovisibility.unlisted=Tidak Publik
 scenecraft.gui.videovisibility.public=Publik
@@ -62,13 +62,13 @@ scenecraft.gui.ytuploadprogress.upload=[3/4] Mengunggah: %%d%%%%
 scenecraft.gui.ytuploadprogress.cleanup=[4/4] Pembersihan
 scenecraft.gui.ytuploadprogress.done=Selesai: %s
 scenecraft.gui.titleempty=Judul tidak boleh kosong
-scenecraft.gui.videothumbnailtoolarge=Ukuran gambar sampul melebihi 2MB
-scenecraft.gui.videothumbnailformat=Gambar sampul harus berformat JPEG atau PNG
+scenecraft.gui.videothumbnailtoolarge=Ukuran thumbnail melebihi 2 MB
+scenecraft.gui.videothumbnailformat=Thumbnail harus berformat JPEG atau PNG
 
 scenecraft.gui.hours=j
-scenecraft.gui.minutes=m
-scenecraft.gui.seconds=d
-scenecraft.gui.milliseconds=ms
+scenecraft.gui.minutes=mnt
+scenecraft.gui.seconds=dtk
+scenecraft.gui.milliseconds=md
 
 scenecraft.gui.pitch=Pitch
 scenecraft.gui.yaw=Yaw
@@ -79,188 +79,188 @@ scenecraft.gui.position=Posisi
 
 scenecraft.gui.unknownerror=Terjadi kesalahan yang tidak diketahui
 
-scenecraft.gui.exit=Keluar dari Rekaman
+scenecraft.gui.exit=Keluar dari Replay
 
 scenecraft.gui.settings=Pengaturan
 
-scenecraft.gui.keyframerepo.delete=Apakah kamu yakin ingin menghapus keyframe ini?
-scenecraft.gui.keyframerepo.overwrite=Apakah kamu yakin ingin menimpa keyframe ini?
+scenecraft.gui.keyframerepo.delete=Yakin ingin menghapus keyframe ini?
+scenecraft.gui.keyframerepo.overwrite=Yakin ingin menimpa keyframe ini?
 
-scenecraft.gui.restorereplay1=Sepertinya Minecraft tidak tertutup secara normal.
-scenecraft.gui.restorereplay2=Rekaman "%1$s" tidak tersimpan dengan benar.
-scenecraft.gui.restorereplay3=Apakah kamu ingin memulihkannya?
+scenecraft.gui.restorereplay1=Sepertinya Minecraft tidak ditutup dengan benar.
+scenecraft.gui.restorereplay2=Replay "%1$s" tidak tersimpan dengan benar.
+scenecraft.gui.restorereplay3=Ingin memulihkannya?
 
 scenecraft.gui.loadentitytracker=Memuat posisi entitas: %%d%%%%
 scenecraft.gui.loadquickmode=Memuat Mode Cepat: %%d%%%%
 scenecraft.gui.noquickmode=Mode Cepat hanya tersedia di Minecraft %1$s ke atas
 scenecraft.gui.minimalmode.unsupported=Fitur ini tidak tersedia untuk versi Minecraft kamu saat ini.
-scenecraft.gui.minimalmode.supportedversion=(hanya Minecraft %1$s yang didukung oleh versi SceneCraft kamu)
+scenecraft.gui.minimalmode.supportedversion=(versi SceneCraft kamu hanya mendukung Minecraft %1$s)
 
 #Only change these if it's neccessary
-scenecraft.gui.replayviewer=Penampil Rekaman
+scenecraft.gui.replayviewer=Penampil Replay
 
 #Replay Viewer GUI
-scenecraft.gui.viewer.rename.name=Nama Rekaman
-scenecraft.gui.viewer.replayfolder=Buka Folder Rekaman...
+scenecraft.gui.viewer.rename.name=Nama Replay
+scenecraft.gui.viewer.replayfolder=Buka Folder Replay...
 scenecraft.gui.viewer.bulkrender=Render %1$d video
 
-scenecraft.gui.viewer.delete.linea=Apakah kamu yakin ingin menghapus rekaman ini?
-scenecraft.gui.viewer.delete.failed1=Sistem operasimu tidak mengizinkan penghapusan rekaman ini.
-scenecraft.gui.viewer.delete.failed2=Tidak ada yang bisa kami lakukan. Kamu harus menghapusnya secara manual.
-scenecraft.gui.viewer.delete.lineb='%1$s' akan hilang selamanya!
+scenecraft.gui.viewer.delete.linea=Yakin ingin menghapus replay ini?
+scenecraft.gui.viewer.delete.failed1=Sistem operasimu tidak mengizinkan kami menghapus replay ini.
+scenecraft.gui.viewer.delete.failed2=Kami tidak bisa berbuat apa-apa, kamu harus menghapusnya sendiri.
+scenecraft.gui.viewer.delete.lineb='%1$s' akan hilang selamanya! (lama banget lho!)
 
 #Replay Editor UI 2.0 (marker based UI)
 scenecraft.gui.edit.apply=Terapkan
-scenecraft.gui.edit.split=Sisipkan Pemotong
-scenecraft.gui.edit.split.tooltip=Bagi Rekaman menjadi beberapa file di titik penanda
-scenecraft.gui.edit.cut.start=Mulai Potong
-scenecraft.gui.edit.cut.end=Akhiri Potong
-scenecraft.gui.edit.cut.tooltip=Potong (hapus) bagian dari Rekaman
+scenecraft.gui.edit.split=Sisipkan pemisah
+scenecraft.gui.edit.split.tooltip=Pisahkan Replay menjadi beberapa Replay di titik yang ditandai
+scenecraft.gui.edit.cut.start=Sisipkan potongan
+scenecraft.gui.edit.cut.end=Akhiri potongan
+scenecraft.gui.edit.cut.tooltip=Potong (hapus) sebagian bagian dari Replay
 
 #Cancel Replay GUI
-scenecraft.gui.cancelrender.title=Batalkan Perenderan
-scenecraft.gui.cancelrender.message=Apakah kamu yakin ingin membatalkan proses render saat ini?
+scenecraft.gui.cancelrender.title=Batalkan Render
+scenecraft.gui.cancelrender.message=Yakin ingin membatalkan proses render yang sedang berjalan?
 #Saving Replay GUI
-scenecraft.gui.replaysaving.title=Menyimpan Berkas Rekaman...
+scenecraft.gui.replaysaving.title=Menyimpan File Replay...
 
 #Player Overview GUI
 scenecraft.gui.playeroverview.visible=Terlihat
-scenecraft.gui.playeroverview.hideall=Sembunyikan Semua
-scenecraft.gui.playeroverview.showall=Tampilkan Semua
-scenecraft.gui.playeroverview.spectate=Pantau Pemain
+scenecraft.gui.playeroverview.hideall=Sembunyikan semua
+scenecraft.gui.playeroverview.showall=Tampilkan semua
+scenecraft.gui.playeroverview.spectate=Tonton Pemain
 scenecraft.gui.playeroverview.remembersettings=Ingat Pemain yang Disembunyikan
-scenecraft.gui.playeroverview.remembersettings.description=Menyimpan Status Tampilan Pemain di Berkas Rekaman
+scenecraft.gui.playeroverview.remembersettings.description=Menyimpan visibilitas pemain di file Replay
 
 #SceneCraft Settings GUI
 scenecraft.gui.settings.title=Pengaturan SceneCraft
-scenecraft.gui.settings.default=BAWAAN
+scenecraft.gui.settings.default=DEFAULT
 
 scenecraft.gui.settings.notifications=Aktifkan Notifikasi
 scenecraft.gui.settings.recordserver=Rekam Server
-scenecraft.gui.settings.recordsingleplayer=Rekam Singleplayer
+scenecraft.gui.settings.recordsingleplayer=Rekam Mode Satu Pemain
 scenecraft.gui.settings.indicator=Indikator Perekaman
 scenecraft.gui.settings.pathpreview=Tampilkan Pratinjau Jalur
 scenecraft.gui.settings.camera=Kamera
 scenecraft.gui.settings.showchat=Tampilkan Obrolan
-scenecraft.gui.settings.interpolator=Interpolator Bawaan
-scenecraft.gui.settings.autostartrecording=Mulai Merekam Otomatis
-scenecraft.gui.settings.rename_recording_dialog=Dialog Ubah Nama
-scenecraft.gui.settings.fullbrightness=Terang Maksimal
+scenecraft.gui.settings.interpolator=Interpolator Default
+scenecraft.gui.settings.autostartrecording=Perekaman Otomatis
+scenecraft.gui.settings.rename_recording_dialog=Dialog Ganti Nama
+scenecraft.gui.settings.fullbrightness=Kecerahan Penuh
 scenecraft.gui.settings.fullbrightness.gamma=Gamma
 scenecraft.gui.settings.fullbrightness.nightvision=Penglihatan Malam
 scenecraft.gui.settings.fullbrightness.both=Keduanya
 
 #SceneCraft Keybindings
-scenecraft.input.lighting=Beralih Pencahayaan
-scenecraft.input.thumbnail=Ambil Gambar Sampul
-scenecraft.input.playeroverview=Daftar Pemain
-scenecraft.input.clearkeyframes=Bersihkan Keyframe
-scenecraft.input.synctimeline=Sinkronkan Garis Waktu
+scenecraft.input.lighting=Alihkan Pencahayaan
+scenecraft.input.thumbnail=Ambil Thumbnail
+scenecraft.input.playeroverview=Ringkasan Pemain
+scenecraft.input.clearkeyframes=Hapus Semua Keyframe
+scenecraft.input.synctimeline=Sinkronkan Timeline
 scenecraft.input.keyframerepository=Buka Preset Keyframe
-scenecraft.input.rollclockwise=Miringkan Searah Jarum Jam
-scenecraft.input.rollcounterclockwise=Miringkan Berlawanan Jarum Jam
-scenecraft.input.resettilt=Atur Ulang Kemiringan Kamera
-scenecraft.input.playpause=Putar/Jeda Rekaman
-scenecraft.input.marker=Tambah Penanda Kejadian
-scenecraft.input.pathpreview=Beralih Pratinjau Jalur
+scenecraft.input.rollclockwise=Putar Searah Jarum Jam
+scenecraft.input.rollcounterclockwise=Putar Berlawanan Arah Jarum Jam
+scenecraft.input.resettilt=Reset Kemiringan Kamera
+scenecraft.input.playpause=Putar/Jeda Replay
+scenecraft.input.marker=Tambah Penanda Peristiwa
+scenecraft.input.pathpreview=Alihkan Pratinjau Jalur
 scenecraft.input.settings=Pengaturan SceneCraft
 scenecraft.input.quickmode=Mode Cepat
-scenecraft.input.positionkeyframe=Keyframe Posisi/Kamera
-scenecraft.input.positiononlykeyframe=Keyframe Posisi Saja
+scenecraft.input.positionkeyframe=Keyframe Posisi/Spectator
+scenecraft.input.positiononlykeyframe=Keyframe Posisi
 scenecraft.input.timekeyframe=Keyframe Waktu
-scenecraft.input.bothkeyframes=Keyframe Posisi + Waktu
+scenecraft.input.bothkeyframes=Keyframe Posisi/Spectator + Waktu
 
 # CameraControllers
 scenecraft.camera.classic=Klasik
-scenecraft.camera.vanilla=Mirip Vanilla
+scenecraft.camera.vanilla=Ala Vanilla
 
 #Keyframe Presets GUI
-scenecraft.gui.keyframerepository.title=Daftar Preset Keyframe
+scenecraft.gui.keyframerepository.title=Repositori Keyframe
 
 #Edit Keyframe GUI
 scenecraft.gui.editkeyframe.title.pos=Edit Keyframe Posisi
 scenecraft.gui.editkeyframe.title.time=Edit Keyframe Waktu
-scenecraft.gui.editkeyframe.title.marker=Edit Penanda Kejadian
-scenecraft.gui.editkeyframe.title.spec=Edit Keyframe Kamera
+scenecraft.gui.editkeyframe.title.marker=Edit Penanda Peristiwa
+scenecraft.gui.editkeyframe.title.spec=Edit Keyframe Spectator
 scenecraft.gui.editkeyframe.xpos=Posisi X
 scenecraft.gui.editkeyframe.ypos=Posisi Y
 scenecraft.gui.editkeyframe.zpos=Posisi Z
 scenecraft.gui.editkeyframe.campitch=Pitch Kamera
 scenecraft.gui.editkeyframe.camyaw=Yaw Kamera
 scenecraft.gui.editkeyframe.camroll=Roll Kamera
-scenecraft.gui.editkeyframe.timelineposition=Posisi Garis Waktu
-scenecraft.gui.editkeyframe.markername=Nama Penanda Kejadian
+scenecraft.gui.editkeyframe.timelineposition=Posisi di Timeline
+scenecraft.gui.editkeyframe.markername=Nama Penanda Peristiwa
 scenecraft.gui.editkeyframe.timestamp=Indeks Waktu
 
 scenecraft.gui.editkeyframe.interpolator=Interpolator
-scenecraft.gui.editkeyframe.interpolator.default.name=Interpolator Bawaan
-scenecraft.gui.editkeyframe.interpolator.default.desc=Menggunakan interpolator bawaan yang diatur di Pengaturan SceneCraft.
-scenecraft.gui.editkeyframe.interpolator.catmullrom.name=Interpolator Catmull Rom Spline
-scenecraft.gui.editkeyframe.interpolator.catmullrom.desc=Menghitung kurva catmull rom dengan nilai alpha yang bisa disesuaikan agar pergerakan jalur kamera presisi dan mulus.
-scenecraft.gui.editkeyframe.interpolator.catmullrom.alpha=Alpha:
-scenecraft.gui.editkeyframe.interpolator.cubic.name=Interpolator Cubic Spline
-scenecraft.gui.editkeyframe.interpolator.cubic.desc=Menghitung matriks persamaan kubik untuk semua titik agar jalur kamera menjadi halus.
+scenecraft.gui.editkeyframe.interpolator.default.name=Interpolator Default
+scenecraft.gui.editkeyframe.interpolator.default.desc=Menggunakan interpolator default yang diatur di Pengaturan SceneCraft.
+scenecraft.gui.editkeyframe.interpolator.catmullrom.name=Interpolator Spline Catmull-Rom
+scenecraft.gui.editkeyframe.interpolator.catmullrom.desc=Menghitung spline Catmull-Rom dengan nilai alfa yang bisa diatur untuk mengontrol ketegangan dan kehalusan jalur kamera secara presisi.
+scenecraft.gui.editkeyframe.interpolator.catmullrom.alpha=Alfa:
+scenecraft.gui.editkeyframe.interpolator.cubic.name=Interpolator Spline Kubik
+scenecraft.gui.editkeyframe.interpolator.cubic.desc=Menghitung matriks persamaan kubik untuk semua titik demi jalur kamera yang halus.
 scenecraft.gui.editkeyframe.interpolator.linear.name=Interpolator Linear
-scenecraft.gui.editkeyframe.interpolator.linear.desc=Menciptakan garis lurus antar keyframe.
+scenecraft.gui.editkeyframe.interpolator.linear.desc=Menggambar garis lurus di antara keyframe.
 
 #Render Settings GUI
 scenecraft.gui.rendersettings.addtoqueue=Tambah ke Antrean
 
-scenecraft.gui.rendersettings.renderer=Metode Perenderan
+scenecraft.gui.rendersettings.renderer=Metode Render
 
-scenecraft.gui.rendersettings.renderer.default=Render Bawaan
+scenecraft.gui.rendersettings.renderer.default=Render Default
 scenecraft.gui.rendersettings.renderer.stereoscopic=Render Stereoskopik
-scenecraft.gui.rendersettings.renderer.cubic=Render Kubik (360°)
-scenecraft.gui.rendersettings.renderer.equirectangular=Render Ekuirektangular (360°)
-scenecraft.gui.rendersettings.renderer.ods=Render ODS (VR)
-scenecraft.gui.rendersettings.renderer.blend=Ekspor ke Blender [Uji Coba]
+scenecraft.gui.rendersettings.renderer.cubic=Render Kubik
+scenecraft.gui.rendersettings.renderer.equirectangular=Render Equirectangular
+scenecraft.gui.rendersettings.renderer.ods=Render ODS
+scenecraft.gui.rendersettings.renderer.blend=Ekspor ke Blender [Eksperimental]
 
-scenecraft.gui.rendersettings.renderer.default.description=Merender video sesuai resolusi yang ditentukan. Opsi perenderan tercepat.
-scenecraft.gui.rendersettings.renderer.stereoscopic.description=Merender video sebagai film 3D stereoskopik (samping-ke-samping) untuk teknologi 3D. Lebar gambar untuk satu mata adalah setengah dari lebar video.
-scenecraft.gui.rendersettings.renderer.cubic.description=Merender video dengan tampilan panorama 360 derajat menggunakan Proyeksi Kubik. Cocok untuk pemutar video 360 derajat (dan Oculus Rift), seperti VR Player.
-scenecraft.gui.rendersettings.renderer.equirectangular.description=Merender video dengan tampilan panorama 360 derajat menggunakan Proyeksi Ekuirektangular. Cocok untuk fitur video 360 YouTube dan pemutar video VR.
-scenecraft.gui.rendersettings.renderer.ods.description=Merender video dengan tampilan panorama 360 derajat 3D stereoskopik (Video VR). Cocok untuk fitur video VR YouTube.
-scenecraft.gui.rendersettings.renderer.blend.description=Mengekspor geometri yang terlihat sebagai file .blend yang dapat dibuka di software Blender. Sangat eksperimental: Membutuhkan banyak RAM dan terkadang menghasilkan file Blender yang rusak.
+scenecraft.gui.rendersettings.renderer.default.description=Merender video dengan resolusi yang ditentukan. Opsi render tercepat.
+scenecraft.gui.rendersettings.renderer.stereoscopic.description=Merender video sebagai film 3D stereoskopik (berdampingan) yang bisa dipakai di berbagai teknologi 3D. Gambar untuk satu mata selebar setengah lebar video.
+scenecraft.gui.rendersettings.renderer.cubic.description=Merender video dengan tampilan panorama 360 derajat menggunakan proyeksi kubik. Bisa dipakai di beberapa pemutar video 360 derajat (dan Oculus Rift), misalnya VR Player.
+scenecraft.gui.rendersettings.renderer.equirectangular.description=Merender video dengan tampilan panorama 360 derajat menggunakan proyeksi equirectangular. Bisa dipakai di fitur video 360 derajat YouTube dan beberapa pemutar video (serta Oculus Rift), misalnya VR Player.
+scenecraft.gui.rendersettings.renderer.ods.description=Merender video dengan tampilan panorama 360 derajat 3D stereoskopik, juga dikenal sebagai Video VR. Bisa dipakai di fitur video VR YouTube.
+scenecraft.gui.rendersettings.renderer.blend.description=Mengekspor geometri yang terlihat sebagai file .blend yang bisa dibuka di Blender. Sangat eksperimental: butuh RAM besar, punya cukup banyak masalah yang diketahui, dan terkadang menghasilkan file Blender yang rusak.
 
 scenecraft.gui.rendersettings.customresolution=Resolusi Video
-scenecraft.gui.rendersettings.customresolution.warning.yuv420=Untuk preset ini, nilai lebar dan tinggi harus berupa angka genap
-scenecraft.gui.rendersettings.customresolution.warning.yuv420.cubic=Untuk preset ini, tinggi video harus bisa dibagi 6
-scenecraft.gui.rendersettings.customresolution.warning.cubic.height=Render Kubik membutuhkan tinggi video yang bisa dibagi 3
+scenecraft.gui.rendersettings.customresolution.warning.yuv420=Untuk preset ini, lebar dan tinggi harus berupa bilangan genap
+scenecraft.gui.rendersettings.customresolution.warning.yuv420.cubic=Untuk preset ini, tinggi harus habis dibagi 6
+scenecraft.gui.rendersettings.customresolution.warning.cubic.height=Render Kubik membutuhkan tinggi yang habis dibagi 3
 scenecraft.gui.rendersettings.bitrate=Bitrate
-scenecraft.gui.rendersettings.framerate=Kecepatan Frame (FPS)
-scenecraft.gui.rendersettings.chromakey=Chroma Keying
-scenecraft.gui.rendersettings.nametags=Render Nama Pemain
-scenecraft.gui.rendersettings.includealpha=Pertahankan Saluran Alpha (Transparansi)
-scenecraft.gui.rendersettings.outputfile=Berkas Keluaran
-scenecraft.gui.rendersettings.sphericalFov=FOV Sferis
-scenecraft.gui.rendersettings.sphericalmetadata=Suntikkan Metadata Sferis
-scenecraft.gui.rendersettings.sphericalmetadata.error=Metadata Sferis hanya dapat ditambahkan pada video Ekuirektangular dan ODS berformat MP4
-scenecraft.gui.rendersettings.depthmap=Peta Kedalaman (Depth Map)
-scenecraft.gui.rendersettings.depthmap.only_exr_or_png=Ekspor peta kedalaman hanya didukung pada format OpenEXR atau PNG.
+scenecraft.gui.rendersettings.framerate=Framerate Video
+scenecraft.gui.rendersettings.chromakey=Chroma Key
+scenecraft.gui.rendersettings.nametags=Render Papan Nama
+scenecraft.gui.rendersettings.includealpha=Pertahankan Kanal Alfa
+scenecraft.gui.rendersettings.outputfile=File Keluaran
+scenecraft.gui.rendersettings.sphericalFov=FOV Bola
+scenecraft.gui.rendersettings.sphericalmetadata=Sisipkan Metadata Bola
+scenecraft.gui.rendersettings.sphericalmetadata.error=Metadata Bola hanya bisa ditambahkan ke video Equirectangular dan ODS berformat MP4
+scenecraft.gui.rendersettings.depthmap=Peta kedalaman
+scenecraft.gui.rendersettings.depthmap.only_exr_or_png=Ekspor peta kedalaman hanya didukung dengan format OpenEXR atau PNG.
 scenecraft.gui.rendersettings.camerapath=Ekspor jalur kamera
 
 scenecraft.gui.rendersettings.command=Perintah
-scenecraft.gui.rendersettings.arguments=Argumen Baris Perintah
-scenecraft.gui.rendersettings.ffmpeg.description=Jika kamu pengguna berpengalaman, kamu bisa menyesuaikan parameter baris perintah untuk merender video. Untuk informasi lebih lanjut, cek http://replaymod.com/docs
+scenecraft.gui.rendersettings.arguments=Argumen Command Line
+scenecraft.gui.rendersettings.ffmpeg.description=Jika kamu pengguna tingkat lanjut, kamu bisa mengubah parameter command line yang dipakai untuk mengekspor video. Untuk informasi lebih lanjut, kunjungi http://replaymod.com/docs
 
 scenecraft.gui.rendersettings.stabilizecamera=Stabilkan Kamera
 
 scenecraft.gui.rendersettings.video=Pengaturan Video
 scenecraft.gui.rendersettings.advanced=Pengaturan Lanjutan
-scenecraft.gui.rendersettings.commandline=Pengaturan Baris Perintah
+scenecraft.gui.rendersettings.commandline=Pengaturan Command Line
 
-scenecraft.gui.rendersettings.presets=Preset Enkod
+scenecraft.gui.rendersettings.presets=Preset Encoding
 scenecraft.gui.rendersettings.presets.mp4.custom=MP4 - Bitrate Kustom
-scenecraft.gui.rendersettings.presets.mp4.default=MP4 - Kualitas Standar
-scenecraft.gui.rendersettings.presets.mp4.potato=MP4 - Kualitas Rendah
+scenecraft.gui.rendersettings.presets.mp4.default=MP4 - Kualitas Default
+scenecraft.gui.rendersettings.presets.mp4.potato=MP4 - Kualitas Kentang
 scenecraft.gui.rendersettings.presets.webm.custom=WEBM - Bitrate Kustom
-scenecraft.gui.rendersettings.presets.mkv.lossless=MKV - Tanpa Pengurangan Kualitas (Lossless)
-scenecraft.gui.rendersettings.presets.blend=Berkas .blend
-scenecraft.gui.rendersettings.presets.png=Urutan Gambar PNG
-scenecraft.gui.rendersettings.presets.exr=Urutan Gambar OpenEXR
+scenecraft.gui.rendersettings.presets.mkv.lossless=MKV - Lossless
+scenecraft.gui.rendersettings.presets.blend=File Blend
+scenecraft.gui.rendersettings.presets.png=Urutan PNG
+scenecraft.gui.rendersettings.presets.exr=Urutan OpenEXR
 
 scenecraft.gui.rendersettings.antialiasing=Anti-Aliasing
-scenecraft.gui.rendersettings.antialiasing.none=Matikan
+scenecraft.gui.rendersettings.antialiasing.none=Tidak Ada
 scenecraft.gui.rendersettings.antialiasing.x2=2x
 scenecraft.gui.rendersettings.antialiasing.x4=4x
 scenecraft.gui.rendersettings.antialiasing.x8=8x
@@ -276,28 +276,28 @@ scenecraft.gui.rendering.title=Merender Video
 scenecraft.gui.rendering.pause=Jeda Render
 scenecraft.gui.rendering.resume=Lanjutkan Render
 scenecraft.gui.rendering.cancel=Batalkan Render
-scenecraft.gui.rendering.cancel.callback=Apakah kamu yakin?
-scenecraft.gui.rendering.preview=Tampilkan Pratinjau (Performa mungkin menurun)
-scenecraft.gui.rendering.progress=Frame terender: %1$d / %2$d
+scenecraft.gui.rendering.cancel.callback=Yakin?
+scenecraft.gui.rendering.preview=Tampilkan Pratinjau (performa bisa menurun)
+scenecraft.gui.rendering.progress=Frame dirender: %1$d / %2$d
 scenecraft.gui.rendering.timetaken=Waktu Render
 scenecraft.gui.rendering.timeleft=Sisa Waktu
 
 #Render Errors
-scenecraft.gui.rendering.error.title=Gagal Merender
-scenecraft.gui.rendering.error.message=Untuk merender video, kamu perlu menginstal FFmpeg terlebih dahulu.
-scenecraft.gui.rendering.error.ffmpeglog=Log Keluaran FFmpeg:
-scenecraft.gui.rendering.error.ffmpegargs.1=Sepertinya kamu telah mengubah Argumen Baris Perintah.
-scenecraft.gui.rendering.error.ffmpegargs.2=Apakah kamu ingin mengembalikannya ke pengaturan bawaan dan mencoba lagi?
+scenecraft.gui.rendering.error.title=Render Gagal
+scenecraft.gui.rendering.error.message=Untuk merender video, kamu harus menginstal ffmpeg.
+scenecraft.gui.rendering.error.ffmpeglog=Keluaran FFmpeg:
+scenecraft.gui.rendering.error.ffmpegargs.1=Sepertinya kamu telah mengubah Argumen Command Line.
+scenecraft.gui.rendering.error.ffmpegargs.2=Ingin mengembalikannya ke default dan mencoba lagi?
 
 #Ingame Menu
 scenecraft.gui.ingame.menu.addposkeyframe=Tambah Keyframe Posisi
 scenecraft.gui.ingame.menu.removeposkeyframe=Hapus Keyframe Posisi
-scenecraft.gui.ingame.menu.addspeckeyframe=Tambah Keyframe Kamera
-scenecraft.gui.ingame.menu.removespeckeyframe=Hapus Keyframe Kamera
+scenecraft.gui.ingame.menu.addspeckeyframe=Tambah Keyframe Spectator
+scenecraft.gui.ingame.menu.removespeckeyframe=Hapus Keyframe Spectator
 scenecraft.gui.ingame.menu.addtimekeyframe=Tambah Keyframe Waktu
 scenecraft.gui.ingame.menu.removetimekeyframe=Hapus Keyframe Waktu
-scenecraft.gui.ingame.menu.pause=Jeda Rekaman
-scenecraft.gui.ingame.menu.unpause=Lanjutkan Rekaman
+scenecraft.gui.ingame.menu.pause=Jeda Replay
+scenecraft.gui.ingame.menu.unpause=Lanjutkan Replay
 scenecraft.gui.ingame.menu.renderpath=Render Jalur Kamera
 scenecraft.gui.ingame.menu.playpath=Putar Jalur Kamera dari Posisi Kursor
 scenecraft.gui.ingame.menu.playpathfromstart=Putar Jalur Kamera dari Awal
@@ -305,42 +305,42 @@ scenecraft.gui.ingame.menu.pausepath=Jeda Jalur Kamera
 scenecraft.gui.ingame.menu.zoomin=Perbesar
 scenecraft.gui.ingame.menu.zoomout=Perkecil
 
-scenecraft.gui.ingame.unnamedmarker=Penanda Tanpa Nama
-scenecraft.gui.ingame.autoactivating=Tombol ini dapat aktif secara otomatis pada waktu tertentu.
-scenecraft.gui.ingame.autoactivating.disable=Ctrl-klik untuk mematikan aktivasi otomatis.
-scenecraft.gui.ingame.autoactivating.enable=Ctrl-klik untuk mengaktifkan aktivasi otomatis.
-scenecraft.gui.ingame.first_keyframe_not_at_start_warning=Kamu baru saja menempatkan keyframe pertama dan posisinya tidak di detik 00:00.\n\nIni biasanya menandakan kamu belum memahami cara kerja garis waktu video (yang berada di bawah):\n\nGaris waktu atas menunjukkan waktu di dalam rekaman replay,\nsedangkan garis waktu bawah menunjukkan durasi video yang sedang kamu buat.\nVideo akan selalu dimulai dari 00:00! Jika keyframe pertama tidak di 00:00,\nmaka video akan terlihat membeku sampai waktu keyframe pertama dimulai!
+scenecraft.gui.ingame.unnamedmarker=Penanda Peristiwa Tanpa Nama
+scenecraft.gui.ingame.autoactivating=Tombol ini bisa aktif otomatis pada saat yang tepat.
+scenecraft.gui.ingame.autoactivating.disable=Ctrl + klik untuk menonaktifkan aktivasi otomatis.
+scenecraft.gui.ingame.autoactivating.enable=Ctrl + klik untuk mengaktifkan aktivasi otomatis.
+scenecraft.gui.ingame.first_keyframe_not_at_start_warning=Kamu baru saja menaruh keyframe pertama dan posisinya tidak di 00:00.\n\nBiasanya ini tanda bahwa kamu belum paham cara kerja\ntimeline video (yang di bagian bawah):\n\nTimeline atas menunjukkan waktu saat ini di dalam replay,\nsedangkan timeline bawah menunjukkan waktu di video yang sedang kamu buat.\nVideo selalu dimulai dari 00:00! Jika keyframe pertamamu tidak di 00:00,\nvideo akan terlihat membeku sampai waktu keyframe pertama tiba!
 
 #Clear Keyframe Callback
 scenecraft.gui.clearcallback.title=Hapus semua Keyframe?
 
 #Errors
-scenecraft.error.unknownrestriction1=Rekaman ini tidak dapat diputar di versimu saat ini.
-scenecraft.error.unknownrestriction2=Rekaman ini mencoba menjalankan %s yang tidak dikenali.
-scenecraft.error.negativetime1=Beberapa keyframe waktu tidak berurutan dengan benar.
-scenecraft.error.negativetime2=Pergerakan mundur dalam waktu tidak didukung.
+scenecraft.error.unknownrestriction1=Replay ini tidak bisa diputar dengan versi kamu saat ini.
+scenecraft.error.unknownrestriction2=Replay ini mencoba menerapkan %s yang tidak dikenal.
+scenecraft.error.negativetime1=Beberapa keyframe waktumu tidak berurutan.
+scenecraft.error.negativetime2=Mundur ke belakang dalam waktu tidak didukung.
 scenecraft.error.negativetime3=Bagian yang tidak valid ditandai dengan warna merah.
 
 #SceneCraft Incompatibility Warning
 scenecraft.gui.modwarning.title=Ketidakcocokan terdeteksi
-scenecraft.gui.modwarning.message1=Kemungkinan ketidakcocokan antara versi Minecraft kamu
-scenecraft.gui.modwarning.message2=saat ini dengan Rekaman ini telah terdeteksi.
-scenecraft.gui.modwarning.message3=Memuat Rekaman ini dapat menyebabkan error atau crash.
+scenecraft.gui.modwarning.message1=Terdeteksi kemungkinan ketidakcocokan antara versi
+scenecraft.gui.modwarning.message2=Minecraft kamu saat ini dan Replay ini.
+scenecraft.gui.modwarning.message3=Memuat Replay ini bisa menyebabkan error atau crash.
 scenecraft.gui.modwarning.name=Nama Mod:
 scenecraft.gui.modwarning.id=ID Mod:
 scenecraft.gui.modwarning.missing=Mod yang Hilang
 scenecraft.gui.modwarning.version=Versi Mod Berbeda
-scenecraft.gui.modwarning.version.expected=Dibutuhkan
+scenecraft.gui.modwarning.version.expected=Diharapkan
 scenecraft.gui.modwarning.version.found=Ditemukan
 
 #Advanced Screenshots Gui
-scenecraft.gui.advancedscreenshots.title=Pengaturan Tangkapan Layar
-scenecraft.gui.advancedscreenshots.create=Ambil Tangkapan Layar
+scenecraft.gui.advancedscreenshots.title=Pengaturan Screenshot
+scenecraft.gui.advancedscreenshots.create=Ambil Screenshot
 scenecraft.gui.advancedscreenshots.resolution=Resolusi
 
 # Screenshot Finished Gui
-scenecraft.gui.advancedscreenshots.finished.description=Kamu berhasil mengambil Tangkapan Layar!
-scenecraft.gui.advancedscreenshots.finished.description.360=Kamu berhasil mengambil Tangkapan Layar 360°!
-scenecraft.gui.advancedscreenshots.finished.description.veer=Unggah dan lihat gambar dalam mode VR di VeeR.tv atau buka berkas di komputer.
+scenecraft.gui.advancedscreenshots.finished.description=Kamu berhasil membuat Screenshot!
+scenecraft.gui.advancedscreenshots.finished.description.360=Kamu berhasil membuat Screenshot 360°!
+scenecraft.gui.advancedscreenshots.finished.description.veer=Unggah dan lihat gambarnya dalam VR di VeeR.tv, atau buka dari disk kamu.
 scenecraft.gui.advancedscreenshots.finished.upload.veer=Unggah ke VeeR.tv
-scenecraft.gui.advancedscreenshots.finished.showfile=Tampilkan berkas di folder
+scenecraft.gui.advancedscreenshots.finished.showfile=Tampilkan file di disk
