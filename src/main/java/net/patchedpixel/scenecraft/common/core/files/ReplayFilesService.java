@@ -15,7 +15,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -69,6 +71,12 @@ public class ReplayFilesService {
     }
 
     public void initialScan(SceneCraft core) {
+        Thread scanner = new Thread(() -> scan(core), "scenecraft-initial-scan");
+        scanner.setDaemon(true);
+        scanner.start();
+    }
+
+    private void scan(SceneCraft core) {
         // Move anything which is still in the record folder into the regular replay folder
         // so it can be opened and/or recovered
         try (DirectoryStream<Path> paths = Files.newDirectoryStream(folders.getRecordingFolder())) {
@@ -84,6 +92,7 @@ public class ReplayFilesService {
         }
 
         // Restore corrupted replays
+        List<Path> toRestore = new ArrayList<>();
         try (DirectoryStream<Path> paths = Files.newDirectoryStream(folders.getReplayFolder())) {
             for(Path path : paths) {
                 String name = path.getFileName().toString();
@@ -97,15 +106,22 @@ public class ReplayFilesService {
                         Files.delete(noRecoverMarker);
                         continue;
                     }
-                    new RestoreReplayGui(core, core.getMinecraft().screen, original.toFile()).display();
+                    toRestore.add(original);
                 }
             }
         } catch(IOException e) {
             e.printStackTrace();
         }
+        if(!toRestore.isEmpty()) {
+            core.runLater(() -> {
+                for(Path original : toRestore) {
+                    new RestoreReplayGui(core, core.getMinecraft().screen, original.toFile()).display();
+                }
+            });
+        }
 
-        // Run general purpose, non-essential cleanup in a background thread
-        new Thread(this::cleanup, "scenecraft-cleanup").start();
+        // Run general purpose, non-essential cleanup
+        cleanup();
     }
 
     private void cleanup() {

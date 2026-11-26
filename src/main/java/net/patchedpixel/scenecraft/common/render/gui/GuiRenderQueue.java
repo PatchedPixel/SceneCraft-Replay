@@ -6,7 +6,6 @@ import net.minecraft.CrashReport;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
@@ -23,8 +22,11 @@ import net.patchedpixel.scenecraft.common.replay.ReplaySender;
 import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.path.Timeline;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
-import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
+import net.patchedpixel.scenecraft.common.flamex.FlameXTheme;
+import net.patchedpixel.scenecraft.common.flamex.widget.NineSlice;
+import net.patchedpixel.scenecraft.common.flamex.widget.SelectableList;
 import net.patchedpixel.scenecraft.common.utils.Result;
 import net.patchedpixel.scenecraft.common.utils.Utils;
 import org.apache.commons.io.IOUtils;
@@ -51,17 +53,17 @@ public class GuiRenderQueue extends FlameableScreen {
     private final Set<JobEntry> selectedEntries = new LinkedHashSet<>();
     private boolean opened;
 
-    private JobList list;
+    private SelectableList<JobEntry> list;
     private Button addButton, editButton, removeButton, renderButton;
 
     public GuiRenderQueue(Screen container, ReplayHandler replayHandler, Supplier<Result<Timeline, String[]>> timelineSupplier) {
         super("scenecraft.gui.renderqueue.title", container);
-        this.panel = true;
+        this.drawTitle = false;
         this.container = container;
         this.replayHandler = replayHandler;
         this.timelineSupplier = timelineSupplier;
         LOGGER.trace("Opening render queue popup");
-        this.background = Background.DEFAULT;
+        this.background = Background.NONE;
     }
 
     @Override
@@ -69,11 +71,36 @@ public class GuiRenderQueue extends FlameableScreen {
 
     @Override
     protected void init() {
-        list = new JobList();
-        for(RenderJob renderJob : jobs) {
-            list.add(new JobEntry(renderJob));
-        }
         selectedEntries.removeIf(e -> !jobs.contains(e.job));
+        Set<JobEntry> keep = new LinkedHashSet<>(selectedEntries);
+
+        int lineHeight = MCVer.getFontRenderer().lineHeight;
+        int contentWidth = width - 40;
+        int contentHeight = height - 20 - 45 - lineHeight;
+        int contentX = 20;
+        int contentY = (height - (contentHeight + 20)) / 2 + 10;
+        popupX = contentX - 10;
+        popupY = contentY - 10;
+        popupWidth = contentWidth + 20;
+        popupHeight = contentHeight + 20;
+        titleY = contentY;
+
+        list = new SelectableList<>(contentWidth, contentHeight - 45 - (lineHeight + 5) - 10, 305, 16, selectedEntries,
+                e -> e.job.getName(), (entry, ctrl) -> {
+            if(!ctrl) selectedEntries.clear();
+            if(!selectedEntries.remove(entry)) selectedEntries.add(entry);
+            updateButtons();
+        });
+        for(RenderJob renderJob : jobs) {
+            JobEntry entry = new JobEntry(renderJob);
+            for(JobEntry old : keep) {
+                if(old.job == renderJob) {
+                    selectedEntries.remove(old);
+                    selectedEntries.add(entry);
+                }
+            }
+            list.add(entry);
+        }
 
         addButton = FlameX.button("scenecraft.gui.renderqueue.add", 150, () ->
                 addButtonClicked().ifErr(lines -> MCVer.getMinecraft().setScreen(FlameX.info(this::display, lines))));
@@ -93,20 +120,38 @@ public class GuiRenderQueue extends FlameableScreen {
         });
         Button closeButton = FlameX.button("scenecraft.gui.close", 150, this::close);
 
-        int bottom = height - 10;
-        int row2 = bottom - 20;
-        int row1 = row2 - 25;
-        addButton.setPosition(width / 2 - 155, row1);
-        renderButton.setPosition(width / 2 + 5, row1);
-        editButton.setPosition(width / 2 - 155, row2);
-        removeButton.setPosition(width / 2 - 77, row2);
-        closeButton.setPosition(width / 2 + 5, row2);
-        list.updateSize(width, row1 - 10 - 35, 35, row1 - 10);
+        int buttonsX = width / 2 - 305 / 2;
+        int row1 = contentY + contentHeight - 45;
+        int row2 = row1 + 25;
+        addButton.setPosition(buttonsX, row1);
+        renderButton.setPosition(buttonsX + 155, row1);
+        editButton.setPosition(buttonsX, row2);
+        removeButton.setPosition(buttonsX + 77, row2);
+        closeButton.setPosition(buttonsX + 155, row2);
+        list.setPosition(contentX, contentY + lineHeight + 5);
         addRenderableWidget(list);
         for(Button b : new Button[]{addButton, renderButton, editButton, removeButton, closeButton}) {
             addRenderableWidget(b);
         }
         updateButtons();
+    }
+
+    private int popupX, popupY, popupWidth, popupHeight, titleY;
+
+    @Override
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+        if(parent != null) {
+            parent.render(graphics, -1, -1, partialTicks);
+        } else {
+            renderBackground(graphics);
+        }
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, 10);
+        graphics.fill(0, 0, width, height, FlameXTheme.DIM);
+        NineSlice.panel(graphics, popupX, popupY, popupWidth, popupHeight);
+        graphics.drawString(font, title, width / 2 - font.width(title) / 2, titleY, FlameXTheme.TEXT_ON_PANEL | 0xFF000000, false);
+        super.render(graphics, mouseX, mouseY, partialTicks);
+        graphics.pose().popPose();
     }
 
     private void renderClicked() {
@@ -229,7 +274,7 @@ public class GuiRenderQueue extends FlameableScreen {
         return addJob(timeline, null);
     }
 
-        public GuiRenderSettings addJob(Timeline timeline, Runnable afterAdd) {
+    public GuiRenderSettings addJob(Timeline timeline, Runnable afterAdd) {
         Screen settingsParent = opened ? this : container;
         GuiRenderSettings settings = new GuiRenderSettings(settingsParent, replayHandler, timeline);
         if(!jobs.isEmpty()) {
@@ -259,7 +304,7 @@ public class GuiRenderQueue extends FlameableScreen {
         return settings;
     }
 
-        public void open() {
+    public void open() {
         if(jobs.isEmpty() && timelineSupplier != null) {
             addButtonClicked().ifErr(lines ->
                     MCVer.getMinecraft().setScreen(FlameX.info(() -> MCVer.getMinecraft().setScreen(container), lines)));
@@ -295,8 +340,8 @@ public class GuiRenderQueue extends FlameableScreen {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if(Screen.hasControlDown() && keyCode == InputConstants.KEY_A) {
-            if(selectedEntries.size() < list.children().size()) {
-                selectedEntries.addAll(list.children());
+            if(selectedEntries.size() < list.items().size()) {
+                selectedEntries.addAll(list.items());
             } else {
                 selectedEntries.clear();
             }
@@ -306,61 +351,11 @@ public class GuiRenderQueue extends FlameableScreen {
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
-    private class JobList extends ObjectSelectionList<JobEntry> {
-        JobList() {
-            super(MCVer.getMinecraft(), 100, 100, 35, 100, 18);
-            setRenderBackground(false);
-            setRenderTopAndBottom(false);
-        }
-
-        void add(JobEntry e) {
-            addEntry(e);
-        }
-
-        @Override
-        public int getRowWidth() {
-            return 300;
-        }
-
-        @Override
-        protected boolean isSelectedItem(int index) {
-            return index >= 0 && index < children().size() && selectedEntries.contains(children().get(index));
-        }
-    }
-
-    public class JobEntry extends ObjectSelectionList.Entry<JobEntry> {
+    public class JobEntry {
         public final RenderJob job;
 
         public JobEntry(RenderJob job) {
             this.job = job;
-        }
-
-        @Override
-        public void render(GuiGraphics graphics, int index, int top, int left, int width, int height,
-                           int mouseX, int mouseY, boolean hovered, float partialTick) {
-            if(selectedEntries.contains(this)) {
-                graphics.fill(left, top, left + width, top + height, 0xFF000000);
-                graphics.fill(left, top, left + 2, top + height, 0xFFFFFFFF);
-            }
-            graphics.drawString(MCVer.getFontRenderer(), job.getName(), left + 5, top + 4, 0xFFFFFFFF, true);
-        }
-
-        @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            if(button != 0) return false;
-            if(!Screen.hasControlDown()) {
-                selectedEntries.clear();
-            }
-            if(!selectedEntries.remove(this)) {
-                selectedEntries.add(this);
-            }
-            updateButtons();
-            return true;
-        }
-
-        @Override
-        public Component getNarration() {
-            return MCVer.literalText(job.getName());
         }
 
         public GuiRenderSettings edit() {

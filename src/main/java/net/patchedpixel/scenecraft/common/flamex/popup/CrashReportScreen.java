@@ -3,7 +3,7 @@ package net.patchedpixel.scenecraft.common.flamex.popup;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
-import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import net.patchedpixel.scenecraft.common.flamex.widget.TextListWidget;
 
@@ -13,6 +13,7 @@ public class CrashReportScreen extends FlameableScreen {
 
     public CrashReportScreen(Screen parent, String crashReport, Runnable onClosed) {
         super("scenecraft.gui.unknownerror", parent);
+        this.dim = true;
         this.crashReport = crashReport;
         this.onClosed = onClosed;
     }

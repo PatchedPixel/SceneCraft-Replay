@@ -7,7 +7,7 @@ import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.patchedpixel.scenecraft.common.scenestudio.data.Marker;
-import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import net.patchedpixel.scenecraft.common.flamex.widget.NumberBox;
 
@@ -29,6 +29,7 @@ public class GuiEditMarkerPopup extends FlameableScreen {
     public GuiEditMarkerPopup(Screen parent, Marker marker, Consumer<Marker> onSave) {
         super("scenecraft.gui.editkeyframe.title.marker", parent, 5);
         this.panel = true;
+        this.dim = true;
         this.onSave = onSave;
         nameField.setValue(Strings.nullToEmpty(marker.getName()));
         timeField.setNumber(marker.getTime());

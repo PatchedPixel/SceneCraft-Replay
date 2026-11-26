@@ -14,7 +14,7 @@ import net.patchedpixel.scenecraft.common.SceneCraft;
 import net.patchedpixel.scenecraft.common.core.SettingsRegistry;
 import net.patchedpixel.scenecraft.common.record.ServerInfoExt;
 import net.patchedpixel.scenecraft.common.record.Setting;
-import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.core.versions.ScreenWidgets;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import net.patchedpixel.scenecraft.common.flamex.event.EventRegistrations;

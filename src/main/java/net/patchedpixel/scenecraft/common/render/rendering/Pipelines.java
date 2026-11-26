@@ -77,8 +77,7 @@ public class Pipelines {
         if(!RenderSettings.RenderMethod.ODS.isSupported()) {
             throw new UnsupportedOperationException("ODS rendering requires Iris on the OpenGL backend");
         }
-        FrameCapturer<ODSGpuFrame> capturer =
-                new IrisODSFrameCapturer(worldRenderer, renderInfo, processor.getFrameSize());
+        FrameCapturer<ODSGpuFrame> capturer = new IrisODSFrameCapturer(worldRenderer, renderInfo, processor.getFrameSize());
         return new Pipeline<>(worldRenderer, capturer, processor, consumer);
     }
 }

@@ -9,6 +9,8 @@ import java.math.RoundingMode;
 
 public class NumberBox extends EditBox {
     private final int precision;
+    private double min = Double.NEGATIVE_INFINITY;
+    private double max = Double.POSITIVE_INFINITY;
 
     public NumberBox(int width, int precision) {
         super(MCVer.getFontRenderer(), 0, 0, width, 20, Component.empty());
@@ -17,6 +19,22 @@ public class NumberBox extends EditBox {
         setMaxLength(64);
         setFilter(s -> precision == 0 ? s.matches("-?\\d*") : s.matches("-?\\d*\\.?\\d*"));
         setValue(precision == 0 ? "0" : "0.0");
+    }
+
+    public NumberBox setRange(double min, double max) {
+        this.min = min;
+        this.max = max;
+        return this;
+    }
+
+    @Override
+    public void setFocused(boolean focused) {
+        super.setFocused(focused);
+        if(!focused) {
+            double value = getDouble();
+            double clamped = Math.max(min, Math.min(max, value));
+            if(clamped != value || getValue().isEmpty() || getValue().equals("-")) setNumber(clamped);
+        }
     }
 
     public void setNumber(double value) {

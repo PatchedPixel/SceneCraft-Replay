@@ -161,6 +161,7 @@ tasks.named('shadowJar') {
     from(zipTree(jarTask.flatMap { it.archiveFile })) {
         include "${mod_id}.refmap.json"
     }
+    from('CONTRIBUTORS.txt')
 
     manifest {
         attributes(['MixinConfigs': "${mod_id}.mixins.json,${mod_id}.platform.mixins.json"])
@@ -233,6 +234,8 @@ tasks.named('jar', Jar) {
                 'MixinConfigs'            : "${mod_id}.mixins.json,${mod_id}.platform.mixins.json"
         ])
     }
+    from('CONTRIBUTORS.txt')
+
     archiveClassifier = 'slim-unobfuscated'
     destinationDirectory = layout.buildDirectory.dir('intermediates')
 }

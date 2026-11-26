@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScrollView extends AbstractWidget {
-    private static final int STEP = 20;
+    private static final int STEP = 30;
     private static final int PADDING = 5;
     private static final int SLIDER_WIDTH = 6;
     private static final int SLIDER_GAP = 3;

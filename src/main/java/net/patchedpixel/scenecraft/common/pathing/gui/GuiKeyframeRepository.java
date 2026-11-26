@@ -19,7 +19,7 @@ import net.patchedpixel.scenecraft.common.scenestudio.pathing.path.Path;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.path.Timeline;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.serialize.TimelineSerialization;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
-import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import net.patchedpixel.scenecraft.common.flamex.popup.PromptScreen;
 import net.patchedpixel.scenecraft.common.utils.Utils;
@@ -321,7 +321,7 @@ public class GuiKeyframeRepository extends FlameableScreen {
                 graphics.fill(left, top, left + width, top + height, 0xFF000000);
                 graphics.fill(left, top, left + 2, top + height, 0xFFFFFFFF);
             }
-            graphics.drawString(MCVer.getFontRenderer(), name, left + 5, top + 4, 0xFFFFFFFF, true);
+            graphics.drawString(MCVer.getFontRenderer(), name, left + 5, top + 4, 0xFFFFFFFF, false);
         }
 
         @Override

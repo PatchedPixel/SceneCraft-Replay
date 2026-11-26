@@ -1,5 +1,6 @@
 package net.patchedpixel.scenecraft.common.flamex.widget;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
@@ -35,6 +36,15 @@ public class SpriteButton extends Button {
 
     public SpriteButton uv(int u, int v) {
         return uv(() -> u, () -> v);
+    }
+
+    public void pressWithSound() {
+        if(!active) {
+            return;
+        }
+
+        playDownSound(Minecraft.getInstance().getSoundManager());
+        onPress();
     }
 
     public SpriteButton dynamicTooltip(Supplier<Component> text) {

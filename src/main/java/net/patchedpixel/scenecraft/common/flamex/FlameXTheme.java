@@ -18,6 +18,7 @@ public final class FlameXTheme {
     public static final int TITLE_COLOR = 0xFFFFFF;
     public static final int TITLE_Y = 10;
     public static final int TEXT_ON_PANEL = 0x000000;
+    public static final int DIM = 0xC0000000;
     public static final int SCRIM = 0xE6000000;
     public static final int SLIDER_TRACK = 0xFF000000;
     public static final int SLIDER_THUMB = 0xFFC0C0C0;

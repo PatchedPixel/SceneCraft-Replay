@@ -12,7 +12,7 @@ import net.patchedpixel.scenecraft.common.editor.SceneCraftEditor;
 import net.patchedpixel.scenecraft.common.replay.gui.overlay.GuiMarkerTimeline;
 import net.patchedpixel.scenecraft.common.scenestudio.data.Marker;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
-import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import net.patchedpixel.scenecraft.common.flamex.popup.ProgressPopup;
 import net.patchedpixel.scenecraft.common.flamex.widget.ScrollbarWidget;
@@ -28,7 +28,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class GuiEditReplay extends FlameableScreen {
     private static final Logger LOGGER = LogManager.getLogger();
@@ -42,9 +41,10 @@ public class GuiEditReplay extends FlameableScreen {
     protected GuiEditReplay(Screen parent, Path inputPath) throws IOException {
         super("scenecraft.gui.edit", parent, 10);
         this.panel = true;
+        this.dim = true;
         this.inputPath = inputPath;
 
-        LOGGER.info("Opening replay in editor: " + inputPath);
+        LOGGER.info("Opening replay in editor: {}", inputPath);
 
         try (ReplayFile replayFile = SceneCraft.instance.files.open(inputPath)) {
             markers = replayFile.getMarkers().orElseGet(HashSet::new);
@@ -144,7 +144,7 @@ public class GuiEditReplay extends FlameableScreen {
         super.close();
     }
 
-    private class EditTimeline extends GuiMarkerTimeline {
+    private static class EditTimeline extends GuiMarkerTimeline {
         EditTimeline(Set<Marker> markers, Consumer<Set<Marker>> saveMarkers) {
             super(markers, saveMarkers);
         }
@@ -170,7 +170,7 @@ public class GuiEditReplay extends FlameableScreen {
         private void drawCutQuads(GuiGraphics graphics) {
             boolean inCut = false;
             int startTime = 0;
-            for(Marker marker : markers.stream().sorted(Comparator.comparing(Marker::getTime)).collect(Collectors.toList())) {
+            for(Marker marker : markers.stream().sorted(Comparator.comparing(Marker::getTime)).toList()) {
                 if(MarkerProcessor.MARKER_NAME_START_CUT.equals(marker.getName()) && !inCut) {
                     inCut = true;
                     startTime = marker.getTime();

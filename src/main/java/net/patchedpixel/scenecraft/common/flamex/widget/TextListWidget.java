@@ -52,7 +52,7 @@ public class TextListWidget extends ObjectSelectionList<TextListWidget.Line> {
                            int mouseX, int mouseY, boolean hovered, float partialTick) {
             var font = MCVer.getFontRenderer();
             int x = centered ? left + (width - font.width(text)) / 2 : left;
-            graphics.drawString(font, text, x, top + 2, 0xFFFFFFFF, true);
+            graphics.drawString(font, text, x, top + 2, 0xFFFFFFFF, false);
         }
 
         @Override

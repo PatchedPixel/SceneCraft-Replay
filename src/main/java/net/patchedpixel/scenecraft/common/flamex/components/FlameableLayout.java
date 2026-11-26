@@ -1,4 +1,4 @@
-package net.patchedpixel.scenecraft.common.flamex;
+package net.patchedpixel.scenecraft.common.flamex.components;
 
 import net.minecraft.client.gui.layouts.Layout;
 import net.minecraft.client.gui.layouts.LayoutElement;
@@ -23,6 +23,10 @@ public final class FlameableLayout extends LinearLayout {
         } else {
             defaultChildLayoutSetting().padding(0, childPadding).alignHorizontallyCenter();
         }
+    }
+
+    public int verticalOuterPadding() {
+        return horizontal ? 0 : childPadding;
     }
 
     @Override

@@ -1,16 +1,11 @@
 package net.patchedpixel.scenecraft.common.render.hooks;
 
 import net.patchedpixel.scenecraft.common.render.utils.FlawlessFrames;
-import net.minecraft.client.renderer.LevelRenderer;
 
 public class ForceChunkLoadingHook {
     public static boolean enabled;
 
-    private final LevelRenderer hooked;
-
-    public ForceChunkLoadingHook(LevelRenderer renderGlobal) {
-        this.hooked = renderGlobal;
-
+    public ForceChunkLoadingHook() {
         enabled = true;
         FlawlessFrames.setEnabled(true);
     }

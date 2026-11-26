@@ -29,7 +29,7 @@ public class ScreenshotRenderer implements RenderInfo {
             int widthBefore = window.getWidth();
             int heightBefore = window.getHeight();
 
-            ForceChunkLoadingHook clrg = new ForceChunkLoadingHook(mc.levelRenderer);
+            ForceChunkLoadingHook clrg = new ForceChunkLoadingHook();
 
             Pipelines.newPipeline(settings.getRenderMethod(), this,
                     new ScreenshotWriter(settings.getOutputFile())).run();

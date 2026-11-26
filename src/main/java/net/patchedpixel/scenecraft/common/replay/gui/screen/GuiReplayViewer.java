@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.ChatFormatting;
 import net.minecraft.CrashReport;
 import net.minecraft.ReportedException;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -25,10 +24,11 @@ import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;
 import net.patchedpixel.scenecraft.common.replay.Setting;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayMetaData;
-import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.popup.MessageScreen;
 import net.patchedpixel.scenecraft.common.flamex.popup.PopupScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
+import net.patchedpixel.scenecraft.common.flamex.FlameXTheme;
 import net.patchedpixel.scenecraft.common.flamex.util.Image;
 import net.patchedpixel.scenecraft.common.flamex.widget.SpriteButton;
 import net.patchedpixel.scenecraft.common.utils.Utils;
@@ -38,6 +38,7 @@ import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -65,15 +66,7 @@ import static net.patchedpixel.scenecraft.common.core.versions.MCVer.identifier;
 import static net.patchedpixel.scenecraft.common.replay.SceneCraftReplay.LOGGER;
 
 public class GuiReplayViewer extends FlameableScreen {
-        public static final class ExtraButton {
-        public final String labelKey;
-        public final BiConsumer<GuiReplayViewer, File> action;
-
-        public ExtraButton(String labelKey, BiConsumer<GuiReplayViewer, File> action) {
-            this.labelKey = labelKey;
-            this.action = action;
-        }
-    }
+    public record ExtraButton(String labelKey, BiConsumer<GuiReplayViewer, File> action) {}
 
     public static final List<ExtraButton> EXTRA_BUTTONS = new ArrayList<>();
 
@@ -90,6 +83,7 @@ public class GuiReplayViewer extends FlameableScreen {
 
     public GuiReplayViewer(SceneCraftReplay mod) {
         super("scenecraft.gui.replayviewer", null);
+        this.drawTitle = false;
         this.mod = mod;
         this.list = new GuiReplayList(this);
         this.list.onSelectionChanged = this::updateButtons;
@@ -131,6 +125,10 @@ public class GuiReplayViewer extends FlameableScreen {
     protected void init() {
         replaySpecificButtons.clear();
 
+        int listBottom = height - 10 - 20 - 25 - 10;
+        list.updateSize(width, listBottom - 30, 30, listBottom);
+        addRenderableWidget(list);
+
         loadButton = FlameX.button(Component.translatable("scenecraft.gui.load"), 150, this::loadSelected);
         renameButton = FlameX.button("scenecraft.gui.rename", 73, this::rename);
         deleteButton = FlameX.button("scenecraft.gui.delete", 73, this::deleteSelected);
@@ -154,8 +152,10 @@ public class GuiReplayViewer extends FlameableScreen {
         int bottom = height - 10;
         int lowerY = bottom - 20;
         int upperY = lowerY - 25;
-        loadButton.setPosition(width / 2 - 75, upperY);
         int x = width / 2 - lowerWidth / 2;
+        int inset = (lowerWidth - 150) / 2;
+        loadButton.setWidth(lowerWidth - inset * 2);
+        loadButton.setPosition(x + inset, upperY);
         for(Button b : lower) {
             b.setPosition(x, lowerY);
             x += 78;
@@ -169,8 +169,6 @@ public class GuiReplayViewer extends FlameableScreen {
         settingsButton.setPosition(width - 20 - 5, 5);
         addRenderableWidget(settingsButton);
 
-        list.updateSize(width, upperY - 10 - 30, 30, upperY - 10);
-        addRenderableWidget(list);
         updateButtons();
     }
 
@@ -209,7 +207,7 @@ public class GuiReplayViewer extends FlameableScreen {
         List<GuiReplayEntry> selected = list.getSelectedEntries();
         if(selected.size() == 1) {
             File file = selected.get(0).file;
-            LOGGER.info("Opening replay in viewer: " + file);
+            LOGGER.info("Opening replay in viewer: {}", file);
             try {
                 mod.startReplay(file);
             } catch(IOException e) {
@@ -242,6 +240,7 @@ public class GuiReplayViewer extends FlameableScreen {
 
         RenameScreen(Screen parent, Path path, String initialName) {
             super(parent, 7);
+            this.dim = true;
             this.path = path;
             this.initialName = initialName;
         }
@@ -355,6 +354,7 @@ public class GuiReplayViewer extends FlameableScreen {
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         super.render(graphics, mouseX, mouseY, partialTicks);
+        graphics.drawString(font, title, width / 2 - font.width(title) / 2, FlameXTheme.TITLE_Y, FlameXTheme.TITLE_COLOR | 0xFF000000, false);
         String filter = list.filter;
         if(!filter.isEmpty()) {
             var font = MCVer.getFontRenderer();
@@ -383,7 +383,6 @@ public class GuiReplayViewer extends FlameableScreen {
     }
 
     public static class GuiReplayList extends ObjectSelectionList<GuiReplayEntry> {
-        private final GuiReplayViewer screen;
         private File folder = null;
         private final List<GuiReplayEntry> all = new ArrayList<>();
         private final Set<GuiReplayEntry> selection = new LinkedHashSet<>();
@@ -396,10 +395,9 @@ public class GuiReplayViewer extends FlameableScreen {
         Runnable onDoubleClick = () -> {};
 
         GuiReplayList(GuiReplayViewer screen) {
-            super(MCVer.getMinecraft(), 100, 100, 30, 100, 36);
-            this.screen = screen;
-            setRenderBackground(false);
-            setRenderTopAndBottom(false);
+            super(MCVer.getMinecraft(), 100, 100, 30, 100, 34);
+            setRenderBackground(true);
+            setRenderTopAndBottom(true);
         }
 
         public void setFolder(File folder) {
@@ -412,7 +410,17 @@ public class GuiReplayViewer extends FlameableScreen {
 
         @Override
         public int getRowWidth() {
-            return 310;
+            return 304;
+        }
+
+        @Override
+        protected int getScrollbarPosition() {
+            return width / 2 + getRowWidth() / 2 + 3;
+        }
+
+        @Override
+        protected void renderSelection(@NotNull GuiGraphics graphics, int top, int width, int height, int outerColor, int innerColor) {
+            super.renderSelection(graphics, top, width, height, 0xFFC0C0C0, 0xFF000000);
         }
 
         @Override
@@ -470,7 +478,7 @@ public class GuiReplayViewer extends FlameableScreen {
             onSelectionChanged.run();
         }
 
-                public void load() {
+        public void load() {
             final int gen = ++generation;
             for(GuiReplayEntry entry : all) entry.release();
             all.clear();
@@ -586,8 +594,9 @@ public class GuiReplayViewer extends FlameableScreen {
         private final long dateMillis;
         public final boolean incompatible;
         public final List<RenderJob> renderQueue;
-        private ResourceLocation thumbnailLocation;
-        private int thumbW = 1, thumbH = 1;
+        private final ResourceLocation thumbnailLocation;
+        private final int thumbW;
+        private final int thumbH;
         private boolean ownsThumbnail;
 
         public GuiReplayEntry(GuiReplayList list, File file, ReplayMetaData metaData, Image thumbImage, List<RenderJob> renderQueue) {
@@ -595,7 +604,7 @@ public class GuiReplayViewer extends FlameableScreen {
             this.file = file;
             this.renderQueue = renderQueue;
             this.name = Utils.fileNameToReplayName(file.getName());
-            int color = 0xFFAAAAAA;
+            int color = 0xFFC0C0C0;
             if(!StringUtils.isEmpty(metaData.getCustomServerName())) {
                 server = metaData.getCustomServerName();
             } else if(StringUtils.isEmpty(metaData.getServerName())
@@ -642,14 +651,14 @@ public class GuiReplayViewer extends FlameableScreen {
             var font = MCVer.getFontRenderer();
             graphics.blit(thumbnailLocation, left, top, THUMB_W, THUMB_H, 0f, 0f, thumbW, thumbH, thumbW, thumbH);
             int durationWidth = font.width(duration);
-            graphics.fill(left + THUMB_W - durationWidth - 4, top + THUMB_H - font.lineHeight - 4, left + THUMB_W, top + THUMB_H, 0x80000000);
-            graphics.drawString(font, duration, left + THUMB_W - durationWidth - 2, top + THUMB_H - font.lineHeight - 2, 0xFFFFFFFF, true);
+            graphics.fill(left + THUMB_W - durationWidth - 2, top + THUMB_H - font.lineHeight - 2, left + THUMB_W, top + THUMB_H, 0x80000000);
+            graphics.drawString(font, duration, left + THUMB_W - durationWidth, top + THUMB_H - font.lineHeight, 0xFFFFFFFF, false);
             int x = left + THUMB_W + 5;
-            graphics.drawString(font, ChatFormatting.UNDERLINE + name, x, top, 0xFFFFFFFF, true);
-            graphics.drawString(font, server, x, top + font.lineHeight + 2, serverColor, true);
-            graphics.drawString(font, date, x, top + 2 * (font.lineHeight + 2), 0xFFAAAAAA, true);
+            graphics.drawString(font, ChatFormatting.UNDERLINE + name, x, top, 0xFFFFFFFF, false);
+            graphics.drawString(font, server, x, top + font.lineHeight + 2, serverColor, false);
+            graphics.drawString(font, date, x, top + 2 * (font.lineHeight + 2), 0xFFC0C0C0, false);
             if(!version.isEmpty()) {
-                graphics.drawString(font, version, left + width - font.width(version), top, 0xFFFF5555, true);
+                graphics.drawString(font, version, left + width - font.width(version), top, 0xFFFF0000, false);
             }
             if(!renderQueue.isEmpty()) {
                 int ix = left + THUMB_W - 10;
@@ -674,7 +683,7 @@ public class GuiReplayViewer extends FlameableScreen {
         }
 
         @Override
-        public Component getNarration() {
+        public @NotNull Component getNarration() {
             return MCVer.literalText(name);
         }
 

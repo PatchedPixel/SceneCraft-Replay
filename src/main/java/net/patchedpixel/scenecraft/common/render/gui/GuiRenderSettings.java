@@ -5,14 +5,19 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import net.minecraft.CrashReport;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CycleButton;
+import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.layouts.LayoutSettings;
 import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -24,11 +29,15 @@ import net.patchedpixel.scenecraft.common.render.rendering.VideoRenderer;
 import net.patchedpixel.scenecraft.common.replay.ReplayHandler;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.path.Timeline;
 import net.patchedpixel.scenecraft.common.flamex.FlameXTheme;
-import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import net.patchedpixel.scenecraft.common.flamex.util.color.Color;
+import net.patchedpixel.scenecraft.common.flamex.widget.ColorPickerWidget;
+import net.patchedpixel.scenecraft.common.flamex.widget.DropdownWidget;
 import net.patchedpixel.scenecraft.common.flamex.widget.ScrollView;
+import net.patchedpixel.scenecraft.common.flamex.widget.SelectableList;
 import net.patchedpixel.scenecraft.common.flamex.widget.StepSlider;
+import net.patchedpixel.scenecraft.common.flamex.widget.WrappedLabelWidget;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
 import java.io.File;
@@ -40,6 +49,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.function.Consumer;
@@ -67,16 +77,20 @@ public class GuiRenderSettings extends FlameableScreen {
     private RenderSettings.AntiAliasing antiAliasing = RenderSettings.AntiAliasing.NONE;
     private String exportCommand = "", exportArguments = "";
 
-    private ScrollView scrollView;
+    private static final int VIDEO_COLUMN = 225;
 
-    private CycleButton<RenderSettings.RenderMethod> renderMethodButton;
-    private CycleButton<RenderSettings.EncodingPreset> presetButton;
-    private EditBox widthBox, heightBox, bitRateBox, chromaBox, commandBox, argumentsBox;
-    private CycleButton<String> bitRateUnitButton;
+    private ScrollView scrollView;
+    private LinearLayout buttons;
+
+    private DropdownWidget<RenderSettings.RenderMethod> renderMethodButton;
+    private DropdownWidget<RenderSettings.EncodingPreset> presetButton;
+    private EditBox widthBox, heightBox, bitRateBox, commandBox, argumentsBox;
+    private DropdownWidget<String> bitRateUnitButton;
     private StepSlider frameRateSlider, sphericalFovSlider;
     private Button outputFileButton, resetButton;
-    private CycleButton<Boolean> yawButton, pitchButton, rollButton, metadataButton, depthButton;
-    private CycleButton<RenderSettings.AntiAliasing> aaButton;
+    private Checkbox yawButton, pitchButton, rollButton, metadataButton, depthButton;
+    private ColorPickerWidget chromaPicker;
+    private DropdownWidget<RenderSettings.AntiAliasing> aaButton;
     protected Button queueButton, renderButton, cancelButton;
 
     private final ReplayHandler replayHandler;
@@ -156,7 +170,8 @@ public class GuiRenderSettings extends FlameableScreen {
     private void clearWidgetRefs() {
         renderMethodButton = null;
         presetButton = null;
-        widthBox = heightBox = bitRateBox = chromaBox = commandBox = argumentsBox = null;
+        widthBox = heightBox = bitRateBox = commandBox = argumentsBox = null;
+        chromaPicker = null;
         bitRateUnitButton = null;
         frameRateSlider = sphericalFovSlider = null;
         outputFileButton = resetButton = null;
@@ -172,25 +187,52 @@ public class GuiRenderSettings extends FlameableScreen {
         this.background = Background.NONE;
         this.drawTitle = false;
 
+        List<GridLayout> sections = new ArrayList<>();
+        List<StringWidget> titles = new ArrayList<>();
         LinearLayout content = FlameX.column(10);
-        content.addChild(FlameX.label(shot ? "scenecraft.gui.advancedscreenshots.title" : "scenecraft.gui.rendersettings.video"));
+
+        titles.add(FlameX.label(shot ? "scenecraft.gui.advancedscreenshots.title" : "scenecraft.gui.rendersettings.video"));
         GridLayout video = sectionGrid();
         buildVideo(video, shot);
-        content.addChild(video);
-        content.addChild(FlameX.label("scenecraft.gui.rendersettings.advanced"));
-        GridLayout advanced = sectionGrid();
-        buildAdvanced(advanced, shot);
-        content.addChild(advanced);
+        sections.add(video);
+
+        titles.add(FlameX.label("scenecraft.gui.rendersettings.advanced"));
+        LinearLayout advanced = FlameX.column(15);
+        GridLayout advancedGrid = new GridLayout();
+        advancedGrid.columnSpacing(5).rowSpacing(15);
+        buildAdvanced(advanced, advancedGrid, shot);
+        advanced.addChild(advancedGrid, advanced.newChildLayoutSettings().alignHorizontallyLeft());
+
+        LinearLayout command = null;
         if(!shot) {
-            content.addChild(FlameX.label("scenecraft.gui.rendersettings.commandline"));
-            GridLayout command = sectionGrid();
-            buildCommand(command);
-            content.addChild(command);
+            titles.add(FlameX.label("scenecraft.gui.rendersettings.commandline"));
+            command = buildCommand();
         }
+
+        video.arrangeElements();
+        advanced.arrangeElements();
+        int sectionWidth = Math.max(video.getWidth(), advanced.getWidth());
+        if(command != null) {
+            command.arrangeElements();
+            sectionWidth = Math.max(sectionWidth, command.getWidth());
+        }
+        for(StringWidget title : titles) title.setWidth(sectionWidth);
+
+        content.addChild(titles.get(0));
+        content.addChild(video, content.newChildLayoutSettings().alignHorizontallyLeft());
+        content.addChild(new SpacerElement(0, 0));
+        content.addChild(titles.get(1));
+        content.addChild(advanced, content.newChildLayoutSettings().alignHorizontallyLeft());
+        if(command != null) {
+            content.addChild(new SpacerElement(0, 0));
+            content.addChild(titles.get(2));
+            content.addChild(command, content.newChildLayoutSettings().alignHorizontallyLeft());
+        }
+
         scrollView = new ScrollView(content, Math.max(100, width - 40), Math.max(60, height - 85));
         root.addChild(scrollView);
 
-        LinearLayout buttons = FlameX.row(4);
+        buttons = FlameX.row(4);
         if(showQueueButton && !shot) {
             queueButton = FlameX.button(queueButtonKey, 100, () -> queueAction.accept(Screen.hasControlDown()));
             buttons.addChild(queueButton);
@@ -209,12 +251,14 @@ public class GuiRenderSettings extends FlameableScreen {
 
     private static GridLayout sectionGrid() {
         GridLayout grid = new GridLayout();
-        grid.defaultCellSetting().padding(2).alignVerticallyMiddle();
+        grid.columnSpacing(5).rowSpacing(5);
         return grid;
     }
 
     @Override
     protected void afterLayout() {
+        scrollView.setPosition(20, 25);
+        buttons.setPosition(width / 2 - buttons.getWidth() / 2, 25 + scrollView.getHeight() + 10);
         scrollView.place();
         for(AbstractWidget w : scrollView.widgets()) addWidget(w);
     }
@@ -226,8 +270,11 @@ public class GuiRenderSettings extends FlameableScreen {
         } else {
             renderBackground(graphics);
         }
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, 10);
         graphics.fill(20, 20, width - 20, height - 20, FlameXTheme.SCRIM);
         super.render(graphics, mouseX, mouseY, partialTicks);
+        graphics.pose().popPose();
     }
 
     @Override
@@ -255,42 +302,38 @@ public class GuiRenderSettings extends FlameableScreen {
         }
     }
 
-    private void row(GridLayout grid, int row, String labelKey, net.minecraft.client.gui.layouts.LayoutElement widget) {
-        grid.addChild(FlameX.label(labelKey), row, 0);
-        grid.addChild(widget, row, 1);
+    private void row(GridLayout grid, int row, String labelKey, LayoutElement widget) {
+        grid.addChild(FlameX.label(labelKey), row, 0, grid.newCellSettings().alignHorizontallyRight().alignVerticallyMiddle());
+        grid.addChild(widget, row, 1, grid.newCellSettings().alignVerticallyMiddle());
     }
 
     private void buildVideo(GridLayout grid, boolean shot) {
         int r = 0;
-        renderMethodButton = CycleButton.<RenderSettings.RenderMethod>builder(m -> MCVer.literalText(m.toString()))
-                .withValues(RenderSettings.RenderMethod.getSupported())
-                .withInitialValue(renderMethod)
-                .withTooltip(m -> Tooltip.create(MCVer.literalText(m.getDescription())))
-                .create(0, 0, 150, 20, Component.empty(), (b, v) -> {
-                    renderMethod = v;
-                    updateInputs();
-                });
+        List<RenderSettings.RenderMethod> methods = List.of(RenderSettings.RenderMethod.getSupported());
+        renderMethodButton = FlameX.dropdown(methods, renderMethod, RenderSettings.RenderMethod::toString, VIDEO_COLUMN, v -> {
+            renderMethod = v;
+            updateInputs();
+        });
+        renderMethodButton.setEntryTooltip(RenderSettings.RenderMethod::getDescription);
         row(grid, r++, "scenecraft.gui.rendersettings.renderer", renderMethodButton);
 
         if(!shot) {
-            presetButton = CycleButton.<RenderSettings.EncodingPreset>builder(p -> MCVer.literalText(p.toString()))
-                    .withValues(RenderSettings.EncodingPreset.getSupported())
-                    .withInitialValue(encodingPreset)
-                    .create(0, 0, 150, 20, Component.empty(), (b, v) -> {
-                        encodingPreset = v;
-                        // Update export arguments to match new Preset
-                        exportArguments = v.getValue();
-                        // Update output file ending
-                        if(outputFile != null) {
-                            outputFile = conformExtension(outputFile, v);
-                            outputFileButton.setMessage(MCVer.literalText(outputFile.getName()));
-                        }
-                        updateInputs();
-                    });
+            List<RenderSettings.EncodingPreset> presets = List.of(RenderSettings.EncodingPreset.getSupported());
+            presetButton = FlameX.dropdown(presets, encodingPreset, RenderSettings.EncodingPreset::toString, VIDEO_COLUMN, v -> {
+                encodingPreset = v;
+                // Update export arguments to match new Preset
+                exportArguments = v.getValue();
+                if(argumentsBox != null) argumentsBox.setValue(exportArguments);
+                // Update output file ending
+                if(outputFile != null) {
+                    outputFile = conformExtension(outputFile, v);
+                    outputFileButton.setMessage(MCVer.literalText(outputFile.getName()));
+                }
+                updateInputs();
+            });
             row(grid, r++, "scenecraft.gui.rendersettings.presets", presetButton);
         }
 
-        LinearLayout res = FlameX.row(2);
         widthBox = FlameX.integerField(50, videoWidth, v -> {
             videoWidth = v;
             updateInputs();
@@ -301,61 +344,66 @@ public class GuiRenderSettings extends FlameableScreen {
             updateInputs();
         });
         heightBox.setWidth(50);
+        LinearLayout res = FlameX.row(2);
+        StringWidget times = FlameX.label(MCVer.literalText("*"));
+        int used = 50 + 2 + times.getWidth() + 2 + 50;
+        res.addChild(new SpacerElement(Math.max(0, VIDEO_COLUMN - used), 1));
         res.addChild(widthBox);
-        res.addChild(FlameX.label(MCVer.literalText("*")));
+        res.addChild(times);
         res.addChild(heightBox);
         row(grid, r++, shot ? "scenecraft.gui.advancedscreenshots.resolution" : "scenecraft.gui.rendersettings.customresolution", res);
 
         if(!shot) {
+            String[] units = {"bps", "kbps", "mbps"};
             LinearLayout bitrate = FlameX.row(3);
+            LinearLayout rate = FlameX.row(0);
             bitRateBox = FlameX.integerField(50, bitRateValue, v -> bitRateValue = v);
             bitRateBox.setWidth(50);
-            bitRateUnitButton = FlameX.cycle(Component.empty(), List.of("bps", "kbps", "mbps"),
-                    List.of("bps", "kbps", "mbps").get(bitRateUnit), Component::literal, 50, v -> bitRateUnit = List.of("bps", "kbps", "mbps").indexOf(v));
-            frameRateSlider = new StepSlider(100, 20, 110).setText(v ->
+            bitRateUnitButton = FlameX.dropdown(List.of(units), units[bitRateUnit], u -> u, 50,
+                    v -> bitRateUnit = List.of(units).indexOf(v));
+            rate.addChild(bitRateBox);
+            rate.addChild(bitRateUnitButton);
+            frameRateSlider = new StepSlider(122, 20, 110).setText(v ->
                             MCVer.literalText(I18n.get("scenecraft.gui.rendersettings.framerate") + ": " + (v + 10)))
                     .onValueChanged(() -> {});
             frameRateSlider.setValue(frameRate - 10);
             frameRateSlider.onValueChanged(() -> frameRate = frameRateSlider.getValue() + 10);
-            bitrate.addChild(bitRateBox);
-            bitrate.addChild(bitRateUnitButton);
+            bitrate.addChild(rate);
             bitrate.addChild(frameRateSlider);
             row(grid, r++, "scenecraft.gui.rendersettings.bitrate", bitrate);
         }
 
         outputFileButton = Button.builder(MCVer.literalText(outputFile.getName()), b ->
-                getMinecraft().setScreen(new OutputFileScreen())).width(150).build();
+                getMinecraft().setScreen(new OutputFileScreen())).width(VIDEO_COLUMN).build();
         row(grid, r, "scenecraft.gui.rendersettings.outputfile", outputFileButton);
     }
 
-    private void buildAdvanced(GridLayout grid, boolean shot) {
-        int r = 0;
-        grid.addChild(FlameX.checkbox("scenecraft.gui.rendersettings.nametags", nametags, v -> nametags = v), r++, 0, 1, 2);
-        grid.addChild(FlameX.checkbox("scenecraft.gui.rendersettings.includealpha", alpha, v -> alpha = v), r++, 0, 1, 2);
+    private void buildAdvanced(LinearLayout advanced, GridLayout grid, boolean shot) {
+        LayoutSettings left = grid.newCellSettings().alignHorizontallyLeft().alignVerticallyMiddle();
+        advanced.addChild(FlameX.checkbox("scenecraft.gui.rendersettings.nametags", nametags, v -> nametags = v),
+                advanced.newChildLayoutSettings().alignHorizontallyLeft());
+        advanced.addChild(FlameX.checkbox("scenecraft.gui.rendersettings.includealpha", alpha, v -> alpha = v),
+                advanced.newChildLayoutSettings().alignHorizontallyLeft());
 
-        LinearLayout stab = FlameX.row(2);
-        yawButton = FlameX.toggle(Component.translatable("scenecraft.gui.yaw"), stabYaw, 60, v -> stabYaw = v);
-        pitchButton = FlameX.toggle(Component.translatable("scenecraft.gui.pitch"), stabPitch, 60, v -> stabPitch = v);
-        rollButton = FlameX.toggle(Component.translatable("scenecraft.gui.roll"), stabRoll, 60, v -> stabRoll = v);
+        int r = 0;
+        LinearLayout stab = FlameX.row(10);
+        yawButton = FlameX.checkbox("scenecraft.gui.yaw", stabYaw, v -> stabYaw = v);
+        pitchButton = FlameX.checkbox("scenecraft.gui.pitch", stabPitch, v -> stabPitch = v);
+        rollButton = FlameX.checkbox("scenecraft.gui.roll", stabRoll, v -> stabRoll = v);
         stab.addChild(yawButton);
         stab.addChild(pitchButton);
         stab.addChild(rollButton);
-        row(grid, r++, "scenecraft.gui.rendersettings.stabilizecamera", stab);
+        grid.addChild(FlameX.label("scenecraft.gui.rendersettings.stabilizecamera"), r, 0, left);
+        grid.addChild(stab, r++, 1, left);
 
-        LinearLayout chroma = FlameX.row(3);
-        chroma.addChild(FlameX.checkbox("scenecraft.gui.rendersettings.chromakey", chromaOn, v -> chromaOn = v));
-        chromaBox = FlameX.textField(60, toHex(chromaColor), s -> s.matches("#?[0-9a-fA-F]{0,6}"), s -> {
-            Color c = parseHex(s);
-            if(c != null) chromaColor = c;
-        });
-        chromaBox.setWidth(60);
-        chroma.addChild(chromaBox);
-        grid.addChild(chroma, r++, 0, 1, 2);
+        chromaPicker = new ColorPickerWidget(30, 15, chromaColor, c -> chromaColor = c);
+        grid.addChild(FlameX.checkbox("scenecraft.gui.rendersettings.chromakey", chromaOn, v -> chromaOn = v), r, 0, left);
+        grid.addChild(chromaPicker, r++, 1, left);
 
         if(!shot) {
-            metadataButton = FlameX.toggle(Component.translatable("scenecraft.gui.rendersettings.sphericalmetadata"),
-                    injectSphericalMetadata, 200, v -> injectSphericalMetadata = v);
-            grid.addChild(metadataButton, r++, 0, 1, 2);
+            metadataButton = FlameX.checkbox("scenecraft.gui.rendersettings.sphericalmetadata",
+                    injectSphericalMetadata, v -> injectSphericalMetadata = v);
+            grid.addChild(metadataButton, r, 0, left);
 
             sphericalFovSlider = new StepSlider(200, 20, (MAX_SPHERICAL_FOV - MIN_SPHERICAL_FOV) / SPHERICAL_FOV_STEP_SIZE)
                     .setText(v -> MCVer.literalText(I18n.get("scenecraft.gui.rendersettings.sphericalFov")
@@ -365,22 +413,22 @@ public class GuiRenderSettings extends FlameableScreen {
                 sphericalFovStep = sphericalFovSlider.getValue();
                 updateInputs();
             });
-            grid.addChild(sphericalFovSlider, r++, 0, 1, 2);
+            grid.addChild(sphericalFovSlider, r++, 1, left);
 
-            depthButton = FlameX.toggle(Component.translatable("scenecraft.gui.rendersettings.depthmap"),
-                    depthMap, 200, v -> depthMap = v);
-            grid.addChild(depthButton, r++, 0, 1, 2);
-            grid.addChild(FlameX.toggle(Component.translatable("scenecraft.gui.rendersettings.camerapath"),
-                    cameraPathExport, 200, v -> cameraPathExport = v), r++, 0, 1, 2);
-
-            aaButton = FlameX.cycle(Component.translatable("scenecraft.gui.rendersettings.antialiasing"),
-                    List.of(RenderSettings.AntiAliasing.values()), antiAliasing, a -> MCVer.literalText(a.toString()),
-                    200, v -> antiAliasing = v);
-            grid.addChild(aaButton, r, 0, 1, 2);
+            depthButton = FlameX.checkbox("scenecraft.gui.rendersettings.depthmap", depthMap, v -> depthMap = v);
+            grid.addChild(depthButton, r++, 0, left);
+            grid.addChild(FlameX.checkbox("scenecraft.gui.rendersettings.camerapath", cameraPathExport,
+                    v -> cameraPathExport = v), r++, 0, left);
         }
+
+        aaButton = FlameX.dropdown(List.of(RenderSettings.AntiAliasing.values()), antiAliasing,
+                RenderSettings.AntiAliasing::toString, 200, v -> antiAliasing = v);
+        grid.addChild(FlameX.label("scenecraft.gui.rendersettings.antialiasing"), r, 0, left);
+        grid.addChild(aaButton, r, 1, left);
     }
 
-    private void buildCommand(GridLayout grid) {
+    private LinearLayout buildCommand() {
+        LinearLayout command = FlameX.column(10);
         commandBox = FlameX.textField(55, exportCommand, null, s -> {
             exportCommand = s;
             updateInputs();
@@ -402,25 +450,15 @@ public class GuiRenderSettings extends FlameableScreen {
             argumentsBox.setValue(exportArguments);
             updateInputs();
         }).width(20).build();
-        grid.addChild(commandBox, 0, 0);
-        grid.addChild(argumentsBox, 0, 1);
-        grid.addChild(resetButton, 0, 2);
-        grid.addChild(FlameX.label("scenecraft.gui.rendersettings.ffmpeg.description"), 1, 0, 1, 3);
-    }
 
-    private static String toHex(Color c) {
-        return String.format("#%02x%02x%02x", c.red(), c.green(), c.blue());
-    }
-
-    private static Color parseHex(String s) {
-        String h = s.startsWith("#") ? s.substring(1) : s;
-        if(h.length() != 6) return null;
-        try {
-            int v = Integer.parseInt(h, 16);
-            return new Color((v >> 16) & 255, (v >> 8) & 255, v & 255);
-        } catch(NumberFormatException e) {
-            return null;
-        }
+        LinearLayout fields = FlameX.row(5);
+        fields.addChild(commandBox);
+        fields.addChild(argumentsBox);
+        fields.addChild(resetButton);
+        command.addChild(fields, command.newChildLayoutSettings().alignHorizontallyLeft());
+        command.addChild(new WrappedLabelWidget(Component.translatable("scenecraft.gui.rendersettings.ffmpeg.description"),
+                330, 50, 0xFFFFFF), command.newChildLayoutSettings().alignHorizontallyLeft());
+        return command;
     }
 
     private static void setTip(net.minecraft.client.gui.components.AbstractWidget w, Component tip) {
@@ -778,34 +816,88 @@ public class GuiRenderSettings extends FlameableScreen {
     }
 
     private class OutputFileScreen extends FlameableScreen {
-        private EditBox folderBox, nameBox;
+        private final java.util.Set<File> selected = new java.util.HashSet<>();
+        private final String extension;
+        private File dir;
+        private EditBox nameBox;
         private Button saveButton;
+        private Button upButton;
+        private StringWidget pathLabel;
+        private SelectableList<File> list;
 
         OutputFileScreen() {
-            super("scenecraft.gui.save", GuiRenderSettings.this, 8);
+            super("scenecraft.gui.save", GuiRenderSettings.this, 5);
+            String name = outputFile.getName();
+            extension = name.contains(".") ? name.substring(name.lastIndexOf('.')) : "";
+            dir = getParentFile(outputFile).getAbsoluteFile();
+            panel = true;
+            dim = true;
         }
 
         @Override
         protected void build(LinearLayout root) {
-            folderBox = FlameX.textField(250, getParentFile(outputFile).getPath(), null, s -> update());
-            folderBox.setWidth(250);
-            nameBox = FlameX.textField(250, outputFile.getName(), null, s -> update());
-            nameBox.setWidth(250);
-            root.addChild(folderBox);
-            root.addChild(nameBox);
-            LinearLayout buttons = FlameX.row(4);
-            saveButton = FlameX.button("scenecraft.gui.save", 100, this::accept);
-            buttons.addChild(saveButton);
-            buttons.addChild(FlameX.button("scenecraft.gui.cancel", 100, this::close));
-            root.addChild(buttons);
+            pathLabel = FlameX.label(Component.empty());
+            root.addChild(pathLabel);
+            list = new SelectableList<>(300, 130, 280, 16, selected, f -> f.isDirectory() ? f.getName() + "/" : f.getName(), (f, ctrl) -> {
+                if(f.isDirectory()) {
+                    navigate(f);
+                } else {
+                    selected.clear();
+                    selected.add(f);
+                    nameBox.setValue(f.getName());
+                }
+            });
+            root.addChild(list);
+            LinearLayout bottom = FlameX.row(4);
+            upButton = FlameX.button(Component.literal(".."), 20, () -> {
+                File parent = dir.getParentFile();
+                if(parent != null) navigate(parent);
+            });
+            bottom.addChild(upButton);
+            nameBox = FlameX.textField(180, outputFile.getName(), null, s -> update());
+            nameBox.setWidth(180);
+            bottom.addChild(nameBox);
+            saveButton = FlameX.button("scenecraft.gui.save", 45, this::accept);
+            bottom.addChild(saveButton);
+            bottom.addChild(FlameX.button("scenecraft.gui.cancel", 45, this::close));
+            root.addChild(bottom);
+            populate();
             update();
+        }
+
+        private void navigate(File target) {
+            dir = target.getAbsoluteFile();
+            selected.clear();
+            populate();
+            update();
+        }
+
+        private void populate() {
+            list.items().clear();
+            File[] files = dir.listFiles();
+            if(files != null) {
+                java.util.Arrays.sort(files, (a, b) -> a.isDirectory() != b.isDirectory()
+                        ? (a.isDirectory() ? -1 : 1) : a.getName().compareToIgnoreCase(b.getName()));
+                for(File f : files) {
+                    if(f.isHidden()) continue;
+                    if(f.isDirectory() || extension.isEmpty() || f.getName().toLowerCase().endsWith(extension.toLowerCase())) {
+                        list.add(f);
+                    }
+                }
+            }
+            String path = dir.getPath();
+            Font font = MCVer.getFontRenderer();
+            while(path.length() > 4 && font.width(path) > 296) path = path.substring(1);
+            pathLabel.setMessage(Component.literal(path));
+            pathLabel.setWidth(300);
+            if(upButton != null) upButton.active = dir.getParentFile() != null;
         }
 
         private void update() {
             if(saveButton == null) return;
             boolean valid = !nameBox.getValue().isEmpty();
             try {
-                new File(folderBox.getValue(), nameBox.getValue()).toPath();
+                new File(dir, nameBox.getValue()).toPath();
             } catch(InvalidPathException e) {
                 valid = false;
             }
@@ -813,7 +905,7 @@ public class GuiRenderSettings extends FlameableScreen {
         }
 
         private void accept() {
-            File file = new File(folderBox.getValue(), nameBox.getValue());
+            File file = new File(dir, nameBox.getValue());
             if(!file.getName().equals(outputFile.getName())) {
                 userDefinedOutputFileName = true;
             }

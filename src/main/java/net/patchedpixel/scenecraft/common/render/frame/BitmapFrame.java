@@ -9,7 +9,6 @@ import java.nio.ByteBuffer;
 public class BitmapFrame implements Frame {
     private final int frameId;
     private final Size size;
-    private final int bytesPerPixel;
     private final ByteBuffer byteBuffer;
 
     public BitmapFrame(int frameId, Size size, int bytesPerPixel, ByteBuffer byteBuffer) {
@@ -18,7 +17,6 @@ public class BitmapFrame implements Frame {
                 byteBuffer.remaining(), byteBuffer.capacity(), size.width() * size.height() * bytesPerPixel);
         this.frameId = frameId;
         this.size = size;
-        this.bytesPerPixel = bytesPerPixel;
         this.byteBuffer = byteBuffer;
     }
 

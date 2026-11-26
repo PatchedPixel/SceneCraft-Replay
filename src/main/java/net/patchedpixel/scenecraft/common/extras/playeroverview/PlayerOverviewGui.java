@@ -84,9 +84,9 @@ public class PlayerOverviewGui extends Screen {
         int panelWidth = ENTRY_WIDTH + 30;
         int left = width / 2 - panelWidth / 2;
         graphics.fill(left, 20, left + panelWidth, height - 20, 0xC0000000);
-        graphics.drawString(font, Component.translatable("scenecraft.gui.playeroverview.spectate"), left + 10, 30, 0xFFFFFF, true);
+        graphics.drawString(font, Component.translatable("scenecraft.gui.playeroverview.spectate"), left + 10, 30, 0xFFFFFF, false);
         Component visible = Component.translatable("scenecraft.gui.playeroverview.visible");
-        graphics.drawString(font, visible, left + panelWidth - 10 - font.width(visible), 30, 0xFFFFFF, true);
+        graphics.drawString(font, visible, left + panelWidth - 10 - font.width(visible), 30, 0xFFFFFF, false);
         super.render(graphics, mouseX, mouseY, partialTicks);
     }
 
@@ -159,7 +159,7 @@ public class PlayerOverviewGui extends Screen {
                 graphics.blit(texture, left + 2, top + 2, 16, 16, 40f, 8f, 8, 8, 64, 64);
             }
             graphics.drawString(MCVer.getFontRenderer(), player.getName().getString(), left + 22, top + 6,
-                    isSpectator(player) ? 0xFFAAAAAA : 0xFFFFFFFF, true);
+                    isSpectator(player) ? 0xFFAAAAAA : 0xFFFFFFFF, false);
             checkbox.setPosition(left + width - 22, top);
             checkbox.render(graphics, mouseX, mouseY, partialTick);
         }

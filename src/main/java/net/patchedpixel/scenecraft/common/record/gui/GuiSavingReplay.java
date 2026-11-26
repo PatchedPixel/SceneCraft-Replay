@@ -12,8 +12,9 @@ import net.patchedpixel.scenecraft.common.core.gui.GuiBackgroundProcesses;
 import net.patchedpixel.scenecraft.common.record.Setting;
 import net.patchedpixel.scenecraft.common.replay.gui.screen.GuiReplayViewer;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayMetaData;
-import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
+import net.patchedpixel.scenecraft.common.flamex.FlameXTheme;
 import net.patchedpixel.scenecraft.common.flamex.widget.ProgressBarWidget;
 import net.patchedpixel.scenecraft.common.utils.Utils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -73,8 +74,19 @@ public class GuiSavingReplay {
         private final List<EditBox> fields = new ArrayList<>();
 
         RenameScreen(Screen parent, List<Pair<Path, ReplayMetaData>> outputs) {
-            super("scenecraft.gui.replaysaving.title", parent, 4);
+            super("scenecraft.gui.replaysaving.title", parent, 2);
             this.outputs = outputs;
+            this.panel = true;
+        }
+
+        @Override
+        protected int rootX() {
+            return width - 5 - FlameXTheme.PANEL_PADDING - root.getWidth();
+        }
+
+        @Override
+        protected int rootY() {
+            return 5 + FlameXTheme.PANEL_PADDING - outerPadding();
         }
 
         @Override
@@ -83,7 +95,7 @@ public class GuiSavingReplay {
             for(Pair<Path, ReplayMetaData> output : outputs) {
                 Path path = output.getKey();
                 EditBox field = FlameX.textField(130, Utils.fileNameToReplayName(path.getFileName().toString()), null, null);
-                field.setHint(Component.translatable("scenecraft.gui.delete"));
+                field.setHint(Component.translatable("scenecraft.gui.delete").withStyle(style -> style.withColor(0xFF0000)));
                 field.setTooltip(Tooltip.create(MCVer.literalText(path.getFileName().toString())));
                 fields.add(field);
                 LinearLayout row = FlameX.row(0);
@@ -92,6 +104,15 @@ public class GuiSavingReplay {
                 root.addChild(row);
             }
             root.addChild(FlameX.button("scenecraft.gui.done", 150, this::apply));
+        }
+
+        @Override
+        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+            if(keyCode == 257 || keyCode == 335) {
+                apply();
+                return true;
+            }
+            return super.keyPressed(keyCode, scanCode, modifiers);
         }
 
         private void apply() {

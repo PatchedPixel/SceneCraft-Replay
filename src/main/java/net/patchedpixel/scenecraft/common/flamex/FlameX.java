@@ -1,6 +1,5 @@
 package net.patchedpixel.scenecraft.common.flamex;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Checkbox;
 import net.minecraft.client.gui.components.CycleButton;
@@ -10,7 +9,12 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.patchedpixel.scenecraft.common.flamex.components.FlameableLayout;
 import net.patchedpixel.scenecraft.common.flamex.popup.MessageScreen;
+import net.patchedpixel.scenecraft.common.flamex.widget.CheckboxWidget;
+import net.patchedpixel.scenecraft.common.flamex.widget.DropdownWidget;
+import net.patchedpixel.scenecraft.common.flamex.widget.LabelWidget;
+import net.patchedpixel.scenecraft.common.flamex.widget.TextBox;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
 import java.util.List;
@@ -48,8 +52,7 @@ public final class FlameX {
     }
 
     public static StringWidget label(Component text) {
-        Minecraft mc = MCVer.getMinecraft();
-        return new StringWidget(text, MCVer.getFontRenderer());
+        return new LabelWidget(text, MCVer.getFontRenderer());
     }
 
     public static StringWidget label(String i18nKey) {
@@ -57,20 +60,11 @@ public final class FlameX {
     }
 
     public static Checkbox checkbox(String i18nKey, boolean selected, Consumer<Boolean> onChange) {
-        Minecraft mc = MCVer.getMinecraft();
-        Component text = t(i18nKey);
-        return new Checkbox(0, 0, 20 + MCVer.getFontRenderer().width(text) + 4, 20, text, selected) {
-            @Override
-            public void onPress() {
-                super.onPress();
-                onChange.accept(selected());
-            }
-        };
+        return new CheckboxWidget(t(i18nKey), selected, onChange);
     }
 
     public static EditBox textField(int width, String value, Predicate<String> filter, Consumer<String> onChange) {
-        Minecraft mc = MCVer.getMinecraft();
-        EditBox box = new EditBox(MCVer.getFontRenderer(), 0, 0, width, 20, Component.empty());
+        EditBox box = new TextBox(MCVer.getFontRenderer(), width, 20);
         box.setMaxLength(Integer.MAX_VALUE);
         if(filter != null) {
             box.setFilter(filter);
@@ -94,8 +88,20 @@ public final class FlameX {
 
     public static <T> CycleButton<T> cycle(Component label, List<T> values, T initial,
                                            Function<T, Component> valueText, int width, Consumer<T> onChange) {
-        return CycleButton.<T>builder(valueText).withValues(values).withInitialValue(initial)
+        return CycleButton.builder(valueText).withValues(values).withInitialValue(initial)
                 .create(0, 0, width, 20, label, (b, v) -> onChange.accept(v));
+    }
+
+    public static <T> DropdownWidget<T> dropdown(List<T> values, T initial, Function<T, String> toString, int width, Consumer<T> onSelect) {
+        return new DropdownWidget<>(values, initial, toString, width, 20, onSelect);
+    }
+
+    public static <T> DropdownWidget<T> dropdown(List<T> values, T initial, Function<T, String> toString, Consumer<T> onSelect) {
+        int widest = 0;
+        for(T value : values) {
+            widest = Math.max(widest, MCVer.getFontRenderer().width(toString.apply(value)));
+        }
+        return dropdown(values, initial, toString, 11 + widest + MCVer.getFontRenderer().lineHeight, onSelect);
     }
 
     public static CycleButton<Boolean> toggle(Component label, boolean initial, int width, Consumer<Boolean> onChange) {

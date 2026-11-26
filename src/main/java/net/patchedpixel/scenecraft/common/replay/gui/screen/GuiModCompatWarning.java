@@ -2,7 +2,7 @@ package net.patchedpixel.scenecraft.common.replay.gui.screen;
 
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.patchedpixel.scenecraft.common.scenestudio.data.ModInfo;
-import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import net.patchedpixel.scenecraft.common.flamex.widget.TextListWidget;
 import net.patchedpixel.scenecraft.common.utils.ModCompat;

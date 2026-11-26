@@ -6,7 +6,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.patchedpixel.scenecraft.common.core.SettingsRegistry;
-import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
@@ -45,11 +45,11 @@ public class GuiReplaySettings extends FlameableScreen {
                         (SettingsRegistry.MultipleChoiceSettingKey<?>) key;
                 List values = multipleChoiceKey.getChoices();
                 Object currentValue = settingsRegistry.get(multipleChoiceKey);
-                element = FlameX.cycle(label, values, currentValue,
-                        v -> MCVer.literalText(I18n.get(v.toString())), 150, value -> {
-                            settingsRegistry.set((SettingsRegistry.SettingKey) multipleChoiceKey, value);
-                            settingsRegistry.save();
-                        });
+                String prefix = label.getString() + ": ";
+                element = FlameX.dropdown(values, currentValue, v -> prefix + I18n.get(v.toString()), 150, value -> {
+                    settingsRegistry.set((SettingsRegistry.SettingKey) multipleChoiceKey, value);
+                    settingsRegistry.save();
+                });
             } else {
                 throw new IllegalArgumentException("Type " + key.getDefault().getClass() + " not supported.");
             }

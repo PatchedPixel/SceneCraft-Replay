@@ -17,6 +17,7 @@ public class MessageScreen extends PopupScreen {
 
     public MessageScreen(@Nullable Screen parent, Runnable onAccept, @Nullable String yesKey, @Nullable String noKey, Component... lines) {
         super(parent, 7);
+        this.dim = true;
         this.onAccept = onAccept;
         this.yesKey = yesKey;
         this.noKey = noKey;

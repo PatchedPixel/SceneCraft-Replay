@@ -20,13 +20,16 @@ public class ODSToBitmapProcessor extends AbstractFrameProcessor<ODSGpuFrame, Bi
         BitmapFrame leftFrame = processor.process(rawFrame.getLeft());
         BitmapFrame rightFrame = processor.process(rawFrame.getRight());
         Size size = new Size(leftFrame.getSize().width(), leftFrame.getSize().height() * 2);
+
         int bpp = rawFrame.getLeft().getLeft().getBytesPerPixel();
+
         ByteBuffer result = ByteBufferPool.allocate(size.width() * size.height() * bpp);
         result.put(leftFrame.getByteBuffer());
         result.put(rightFrame.getByteBuffer());
         result.rewind();
         ByteBufferPool.release(leftFrame.getByteBuffer());
         ByteBufferPool.release(rightFrame.getByteBuffer());
+
         return new BitmapFrame(rawFrame.getFrameId(), size, bpp, result);
     }
 

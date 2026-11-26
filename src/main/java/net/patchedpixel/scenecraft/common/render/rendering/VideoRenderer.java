@@ -202,6 +202,8 @@ public class VideoRenderer implements RenderInfo {
 
         if(!settings.isHighPerformance() || framesDone % fps == 0) {
             while(drawGui() && paused) {
+                mc.screen = gui;
+                MCVer.executeTaskQueue();
                 try {
                     //noinspection BusyWait
                     Thread.sleep(50);
@@ -284,7 +286,7 @@ public class VideoRenderer implements RenderInfo {
 
         gui.init(mc, mc.getWindow().getGuiScaledWidth(), mc.getWindow().getGuiScaledHeight());
 
-        forceChunkLoadingHook = new ForceChunkLoadingHook(mc.levelRenderer);
+        forceChunkLoadingHook = new ForceChunkLoadingHook();
     }
 
     private void finish() {
@@ -332,6 +334,7 @@ public class VideoRenderer implements RenderInfo {
     }
 
     private void executeTaskQueue() {
+        mc.screen = gui;
         while(true) {
             while(mc.getOverlay() != null) {
                 drawGui();

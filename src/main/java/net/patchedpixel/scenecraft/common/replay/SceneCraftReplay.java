@@ -100,7 +100,7 @@ public class SceneCraftReplay implements Module {
         }, true);
         keyPlayPause = registry.registerKeyBinding("scenecraft.input.playpause", InputConstants.KEY_P, () -> {
             if(replayHandler != null) {
-                replayHandler.getOverlay().playPauseButton.onPress();
+                replayHandler.getOverlay().playPauseButton.pressWithSound();
             }
         }, true);
         core.getKeyBindingRegistry().registerKeyBinding("scenecraft.input.rollclockwise", InputConstants.KEY_L, () -> {

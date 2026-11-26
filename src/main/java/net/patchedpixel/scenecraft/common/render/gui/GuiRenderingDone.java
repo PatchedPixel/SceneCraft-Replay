@@ -7,7 +7,7 @@ import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 import net.patchedpixel.scenecraft.common.render.RenderSettings;
 import net.patchedpixel.scenecraft.common.render.SceneCraftRender;
 import net.patchedpixel.scenecraft.common.render.Setting;
-import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 
 import java.io.File;
@@ -39,6 +39,11 @@ public class GuiRenderingDone extends FlameableScreen {
     }
 
     @Override
+    protected int rootY() {
+        return height / 3 - root.getHeight() / 2;
+    }
+
+    @Override
     protected void afterLayout() {
         // Close controls anchored in the bottom right corner
         neverOpenCheckbox = addRenderableWidget(FlameX.checkbox("scenecraft.gui.notagain", false, v -> {}));
@@ -51,7 +56,8 @@ public class GuiRenderingDone extends FlameableScreen {
             MCVer.getMinecraft().setScreen(null);
         }));
         close.setPosition(width - 10 - close.getWidth(), height - 10 - close.getHeight());
-        neverOpenCheckbox.setPosition(close.getX() - 5 - neverOpenCheckbox.getWidth(), close.getY());
+        neverOpenCheckbox.setPosition(close.getX() - 5 - neverOpenCheckbox.getWidth(),
+                close.getY() + (close.getHeight() - neverOpenCheckbox.getHeight()) / 2);
     }
 
     @Override

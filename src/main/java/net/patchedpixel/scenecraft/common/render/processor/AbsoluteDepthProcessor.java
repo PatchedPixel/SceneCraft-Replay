@@ -19,7 +19,6 @@ public class AbsoluteDepthProcessor extends AbstractFrameProcessor<BitmapFrame, 
 
     @Override
     public BitmapFrame process(BitmapFrame frame) {
-
         FloatBuffer buffer = frame.getByteBuffer().asFloatBuffer();
         int len = buffer.remaining();
         for(int i = 0; i < len; i++) {

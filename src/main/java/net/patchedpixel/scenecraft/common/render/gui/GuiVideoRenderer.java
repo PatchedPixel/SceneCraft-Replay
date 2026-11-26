@@ -72,12 +72,13 @@ public class GuiVideoRenderer extends Screen {
 
     @Override
     protected void init() {
-        int bottom = height - 8;
-        pauseButton.setPosition(width / 2 - 154, bottom - 20);
-        cancelButton.setPosition(width / 2 + 4, bottom - 20);
-        progressBar.setWidth(Math.min(width - 10, 400));
-        progressBar.setPosition(width / 2 - progressBar.getWidth() / 2, bottom - 20 - 5 - 20);
-        previewCheckbox.setPosition(width / 2 - previewCheckbox.getWidth() / 2, progressBar.getY() - 12 - 20 - 10);
+        int buttonsY = height - 27;
+        pauseButton.setPosition(width / 2 - 154, buttonsY);
+        cancelButton.setPosition(width / 2 + 4, buttonsY);
+        progressBar.setWidth(width - 10);
+        progressBar.setPosition(5, buttonsY - 5 - 20);
+        int renderTimeY = progressBar.getY() - 2 - font.lineHeight;
+        previewCheckbox.setPosition(width / 2 - previewCheckbox.getWidth() / 2, renderTimeY - 10 - previewCheckbox.getHeight());
         addRenderableWidget(previewCheckbox);
         addRenderableWidget(progressBar);
         addRenderableWidget(pauseButton);
@@ -103,9 +104,9 @@ public class GuiVideoRenderer extends Screen {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         // FIXME default background doesn't work during rendering because the blur effect relies on the framebuffer
         graphics.fill(0, 0, width, height, 0xFF202020);
-        graphics.drawCenteredString(font, title, width / 2, 8, 0xFFFFFF);
+        graphics.drawString(font, title, width / 2 - font.width(title) / 2, 3, 0xFFFFFFFF, false);
 
-        int areaTop = 8 + font.lineHeight + 5;
+        int areaTop = 3 + font.lineHeight + 5;
         int areaBottom = previewCheckbox.getY() - 5;
         Size area = new Size(width - 10, Math.max(1, areaBottom - areaTop));
         if(preview) {
@@ -115,8 +116,8 @@ public class GuiVideoRenderer extends Screen {
         }
 
         int textY = progressBar.getY() - 2 - font.lineHeight;
-        graphics.drawString(font, renderTimeText, 5, textY, 0xFFFFFF, true);
-        graphics.drawString(font, remainingTimeText, width - 5 - font.width(remainingTimeText), textY, 0xFFFFFF, true);
+        graphics.drawString(font, renderTimeText, 5, textY, 0xFFFFFFFF, false);
+        graphics.drawString(font, remainingTimeText, width - 5 - font.width(remainingTimeText), textY, 0xFFFFFFFF, false);
         super.render(graphics, mouseX, mouseY, partialTicks);
     }
 

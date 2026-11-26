@@ -23,6 +23,7 @@ public class PromptScreen extends PopupScreen {
 
     public PromptScreen(@Nullable Screen parent, String titleKey, String initial, String yesKey, String noKey, Predicate<String> valid, Consumer<String> onAccept) {
         super(parent, 7);
+        this.dim = true;
         this.titleKey = titleKey;
         this.initial = initial;
         this.yesKey = yesKey;

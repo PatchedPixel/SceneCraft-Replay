@@ -48,7 +48,7 @@ public class MetadataInjector {
 
     /**
      * These bytes are taken from the variable 'spherical_uuid_id'
-     * in https://github.com/google/spatial-media/tree/master/360-Videos-Metadata
+     * in <a href="https://github.com/google/spatial-media/tree/master/360-Videos-Metadata">https://github.com/google/spatial-media/tree/master/360-Videos-Metadata</a>
      */
     private static final byte[] UUID_BYTES = new byte[] {
             (byte)0xff, (byte)0xcc, (byte)0x82, (byte)0x63,

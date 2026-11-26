@@ -1,6 +1,8 @@
 package net.patchedpixel.scenecraft.common.flamex.widget;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
@@ -59,5 +61,22 @@ public class StepSlider extends AbstractSliderButton {
             updateMessage();
             onValueChanged.run();
         }
+    }
+
+    @Override
+    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        int width = getWidth();
+        int height = getHeight();
+        int half = width / 2;
+        graphics.blit(AbstractWidget.WIDGETS_LOCATION, getX(), getY(), 0, 46, half, height);
+        graphics.blit(AbstractWidget.WIDGETS_LOCATION, getX() + half, getY(), 200 - half, 46, half, height);
+
+        int sliderX = (int) ((width - 8) * super.value);
+        graphics.blit(AbstractWidget.WIDGETS_LOCATION, getX() + sliderX, getY(), 0, 66, 4, 20);
+        graphics.blit(AbstractWidget.WIDGETS_LOCATION, getX() + sliderX + 4, getY(), 196, 66, 4, 20);
+
+        int color = !active ? 0xA0A0A0 : isHoveredOrFocused() ? 0xFFFFA0 : 0xE0E0E0;
+        var font = MCVer.getFontRenderer();
+        graphics.drawString(font, getMessage(), getX() + half - font.width(getMessage()) / 2, getY() + height / 2 - 4, color | 0xFF000000, false);
     }
 }

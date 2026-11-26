@@ -15,9 +15,11 @@ public class GpuToBitmapProcessor extends AbstractFrameProcessor<GpuFrame, Bitma
         int width = size.width();
         int height = size.height();
         int bpp = rawFrame.getBytesPerPixel();
+
         ByteBuffer result = ByteBufferPool.allocate(width * height * bpp);
         Utils.gpuBytesToBitmap(rawFrame, 0, 0, result, width);
         ByteBufferPool.release(rawFrame.getByteBuffer());
+
         return new BitmapFrame(rawFrame.getFrameId(), new Size(width, height), bpp, result);
     }
 }

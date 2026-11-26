@@ -2,7 +2,7 @@ package net.patchedpixel.scenecraft.common.flamex.popup;
 
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.network.chat.Component;
-import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 
 public class PleaseWaitScreen extends FlameableScreen {

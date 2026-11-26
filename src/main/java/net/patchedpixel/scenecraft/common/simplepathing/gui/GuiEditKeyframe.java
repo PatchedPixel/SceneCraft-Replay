@@ -1,8 +1,7 @@
 package net.patchedpixel.scenecraft.common.simplepathing.gui;
 
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.CycleButton;
-import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.resources.language.I18n;
@@ -23,12 +22,13 @@ import net.patchedpixel.scenecraft.common.simplepathing.SPTimeline;
 import net.patchedpixel.scenecraft.common.simplepathing.SPTimeline.SPPath;
 import net.patchedpixel.scenecraft.common.simplepathing.Setting;
 import net.patchedpixel.scenecraft.common.simplepathing.properties.ExplicitInterpolationProperty;
-import net.patchedpixel.scenecraft.common.flamex.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import net.patchedpixel.scenecraft.common.flamex.widget.NumberBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
+import net.patchedpixel.scenecraft.common.flamex.widget.DropdownWidget;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,23 +42,24 @@ public abstract class GuiEditKeyframe extends FlameableScreen {
     protected final Keyframe keyframe;
     protected final Path path;
 
-    public final NumberBox timeMinField = new NumberBox(30, 0);
-    public final NumberBox timeSecField = new NumberBox(30, 0);
-    public final NumberBox timeMSecField = new NumberBox(40, 0);
+    public final NumberBox timeMinField = new NumberBox(30, 0).setRange(0, Double.POSITIVE_INFINITY);
+    public final NumberBox timeSecField = new NumberBox(20, 0).setRange(0, 59);
+    public final NumberBox timeMSecField = new NumberBox(30, 0).setRange(0, 999);
 
     private Button saveButton;
 
     public GuiEditKeyframe(GuiPathing gui, SPPath path, long time, String type) {
         super(Component.translatable("scenecraft.gui.editkeyframe.title." + type), MCVer.getMinecraft().screen, 10);
         this.panel = true;
+        this.dim = true;
         this.background = Background.DEFAULT;
         this.guiPathing = gui;
         this.time = time;
         this.path = gui.getMod().getCurrentTimeline().getPath(path);
         this.keyframe = this.path.getKeyframe(time);
 
-        timeMinField.setNumber(time / 1000 / 60);
-        timeSecField.setNumber(time / 1000 % 60);
+        timeMinField.setNumber((double) time / 1000 / 60);
+        timeSecField.setNumber((double) time / 1000 % 60);
         timeMSecField.setNumber(time % 1000);
         timeMinField.setResponder(s -> updateSaveState());
         timeSecField.setResponder(s -> updateSaveState());
@@ -121,10 +122,7 @@ public abstract class GuiEditKeyframe extends FlameableScreen {
         if(newTime < 0 || newTime > guiPathing.timeline.getLength()) {
             return false;
         }
-        if(newTime != keyframe.getTime() && path.getKeyframe(newTime) != null) {
-            return false;
-        }
-        return true;
+        return newTime == keyframe.getTime() || path.getKeyframe(newTime) == null;
     }
 
     public void open() {
@@ -145,16 +143,16 @@ public abstract class GuiEditKeyframe extends FlameableScreen {
     }
 
     public static class Time extends GuiEditKeyframe {
-        public final NumberBox timestampMinField = new NumberBox(30, 0);
-        public final NumberBox timestampSecField = new NumberBox(30, 0);
-        public final NumberBox timestampMSecField = new NumberBox(40, 0);
+        public final NumberBox timestampMinField = new NumberBox(30, 0).setRange(0, Double.POSITIVE_INFINITY);
+        public final NumberBox timestampSecField = new NumberBox(20, 0).setRange(0, 59);
+        public final NumberBox timestampMSecField = new NumberBox(30, 0).setRange(0, 999);
 
         public Time(GuiPathing gui, SPPath path, long keyframe) {
             super(gui, path, keyframe, "time");
 
             this.keyframe.getValue(TimestampProperty.PROPERTY).ifPresent(time -> {
-                timestampMinField.setNumber(time / 1000 / 60);
-                timestampSecField.setNumber(time / 1000 % 60);
+                timestampMinField.setNumber((double) time / 1000 / 60);
+                timestampSecField.setNumber((double) time / 1000 % 60);
                 timestampMSecField.setNumber(time % 1000);
             });
         }
@@ -182,10 +180,10 @@ public abstract class GuiEditKeyframe extends FlameableScreen {
         public final NumberBox rollField = new NumberBox(60, 5);
 
         private InterpolatorType interpolatorType;
-        private boolean hasSegment;
-        private final NumberBox alphaField = new NumberBox(100, 5);
-        private CycleButton<InterpolatorType> typeButton;
-        private Interpolator loadedInterpolator;
+        private final boolean hasSegment;
+        private final NumberBox alphaField = new NumberBox(100, 5).setRange(0, Double.POSITIVE_INFINITY);
+        private DropdownWidget<InterpolatorType> typeButton;
+        private StringWidget alphaLabel;
 
         public Position(GuiPathing gui, SPPath path, long keyframe) {
             super(gui, path, keyframe, "pos");
@@ -214,7 +212,6 @@ public abstract class GuiEditKeyframe extends FlameableScreen {
                     type = InterpolatorType.DEFAULT;
                 }
                 if(typeNoDefault(type).getInterpolatorClass().isInstance(interpolator)) {
-                    loadedInterpolator = interpolator;
                     if(interpolator instanceof CatmullRomSplineInterpolator) {
                         alphaField.setNumber(((CatmullRomSplineInterpolator) interpolator).getAlpha());
                     }
@@ -233,49 +230,53 @@ public abstract class GuiEditKeyframe extends FlameableScreen {
         @Override
         protected void buildInputs(LinearLayout root) {
             GridLayout grid = new GridLayout();
-            grid.defaultCellSetting().padding(2).alignVerticallyMiddle();
+            grid.columnSpacing(3).rowSpacing(5);
             String[] left = {"xpos", "ypos", "zpos"};
             NumberBox[] leftFields = {xField, yField, zField};
             String[] right = {"camyaw", "campitch", "camroll"};
             NumberBox[] rightFields = {yawField, pitchField, rollField};
             for(int i = 0; i < 3; i++) {
-                grid.addChild(FlameX.label("scenecraft.gui.editkeyframe." + left[i]), i, 0);
-                grid.addChild(leftFields[i], i, 1);
-                grid.addChild(FlameX.label("scenecraft.gui.editkeyframe." + right[i]), i, 2);
-                grid.addChild(rightFields[i], i, 3);
+                grid.addChild(FlameX.label("scenecraft.gui.editkeyframe." + left[i]), i, 0,
+                        grid.newCellSettings().alignHorizontallyRight().alignVerticallyMiddle());
+                grid.addChild(leftFields[i], i, 1, grid.newCellSettings().alignVerticallyMiddle());
+                grid.addChild(FlameX.label("scenecraft.gui.editkeyframe." + right[i]), i, 2,
+                        grid.newCellSettings().alignHorizontallyRight().alignVerticallyMiddle());
+                grid.addChild(rightFields[i], i, 3, grid.newCellSettings().alignVerticallyMiddle());
             }
             root.addChild(grid);
 
-            typeButton = CycleButton.<InterpolatorType>builder(t -> MCVer.literalText(I18n.get(t.getI18nName())))
-                    .withValues(List.of(InterpolatorType.values()))
-                    .withInitialValue(interpolatorType)
-                    .withTooltip(t -> Tooltip.create(Component.translatable(t.getI18nDescription())))
-                    .create(0, 0, 200, 20, Component.translatable("scenecraft.gui.editkeyframe.interpolator"),
-                            (b, t) -> {
-                                interpolatorType = t;
-                                updateAlphaVisibility();
-                            });
+            typeButton = FlameX.dropdown(List.of(InterpolatorType.values()), interpolatorType,
+                    t -> I18n.get(t.getI18nName()), t -> {
+                        interpolatorType = t;
+                        updateAlphaVisibility();
+                    });
+            typeButton.setEntryTooltip(t -> I18n.get(t.getI18nDescription()));
             typeButton.active = hasSegment;
-            root.addChild(typeButton);
+            LinearLayout interpolator = FlameX.row(6);
+            interpolator.addChild(FlameX.label("scenecraft.gui.editkeyframe.interpolator"));
+            interpolator.addChild(typeButton);
+            root.addChild(interpolator);
 
-            alphaField.setHint(Component.translatable("scenecraft.gui.editkeyframe.interpolator.catmullrom.alpha"));
-            root.addChild(alphaField);
+            alphaLabel = FlameX.label("scenecraft.gui.editkeyframe.interpolator.catmullrom.alpha");
+            LinearLayout alpha = FlameX.row(0);
+            alpha.addChild(alphaLabel);
+            alpha.addChild(alphaField);
+            root.addChild(alpha);
             updateAlphaVisibility();
         }
 
         private void updateAlphaVisibility() {
-            alphaField.visible = hasSegment && typeNoDefault(interpolatorType) == InterpolatorType.CATMULL_ROM;
+            boolean show = hasSegment && typeNoDefault(interpolatorType) == InterpolatorType.CATMULL_ROM;
+            alphaField.visible = show;
+            alphaLabel.visible = show;
         }
 
         private Interpolator createInterpolator() {
-            switch(typeNoDefault(interpolatorType)) {
-                case CATMULL_ROM:
-                    return new CatmullRomSplineInterpolator(alphaField.getDouble());
-                case CUBIC:
-                    return new CubicSplineInterpolator();
-                default:
-                    return new LinearInterpolator();
-            }
+            return switch (typeNoDefault(interpolatorType)) {
+                case CATMULL_ROM -> new CatmullRomSplineInterpolator(alphaField.getDouble());
+                case CUBIC -> new CubicSplineInterpolator();
+                default -> new LinearInterpolator();
+            };
         }
 
         @Override
