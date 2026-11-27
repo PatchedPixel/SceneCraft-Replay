@@ -55,7 +55,6 @@ neoForge {
         client {
             client()
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-//            systemProperty 'scenecraft.generateScbinMapping', 'true'
         }
 
         server {
@@ -129,17 +128,19 @@ tasks.named('shadowJar') {
     configurations = [project.configurations.shade]
     archiveClassifier = ''
 
-    relocate('com.fasterxml.jackson', 'net.patchedpixel.scenecraft.libs.jackson')
-    relocate('com.googlecode.mp4parser', 'net.patchedpixel.scenecraft.libs.googlecode.mp4parser')
-    relocate('com.coremedia.iso', 'net.patchedpixel.scenecraft.libs.coremedia.iso')
-    relocate('com.mp4parser', 'net.patchedpixel.scenecraft.libs.mp4parser')
-    relocate('org.mp4parser.aspectj', 'net.patchedpixel.scenecraft.libs.mp4parser.aspectj')
-    relocate('de.javagl.jgltf', 'net.patchedpixel.scenecraft.libs.jgltf')
+    relocate('com.fasterxml.jackson', "${libs_path}.jackson")
+    relocate('com.googlecode.mp4parser', "${libs_path}.googlecode.mp4parser")
+    relocate('com.coremedia.iso', "${libs_path}.coremedia.iso")
+    relocate('com.mp4parser', "${libs_path}.mp4parser")
+    relocate('org.mp4parser.aspectj', "${libs_path}.mp4parser.aspectj")
+    relocate('de.javagl.jgltf', "${libs_path}.jgltf")
     mergeServiceFiles()
 
     exclude 'META-INF/*.SF'
     exclude 'META-INF/*.DSA'
     exclude 'META-INF/*.RSA'
+
+    from('CONTRIBUTORS.txt')
 
     exclude 'module-info.class'
     exclude 'META-INF/versions/*/module-info.class'
