@@ -1,25 +1,25 @@
 scenecraft.title=SceneCraft
 
 #All of the chat messages
-scenecraft.chat.recordingstarted=Inspelningen har startats
-scenecraft.chat.recordingfailed=Misslyckades att starta inspelning
+scenecraft.chat.recordingstarted=Inspelningen har startat
+scenecraft.chat.recordingfailed=Det gick inte att starta inspelningen
 
-scenecraft.chat.savingthumb=Sparar miniatyr...
-scenecraft.chat.savedthumb=Miniatyren har sparats
-scenecraft.chat.failedthumb=Miniatyren kunde inte sparas
+scenecraft.chat.savingthumb=Sparar miniatyrbild...
+scenecraft.chat.savedthumb=Miniatyrbilden har sparats
+scenecraft.chat.failedthumb=Miniatyrbilden kunde inte sparas
 
 scenecraft.chat.addedmarker=Händelsemarkör har lagts till
 
 #Chat messages displayed in Replay Viewer
-scenecraft.chat.morekeyframes=Minst 2 nyckelbilder för både position och tid krävs
-scenecraft.chat.pathstarted=Kamerabanan har startats
-scenecraft.chat.pathfinished=Kamerabanan har slutförts
+scenecraft.chat.morekeyframes=Minst 2 positionsnyckelbildrutor och 2 tidsnyckelbildrutor krävs
+scenecraft.chat.pathstarted=Kamerabanan har startat
+scenecraft.chat.pathfinished=Kamerabanan är klar
 scenecraft.chat.pathinterrupted=Kamerabanan har avbrutits
 
 #Common GUI-related strings
 scenecraft.gui.cancel=Avbryt
 scenecraft.gui.back=Tillbaka
-scenecraft.gui.load=Läs in
+scenecraft.gui.load=Ladda
 scenecraft.gui.save=Spara
 scenecraft.gui.rename=Byt namn
 scenecraft.gui.remove=Ta bort
@@ -27,168 +27,184 @@ scenecraft.gui.delete=Radera
 scenecraft.gui.record=Spelar in
 scenecraft.gui.paused=Pausad
 scenecraft.gui.speed=Hastighet
-scenecraft.gui.pleasewait=Var god vänta
+scenecraft.gui.pleasewait=Vänta
 scenecraft.gui.render=Rendera
-scenecraft.gui.iphidden=Dold serveradress
+scenecraft.gui.iphidden=Serverns IP dold
 scenecraft.gui.overwrite=Skriv över
-scenecraft.gui.saveas=Spara som...
-scenecraft.gui.done=Färdig
+scenecraft.gui.saveas=Spara som ...
+scenecraft.gui.done=Klart
 scenecraft.gui.close=Stäng
 scenecraft.gui.notagain=Visa inte igen
 scenecraft.gui.edit=Redigera
+scenecraft.gui.copy=Kopiera
+scenecraft.gui.paste=Klistra in
 
-scenecraft.gui.record.resume=Återuppta inspeln.
+scenecraft.gui.record.resume=Återuppta inspelning
 scenecraft.gui.record.pause=Pausa inspelning
 scenecraft.gui.record.stop=Stoppa inspelning
 scenecraft.gui.record.start=Starta inspelning
 
 scenecraft.gui.renderdonetitle=Videon har renderats
-scenecraft.gui.openfolder=Öppna videomapp
+scenecraft.gui.openfolder=Öppna videomappen
 scenecraft.gui.youtubeupload=Ladda upp till YouTube
 scenecraft.gui.renderdone1=Din video har renderats.
-scenecraft.gui.renderdone2=Hur vill du fortsätta?
+scenecraft.gui.renderdone2=Hur vill du gå vidare?
 scenecraft.gui.videotitle=Titel
 scenecraft.gui.videodescription=Beskrivning
-scenecraft.gui.videotags=Taggar,taggar,taggar
-scenecraft.gui.videothumbnail=Videominiatyr
+scenecraft.gui.videotags=Taggar,Taggar,Taggar
+scenecraft.gui.videothumbnail=Videons miniatyrbild
 scenecraft.gui.videovisibility.private=Privat
 scenecraft.gui.videovisibility.unlisted=Olistad
 scenecraft.gui.videovisibility.public=Offentlig
 scenecraft.gui.ytuploadprogress.auth=[1/4] Auktorisering
-scenecraft.gui.ytuploadprogress.prepare_video=[2/4] Förbereder video: %%d %%%%
-scenecraft.gui.ytuploadprogress.upload=[3/4] Laddar upp: %%d %%%%
-scenecraft.gui.ytuploadprogress.cleanup=[4/4] Städar upp
-scenecraft.gui.ytuploadprogress.done=Färdig: %s
-scenecraft.gui.titleempty=Titeln kan inte vara tom
-scenecraft.gui.videothumbnailtoolarge=Miniatyrens storlek överstrider 2MB
-scenecraft.gui.videothumbnailformat=Miniatyren måste antingen ha formatet JPEG eller PNG
+scenecraft.gui.ytuploadprogress.prepare_video=[2/4] Förbereder video: %%d%%%%
+scenecraft.gui.ytuploadprogress.upload=[3/4] Laddar upp: %%d%%%%
+scenecraft.gui.ytuploadprogress.cleanup=[4/4] Städning
+scenecraft.gui.ytuploadprogress.done=Klart: %s
+scenecraft.gui.titleempty=Titeln får inte vara tom
+scenecraft.gui.videothumbnailtoolarge=Miniatyrbilden är större än 2 MB
+scenecraft.gui.videothumbnailformat=Miniatyrbilden måste vara i formatet JPEG eller PNG
 
 scenecraft.gui.hours=h
-scenecraft.gui.minutes=m
+scenecraft.gui.minutes=min
 scenecraft.gui.seconds=s
 scenecraft.gui.milliseconds=ms
 
-scenecraft.gui.pitch=Vertikal lutning
-scenecraft.gui.yaw=Horisontal lutning
-scenecraft.gui.roll=Rotation
+scenecraft.gui.pitch=Lutning
+scenecraft.gui.yaw=Girning
+scenecraft.gui.roll=Rullning
 
 scenecraft.gui.camera=Kamera
 scenecraft.gui.position=Position
 
-scenecraft.gui.unknownerror=Ett okänt fel uppstod
+scenecraft.gui.unknownerror=Ett okänt fel inträffade
 
-scenecraft.gui.exit=Avsluta repris
+scenecraft.gui.exit=Lämna repris
 
 scenecraft.gui.settings=Inställningar
 
-scenecraft.gui.keyframerepo.delete=Är du säker på att du vill radera dessa nyckelbilder?
-scenecraft.gui.keyframerepo.overwrite=Är du säker på att du vill skriva över dessa nyckelbilder?
+scenecraft.gui.keyframerepo.delete=Är du säker på att du vill radera de här nyckelbildrutorna?
+scenecraft.gui.keyframerepo.overwrite=Är du säker på att du vill skriva över de här nyckelbildrutorna?
 
 scenecraft.gui.restorereplay1=Det verkar som att Minecraft inte avslutades normalt.
-scenecraft.gui.restorereplay2=Reprisen "%1$s" sparades inte på rätt sätt.
-scenecraft.gui.restorereplay3=Vill du återskapa den?
+scenecraft.gui.restorereplay2=Reprisen "%1$s" sparades inte korrekt.
+scenecraft.gui.restorereplay3=Vill du återställa den?
 
-scenecraft.gui.loadentitytracker=Läser in entitetspositioner: %%d %%%%
-scenecraft.gui.loadquickmode=Läser in snabbläge: %%d %%%%
-scenecraft.gui.noquickmode=Snabbläget är endast tillgängligt för Minecraft %1$s och senare
-scenecraft.gui.minimalmode.unsupported=Denna funktion är inte tillgänglig för din nuvarande Minecraft-version.
-scenecraft.gui.minimalmode.supportedversion=(endast Minecraft %1$s har stöd för din version av SceneCraft)
+scenecraft.gui.loadentitytracker=Laddar entiteters positioner: %%d%%%%
+scenecraft.gui.loadquickmode=Laddar snabbläge: %%d%%%%
+scenecraft.gui.noquickmode=Snabbläge finns bara i Minecraft %1$s och senare
+scenecraft.gui.minimalmode.unsupported=Den här funktionen är inte tillgänglig för din nuvarande Minecraft-version.
+scenecraft.gui.minimalmode.supportedversion=(din version av SceneCraft stöder bara Minecraft %1$s)
 
 #Only change these if it's neccessary
 scenecraft.gui.replayviewer=Reprisvisare
 
 #Replay Viewer GUI
-scenecraft.gui.viewer.rename.name=Reprisnamn
-scenecraft.gui.viewer.replayfolder=Öppna reprismapp...
+scenecraft.gui.viewer.rename.name=Reprisens namn
+scenecraft.gui.viewer.replayfolder=Öppna reprismappen...
+scenecraft.gui.viewer.bulkrender=Rendera %1$d videor
 
-scenecraft.gui.viewer.delete.linea=Är du säker på att du vill radera denna repris?
-scenecraft.gui.viewer.delete.failed1=Ditt operativsystem lät oss inte ta bort reprisen. Det finns
-scenecraft.gui.viewer.delete.failed2=ingenting som vi kan göra åt detta. Du måste göra det själv.
-scenecraft.gui.viewer.delete.lineb="%1$s" kommer att försvinna för alltid! (Väldigt länge!)
+scenecraft.gui.viewer.delete.linea=Är du säker på att du vill radera den här reprisen?
+scenecraft.gui.viewer.delete.failed1=Ditt operativsystem tillät oss inte att ta bort reprisen. Vi kan
+scenecraft.gui.viewer.delete.failed2=inte göra något åt det. Du måste ta bort den själv.
+scenecraft.gui.viewer.delete.lineb='%1$s' går förlorad för alltid! (en lång tid!)
 
 #Replay Editor UI 2.0 (marker based UI)
 scenecraft.gui.edit.apply=Verkställ
-scenecraft.gui.edit.split=Dela upp
-scenecraft.gui.edit.split.tooltip=Dela upp reprisen i flera repriser vid markeringspunkten
-scenecraft.gui.edit.cut.start=Infoga klippstart
-scenecraft.gui.edit.cut.end=Infoga klippslut
-scenecraft.gui.edit.cut.tooltip=Klipp ut (ta bort) en del av reprisen
+scenecraft.gui.edit.split=Infoga delning
+scenecraft.gui.edit.split.tooltip=Dela reprisen i flera repriser vid den markerade punkten
+scenecraft.gui.edit.cut.start=Infoga klipp
+scenecraft.gui.edit.cut.end=Avsluta klipp
+scenecraft.gui.edit.cut.tooltip=Klipp bort en del av reprisen
 
 #Cancel Replay GUI
 scenecraft.gui.cancelrender.title=Avbryt rendering
-scenecraft.gui.cancelrender.message=Är du säker på att du vill avbryta aktuell renderingsprocess?
+scenecraft.gui.cancelrender.message=Är du säker på att du vill avbryta den pågående renderingen?
 #Saving Replay GUI
 scenecraft.gui.replaysaving.title=Sparar reprisfil...
 
 #Player Overview GUI
-scenecraft.gui.playeroverview.visible=Synlighet
+scenecraft.gui.playeroverview.visible=Synlig
 scenecraft.gui.playeroverview.hideall=Dölj alla
 scenecraft.gui.playeroverview.showall=Visa alla
-scenecraft.gui.playeroverview.spectate=Synliga spelare
+scenecraft.gui.playeroverview.spectate=Åskåda spelare
 scenecraft.gui.playeroverview.remembersettings=Kom ihåg dolda spelare
-scenecraft.gui.playeroverview.remembersettings.description=Spara spelarnas synlighet i reprisfilen
+scenecraft.gui.playeroverview.remembersettings.description=Sparar spelarnas synlighet i reprisfilen
 
 #SceneCraft Settings GUI
-scenecraft.gui.settings.title=Inställningar för SceneCraft
+scenecraft.gui.settings.title=SceneCraft-inställningar
+scenecraft.gui.settings.default=STANDARD
 
-scenecraft.gui.settings.notifications=Visa notifikationer
-scenecraft.gui.settings.recordserver=Spela in på servrar
-scenecraft.gui.settings.recordsingleplayer=Spela in i enspelarläge
+scenecraft.gui.settings.notifications=Aktivera aviseringar
+scenecraft.gui.settings.recordserver=Spela in server
+scenecraft.gui.settings.recordsingleplayer=Spela in enspelarläge
 scenecraft.gui.settings.indicator=Inspelningsindikator
-scenecraft.gui.settings.pathpreview=Förhandsvisa bana
+scenecraft.gui.settings.pathpreview=Visa förhandsvisning av bana
 scenecraft.gui.settings.camera=Kamera
 scenecraft.gui.settings.showchat=Visa chatt
-scenecraft.gui.settings.interpolator=Standard
+scenecraft.gui.settings.interpolator=Standardinterpolator
 scenecraft.gui.settings.autostartrecording=Automatisk inspelning
+scenecraft.gui.settings.rename_recording_dialog=Dialogruta för namnbyte
+scenecraft.gui.settings.fullbrightness=Full ljusstyrka
+scenecraft.gui.settings.fullbrightness.gamma=Gamma
+scenecraft.gui.settings.fullbrightness.nightvision=Mörkerseende
+scenecraft.gui.settings.fullbrightness.both=Båda
 
 #SceneCraft Keybindings
-scenecraft.input.lighting=Slå på/av ljus
-scenecraft.input.thumbnail=Skapa miniatyr
+scenecraft.input.lighting=Växla belysning
+scenecraft.input.thumbnail=Ta miniatyrbild
 scenecraft.input.playeroverview=Spelaröversikt
-scenecraft.input.clearkeyframes=Rensa nyckelbilder
-scenecraft.input.synctimeline=Synkronisera tidslinje
-scenecraft.input.keyframerepository=Nyckelbildsförinställn.
-scenecraft.input.rollclockwise=Rotera medurs
-scenecraft.input.rollcounterclockwise=Rotera moturs
-scenecraft.input.resettilt=Återställ kameralutning
-scenecraft.input.playpause=Spela upp/pausa repris
+scenecraft.input.clearkeyframes=Rensa nyckelbildrutor
+scenecraft.input.synctimeline=Synkronisera tidslinjen
+scenecraft.input.keyframerepository=Öppna förinställningar för nyckelbildrutor
+scenecraft.input.rollclockwise=Rulla medurs
+scenecraft.input.rollcounterclockwise=Rulla moturs
+scenecraft.input.resettilt=Återställ kamerans lutning
+scenecraft.input.playpause=Spela upp/Pausa repris
 scenecraft.input.marker=Lägg till händelsemarkör
-scenecraft.input.pathpreview=Förhandsvisa bana
-scenecraft.input.settings=Inställningar
+scenecraft.input.pathpreview=Växla förhandsvisning av bana
+scenecraft.input.settings=SceneCraft-inställningar
 scenecraft.input.quickmode=Snabbläge
+scenecraft.input.positionkeyframe=Positions-/åskådarnyckelbildruta
+scenecraft.input.positiononlykeyframe=Positionsnyckelbildruta
+scenecraft.input.timekeyframe=Tidsnyckelbildruta
+scenecraft.input.bothkeyframes=Positions-/åskådar- + tidsnyckelbildruta
 
 # CameraControllers
 scenecraft.camera.classic=Klassisk
-scenecraft.camera.vanilla=Vanilla-aktig
+scenecraft.camera.vanilla=Vanilla-liknande
 
 #Keyframe Presets GUI
-scenecraft.gui.keyframerepository.title=Förinställningar för nyckelbilder
+scenecraft.gui.keyframerepository.title=Nyckelbildrutearkiv
 
 #Edit Keyframe GUI
-scenecraft.gui.editkeyframe.title.pos=Redigera nyckelbild för position
-scenecraft.gui.editkeyframe.title.time=Redigera nyckelbild för tid
+scenecraft.gui.editkeyframe.title.pos=Redigera positionsnyckelbildruta
+scenecraft.gui.editkeyframe.title.time=Redigera tidsnyckelbildruta
 scenecraft.gui.editkeyframe.title.marker=Redigera händelsemarkör
-scenecraft.gui.editkeyframe.title.spec=Redigera nyckelbild för åskådning
+scenecraft.gui.editkeyframe.title.spec=Redigera åskådarnyckelbildruta
 scenecraft.gui.editkeyframe.xpos=X-position
 scenecraft.gui.editkeyframe.ypos=Y-position
 scenecraft.gui.editkeyframe.zpos=Z-position
-scenecraft.gui.editkeyframe.campitch=Vertikal kameralutning
-scenecraft.gui.editkeyframe.camyaw=Horisontal kameralutning
-scenecraft.gui.editkeyframe.camroll=Kamerarotation
-scenecraft.gui.editkeyframe.timelineposition=Position i tidslinje
-scenecraft.gui.editkeyframe.markername=Namn på händelsemarkör
+scenecraft.gui.editkeyframe.campitch=Kamerans lutning
+scenecraft.gui.editkeyframe.camyaw=Kamerans girning
+scenecraft.gui.editkeyframe.camroll=Kamerans rullning
+scenecraft.gui.editkeyframe.timelineposition=Position på tidslinjen
+scenecraft.gui.editkeyframe.markername=Händelsemarkörens namn
 scenecraft.gui.editkeyframe.timestamp=Tidsindex
 
-scenecraft.gui.editkeyframe.interpolator=Övergång
-scenecraft.gui.editkeyframe.interpolator.default.name=Standardövergång
-scenecraft.gui.editkeyframe.interpolator.default.desc=Använder standardövergången som definieras i inställningarna för SceneCraft.
-scenecraft.gui.editkeyframe.interpolator.catmullrom.name=Catmull rom spline
-scenecraft.gui.editkeyframe.interpolator.catmullrom.desc=Beräknar en catmull rom spline med anpassat alfavärde för en exakt och mjuk kamerabana.
+scenecraft.gui.editkeyframe.interpolator=Interpolator
+scenecraft.gui.editkeyframe.interpolator.default.name=Standardinterpolator
+scenecraft.gui.editkeyframe.interpolator.default.desc=Använder standardinterpolatorn som anges i SceneCrafts inställningar.
+scenecraft.gui.editkeyframe.interpolator.catmullrom.name=Catmull-Rom-splineinterpolator
+scenecraft.gui.editkeyframe.interpolator.catmullrom.desc=Beräknar en Catmull-Rom-spline med justerbart alfavärde för exakt kontroll över kamerabanans spänning och mjukhet.
 scenecraft.gui.editkeyframe.interpolator.catmullrom.alpha=Alfa:
-scenecraft.gui.editkeyframe.interpolator.cubic.name=Kubisk spline
+scenecraft.gui.editkeyframe.interpolator.cubic.name=Kubisk splineinterpolator
 scenecraft.gui.editkeyframe.interpolator.cubic.desc=Beräknar en kubisk ekvationsmatris för alla punkter för en mjuk kamerabana.
-scenecraft.gui.editkeyframe.interpolator.linear.name=Linjär övergång
-scenecraft.gui.editkeyframe.interpolator.linear.desc=Ritar raka linjer mellan nyckelbilderna.
+scenecraft.gui.editkeyframe.interpolator.linear.name=Linjär interpolator
+scenecraft.gui.editkeyframe.interpolator.linear.desc=Drar raka linjer mellan nyckelbildrutorna.
+
+#Render Settings GUI
+scenecraft.gui.rendersettings.addtoqueue=Lägg till i kön
 
 scenecraft.gui.rendersettings.renderer=Renderingsmetod
 
@@ -197,46 +213,51 @@ scenecraft.gui.rendersettings.renderer.stereoscopic=Stereoskopisk rendering
 scenecraft.gui.rendersettings.renderer.cubic=Kubisk rendering
 scenecraft.gui.rendersettings.renderer.equirectangular=Ekvirektangulär rendering
 scenecraft.gui.rendersettings.renderer.ods=ODS-rendering
-scenecraft.gui.rendersettings.renderer.blend=Blender-export [experimentiell]
+scenecraft.gui.rendersettings.renderer.blend=Blender-export [Experimentell]
 
-scenecraft.gui.rendersettings.renderer.default.description=Renderar videon i vald upplösning. Snabbaste renderingsalternativet.
-scenecraft.gui.rendersettings.renderer.stereoscopic.description=Renderar videon som en stereoskopisk (sida-vid-sida) 3D-film, används av olika 3D-tekniker. Bilden för ett öga är hälften så bred som videon
-scenecraft.gui.rendersettings.renderer.cubic.description=Renderar videon med en 360-graders panoramavy som använder kubisk projektion. Detta används av flera videospelare för 360 grader (och Oculus Rift), t.ex. VR Player.
-scenecraft.gui.rendersettings.renderer.equirectangular.description=Renderar videon med en 360-graders panoramavy som använder ekvirektangulär projektion. Detta används av YouTubes nya videofunktion för 360 grader och flera videospelare (samt Oculus Rift), t.ex. VR Player.
-scenecraft.gui.rendersettings.renderer.ods.description=Renderar videon med en stereoskopisk 360-graders panoramavy i 3D, även känd som VR Video. Detta används av YouTubes nya VR-videofunktion.
-scenecraft.gui.rendersettings.renderer.blend.description=Exporterar synlig geometri som en fil med formatet .blend som kan öppnas i Blender. Väldigt experimentiell: Kräver mycket RAM, har många kända problem och skapar ibland trasiga Blender-filer.
+scenecraft.gui.rendersettings.renderer.default.description=Renderar videon i den angivna upplösningen. Det snabbaste renderingsalternativet.
+scenecraft.gui.rendersettings.renderer.stereoscopic.description=Renderar videon som en stereoskopisk (sida vid sida) 3D-film som fungerar med olika 3D-tekniker. Bilden för ett öga är hälften så bred som videon.
+scenecraft.gui.rendersettings.renderer.cubic.description=Renderar videon med en 360-graders panoramavy med kubisk projektion. Fungerar i flera 360-gradersspelare (och Oculus Rift), till exempel VR Player.
+scenecraft.gui.rendersettings.renderer.equirectangular.description=Renderar videon med en 360-graders panoramavy med ekvirektangulär projektion. Fungerar med YouTubes nya 360-gradersfunktion och flera videospelare (samt Oculus Rift), till exempel VR Player.
+scenecraft.gui.rendersettings.renderer.ods.description=Renderar videon med en stereoskopisk 3D-panoramavy på 360 grader, även kallad VR-video. Fungerar med YouTubes nya VR-videofunktion.
+scenecraft.gui.rendersettings.renderer.blend.description=Exporterar synlig geometri som en .blend-fil som kan öppnas i Blender. Mycket experimentell: kräver mycket RAM, har en hel del kända problem och skapar ibland trasiga Blender-filer.
 
 scenecraft.gui.rendersettings.customresolution=Videoupplösning
-scenecraft.gui.rendersettings.customresolution.warning.yuv420=För denna förinställning måste bredden och höjden vara jämna siffror
-scenecraft.gui.rendersettings.customresolution.warning.yuv420.cubic=För denna förinställning måste bredden vara delbar med 6
+scenecraft.gui.rendersettings.customresolution.warning.yuv420=För den här förinställningen måste bredd och höjd vara jämna tal
+scenecraft.gui.rendersettings.customresolution.warning.yuv420.cubic=För den här förinställningen måste höjden vara delbar med 6
 scenecraft.gui.rendersettings.customresolution.warning.cubic.height=Kubisk rendering kräver en höjd som är delbar med 3
 scenecraft.gui.rendersettings.bitrate=Bithastighet
-scenecraft.gui.rendersettings.framerate=Bildfrekvens
-scenecraft.gui.rendersettings.chromakey=Färgfiltrering
-scenecraft.gui.rendersettings.nametags=Visa namnskyltar
-scenecraft.gui.rendersettings.outputfile=Utmatningsfil
+scenecraft.gui.rendersettings.framerate=Videons bildfrekvens
+scenecraft.gui.rendersettings.chromakey=Kromanyckel
+scenecraft.gui.rendersettings.nametags=Rendera namnskyltar
+scenecraft.gui.rendersettings.includealpha=Behåll alfakanal
+scenecraft.gui.rendersettings.outputfile=Utdatafil
 scenecraft.gui.rendersettings.sphericalFov=Sfäriskt synfält
-scenecraft.gui.rendersettings.sphericalmetadata=Injicera sfärisk metadata
-scenecraft.gui.rendersettings.sphericalmetadata.error=Sfärisk metadata kan endast läggas till i ekvirektangulära videor och ODS-videor i MP4-format
+scenecraft.gui.rendersettings.sphericalmetadata=Infoga sfärisk metadata
+scenecraft.gui.rendersettings.sphericalmetadata.error=Sfärisk metadata kan bara läggas till i ekvirektangulära videor och ODS-videor i MP4-format
+scenecraft.gui.rendersettings.depthmap=Djupkarta
+scenecraft.gui.rendersettings.depthmap.only_exr_or_png=Export av djupkarta stöds bara med formatet OpenEXR eller PNG.
+scenecraft.gui.rendersettings.camerapath=Exportera kamerabana
 
 scenecraft.gui.rendersettings.command=Kommando
-scenecraft.gui.rendersettings.arguments=Argument för kommandoraden
-scenecraft.gui.rendersettings.ffmpeg.description=Om du är en avancerad användare kan du anpassa parametrarna i kommandoraden som används för att exportera videon. För mer information, se http://replaymod.com/docs
+scenecraft.gui.rendersettings.arguments=Kommandoradsargument
+scenecraft.gui.rendersettings.ffmpeg.description=Om du är en avancerad användare kan du anpassa kommandoradsparametrarna som används för att exportera videon. Mer information finns på http://replaymod.com/docs
 
 scenecraft.gui.rendersettings.stabilizecamera=Stabilisera kameran
 
-scenecraft.gui.rendersettings.video=Grafikinställningar
+scenecraft.gui.rendersettings.video=Videoinställningar
 scenecraft.gui.rendersettings.advanced=Avancerade inställningar
-scenecraft.gui.rendersettings.commandline=Inställningar för kommandoraden
+scenecraft.gui.rendersettings.commandline=Kommandoradsinställningar
 
-scenecraft.gui.rendersettings.presets=Förinställningar för kodning
+scenecraft.gui.rendersettings.presets=Kodningsförinställningar
 scenecraft.gui.rendersettings.presets.mp4.custom=MP4 - Anpassad bithastighet
 scenecraft.gui.rendersettings.presets.mp4.default=MP4 - Standardkvalitet
-scenecraft.gui.rendersettings.presets.mp4.potato=MP4 - Usel kvalitet
+scenecraft.gui.rendersettings.presets.mp4.potato=MP4 - Potatiskvalitet
 scenecraft.gui.rendersettings.presets.webm.custom=WEBM - Anpassad bithastighet
-scenecraft.gui.rendersettings.presets.mkv.lossless=MKV - Förlustfritt
+scenecraft.gui.rendersettings.presets.mkv.lossless=MKV - Förlustfri
 scenecraft.gui.rendersettings.presets.blend=Blend-fil
 scenecraft.gui.rendersettings.presets.png=PNG-sekvens
+scenecraft.gui.rendersettings.presets.exr=OpenEXR-sekvens
 
 scenecraft.gui.rendersettings.antialiasing=Kantutjämning
 scenecraft.gui.rendersettings.antialiasing.none=Ingen
@@ -246,74 +267,80 @@ scenecraft.gui.rendersettings.antialiasing.x8=8x
 
 #Render Queue GUI
 scenecraft.gui.renderqueue.title=Renderingskö
-scenecraft.gui.renderqueue.add=Lägg till aktuell konfig.
+scenecraft.gui.renderqueue.add=Lägg till nuvarande konfiguration
+scenecraft.gui.renderqueue.renderall=Rendera alla
+scenecraft.gui.renderqueue.renderselected=Rendera valda
 
 #Rendering GUI
-scenecraft.gui.rendering.title=Rendera video
+scenecraft.gui.rendering.title=Renderar video
 scenecraft.gui.rendering.pause=Pausa rendering
-scenecraft.gui.rendering.resume=Fortsätt rendering
+scenecraft.gui.rendering.resume=Återuppta rendering
 scenecraft.gui.rendering.cancel=Avbryt rendering
 scenecraft.gui.rendering.cancel.callback=Är du säker?
-scenecraft.gui.rendering.preview=Visa förhandsvisning (prestandan kan variera)
+scenecraft.gui.rendering.preview=Visa förhandsvisning (prestandan kan påverkas)
 scenecraft.gui.rendering.progress=Renderade bildrutor: %1$d / %2$d
 scenecraft.gui.rendering.timetaken=Renderingstid
 scenecraft.gui.rendering.timeleft=Återstående tid
 
 #Render Errors
-scenecraft.gui.rendering.error.title=Rendering misslyckades
-scenecraft.gui.rendering.error.message=För att rendera en video måste du installera ffmpeg.
-scenecraft.gui.rendering.error.ffmpeglog=FFmpeg-utmatning:
-scenecraft.gui.rendering.error.ffmpegargs.1=Det verkar som att du har ändrat argumenten i kommandoraden.
-scenecraft.gui.rendering.error.ffmpegargs.2=Vill du återställa dem till dess standardvärden och försöka igen?
+scenecraft.gui.rendering.error.title=Renderingen misslyckades
+scenecraft.gui.rendering.error.message=För att rendera en video måste du ha ffmpeg installerat.
+scenecraft.gui.rendering.error.ffmpeglog=FFmpeg-utdata:
+scenecraft.gui.rendering.error.ffmpegargs.1=Det verkar som att du har ändrat kommandoradsargumenten.
+scenecraft.gui.rendering.error.ffmpegargs.2=Vill du återställa dem till standardvärdena och försöka igen?
 
 #Ingame Menu
-scenecraft.gui.ingame.menu.addposkeyframe=Lägg till nyckelbild för position
-scenecraft.gui.ingame.menu.removeposkeyframe=Ta bort nyckelbild för position
-scenecraft.gui.ingame.menu.addspeckeyframe=Lägg till nyckelbild för åskådning
-scenecraft.gui.ingame.menu.removespeckeyframe=Ta bort nyckelbild för åskådning
-scenecraft.gui.ingame.menu.addtimekeyframe=Lägg till nyckelbild för tid
-scenecraft.gui.ingame.menu.removetimekeyframe=Ta bort nyckelbild för tid
+scenecraft.gui.ingame.menu.addposkeyframe=Lägg till positionsnyckelbildruta
+scenecraft.gui.ingame.menu.removeposkeyframe=Ta bort positionsnyckelbildruta
+scenecraft.gui.ingame.menu.addspeckeyframe=Lägg till åskådarnyckelbildruta
+scenecraft.gui.ingame.menu.removespeckeyframe=Ta bort åskådarnyckelbildruta
+scenecraft.gui.ingame.menu.addtimekeyframe=Lägg till tidsnyckelbildruta
+scenecraft.gui.ingame.menu.removetimekeyframe=Ta bort tidsnyckelbildruta
 scenecraft.gui.ingame.menu.pause=Pausa repris
-scenecraft.gui.ingame.menu.unpause=Spela upp repris
+scenecraft.gui.ingame.menu.unpause=Återuppta repris
 scenecraft.gui.ingame.menu.renderpath=Rendera kamerabana
-scenecraft.gui.ingame.menu.playpath=Spela upp kamerabana från pekarens position
+scenecraft.gui.ingame.menu.playpath=Spela upp kamerabanan från markörens position
 scenecraft.gui.ingame.menu.playpathfromstart=Spela upp kamerabanan från början
-scenecraft.gui.ingame.menu.pausepath=Pausa kamerabana
+scenecraft.gui.ingame.menu.pausepath=Pausa kamerabanan
 scenecraft.gui.ingame.menu.zoomin=Zooma in
 scenecraft.gui.ingame.menu.zoomout=Zooma ut
 
 scenecraft.gui.ingame.unnamedmarker=Namnlös händelsemarkör
+scenecraft.gui.ingame.autoactivating=Den här tangentbindningen kan aktiveras automatiskt vid lämpliga tillfällen.
+scenecraft.gui.ingame.autoactivating.disable=Ctrl-klicka för att inaktivera automatisk aktivering.
+scenecraft.gui.ingame.autoactivating.enable=Ctrl-klicka för att aktivera automatisk aktivering.
+scenecraft.gui.ingame.first_keyframe_not_at_start_warning=Du har precis placerat din första nyckelbildruta och den ligger inte på 00:00.\n\nDet tyder oftast på att du har missförstått hur\nvideons tidslinje (den undre) fungerar:\n\nMedan den övre tidslinjen visar din nuvarande tid i reprisen\nvisar den undre tiden i videon som du skapar.\nVideon börjar alltid på 00:00! Om din första nyckelbildruta inte ligger på 00:00\nkommer videon att se frusen ut tills den första nyckelbildrutans tid är inne!
 
 #Clear Keyframe Callback
-scenecraft.gui.clearcallback.title=Rensa alla nyckelbilder?
+scenecraft.gui.clearcallback.title=Rensa alla nyckelbildrutor?
 
 #Errors
-scenecraft.error.unknownrestriction1=Denna repris kan inte spelas upp med din nuvarande version.
-scenecraft.error.unknownrestriction2=Den försökte tvinga %s som är okänd.
-scenecraft.error.negativetime1=En del av dina nyckelbilder för tid är i oordning.
-scenecraft.error.negativetime2=Det finns inget stöd för att gå bakåt i tiden.
-scenecraft.error.negativetime3=De ogiltiga delarna är rödmarkerade.
+scenecraft.error.unknownrestriction1=Den här reprisen kan inte spelas upp med din nuvarande version.
+scenecraft.error.unknownrestriction2=Den försökte tvinga fram %s, vilket är okänt.
+scenecraft.error.negativetime1=Några av dina tidsnyckelbildrutor ligger i fel ordning.
+scenecraft.error.negativetime2=Att gå bakåt i tiden stöds inte.
+scenecraft.error.negativetime3=De ogiltiga delarna är markerade med rött.
 
 #SceneCraft Incompatibility Warning
-scenecraft.gui.modwarning.title=Inkompatibilitet har upptäckts
+scenecraft.gui.modwarning.title=Inkompatibilitet upptäckt
 scenecraft.gui.modwarning.message1=En möjlig inkompatibilitet mellan din nuvarande
-scenecraft.gui.modwarning.message2=Minecraft-version och denna repris har upptäckts.
-scenecraft.gui.modwarning.message3=Om denna repris läses in kan fel eller en krasch uppstå.
+scenecraft.gui.modwarning.message2=Minecraft-version och den här reprisen har upptäckts.
+scenecraft.gui.modwarning.message3=Att ladda den här reprisen kan orsaka fel eller krascher.
 scenecraft.gui.modwarning.name=Modnamn:
 scenecraft.gui.modwarning.id=Mod-ID:
-scenecraft.gui.modwarning.missing=Moddar som saknas
+scenecraft.gui.modwarning.missing=Saknade moddar
 scenecraft.gui.modwarning.version=Olika modversioner
-scenecraft.gui.modwarning.version.expected=Förväntades
-scenecraft.gui.modwarning.version.found=Hittades
+scenecraft.gui.modwarning.version.expected=Förväntad
+scenecraft.gui.modwarning.version.found=Hittad
 
 #Advanced Screenshots Gui
-scenecraft.gui.advancedscreenshots.title=Inställningar för skärmdumpar
-scenecraft.gui.advancedscreenshots.create=Ta skärmdump
+scenecraft.gui.advancedscreenshots.title=Skärmbildsinställningar
+scenecraft.gui.advancedscreenshots.create=Ta skärmbild
 scenecraft.gui.advancedscreenshots.resolution=Upplösning
 
 # Screenshot Finished Gui
-scenecraft.gui.advancedscreenshots.finished.description=Du tog en skärmdump!
-scenecraft.gui.advancedscreenshots.finished.description.360=Du tog en skärmdump i 360 grader!
-scenecraft.gui.advancedscreenshots.finished.description.veer=Ladda upp och se bilden i VR på VeeR.tv eller öppna den på din hårddisk.
+scenecraft.gui.advancedscreenshots.finished.description=Du har skapat en skärmbild!
+scenecraft.gui.advancedscreenshots.finished.description.360=Du har skapat en 360°-skärmbild!
+scenecraft.gui.advancedscreenshots.finished.description.veer=Ladda upp och visa bilden i VR på VeeR.tv eller öppna den från disken.
 scenecraft.gui.advancedscreenshots.finished.upload.veer=Ladda upp till VeeR.tv
-scenecraft.gui.advancedscreenshots.finished.showfile=Visa filen på hårddisken
+scenecraft.gui.advancedscreenshots.finished.showfile=Visa filen på disken
