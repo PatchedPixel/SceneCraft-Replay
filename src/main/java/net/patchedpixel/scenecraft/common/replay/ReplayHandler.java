@@ -178,7 +178,10 @@ public class ReplayHandler {
         channel.pipeline().fireChannelActive();
         ConnectionAccess.markAsModdedConnection(channel);
         try {
-            ModLoader.loadDefaultServerConfigs();
+            // A live integrated server owns its file-backed configs, never overwrite them
+            if(!mc.hasSingleplayerServer()) {
+                ModLoader.loadDefaultServerConfigs();
+            }
         } catch(Throwable t) {
             LOGGER.warn("Could not load default server configs for replay", t);
         }

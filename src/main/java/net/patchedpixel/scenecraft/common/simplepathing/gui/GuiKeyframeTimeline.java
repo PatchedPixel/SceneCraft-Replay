@@ -183,6 +183,8 @@ public class GuiKeyframeTimeline extends TimelineWidget {
             }
             BufferUploader.drawWithShader(buffer.end());
             RenderSystem.lineWidth(1.0F);
+
+            gui.overlay.timeline.redrawCursor(graphics);
         }
 
         // Draw colored quads on spectator path segments
@@ -239,7 +241,8 @@ public class GuiKeyframeTimeline extends TimelineWidget {
 
     /**
      * Returns the keyframe at the specified position.
-     * @param position The raw position
+     * @param mx The raw position
+     * @param my The raw position
      * @return Pair of path id and keyframe or null when no keyframe was clicked
      */
     private Pair<SPPath, Long> getKeyframe(double mx, double my) {

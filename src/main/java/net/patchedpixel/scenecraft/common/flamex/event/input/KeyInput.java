@@ -24,7 +24,6 @@
  */
 package net.patchedpixel.scenecraft.common.flamex.event.input;
 
-
 public class KeyInput implements InputWithModifiers {
     public int key;
     public int keycode;

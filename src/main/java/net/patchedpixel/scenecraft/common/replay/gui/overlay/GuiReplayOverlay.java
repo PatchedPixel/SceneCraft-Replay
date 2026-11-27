@@ -44,8 +44,8 @@ public class GuiReplayOverlay {
      */
     public final WidgetRow statusIndicatorPanel = new WidgetRow(5);
 
-        private final List<AbstractWidget> extraWidgets = new ArrayList<>();
-        private final List<BiConsumer<Integer, Integer>> layoutHooks = new ArrayList<>();
+    private final List<AbstractWidget> extraWidgets = new ArrayList<>();
+    private final List<BiConsumer<Integer, Integer>> layoutHooks = new ArrayList<>();
 
     private final EventHandler eventHandler = new EventHandler();
     private final OverlayScreen inputScreen = new OverlayScreen();
@@ -160,7 +160,7 @@ public class GuiReplayOverlay {
         this.closeable = closeable;
     }
 
-        public boolean isAllowUserInput() {
+    public boolean isAllowUserInput() {
         return ((ScreenExt) inputScreen).doesPassEvents();
     }
 
@@ -187,7 +187,7 @@ public class GuiReplayOverlay {
     }
 
     private void layout(int width, int height) {
-        timeline.setWidth(Math.max(20, width - 20 - playPauseButton.getWidth() - speedSlider.getWidth() - 10 - 4));
+        timeline.setWidth(Math.max(20, width - 20 - playPauseButton.getWidth() - speedSlider.getWidth() - 10));
         topPanel.arrange(10, 10);
         statusIndicatorPanel.arrange(0, 0);
         statusIndicatorPanel.arrange(width - 5 - statusIndicatorPanel.getWidth(), height - 21);
@@ -223,7 +223,7 @@ public class GuiReplayOverlay {
         }
     }
 
-        private class OverlayScreen extends Screen {
+    private class OverlayScreen extends Screen {
         OverlayScreen() {
             super(Component.empty());
             ((ScreenExt) this).setPassEvents(true);

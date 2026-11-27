@@ -18,6 +18,8 @@
  */
 package net.patchedpixel.scenecraft.common.scenestudio.data;
 
+import java.util.Objects;
+
 /**
  * Marks a specific time and position in a replay.
  */
@@ -94,9 +96,7 @@ public final class Marker {
     @Override
     public boolean equals(Object o) {
         if(this == o) return true;
-        if(!(o instanceof Marker)) return false;
-
-        Marker marker = (Marker) o;
+        if(!(o instanceof Marker marker)) return false;
 
         if(time != marker.time) return false;
         if(Double.compare(marker.x, x) != 0) return false;
@@ -105,21 +105,18 @@ public final class Marker {
         if(Float.compare(marker.yaw, yaw) != 0) return false;
         if(Float.compare(marker.pitch, pitch) != 0) return false;
         if(Float.compare(marker.roll, roll) != 0) return false;
-        return !(name != null ? !name.equals(marker.name) : marker.name != null);
+
+        return Objects.equals(name, marker.name);
     }
 
     @Override
     public int hashCode() {
         int result;
-        long temp;
         result = name != null ? name.hashCode() : 0;
         result = 31 * result + time;
-        temp = Double.doubleToLongBits(x);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(y);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        temp = Double.doubleToLongBits(z);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + Double.hashCode(x);
+        result = 31 * result + Double.hashCode(y);
+        result = 31 * result + Double.hashCode(z);
         result = 31 * result + (yaw != +0.0f ? Float.floatToIntBits(yaw) : 0);
         result = 31 * result + (pitch != +0.0f ? Float.floatToIntBits(pitch) : 0);
         result = 31 * result + (roll != +0.0f ? Float.floatToIntBits(roll) : 0);

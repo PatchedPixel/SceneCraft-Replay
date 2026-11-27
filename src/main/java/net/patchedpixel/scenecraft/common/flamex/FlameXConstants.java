@@ -5,8 +5,8 @@ import net.patchedpixel.scenecraft.common.SceneCraft;
 
 import static net.patchedpixel.scenecraft.common.core.versions.MCVer.identifier;
 
-public final class FlameXTheme {
-    private FlameXTheme() {}
+public final class FlameXConstants {
+    private FlameXConstants() {}
 
     public static final ResourceLocation GUI_TEXTURE = identifier(SceneCraft.MOD_ID, "gui.png");
     public static final int PANEL_U = 0;

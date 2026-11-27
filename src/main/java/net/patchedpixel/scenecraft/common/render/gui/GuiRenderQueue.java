@@ -24,7 +24,7 @@ import net.patchedpixel.scenecraft.common.scenestudio.pathing.path.Timeline;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
 import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
-import net.patchedpixel.scenecraft.common.flamex.FlameXTheme;
+import net.patchedpixel.scenecraft.common.flamex.FlameXConstants;
 import net.patchedpixel.scenecraft.common.flamex.widget.NineSlice;
 import net.patchedpixel.scenecraft.common.flamex.widget.SelectableList;
 import net.patchedpixel.scenecraft.common.utils.Result;
@@ -90,7 +90,7 @@ public class GuiRenderQueue extends FlameableScreen {
             if(!ctrl) selectedEntries.clear();
             if(!selectedEntries.remove(entry)) selectedEntries.add(entry);
             updateButtons();
-        });
+        }).setRowSpacing(3);
         for(RenderJob renderJob : jobs) {
             JobEntry entry = new JobEntry(renderJob);
             for(JobEntry old : keep) {
@@ -147,9 +147,9 @@ public class GuiRenderQueue extends FlameableScreen {
         }
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 10);
-        graphics.fill(0, 0, width, height, FlameXTheme.DIM);
+        graphics.fill(0, 0, width, height, FlameXConstants.DIM);
         NineSlice.panel(graphics, popupX, popupY, popupWidth, popupHeight);
-        graphics.drawString(font, title, width / 2 - font.width(title) / 2, titleY, FlameXTheme.TEXT_ON_PANEL | 0xFF000000, false);
+        graphics.drawString(font, title, width / 2 - font.width(title) / 2, titleY, FlameXConstants.TEXT_ON_PANEL | 0xFF000000, false);
         super.render(graphics, mouseX, mouseY, partialTicks);
         graphics.pose().popPose();
     }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EventRegistrations {
-    private List<EventRegistration<?>> registrations = new ArrayList<>();
+    private final List<EventRegistration<?>> registrations = new ArrayList<>();
 
     public <T> EventRegistrations on(EventRegistration<T> registration) {
         registrations.add(registration);

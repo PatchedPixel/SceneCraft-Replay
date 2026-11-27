@@ -4,6 +4,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 public class LabelWidget extends StringWidget {
     private float alignX = 0.5F;
@@ -13,19 +14,19 @@ public class LabelWidget extends StringWidget {
     }
 
     @Override
-    public StringWidget alignLeft() {
+    public @NotNull StringWidget alignLeft() {
         alignX = 0F;
         return super.alignLeft();
     }
 
     @Override
-    public StringWidget alignCenter() {
+    public @NotNull StringWidget alignCenter() {
         alignX = 0.5F;
         return super.alignCenter();
     }
 
     @Override
-    public StringWidget alignRight() {
+    public @NotNull StringWidget alignRight() {
         alignX = 1F;
         return super.alignRight();
     }

@@ -1,6 +1,7 @@
 package net.patchedpixel.scenecraft.common.extras.advancedscreenshots;
 
 import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.network.chat.Component;
 import net.patchedpixel.scenecraft.common.SceneCraft;
 import net.patchedpixel.scenecraft.common.core.SettingsRegistry;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
@@ -8,6 +9,7 @@ import net.patchedpixel.scenecraft.common.extras.Setting;
 import net.patchedpixel.scenecraft.common.render.RenderSettings;
 import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
+import net.patchedpixel.scenecraft.common.flamex.widget.CheckboxWidget;
 
 import java.net.URI;
 
@@ -17,8 +19,9 @@ public class GuiUploadScreenshot extends FlameableScreen {
     private boolean neverOpen;
 
     public GuiUploadScreenshot(SceneCraft mod, RenderSettings renderSettings) {
-        super("scenecraft.gui.advancedscreenshots.finished.title", null, 6);
+        super(Component.empty(), null, 5);
         this.panel = true;
+        this.dim = true;
         this.mod = mod;
         this.renderSettings = renderSettings;
         this.background = Background.NONE;
@@ -38,8 +41,10 @@ public class GuiUploadScreenshot extends FlameableScreen {
         }
         root.addChild(FlameX.button("scenecraft.gui.advancedscreenshots.finished.showfile", 150,
                 () -> MCVer.openFile(renderSettings.getOutputFile().getParentFile())));
-        root.addChild(FlameX.checkbox("scenecraft.gui.notagain", neverOpen, v -> neverOpen = v));
         root.addChild(FlameX.button("scenecraft.gui.close", 150, this::close));
+        CheckboxWidget neverOpenCheckbox = (CheckboxWidget) FlameX.checkbox("scenecraft.gui.notagain", neverOpen, v -> neverOpen = v);
+        neverOpenCheckbox.setLabelGap(5);
+        root.addChild(neverOpenCheckbox, root.newChildLayoutSettings().alignHorizontallyRight());
     }
 
     public void open() {

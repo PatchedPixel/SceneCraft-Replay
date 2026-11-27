@@ -28,7 +28,7 @@ import net.patchedpixel.scenecraft.common.render.SceneCraftRender;
 import net.patchedpixel.scenecraft.common.render.rendering.VideoRenderer;
 import net.patchedpixel.scenecraft.common.replay.ReplayHandler;
 import net.patchedpixel.scenecraft.common.scenestudio.pathing.path.Timeline;
-import net.patchedpixel.scenecraft.common.flamex.FlameXTheme;
+import net.patchedpixel.scenecraft.common.flamex.FlameXConstants;
 import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import net.patchedpixel.scenecraft.common.flamex.util.color.Color;
@@ -267,12 +267,10 @@ public class GuiRenderSettings extends FlameableScreen {
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         if(parent != null) {
             parent.render(graphics, -1, -1, partialTicks);
-        } else {
-            renderBackground(graphics);
         }
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 10);
-        graphics.fill(20, 20, width - 20, height - 20, FlameXTheme.SCRIM);
+        graphics.fill(20, 20, width - 20, height - 20, FlameXConstants.SCRIM);
         super.render(graphics, mouseX, mouseY, partialTicks);
         graphics.pose().popPose();
     }

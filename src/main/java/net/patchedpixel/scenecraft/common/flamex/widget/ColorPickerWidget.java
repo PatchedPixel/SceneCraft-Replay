@@ -1,9 +1,14 @@
 package net.patchedpixel.scenecraft.common.flamex.widget;
 
+import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.patchedpixel.scenecraft.common.SceneCraft;
+import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 import net.patchedpixel.scenecraft.common.flamex.util.color.Color;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,10 +16,12 @@ import java.util.function.Consumer;
 
 public class ColorPickerWidget extends AbstractWidget {
     private static final int PICKER_SIZE = 100;
+    private static ResourceLocation pickerLocation;
 
     private final Consumer<Color> onSelection;
     private Color color;
     private boolean opened;
+    private boolean keepOpenOnRefocus;
     private boolean dragging;
 
     public ColorPickerWidget(int width, int height, Color initial, Consumer<Color> onSelection) {
@@ -80,14 +87,26 @@ public class ColorPickerWidget extends AbstractWidget {
         if(opened) {
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 300);
-            int top = y + getHeight();
-            for(int px = 0; px < PICKER_SIZE; px++) {
-                for(int py = 0; py < PICKER_SIZE; py++) {
-                    graphics.fill(x + px, top + py, x + px + 1, top + py + 1, colorAt(px, py).toARGB());
-                }
-            }
+            graphics.blit(pickerTexture(), x, y + getHeight(), 0f, 0f, PICKER_SIZE, PICKER_SIZE, PICKER_SIZE, PICKER_SIZE);
             graphics.pose().popPose();
         }
+    }
+
+    private static ResourceLocation pickerTexture() {
+        if(pickerLocation == null) {
+            NativeImage image = new NativeImage(PICKER_SIZE, PICKER_SIZE, false);
+            for(int px = 0; px < PICKER_SIZE; px++) {
+                for(int py = 0; py < PICKER_SIZE; py++) {
+                    Color c = colorAt(px, py);
+                    image.setPixelRGBA(px, py, 0xFF000000 | (c.blue() << 16) | (c.green() << 8) | c.red());
+                }
+            }
+
+            pickerLocation = MCVer.identifier(SceneCraft.MOD_ID, "flamex/color_picker");
+            MCVer.getMinecraft().getTextureManager().register(pickerLocation, new DynamicTexture(image));
+        }
+
+        return pickerLocation;
     }
 
     private void pick(double mouseX, double mouseY) {
@@ -103,11 +122,13 @@ public class ColorPickerWidget extends AbstractWidget {
         if(!active || !visible || button != 0) return false;
         if(overPicker(mouseX, mouseY)) {
             dragging = true;
+            keepOpenOnRefocus = true;
             pick(mouseX, mouseY);
             return true;
         }
         if(super.isMouseOver(mouseX, mouseY)) {
             opened = !opened;
+            keepOpenOnRefocus = opened;
             return true;
         }
         opened = false;
@@ -131,7 +152,13 @@ public class ColorPickerWidget extends AbstractWidget {
     @Override
     public void setFocused(boolean focused) {
         super.setFocused(focused);
-        if(!focused) opened = false;
+        if(focused) {
+            keepOpenOnRefocus = false;
+        } else if(keepOpenOnRefocus) {
+            keepOpenOnRefocus = false;
+        } else {
+            opened = false;
+        }
     }
 
     @Override

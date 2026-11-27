@@ -6,7 +6,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.CommonComponents;
-import net.patchedpixel.scenecraft.common.flamex.FlameXTheme;
+import net.patchedpixel.scenecraft.common.flamex.FlameXConstants;
 import org.jetbrains.annotations.NotNull;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
@@ -30,7 +30,6 @@ public class TimelineWidget extends AbstractWidget {
     private int cursorPosition;
     private double zoom = 1;
     private int offset;
-    private final boolean drawCursor = true;
     private boolean drawMarkers;
     private String lastTooltipText;
 
@@ -57,7 +56,22 @@ public class TimelineWidget extends AbstractWidget {
     protected void drawContent(GuiGraphics graphics, int mouseX, int mouseY) {}
 
     protected void drawTimelineCursor(GuiGraphics graphics) {
-        if(!drawCursor || length <= 0) {
+        drawCursorSprite(graphics);
+    }
+
+    /**
+     * Draws the cursor again on top of whatever was painted over this timeline in the meantime.
+     * Meant for widgets that draw across the bounds of this one, such as the lines that connect the keyframe
+     * timeline to the replay timeline.
+     * Not routed through {@link #drawTimelineCursor(GuiGraphics)}, so subclasses that draw extra things there
+     * are not drawn a second time.
+     */
+    public final void redrawCursor(GuiGraphics graphics) {
+        drawCursorSprite(graphics);
+    }
+
+    private void drawCursorSprite(GuiGraphics graphics) {
+        if(length <= 0) {
             return;
         }
 
@@ -65,12 +79,13 @@ public class TimelineWidget extends AbstractWidget {
         int cursor = Math.max(offset, Math.min(offset + visibleLength, cursorPosition));
         int cursorX = getX() + xOffsetFor(cursor);
 
+        graphics.flush();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        graphics.blit(FlameXTheme.GUI_TEXTURE, cursorX - 2, getY() + BORDER_TOP - 1, 64, 0, 5, 4);
+        graphics.blit(FlameXConstants.GUI_TEXTURE, cursorX - 2, getY() + BORDER_TOP - 1, 64, 0, 5, 4);
         for(int y = BORDER_TOP - 1; y < getHeight() - BORDER_BOTTOM; y += 11) {
             int segH = Math.min(11, getHeight() - BORDER_BOTTOM - y);
-            graphics.blit(FlameXTheme.GUI_TEXTURE, cursorX - 2, getY() + y, 64, 4, 5, segH);
+            graphics.blit(FlameXConstants.GUI_TEXTURE, cursorX - 2, getY() + y, 64, 4, 5, segH);
         }
 
         RenderSystem.disableBlend();

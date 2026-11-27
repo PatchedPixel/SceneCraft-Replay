@@ -174,7 +174,7 @@ public class GuiPathing {
         int y0 = overlay.topPanel.getHeight() + 10 + 3;
         SpriteButton[] buttons = {playPauseButton, renderButton, positionKeyframeButton, timeKeyframeButton};
         for(int i = 0; i < buttons.length; i++) {
-            buttons[i].setPosition(x0 + i * 25, y0);
+            buttons[i].setPosition(x0 + i * 25, y0 + 10);
         }
         int timelineX = x0 + buttons.length * 25;
         int zoomX = width - 10 - zoomInButton.getWidth();

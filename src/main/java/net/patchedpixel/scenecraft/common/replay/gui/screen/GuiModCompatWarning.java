@@ -33,8 +33,8 @@ public class GuiModCompatWarning extends FlameableScreen {
         buttons.arrangeElements();
         buttons.setPosition(width / 2 - buttons.getWidth() / 2, height - 10 - buttons.getHeight());
 
-        TextListWidget content = new TextListWidget(width - 20, buttons.getY() - 10 - 35, 35, buttons.getY() - 10);
-        content.setLeftPos(10);
+        TextListWidget content = new TextListWidget(10, 35, width - 20, buttons.getY() - 10 - 35)
+                .setShadow(true).setSlider(true).setSpacing(8);
         content.addLine(FlameX.t("scenecraft.gui.modwarning.message1"), true);
         content.addLine(FlameX.t("scenecraft.gui.modwarning.message2"), true);
         content.addLine(FlameX.t("scenecraft.gui.modwarning.message3"), true);
@@ -59,9 +59,9 @@ public class GuiModCompatWarning extends FlameableScreen {
     }
 
     private static void addModInfo(TextListWidget content, ModInfo modInfo, String versionLine) {
-        content.addBlank();
-        content.addLine(MCVer.literalText(I18n.get("scenecraft.gui.modwarning.name") + " " + modInfo.getName()), true);
-        content.addLine(MCVer.literalText(I18n.get("scenecraft.gui.modwarning.id") + " " + modInfo.getId()), true);
-        content.addLine(MCVer.literalText(versionLine), true);
+        content.addBlock(true,
+                TextListWidget.pair(FlameX.t("scenecraft.gui.modwarning.name"), MCVer.literalText(modInfo.getName())),
+                TextListWidget.pair(FlameX.t("scenecraft.gui.modwarning.id"), MCVer.literalText(modInfo.getId())),
+                TextListWidget.line(MCVer.literalText(versionLine)));
     }
 }

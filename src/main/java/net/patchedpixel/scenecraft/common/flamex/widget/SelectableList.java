@@ -6,7 +6,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
-import net.patchedpixel.scenecraft.common.flamex.FlameXTheme;
+import net.patchedpixel.scenecraft.common.flamex.FlameXConstants;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -26,6 +26,7 @@ public class SelectableList<T> extends AbstractWidget {
     private final BiConsumer<T, Boolean> onClick;
     private final int entryWidth;
     private final int rowHeight;
+    private int rowSpacing;
     private int offset;
     private boolean draggingSlider;
 
@@ -39,6 +40,19 @@ public class SelectableList<T> extends AbstractWidget {
         this.onClick = onClick;
     }
 
+    public SelectableList<T> setRowSpacing(int spacing) {
+        this.rowSpacing = spacing;
+        return this;
+    }
+
+    public int getOffset() {
+        return offset;
+    }
+
+    public void setOffset(int offset) {
+        this.offset = offset;
+    }
+
     public List<T> items() {
         return items;
     }
@@ -48,7 +62,8 @@ public class SelectableList<T> extends AbstractWidget {
     }
 
     private int contentHeight() {
-        return items.size() * rowHeight + PADDING * 2;
+        int count = items.size();
+        return count * (rowHeight + rowSpacing) - (count > 0 ? rowSpacing : 0) + PADDING * 2;
     }
 
     private int maxOffset() {
@@ -81,7 +96,7 @@ public class SelectableList<T> extends AbstractWidget {
         graphics.enableScissor(x, y, x + width, y + height);
         int ex = entryX();
         for(int i = 0; i < items.size(); i++) {
-            int ry = y + PADDING + i * rowHeight - offset;
+            int ry = y + PADDING + i * (rowHeight + rowSpacing) - offset;
             if(ry + rowHeight < y || ry > y + height) continue;
             T item = items.get(i);
             if(selected.contains(item)) {
@@ -98,10 +113,10 @@ public class SelectableList<T> extends AbstractWidget {
             int sx = sliderX();
             int barY = y + offset * height / contentHeight();
             int barHeight = height * height / contentHeight();
-            graphics.fill(sx, y, sx + SLIDER_WIDTH, y + height, FlameXTheme.SLIDER_TRACK);
-            graphics.fill(sx, barY, sx + SLIDER_WIDTH, barY + barHeight, FlameXTheme.SLIDER_THUMB);
-            graphics.fill(sx + SLIDER_WIDTH - 1, barY, sx + SLIDER_WIDTH, barY + barHeight, FlameXTheme.SLIDER_SHADOW);
-            graphics.fill(sx, barY + barHeight - 1, sx + SLIDER_WIDTH, barY + barHeight, FlameXTheme.SLIDER_SHADOW);
+            graphics.fill(sx, y, sx + SLIDER_WIDTH, y + height, FlameXConstants.SLIDER_TRACK);
+            graphics.fill(sx, barY, sx + SLIDER_WIDTH, barY + barHeight, FlameXConstants.SLIDER_THUMB);
+            graphics.fill(sx + SLIDER_WIDTH - 1, barY, sx + SLIDER_WIDTH, barY + barHeight, FlameXConstants.SLIDER_SHADOW);
+            graphics.fill(sx, barY + barHeight - 1, sx + SLIDER_WIDTH, barY + barHeight, FlameXConstants.SLIDER_SHADOW);
         }
     }
 
@@ -114,8 +129,9 @@ public class SelectableList<T> extends AbstractWidget {
         }
         int ex = entryX();
         if(mouseX < ex || mouseX >= ex + entryWidth) return false;
-        int index = (int) ((mouseY - getY() - PADDING + offset) / rowHeight);
-        if(mouseY - getY() - PADDING + offset < 0 || index < 0 || index >= items.size()) return false;
+        double relative = mouseY - getY() - PADDING + offset;
+        int index = (int) (relative / (rowHeight + rowSpacing));
+        if(relative < 0 || index >= items.size() || relative - index * (rowHeight + rowSpacing) >= rowHeight) return false;
         onClick.accept(items.get(index), net.minecraft.client.gui.screens.Screen.hasControlDown());
         return true;
     }

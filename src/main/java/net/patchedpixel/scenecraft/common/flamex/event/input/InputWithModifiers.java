@@ -15,5 +15,4 @@ public interface InputWithModifiers {
 
     int _CTRL_MOD = Util.getPlatform() == Util.OS.OSX ? GLFW.GLFW_MOD_SUPER : GLFW.GLFW_MOD_CONTROL;
     int _SHIFT_MOD = GLFW.GLFW_MOD_SHIFT;
-    int _ALT_MOD = GLFW.GLFW_MOD_ALT;
 }

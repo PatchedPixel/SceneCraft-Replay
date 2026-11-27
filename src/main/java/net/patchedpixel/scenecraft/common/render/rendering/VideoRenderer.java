@@ -99,16 +99,16 @@ public class VideoRenderer implements RenderInfo {
             frameConsumer = new FFmpegWriter(this);
         }
         ffmpegWriter = frameConsumer instanceof FFmpegWriter ? (FFmpegWriter) frameConsumer : null;
-        FrameConsumer<BitmapFrame> previewingFrameConsumer = new FrameConsumer<BitmapFrame>() {
+        FrameConsumer<BitmapFrame> previewingFrameConsumer = new FrameConsumer<>() {
             private int lastFrameId = -1;
 
             @Override
             public void consume(Map<Channel, BitmapFrame> channels) {
                 BitmapFrame bgra = channels.get(Channel.BRGA);
-                if(bgra != null) {
-                    synchronized(this) {
+                if (bgra != null) {
+                    synchronized (this) {
                         int frameId = bgra.getFrameId();
-                        if(lastFrameId < frameId) {
+                        if (lastFrameId < frameId) {
                             lastFrameId = frameId;
                             gui.updatePreview(bgra.getByteBuffer(), bgra.getSize());
                         }
@@ -138,9 +138,8 @@ public class VideoRenderer implements RenderInfo {
 
     /**
      * Render this video.
-     * @return {@code true} if rendering was successful, {@code false} if the user aborted rendering (or the window was closed)
      */
-    public boolean renderVideo() throws Throwable {
+    public void renderVideo() throws Throwable {
         ReplayRenderCallback.Pre.EVENT.invoker().beforeRendering(this);
 
         setup();
@@ -151,88 +150,102 @@ public class VideoRenderer implements RenderInfo {
         ReplayTimer timer = (ReplayTimer) mc.timer;
 
         // Play up to one second before starting to render
-        // This is necessary in order to ensure that all entities have at least two position packets
-        // and their first position in the record is correct.
-        // Note that it is impossible to also get the interpolation between their latest position
-        // and the one in the record correct as there's no reliable way to tell when the server ticks
-        // or when we should be done with the interpolation of the entity
-        Optional<Integer> optionalVideoStartTime = timeline.getValue(TimestampProperty.PROPERTY, 0);
-        if(optionalVideoStartTime.isPresent()) {
-            int videoStart = optionalVideoStartTime.get();
+        // (same explanation comment as before)
+        try {
+            Optional<Integer> optionalVideoStartTime = timeline.getValue(TimestampProperty.PROPERTY, 0);
+            if(optionalVideoStartTime.isPresent()) {
+                int videoStart = optionalVideoStartTime.get();
 
-            if(videoStart > 1000) {
-                int replayTime = videoStart - 1000;
-                timer.partialTick = 0;
-                timer.msPerTick = DEFAULT_MS_PER_TICK;
-                while(replayTime < videoStart) {
-                    replayTime += 50;
-                    replayHandler.getReplaySender().sendPacketsTill(replayTime);
-                    tick();
+                if(videoStart > 1000) {
+                    int replayTime = videoStart - 1000;
+                    timer.partialTick = 0;
+                    timer.msPerTick = DEFAULT_MS_PER_TICK;
+                    while(replayTime < videoStart) {
+                        replayTime += 50;
+                        replayHandler.getReplaySender().sendPacketsTill(replayTime);
+                        tick();
+                    }
                 }
             }
+
+            renderingPipeline.run();
+        } catch(Throwable t) {
+            // Remember the failure, but still restore the game state in finish()
+            setFailure(t);
         }
 
-        renderingPipeline.run();
-
-        if(mc.delayedCrash != null) {
-            throw new ReportedException(mc.delayedCrash.get());
+        if(!hasFailed() && mc.delayedCrash != null) {
+            setFailure(new ReportedException(mc.delayedCrash.get()));
         }
 
-        if(settings.isInjectSphericalMetadata()) {
+        if(!hasFailed() && settings.isInjectSphericalMetadata()) {
             MetadataInjector.injectMetadata(settings.getRenderMethod(), settings.getOutputFile(),
                     settings.getTargetVideoWidth(), settings.getTargetVideoHeight(),
                     settings.getSphericalFovX(), settings.getSphericalFovY());
         }
 
-        finish();
+        try {
+            finish();
+        } catch(Throwable t) {
+            // Keep the original failure as the main cause
+            setFailure(t);
+        }
 
-        ReplayRenderCallback.Post.EVENT.invoker().afterRendering(this);
+        if(!hasFailed()) {
+            ReplayRenderCallback.Post.EVENT.invoker().afterRendering(this);
+        }
 
         if(failureCause != null) {
             throw failureCause;
         }
-
-        return !cancelled;
     }
 
     @Override
     public float updateForNextFrame() {
         // screens are laid out from the window size, so swap in the virtual window temporarily
         guiWindow.bind();
-
-        if(!settings.isHighPerformance() || framesDone % fps == 0) {
-            while(drawGui() && paused) {
-                mc.screen = gui;
-                MCVer.executeTaskQueue();
-                try {
-                    //noinspection BusyWait
-                    Thread.sleep(50);
-                } catch(InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
+        boolean bound = true;
+        try {
+            if(!settings.isHighPerformance() || framesDone % fps == 0) {
+                while(drawGui() && paused) {
+                    mc.screen = gui;
+                    MCVer.executeTaskQueue();
+                    try {
+                        //noinspection BusyWait
+                        Thread.sleep(50);
+                    } catch(InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        break;
+                    }
                 }
             }
+
+            // Updating the timer will cause the timeline player to update the game state
+            ReplayTimer timer = (ReplayTimer) mc.timer;
+            int elapsedTicks = timer.advanceTime(MCVer.milliTime());
+
+            executeTaskQueue();
+
+            while(elapsedTicks-- > 0) {
+                tick();
+            }
+
+            // change Minecraft's display size back
+            guiWindow.unbind();
+            bound = false;
+
+            if(cameraPathExporter != null) {
+                cameraPathExporter.recordFrame();
+            }
+
+            framesDone++;
+            return timer.partialTick;
+        } finally {
+            // Only reached with the window still bound when something above threw
+            if(bound) {
+                guiWindow.unbind();
+            }
         }
-
-        // Updating the timer will cause the timeline player to update the game state
-        ReplayTimer timer = (ReplayTimer) mc.timer;
-        int elapsedTicks = timer.advanceTime(MCVer.milliTime());
-
-        executeTaskQueue();
-
-        while(elapsedTicks-- > 0) {
-            tick();
-        }
-
-        // change Minecraft's display size back
-        guiWindow.unbind();
-
-        if(cameraPathExporter != null) {
-            cameraPathExporter.recordFrame();
-        }
-
-        framesDone++;
-        return timer.partialTick;
     }
 
     @Override
@@ -319,7 +332,9 @@ public class VideoRenderer implements RenderInfo {
             }
         }
 
-        mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvent.createVariableRangeEvent(SOUND_RENDER_SUCCESS), 1));
+        if(!hasFailed()) {
+            mc.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvent.createVariableRangeEvent(SOUND_RENDER_SUCCESS), 1));
+        }
 
         try {
             if(!hasFailed() && ffmpegWriter != null) {

@@ -24,11 +24,13 @@ public class TextBox extends EditBox {
         int y = getY();
         int w = getWidth();
         int h = getHeight();
+
         graphics.fill(x, y, x + w, y + h, isFocused() ? 0xFFFFFFFF : BORDER_COLOR);
         graphics.fill(x + 1, y + 1, x + w - 1, y + h - 1, 0xFF000000);
         setBordered(false);
         setX(x + BORDER);
         setY(y + h / 2 - textFont.lineHeight / 2);
+
         this.width = w - 2 * BORDER;
         try {
             super.renderWidget(graphics, mouseX, mouseY, partialTick);

@@ -18,6 +18,7 @@ public final class FlameableLayout extends LinearLayout {
         super(0, 0, orientation);
         this.horizontal = orientation == Orientation.HORIZONTAL;
         this.childPadding = childPadding;
+
         if(horizontal) {
             defaultChildLayoutSetting().padding(childPadding, 0).alignVerticallyMiddle();
         } else {
@@ -42,11 +43,13 @@ public final class FlameableLayout extends LinearLayout {
             if(element instanceof Layout layout) layout.arrangeElements();
             length += (horizontal ? element.getWidth() : element.getHeight()) + childPadding * 2;
         }
+
         if(horizontal) {
             this.width = length;
         } else {
             this.height = length;
         }
+
         super.arrangeElements();
     }
 }

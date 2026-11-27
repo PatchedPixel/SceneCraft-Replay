@@ -13,11 +13,22 @@ public class CheckboxWidget extends Checkbox {
     private static final int BOX_BACKGROUND = 0xFF2E2E2E;
 
     private final Consumer<Boolean> onChange;
+    private int labelColor = -1;
+    private int labelGap = 2;
 
     public CheckboxWidget(Component label, boolean selected, Consumer<Boolean> onChange) {
         super(0, 0, MCVer.getFontRenderer().lineHeight + 2 + 2 + MCVer.getFontRenderer().width(label),
                 MCVer.getFontRenderer().lineHeight + 2, label, selected);
         this.onChange = onChange;
+    }
+
+    public void setLabelGap(int gap) {
+        this.labelGap = gap;
+        setWidth(getHeight() + gap + MCVer.getFontRenderer().width(getMessage()));
+    }
+
+    public void setLabelColor(int color) {
+        this.labelColor = color;
     }
 
     @Override
@@ -39,6 +50,7 @@ public class CheckboxWidget extends Checkbox {
         if(selected()) {
             graphics.drawCenteredString(font, "x", x + box / 2 + 1, y + 1, color);
         }
-        graphics.drawString(font, getMessage(), x + box + 2, y + 2, color, false);
+
+        graphics.drawString(font, getMessage(), x + box + labelGap, y + 2, labelColor != -1 ? labelColor : color, false);
     }
 }

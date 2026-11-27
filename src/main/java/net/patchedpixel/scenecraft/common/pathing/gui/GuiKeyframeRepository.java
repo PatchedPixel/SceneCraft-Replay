@@ -5,10 +5,8 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.CrashReport;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
 import net.patchedpixel.scenecraft.common.SceneCraft;
 import net.patchedpixel.scenecraft.common.render.gui.GuiRenderQueue;
 import net.patchedpixel.scenecraft.common.render.gui.GuiRenderSettings;
@@ -22,6 +20,7 @@ import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
 import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import net.patchedpixel.scenecraft.common.flamex.popup.PromptScreen;
+import net.patchedpixel.scenecraft.common.flamex.widget.SelectableList;
 import net.patchedpixel.scenecraft.common.utils.Utils;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import org.apache.logging.log4j.LogManager;
@@ -43,7 +42,8 @@ public class GuiKeyframeRepository extends FlameableScreen {
     private static final Logger LOGGER = LogManager.getLogger();
 
     private Button overwriteButton, saveAsButton, loadButton, renameButton, removeButton, copyButton, pasteButton, addToQueueButton;
-    private NameList list;
+    private SelectableList<String> list;
+    private int savedOffset;
 
     private final Map<String, Timeline> timelines = new LinkedHashMap<>();
     private final Timeline currentTimeline;
@@ -69,12 +69,18 @@ public class GuiKeyframeRepository extends FlameableScreen {
     @Override
     protected void init() {
         selected.retainAll(timelines.keySet());
-        list = new NameList();
+        if(list != null) savedOffset = list.getOffset();
+        list = new SelectableList<>(width - 10, height - 94, 315, 16, selected, name -> name, (name, ctrl) -> {
+            if(!ctrl) selected.clear();
+            if(!selected.remove(name)) selected.add(name);
+            updateButtons();
+        }).setRowSpacing(3);
         for(String name : timelines.keySet()) {
             if(name.isEmpty()) continue;
-            list.add(new NameEntry(name));
+            list.add(name);
         }
-
+        list.setOffset(savedOffset);
+        list.setPosition(5, 24);
         overwriteButton = FlameX.button("scenecraft.gui.overwrite", 75, this::overwrite);
         saveAsButton = FlameX.button("scenecraft.gui.saveas", 75, () ->
                 MCVer.getMinecraft().setScreen(new PromptScreen(this, "scenecraft.gui.saveas", "",
@@ -102,17 +108,14 @@ public class GuiKeyframeRepository extends FlameableScreen {
         addToQueueButton = FlameX.button("scenecraft.gui.rendersettings.addtoqueue", 75, this::addToQueue);
 
         GridLayout grid = new GridLayout();
-        grid.defaultCellSetting().padding(2);
+        grid.spacing(5);
         Button[] buttons = {overwriteButton, saveAsButton, renameButton, removeButton,
                 loadButton, addToQueueButton, copyButton, pasteButton};
         for(int i = 0; i < buttons.length; i++) {
             grid.addChild(buttons[i], i / 4, i % 4);
         }
         grid.arrangeElements();
-        grid.setPosition(width / 2 - grid.getWidth() / 2, height - 10 - grid.getHeight());
-
-        list.updateSize(Math.min(width - 10, 400), grid.getY() - 10 - 35, 35, grid.getY() - 10);
-        list.setLeftPos(width / 2 - list.getWidth() / 2);
+        grid.setPosition(5 + (width - 10) / 2 - grid.getWidth() / 2, height - 15 - grid.getHeight());
         addRenderableWidget(list);
         grid.visitWidgets(this::addRenderableWidget);
         updateButtons();
@@ -283,63 +286,5 @@ public class GuiKeyframeRepository extends FlameableScreen {
             }
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    private class NameList extends ObjectSelectionList<NameEntry> {
-        NameList() {
-            super(MCVer.getMinecraft(), 100, 100, 35, 100, 18);
-            setRenderBackground(false);
-            setRenderTopAndBottom(false);
-        }
-
-        void add(NameEntry e) {
-            addEntry(e);
-        }
-
-        @Override
-        public int getRowWidth() {
-            return Math.min(getWidth() - 10, 380);
-        }
-
-        @Override
-        protected boolean isSelectedItem(int index) {
-            return index >= 0 && index < children().size() && selected.contains(children().get(index).name);
-        }
-    }
-
-    public class NameEntry extends ObjectSelectionList.Entry<NameEntry> {
-        private final String name;
-
-        public NameEntry(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public void render(GuiGraphics graphics, int index, int top, int left, int width, int height,
-                           int mouseX, int mouseY, boolean hovered, float partialTick) {
-            if(selected.contains(name)) {
-                graphics.fill(left, top, left + width, top + height, 0xFF000000);
-                graphics.fill(left, top, left + 2, top + height, 0xFFFFFFFF);
-            }
-            graphics.drawString(MCVer.getFontRenderer(), name, left + 5, top + 4, 0xFFFFFFFF, false);
-        }
-
-        @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            if(button != 0) return false;
-            if(!Screen.hasControlDown()) {
-                selected.clear();
-            }
-            if(!selected.remove(name)) {
-                selected.add(name);
-            }
-            updateButtons();
-            return true;
-        }
-
-        @Override
-        public Component getNarration() {
-            return MCVer.literalText(name);
-        }
     }
 }

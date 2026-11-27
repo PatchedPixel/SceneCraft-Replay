@@ -103,8 +103,7 @@ public class GuiExportFailed extends FlameableScreen {
         addRenderableWidget(logLabel);
         logLabel.setPosition(width / 2 - logLabel.getWidth() / 2, height / 2 + 4);
         int top = logLabel.getY() + logLabel.getHeight() + 4;
-        logList = new TextListWidget(width - 20, height - 10 - top, top, height - 10);
-        logList.setLeftPos(10);
+        logList = new TextListWidget(10, top, width - 20, height - 10 - top).setShadow(true);
         for(String line : exception.getLog().replace("\t", "    ").split("\n")) {
             logList.addLine(MCVer.literalText(line));
         }

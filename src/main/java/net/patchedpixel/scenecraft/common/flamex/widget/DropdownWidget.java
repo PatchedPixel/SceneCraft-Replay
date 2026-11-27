@@ -1,9 +1,11 @@
 package net.patchedpixel.scenecraft.common.flamex.widget;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 import org.jetbrains.annotations.NotNull;
@@ -103,7 +105,10 @@ public class DropdownWidget<T> extends AbstractWidget {
             if(entryTooltip != null && overList(mouseX, mouseY)) {
                 int hovered = (mouseY - (y + height)) / row;
                 if(hovered >= 0 && hovered < values.size()) {
-                    graphics.renderTooltip(font, Component.literal(entryTooltip.apply(values.get(hovered))), mouseX, mouseY);
+                    Screen screen = Minecraft.getInstance().screen;
+                    if(screen != null) {
+                        screen.setTooltipForNextRenderPass(font.split(Component.literal(entryTooltip.apply(values.get(hovered))), 250));
+                    }
                 }
             }
         }

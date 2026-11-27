@@ -16,19 +16,13 @@ import net.patchedpixel.scenecraft.common.render.processor.StereoscopicToBitmapP
 
 public class Pipelines {
     public static Pipeline newPipeline(RenderSettings.RenderMethod method, RenderInfo renderInfo, FrameConsumer<BitmapFrame> consumer) {
-        switch(method) {
-            case DEFAULT:
-                return newDefaultPipeline(renderInfo, consumer);
-            case STEREOSCOPIC:
-                return newStereoscopicPipeline(renderInfo, consumer);
-            case CUBIC:
-                return newCubicPipeline(renderInfo, consumer);
-            case EQUIRECTANGULAR:
-                return newEquirectangularPipeline(renderInfo, consumer);
-            case ODS:
-                return newODSPipeline(renderInfo, consumer);
-        }
-        throw new UnsupportedOperationException("Unknown method: " + method);
+        return switch (method) {
+            case DEFAULT -> newDefaultPipeline(renderInfo, consumer);
+            case STEREOSCOPIC -> newStereoscopicPipeline(renderInfo, consumer);
+            case CUBIC -> newCubicPipeline(renderInfo, consumer);
+            case EQUIRECTANGULAR -> newEquirectangularPipeline(renderInfo, consumer);
+            case ODS -> newODSPipeline(renderInfo, consumer);
+        };
     }
 
     public static Pipeline<GpuFrame, BitmapFrame> newDefaultPipeline(RenderInfo renderInfo, FrameConsumer<BitmapFrame> consumer) {
@@ -36,6 +30,7 @@ public class Pipelines {
         WorldRenderer worldRenderer = new EntityRendererHandler(settings, renderInfo);
         FrameCapturer<GpuFrame> capturer;
         capturer = new SimplePboGpuFrameCapturer(worldRenderer, renderInfo);
+
         return new Pipeline<>(worldRenderer, capturer, new GpuToBitmapProcessor(), consumer);
     }
 
@@ -44,6 +39,7 @@ public class Pipelines {
         WorldRenderer worldRenderer = new EntityRendererHandler(settings, renderInfo);
         FrameCapturer<StereoscopicGpuFrame> capturer;
         capturer = new StereoscopicPboGpuFrameCapturer(worldRenderer, renderInfo);
+
         return new Pipeline<>(worldRenderer, capturer, new StereoscopicToBitmapProcessor(), consumer);
     }
 
@@ -52,6 +48,7 @@ public class Pipelines {
         WorldRenderer worldRenderer = new EntityRendererHandler(settings, renderInfo);
         FrameCapturer<CubicGpuFrame> capturer;
         capturer = new CubicPboGpuFrameCapturer(worldRenderer, renderInfo, settings.getVideoWidth() / 4);
+
         return new Pipeline<>(worldRenderer, capturer, new CubicToBitmapProcessor(), consumer);
     }
 
@@ -64,6 +61,7 @@ public class Pipelines {
 
         FrameCapturer<CubicGpuFrame> capturer;
         capturer = new CubicPboGpuFrameCapturer(worldRenderer, renderInfo, processor.getFrameSize());
+
         return new Pipeline<>(worldRenderer, capturer, processor, consumer);
     }
 
@@ -78,6 +76,7 @@ public class Pipelines {
             throw new UnsupportedOperationException("ODS rendering requires Iris on the OpenGL backend");
         }
         FrameCapturer<ODSGpuFrame> capturer = new IrisODSFrameCapturer(worldRenderer, renderInfo, processor.getFrameSize());
+
         return new Pipeline<>(worldRenderer, capturer, processor, consumer);
     }
 }

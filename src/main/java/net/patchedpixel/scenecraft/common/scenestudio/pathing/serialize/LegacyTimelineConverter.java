@@ -50,7 +50,7 @@ public class LegacyTimelineConverter {
 
     private static Optional<InputStream> read(ReplayFile replayFile) throws IOException {
         Optional<InputStream> in = replayFile.get("paths.json");
-        if(!in.isPresent()) {
+        if(in.isEmpty()) {
             in = replayFile.get("paths");
         }
         return in;
@@ -64,7 +64,7 @@ public class LegacyTimelineConverter {
 
     private static KeyframeSet[] readAndParse(ReplayFile replayFile) throws IOException {
         Optional<InputStream> optIn = read(replayFile);
-        if(!optIn.isPresent()) {
+        if(optIn.isEmpty()) {
             return null;
         }
         KeyframeSet[] keyframeSets;

@@ -5,7 +5,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
-import net.patchedpixel.scenecraft.common.flamex.FlameXTheme;
+import net.patchedpixel.scenecraft.common.flamex.FlameXConstants;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -84,10 +84,10 @@ public class ScrollView extends AbstractWidget {
             int height = getHeight();
             int barY = getY() + scroll * height / contentHeight();
             int barHeight = height * height / contentHeight();
-            graphics.fill(x, getY(), x + SLIDER_WIDTH, getY() + height, FlameXTheme.SLIDER_TRACK);
-            graphics.fill(x, barY, x + SLIDER_WIDTH, barY + barHeight, FlameXTheme.SLIDER_THUMB);
-            graphics.fill(x + SLIDER_WIDTH - 1, barY, x + SLIDER_WIDTH, barY + barHeight, FlameXTheme.SLIDER_SHADOW);
-            graphics.fill(x, barY + barHeight - 1, x + SLIDER_WIDTH, barY + barHeight, FlameXTheme.SLIDER_SHADOW);
+            graphics.fill(x, getY(), x + SLIDER_WIDTH, getY() + height, FlameXConstants.SLIDER_TRACK);
+            graphics.fill(x, barY, x + SLIDER_WIDTH, barY + barHeight, FlameXConstants.SLIDER_THUMB);
+            graphics.fill(x + SLIDER_WIDTH - 1, barY, x + SLIDER_WIDTH, barY + barHeight, FlameXConstants.SLIDER_SHADOW);
+            graphics.fill(x, barY + barHeight - 1, x + SLIDER_WIDTH, barY + barHeight, FlameXConstants.SLIDER_SHADOW);
         }
     }
 
