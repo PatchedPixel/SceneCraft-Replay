@@ -1,0 +1,9 @@
+{
+  "render_success": {
+    "sounds": [
+      {
+        "name": "scenecraft:render_success"
+      }
+    ]
+  }
+}
