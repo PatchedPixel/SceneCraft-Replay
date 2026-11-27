@@ -1,20 +1,20 @@
-scenecraft.title=Replay Mód
+scenecraft.title=SceneCraft
 
 #All of the chat messages
-scenecraft.chat.recordingstarted=Nahrávanie začalo
-scenecraft.chat.recordingfailed=Pri nahrávaní nastala chyba
+scenecraft.chat.recordingstarted=Nahrávanie sa začalo
+scenecraft.chat.recordingfailed=Nahrávanie sa nepodarilo spustiť
 
-scenecraft.chat.savingthumb=Ukladám náhľad...
-scenecraft.chat.savedthumb=Náhľad bol uložený
-scenecraft.chat.failedthumb=Náhľad nemohol byť uložený
+scenecraft.chat.savingthumb=Ukladá sa miniatúra...
+scenecraft.chat.savedthumb=Miniatúra bola úspešne uložená
+scenecraft.chat.failedthumb=Miniatúru sa nepodarilo uložiť
 
-scenecraft.chat.addedmarker=Poznámka udalosti
+scenecraft.chat.addedmarker=Značka udalosti bola pridaná
 
 #Chat messages displayed in Replay Viewer
-scenecraft.chat.morekeyframes=Aspoň 2 kľúčové pozície a snímky sú povinné
-scenecraft.chat.pathstarted=Cesta kamery začala
-scenecraft.chat.pathfinished=Cesta kamery skončila
-scenecraft.chat.pathinterrupted=Cesta kamery bola ukončená
+scenecraft.chat.morekeyframes=Sú potrebné aspoň 2 kľúčové snímky polohy a 2 kľúčové snímky času
+scenecraft.chat.pathstarted=Dráha kamery sa začala
+scenecraft.chat.pathfinished=Dráha kamery skončila
+scenecraft.chat.pathinterrupted=Dráha kamery bola zrušená
 
 #Common GUI-related strings
 scenecraft.gui.cancel=Zrušiť
@@ -24,122 +24,127 @@ scenecraft.gui.save=Uložiť
 scenecraft.gui.rename=Premenovať
 scenecraft.gui.remove=Odstrániť
 scenecraft.gui.delete=Vymazať
-scenecraft.gui.paused=Zastavené
+scenecraft.gui.record=Nahrávanie
+scenecraft.gui.paused=Pozastavené
 scenecraft.gui.speed=Rýchlosť
-scenecraft.gui.pleasewait=Prosím počkajte
-scenecraft.gui.render=Vykresliť
-scenecraft.gui.iphidden=Adresa servera skrytá
+scenecraft.gui.pleasewait=Prosím, čakaj
+scenecraft.gui.render=Renderovať
+scenecraft.gui.iphidden=IP servera skrytá
 scenecraft.gui.overwrite=Prepísať
 scenecraft.gui.saveas=Uložiť ako...
 scenecraft.gui.done=Hotovo
 scenecraft.gui.close=Zavrieť
-scenecraft.gui.notagain=Túto správu viac neukazovať
+scenecraft.gui.notagain=Už nezobrazovať
 scenecraft.gui.edit=Upraviť
 scenecraft.gui.copy=Kopírovať
 scenecraft.gui.paste=Prilepiť
 
-scenecraft.gui.record.resume=Pokračovať nahrávanie
+scenecraft.gui.record.resume=Obnoviť nahrávanie
 scenecraft.gui.record.pause=Pozastaviť nahrávanie
 scenecraft.gui.record.stop=Zastaviť nahrávanie
-scenecraft.gui.record.start=Začať nahrávanie
+scenecraft.gui.record.start=Spustiť nahrávanie
 
-scenecraft.gui.renderdonetitle=Video vykreslené
-scenecraft.gui.openfolder=Otvoriť priečinok s nahrávkami
-scenecraft.gui.youtubeupload=Nahrať na YouTube
-scenecraft.gui.renderdone1=Vaše video bolo vykreslené.
-scenecraft.gui.renderdone2=Ako by ste rádi pokračovali?
+scenecraft.gui.renderdonetitle=Video bolo vyrenderované
+scenecraft.gui.openfolder=Otvoriť priečinok s videami
+scenecraft.gui.youtubeupload=Odoslať na YouTube
+scenecraft.gui.renderdone1=Tvoje video bolo úspešne vyrenderované.
+scenecraft.gui.renderdone2=Ako chceš pokračovať?
 scenecraft.gui.videotitle=Názov
 scenecraft.gui.videodescription=Popis
-scenecraft.gui.videotags=Vlajky, vlajky, vlajky...
-scenecraft.gui.videothumbnail=Náhľad videa
+scenecraft.gui.videotags=Tagy,Tagy,Tagy
+scenecraft.gui.videothumbnail=Miniatúra videa
 scenecraft.gui.videovisibility.private=Súkromné
-scenecraft.gui.videovisibility.unlisted=Nezaradené
+scenecraft.gui.videovisibility.unlisted=Neverejné
 scenecraft.gui.videovisibility.public=Verejné
-scenecraft.gui.ytuploadprogress.auth=[1/4] Schvaľovanie
-scenecraft.gui.ytuploadprogress.prepare_video=[2/4] Pripravovanie: %%d%%%%
-scenecraft.gui.ytuploadprogress.upload=[3/4] Nahrávanie: %%d%%%%
-scenecraft.gui.ytuploadprogress.cleanup=[4/4] Čistenie
+scenecraft.gui.ytuploadprogress.auth=[1/4] Autorizácia
+scenecraft.gui.ytuploadprogress.prepare_video=[2/4] Príprava videa: %%d%%%%
+scenecraft.gui.ytuploadprogress.upload=[3/4] Odosielanie: %%d%%%%
+scenecraft.gui.ytuploadprogress.cleanup=[4/4] Upratovanie
 scenecraft.gui.ytuploadprogress.done=Hotovo: %s
 scenecraft.gui.titleempty=Názov nemôže byť prázdny
-scenecraft.gui.videothumbnailtoolarge=Náhľad má viac ako 2MB
-scenecraft.gui.videothumbnailformat=Náhľad môže byť JPEG alebo PNG
+scenecraft.gui.videothumbnailtoolarge=Miniatúra presahuje 2 MB
+scenecraft.gui.videothumbnailformat=Miniatúra musí byť vo formáte JPEG alebo PNG
 
 scenecraft.gui.hours=h
 scenecraft.gui.minutes=min
-scenecraft.gui.seconds=sek
+scenecraft.gui.seconds=s
 scenecraft.gui.milliseconds=ms
 
+scenecraft.gui.pitch=Sklon
+scenecraft.gui.yaw=Zatáčanie
+scenecraft.gui.roll=Náklon
+
 scenecraft.gui.camera=Kamera
-scenecraft.gui.position=Pozícia
+scenecraft.gui.position=Poloha
 
-scenecraft.gui.unknownerror=Nastala neznáma chyba
+scenecraft.gui.unknownerror=Vyskytla sa neznáma chyba
 
-scenecraft.gui.exit=Odísť z prehrávania
+scenecraft.gui.exit=Opustiť záznam
 
 scenecraft.gui.settings=Nastavenia
 
-scenecraft.gui.keyframerepo.delete=Ste si istý že chcete vymazať tieto kľúčové snímky?
-scenecraft.gui.keyframerepo.overwrite=Ste si istý že chcete prepísať tieto kľúčové snímky?
+scenecraft.gui.keyframerepo.delete=Naozaj chceš vymazať tieto kľúčové snímky?
+scenecraft.gui.keyframerepo.overwrite=Naozaj chceš prepísať tieto kľúčové snímky?
 
-scenecraft.gui.restorereplay1=Vyzerá to tak že hra nebola zatvorená normálne.
-scenecraft.gui.restorereplay2=Nahrávka "%1$s" nebola správne uložená.
-scenecraft.gui.restorereplay3=Chcete ju obnoviť?
+scenecraft.gui.restorereplay1=Zdá sa, že Minecraft nebol ukončený normálne.
+scenecraft.gui.restorereplay2=Záznam „%1$s“ nebol správne uložený.
+scenecraft.gui.restorereplay3=Chceš ho obnoviť?
 
-scenecraft.gui.loadentitytracker=Načítavanie pozíc entít: %%d%%%%
-scenecraft.gui.loadquickmode=Načítava sa rýchly mód: %%d%%%%
-scenecraft.gui.noquickmode=Rýchly mód je dostupný len v Minecrafte %1$s a viac
-scenecraft.gui.minimalmode.unsupported=Táto funkcia nie je dostupná vo vašej verzii Minecraftu.
-scenecraft.gui.minimalmode.supportedversion=(len na Minecraft %1$s je dostupná táto verzia Replay módu)
+scenecraft.gui.loadentitytracker=Načítavajú sa polohy entít: %%d%%%%
+scenecraft.gui.loadquickmode=Načítava sa rýchly režim: %%d%%%%
+scenecraft.gui.noquickmode=Rýchly režim je dostupný len v Minecrafte %1$s a novšom
+scenecraft.gui.minimalmode.unsupported=Táto funkcia nie je dostupná pre tvoju aktuálnu verziu Minecraftu.
+scenecraft.gui.minimalmode.supportedversion=(tvoja verzia SceneCraftu podporuje iba Minecraft %1$s)
 
 #Only change these if it's neccessary
-scenecraft.gui.replayviewer=Zobrazovač nahrávok
+scenecraft.gui.replayviewer=Prehliadač záznamov
 
 #Replay Viewer GUI
-scenecraft.gui.viewer.rename.name=Meno nahrávky
-scenecraft.gui.viewer.replayfolder=Otvoriť priečinok nahrávok...
-scenecraft.gui.viewer.bulkrender=Vykresli %1$d videí
+scenecraft.gui.viewer.rename.name=Názov záznamu
+scenecraft.gui.viewer.replayfolder=Otvoriť priečinok so záznamami...
+scenecraft.gui.viewer.bulkrender=Renderovať videá: %1$d
 
-scenecraft.gui.viewer.delete.linea=Ste si istý že chcete vymazať túto nahrávku?
-scenecraft.gui.viewer.delete.failed1=Váš operačný systém nepovoľuje vymazanie nahrávky. Nie je
-scenecraft.gui.viewer.delete.failed2=nič čo by sme mohli spraviť. Musíte to spraviť sami.
-scenecraft.gui.viewer.delete.lineb='%1$s' bute navždy preč! (Navždy!)
+scenecraft.gui.viewer.delete.linea=Naozaj chceš vymazať tento záznam?
+scenecraft.gui.viewer.delete.failed1=Tvoj operačný systém nám nedovolil záznam odstrániť. Nedá sa
+scenecraft.gui.viewer.delete.failed2=s tým nič robiť, musíš ho vymazať ručne.
+scenecraft.gui.viewer.delete.lineb=„%1$s“ bude navždy stratený! (veľmi dlho!)
 
 #Replay Editor UI 2.0 (marker based UI)
 scenecraft.gui.edit.apply=Použiť
-scenecraft.gui.edit.split=Rozdeliť
-scenecraft.gui.edit.split.tooltip=Rozdeluje Nahrávku do viacerých v označenom bode
-scenecraft.gui.edit.cut.start=Pridať strih
+scenecraft.gui.edit.split=Vložiť rozdelenie
+scenecraft.gui.edit.split.tooltip=Rozdelí záznam na viac záznamov v označenom bode
+scenecraft.gui.edit.cut.start=Vložiť strih
 scenecraft.gui.edit.cut.end=Ukončiť strih
-scenecraft.gui.edit.cut.tooltip=Vystrihne (vymaže) časť nahrávky
+scenecraft.gui.edit.cut.tooltip=Vystrihne (odstráni) časť záznamu
 
 #Cancel Replay GUI
-scenecraft.gui.cancelrender.title=Zrušiť vykreslenie
-scenecraft.gui.cancelrender.message=Ste si istý že chcete zrušiť vykreslovanie nahrávky?
+scenecraft.gui.cancelrender.title=Zrušiť renderovanie
+scenecraft.gui.cancelrender.message=Naozaj chceš zrušiť prebiehajúce renderovanie?
 #Saving Replay GUI
-scenecraft.gui.replaysaving.title=Ukladá sa nahrávka...
+scenecraft.gui.replaysaving.title=Ukladá sa súbor záznamu...
 
 #Player Overview GUI
-scenecraft.gui.playeroverview.visible=Viditeľné
-scenecraft.gui.playeroverview.hideall=Skryť všetko
-scenecraft.gui.playeroverview.showall=Zobraziť všetko
+scenecraft.gui.playeroverview.visible=Viditeľný
+scenecraft.gui.playeroverview.hideall=Skryť všetkých
+scenecraft.gui.playeroverview.showall=Zobraziť všetkých
 scenecraft.gui.playeroverview.spectate=Pozorovať hráča
 scenecraft.gui.playeroverview.remembersettings=Zapamätať skrytých hráčov
-scenecraft.gui.playeroverview.remembersettings.description=Zapamätá skrytie hráčov po zatvorení
+scenecraft.gui.playeroverview.remembersettings.description=Uloží viditeľnosť hráčov do súboru záznamu
 
 #SceneCraft Settings GUI
-scenecraft.gui.settings.title=Nastavenia Replay módu
-scenecraft.gui.settings.default=Predvolené
+scenecraft.gui.settings.title=Nastavenia SceneCraftu
+scenecraft.gui.settings.default=PREDVOLENÉ
 
-scenecraft.gui.settings.notifications=Zapnúť upozornenia
-scenecraft.gui.settings.recordserver=Nahrávať servery
-scenecraft.gui.settings.recordsingleplayer=Nahrávať svety
-scenecraft.gui.settings.indicator=Ukazovateľ nahrávania
-scenecraft.gui.settings.pathpreview=Ukázať cestu
+scenecraft.gui.settings.notifications=Povoliť oznámenia
+scenecraft.gui.settings.recordserver=Nahrávať server
+scenecraft.gui.settings.recordsingleplayer=Nahrávať hru jedného hráča
+scenecraft.gui.settings.indicator=Indikátor nahrávania
+scenecraft.gui.settings.pathpreview=Zobraziť ukážku dráhy
 scenecraft.gui.settings.camera=Kamera
-scenecraft.gui.settings.showchat=Ukázať čet
-scenecraft.gui.settings.interpolator=Predvolený zakladač
+scenecraft.gui.settings.showchat=Zobraziť chat
+scenecraft.gui.settings.interpolator=Predvolený interpolátor
 scenecraft.gui.settings.autostartrecording=Automatické nahrávanie
-scenecraft.gui.settings.rename_recording_dialog=Premenovať dialóg
+scenecraft.gui.settings.rename_recording_dialog=Dialóg premenovania
 scenecraft.gui.settings.fullbrightness=Plný jas
 scenecraft.gui.settings.fullbrightness.gamma=Gama
 scenecraft.gui.settings.fullbrightness.nightvision=Nočné videnie
@@ -147,187 +152,195 @@ scenecraft.gui.settings.fullbrightness.both=Obe
 
 #SceneCraft Keybindings
 scenecraft.input.lighting=Prepnúť osvetlenie
-scenecraft.input.thumbnail=Zosnímať náhľad
-scenecraft.input.playeroverview=Prehľad hráča
-scenecraft.input.clearkeyframes=Vyčistiť kľúčové snímky
+scenecraft.input.thumbnail=Zachytiť miniatúru
+scenecraft.input.playeroverview=Prehľad hráčov
+scenecraft.input.clearkeyframes=Vymazať kľúčové snímky
 scenecraft.input.synctimeline=Synchronizovať časovú os
-scenecraft.input.keyframerepository=Otvoriť prednastavenia kľúčových snímok
-scenecraft.input.rollclockwise=Otáčka vpravo
-scenecraft.input.rollcounterclockwise=Otáčka vľavo
-scenecraft.input.resettilt=Resetovať otáčku
-scenecraft.input.playpause=Prehrať/pozastaviť
-scenecraft.input.marker=Pridať poznámku udalosti
-scenecraft.input.pathpreview=Prepnúť prehľad cesty
-scenecraft.input.settings=Nastavenia Replay módu
-scenecraft.input.quickmode=Rýchly mód
-scenecraft.input.positionkeyframe=Kľúčová snímka pozície/sledovača
-scenecraft.input.positiononlykeyframe=Kľúčová snímka pozície
-scenecraft.input.timekeyframe=Kľúčová snímka času
-scenecraft.input.bothkeyframes=Obe kľúčové snímky
+scenecraft.input.keyframerepository=Otvoriť predvoľby kľúčových snímkov
+scenecraft.input.rollclockwise=Natočiť v smere hodinových ručičiek
+scenecraft.input.rollcounterclockwise=Natočiť proti smeru hodinových ručičiek
+scenecraft.input.resettilt=Obnoviť náklon kamery
+scenecraft.input.playpause=Prehrať/Pozastaviť záznam
+scenecraft.input.marker=Pridať značku udalosti
+scenecraft.input.pathpreview=Prepnúť ukážku dráhy
+scenecraft.input.settings=Nastavenia SceneCraftu
+scenecraft.input.quickmode=Rýchly režim
+scenecraft.input.positionkeyframe=Kľúčový snímok polohy/pozorovateľa
+scenecraft.input.positiononlykeyframe=Kľúčový snímok polohy
+scenecraft.input.timekeyframe=Kľúčový snímok času
+scenecraft.input.bothkeyframes=Kľúčový snímok polohy/pozorovateľa + času
 
 # CameraControllers
 scenecraft.camera.classic=Klasická
-scenecraft.camera.vanilla=Približne vanilová
+scenecraft.camera.vanilla=Podobná vanilla
+
+#Keyframe Presets GUI
+scenecraft.gui.keyframerepository.title=Úložisko kľúčových snímkov
 
 #Edit Keyframe GUI
-scenecraft.gui.editkeyframe.title.pos=Upraviť kľúčovú snímku pozície
-scenecraft.gui.editkeyframe.title.time=Upraviť kľúčovú snímku času
-scenecraft.gui.editkeyframe.title.marker=Upraviť poznámku udalosti
-scenecraft.gui.editkeyframe.title.spec=Upraviť kľúčového pozorovača
-scenecraft.gui.editkeyframe.xpos=X Pozícia
-scenecraft.gui.editkeyframe.ypos=Y Pozícia
-scenecraft.gui.editkeyframe.zpos=Z Pozícia
-scenecraft.gui.editkeyframe.campitch=Pitch kamery
-scenecraft.gui.editkeyframe.camyaw=Yaw kamery
-scenecraft.gui.editkeyframe.camroll=Roll kamery
-scenecraft.gui.editkeyframe.timelineposition=Pozícia časovej osi
-scenecraft.gui.editkeyframe.markername=Meno poznámky udalosti
+scenecraft.gui.editkeyframe.title.pos=Upraviť kľúčový snímok polohy
+scenecraft.gui.editkeyframe.title.time=Upraviť kľúčový snímok času
+scenecraft.gui.editkeyframe.title.marker=Upraviť značku udalosti
+scenecraft.gui.editkeyframe.title.spec=Upraviť kľúčový snímok pozorovateľa
+scenecraft.gui.editkeyframe.xpos=Poloha X
+scenecraft.gui.editkeyframe.ypos=Poloha Y
+scenecraft.gui.editkeyframe.zpos=Poloha Z
+scenecraft.gui.editkeyframe.campitch=Sklon kamery
+scenecraft.gui.editkeyframe.camyaw=Zatáčanie kamery
+scenecraft.gui.editkeyframe.camroll=Náklon kamery
+scenecraft.gui.editkeyframe.timelineposition=Poloha na časovej osi
+scenecraft.gui.editkeyframe.markername=Názov značky udalosti
 scenecraft.gui.editkeyframe.timestamp=Časový index
 
-scenecraft.gui.editkeyframe.interpolator=Zakladač                              #may change later
-scenecraft.gui.editkeyframe.interpolator.default.name=Predvolený zakladač
-scenecraft.gui.editkeyframe.interpolator.default.desc=Používa predvolený zakladač definovaný v nastaveniach módu.
+scenecraft.gui.editkeyframe.interpolator=Interpolátor
+scenecraft.gui.editkeyframe.interpolator.default.name=Predvolený interpolátor
+scenecraft.gui.editkeyframe.interpolator.default.desc=Používa predvolený interpolátor určený v nastaveniach SceneCraftu.
+scenecraft.gui.editkeyframe.interpolator.catmullrom.name=Interpolátor so splajnom Catmull-Rom
+scenecraft.gui.editkeyframe.interpolator.catmullrom.desc=Vypočíta splajn Catmull-Rom s nastaviteľnou hodnotou alfa pre presné ovládanie napätia a plynulosti dráhy kamery.
 scenecraft.gui.editkeyframe.interpolator.catmullrom.alpha=Alfa:
-scenecraft.gui.editkeyframe.interpolator.linear.name=Lineárny zakladač
-scenecraft.gui.editkeyframe.interpolator.linear.desc=Vykreslí priamu čiaru pohybu.
+scenecraft.gui.editkeyframe.interpolator.cubic.name=Interpolátor s kubickým splajnom
+scenecraft.gui.editkeyframe.interpolator.cubic.desc=Vypočíta maticu kubických rovníc pre všetky body, aby bola dráha kamery plynulá.
+scenecraft.gui.editkeyframe.interpolator.linear.name=Lineárny interpolátor
+scenecraft.gui.editkeyframe.interpolator.linear.desc=Vedie priame čiary medzi kľúčovými snímkami.
 
 #Render Settings GUI
-scenecraft.gui.rendersettings.addtoqueue=Pridať do poradia
+scenecraft.gui.rendersettings.addtoqueue=Pridať do fronty
 
-scenecraft.gui.rendersettings.renderer=Metóda vykresľovania
+scenecraft.gui.rendersettings.renderer=Spôsob renderovania
 
-scenecraft.gui.rendersettings.renderer.default=Predvolené
-scenecraft.gui.rendersettings.renderer.stereoscopic=3D Anaglyf
-scenecraft.gui.rendersettings.renderer.cubic=Kubické 360°
-scenecraft.gui.rendersettings.renderer.equirectangular=Rovnoramenné
-scenecraft.gui.rendersettings.renderer.ods=ODS
-scenecraft.gui.rendersettings.renderer.blend=Export do blendera (Experimentálne)
+scenecraft.gui.rendersettings.renderer.default=Predvolené renderovanie
+scenecraft.gui.rendersettings.renderer.stereoscopic=Stereoskopické renderovanie
+scenecraft.gui.rendersettings.renderer.cubic=Kubické renderovanie
+scenecraft.gui.rendersettings.renderer.equirectangular=Ekvirektangulárne renderovanie
+scenecraft.gui.rendersettings.renderer.ods=Renderovanie ODS
+scenecraft.gui.rendersettings.renderer.blend=Export do Blenderu [Experimentálne]
 
-scenecraft.gui.rendersettings.renderer.default.description=Vykreslí video v zadanom rozlíšení. Najrýchlejšia metóda.
-scenecraft.gui.rendersettings.renderer.stereoscopic.description=Vykreslí video stereoskopicky, použiteľné rôznymi 3D technológiami. Snímka pre jedno oko je o polovicu tenšia ako celé video.
-scenecraft.gui.rendersettings.renderer.cubic.description=Vykreslí video ako 360° panorámu s použitím kubickej projekcie. Použiteľné v niekoľkých 360° prehrávačoch a v Oculus Rift.
-scenecraft.gui.rendersettings.renderer.equirectangular.description=Vykreslí video ako 360° panorámu s použitím rovnoramennej projekcie. Používa youtube a niekoľkých 360° prehrávačoch a v Oculus Rift.
-scenecraft.gui.rendersettings.renderer.ods.description=Vykreslí video s 3D anaglyfom a 360° panorámou, tiež zvanej VR Video. Použiteľné s Youtube VR prehrávačom.
-scenecraft.gui.rendersettings.renderer.blend.description=Exportuje geometriu sko *.blend súbor, ktorý je použiteľný v Blenderi. Veľmi experimentálne: Vyžaduje veľa RAM, má veľa chýb a niekedy produkuje skazené súbory.
+scenecraft.gui.rendersettings.renderer.default.description=Vyrenderuje video v zadanom rozlíšení. Najrýchlejšia možnosť renderovania.
+scenecraft.gui.rendersettings.renderer.stereoscopic.description=Vyrenderuje video ako stereoskopický (vedľa seba) 3D film použiteľný s rôznymi 3D technológiami. Obraz pre jedno oko má polovičnú šírku videa.
+scenecraft.gui.rendersettings.renderer.cubic.description=Vyrenderuje video s 360-stupňovým panoramatickým pohľadom pomocou kubickej projekcie. Dá sa použiť v mnohých 360-stupňových prehrávačoch videa (aj v Oculus Rift), napríklad VR Player.
+scenecraft.gui.rendersettings.renderer.equirectangular.description=Vyrenderuje video s 360-stupňovým panoramatickým pohľadom pomocou ekvirektangulárnej projekcie. Dá sa použiť s novou funkciou 360-stupňového videa na YouTube a v mnohých prehrávačoch videa (aj v Oculus Rift), napríklad VR Player.
+scenecraft.gui.rendersettings.renderer.ods.description=Vyrenderuje video so stereoskopickým 3D 360-stupňovým panoramatickým pohľadom, nazývaným aj VR video. Dá sa použiť s novou funkciou VR videa na YouTube.
+scenecraft.gui.rendersettings.renderer.blend.description=Exportuje viditeľnú geometriu ako súbor .blend, ktorý možno otvoriť v softvéri Blender. Vysoko experimentálne: vyžaduje veľa RAM, má pomerne veľa známych problémov a niekedy vytvára poškodené súbory Blenderu.
 
 scenecraft.gui.rendersettings.customresolution=Rozlíšenie videa
-scenecraft.gui.rendersettings.customresolution.warning.yuv420=Pre toto prednastavenie, šírka a výška musia byť také isté číslo
-scenecraft.gui.rendersettings.customresolution.warning.yuv420.cubic=Pre toto prednastavenie, výška musí byť deliteľná 6
-scenecraft.gui.rendersettings.customresolution.warning.cubic.height=Kubické vykreslenie potrebuje výšku deliteľnú 3
-scenecraft.gui.rendersettings.bitrate=Dátový tok
-scenecraft.gui.rendersettings.framerate=Snímkopočet videa
-scenecraft.gui.rendersettings.chromakey=Farebné kľúčovanie
-scenecraft.gui.rendersettings.nametags=Zobrazovať prezývky
+scenecraft.gui.rendersettings.customresolution.warning.yuv420=Pri tejto predvoľbe musia byť šírka a výška párne čísla
+scenecraft.gui.rendersettings.customresolution.warning.yuv420.cubic=Pri tejto predvoľbe musí byť výška deliteľná číslom 6
+scenecraft.gui.rendersettings.customresolution.warning.cubic.height=Kubické renderovanie vyžaduje výšku deliteľnú číslom 3
+scenecraft.gui.rendersettings.bitrate=Bitrate
+scenecraft.gui.rendersettings.framerate=Snímková frekvencia videa
+scenecraft.gui.rendersettings.chromakey=Chroma key
+scenecraft.gui.rendersettings.nametags=Renderovať menovky
+scenecraft.gui.rendersettings.includealpha=Zachovať alfa kanál
 scenecraft.gui.rendersettings.outputfile=Výstupný súbor
-scenecraft.gui.rendersettings.sphericalFov=Guľovité zorné pole
-scenecraft.gui.rendersettings.sphericalmetadata=Vložiť guľovité metadáta
-scenecraft.gui.rendersettings.sphericalmetadata.error=Guľovité metadáta môžu byť pridané len do rovnoramenných a 0DS videí v MP4 formáte
+scenecraft.gui.rendersettings.sphericalFov=Sférické zorné pole
+scenecraft.gui.rendersettings.sphericalmetadata=Vložiť sférické metadáta
+scenecraft.gui.rendersettings.sphericalmetadata.error=Sférické metadáta možno pridať iba k ekvirektangulárnym a ODS videám vo formáte MP4
 scenecraft.gui.rendersettings.depthmap=Hĺbková mapa
-scenecraft.gui.rendersettings.depthmap.only_exr_or_png=Export hĺbkovej mapy je možný len v OpenEXR alebo PNG formátoch.
-scenecraft.gui.rendersettings.camerapath=Exportovať cestu kamery
+scenecraft.gui.rendersettings.depthmap.only_exr_or_png=Export hĺbkovej mapy je podporovaný iba vo formáte OpenEXR alebo PNG.
+scenecraft.gui.rendersettings.camerapath=Exportovať dráhu kamery
 
 scenecraft.gui.rendersettings.command=Príkaz
-scenecraft.gui.rendersettings.arguments=Argumenty príkazového riadku
-scenecraft.gui.rendersettings.ffmpeg.description=Ak ste pokročilý používateľ, môžete upravovať príkazy riadku používané pre export videa. Pre viac informácií sa pozrite na: http://replaymod.com/docs
+scenecraft.gui.rendersettings.arguments=Argumenty príkazového riadka
+scenecraft.gui.rendersettings.ffmpeg.description=Ak si pokročilý používateľ, môžeš upraviť parametre príkazového riadka použité na export videa. Viac informácií nájdeš na http://replaymod.com/docs
 
 scenecraft.gui.rendersettings.stabilizecamera=Stabilizovať kameru
 
 scenecraft.gui.rendersettings.video=Nastavenia videa
-scenecraft.gui.rendersettings.advanced=Pokročilé nastavenia
-scenecraft.gui.rendersettings.commandline=Nastavenia príkazového riadku
+scenecraft.gui.rendersettings.advanced=Rozšírené nastavenia
+scenecraft.gui.rendersettings.commandline=Nastavenia príkazového riadka
 
-scenecraft.gui.rendersettings.presets=Prednastavenia enkódovania
-scenecraft.gui.rendersettings.presets.mp4.custom=MP4 - Vlastný dátový tok
+scenecraft.gui.rendersettings.presets=Predvoľby kódovania
+scenecraft.gui.rendersettings.presets.mp4.custom=MP4 - Vlastný bitrate
 scenecraft.gui.rendersettings.presets.mp4.default=MP4 - Predvolená kvalita
-scenecraft.gui.rendersettings.presets.mp4.potato=MP4 - Kvalita zemiaku        #tvojej mamky XD
-scenecraft.gui.rendersettings.presets.webm.custom=WEBM - Vlastný dátový tok
+scenecraft.gui.rendersettings.presets.mp4.potato=MP4 - Zemiaková kvalita
+scenecraft.gui.rendersettings.presets.webm.custom=WEBM - Vlastný bitrate
 scenecraft.gui.rendersettings.presets.mkv.lossless=MKV - Bezstratové
-scenecraft.gui.rendersettings.presets.blend=Blend súbor
-scenecraft.gui.rendersettings.presets.png=PNG Sekvencia
-scenecraft.gui.rendersettings.presets.exr=OpenEXR Sekvencia
+scenecraft.gui.rendersettings.presets.blend=Súbor Blend
+scenecraft.gui.rendersettings.presets.png=Sekvencia PNG
+scenecraft.gui.rendersettings.presets.exr=Sekvencia OpenEXR
 
-scenecraft.gui.rendersettings.antialiasing=Vyhladzovanie
+scenecraft.gui.rendersettings.antialiasing=Vyhladzovanie hrán
 scenecraft.gui.rendersettings.antialiasing.none=Žiadne
 scenecraft.gui.rendersettings.antialiasing.x2=2x
 scenecraft.gui.rendersettings.antialiasing.x4=4x
 scenecraft.gui.rendersettings.antialiasing.x8=8x
 
 #Render Queue GUI
-scenecraft.gui.renderqueue.title=Poradie vykreslovania
-scenecraft.gui.renderqueue.add=Pridať terajšie nastavenie
-scenecraft.gui.renderqueue.renderall=Vykresliť VŠETKO
-scenecraft.gui.renderqueue.renderselected=Vykresliť označené
+scenecraft.gui.renderqueue.title=Fronta renderovania
+scenecraft.gui.renderqueue.add=Pridať aktuálnu konfiguráciu
+scenecraft.gui.renderqueue.renderall=Renderovať všetko
+scenecraft.gui.renderqueue.renderselected=Renderovať vybrané
 
 #Rendering GUI
-scenecraft.gui.rendering.title=Vykreslovanie videa
-scenecraft.gui.rendering.pause=Pozastaviť vykreslovanie
-scenecraft.gui.rendering.resume=Pokračovať vykreslovať
-scenecraft.gui.rendering.cancel=Zrušiť vykreslovanie
-scenecraft.gui.rendering.cancel.callback=Ste si istý?
-scenecraft.gui.rendering.preview=Ukázať náhľad (Výkon sa môže zmeniť)
-scenecraft.gui.rendering.progress=Snímky vykreslené: %1$d / %2$d
-scenecraft.gui.rendering.timetaken=Čas vykreslovania
-scenecraft.gui.rendering.timeleft=Približný čas zostáva
+scenecraft.gui.rendering.title=Renderuje sa video
+scenecraft.gui.rendering.pause=Pozastaviť renderovanie
+scenecraft.gui.rendering.resume=Obnoviť renderovanie
+scenecraft.gui.rendering.cancel=Zrušiť renderovanie
+scenecraft.gui.rendering.cancel.callback=Naozaj?
+scenecraft.gui.rendering.preview=Zobraziť ukážku (môže sa zhoršiť výkon)
+scenecraft.gui.rendering.progress=Vyrenderované snímky: %1$d / %2$d
+scenecraft.gui.rendering.timetaken=Čas renderovania
+scenecraft.gui.rendering.timeleft=Zostávajúci čas
 
 #Render Errors
-scenecraft.gui.rendering.error.title=Pri vykreslovaní nastala chyba
-scenecraft.gui.rendering.error.message=Aby ste mohli vykresliť video musíte stiahnuť ffmpeg a dať to do .minecraft .
-scenecraft.gui.rendering.error.ffmpeglog=FFmpeg výstup:
-scenecraft.gui.rendering.error.ffmpegargs.1=Vyzerá to tak že príkazové argumenty boli zmenené.
-scenecraft.gui.rendering.error.ffmpegargs.2=Chcete ich zmeniť na pôvodnú hodnotu a pokračovať?
+scenecraft.gui.rendering.error.title=Renderovanie zlyhalo
+scenecraft.gui.rendering.error.message=Na renderovanie videa musíš mať nainštalovaný ffmpeg.
+scenecraft.gui.rendering.error.ffmpeglog=Výstup FFmpeg:
+scenecraft.gui.rendering.error.ffmpegargs.1=Zdá sa, že argumenty príkazového riadka boli upravené.
+scenecraft.gui.rendering.error.ffmpegargs.2=Chceš ich obnoviť na predvolené hodnoty a skúsiť to znova?
 
 #Ingame Menu
-scenecraft.gui.ingame.menu.addposkeyframe=Pridať kľúčovú pozíciu
-scenecraft.gui.ingame.menu.removeposkeyframe=Zmazať kľúčovú pozíciu
-scenecraft.gui.ingame.menu.addspeckeyframe=Pridať kľúčového pozorovača
-scenecraft.gui.ingame.menu.removespeckeyframe=Zmazať kľúčového pozorovača
-scenecraft.gui.ingame.menu.addtimekeyframe=Pridať kľúčový čas
-scenecraft.gui.ingame.menu.removetimekeyframe=Zmazať kľúčový čas
-scenecraft.gui.ingame.menu.pause=Pozastaviť prehrávanie
-scenecraft.gui.ingame.menu.unpause=Pokračovať prehrávanie
-scenecraft.gui.ingame.menu.renderpath=Vykresliť cestu kamery
-scenecraft.gui.ingame.menu.playpath=Prehrať cestu kamery od pozície kurzora
-scenecraft.gui.ingame.menu.playpathfromstart=Prehrať cestu kamery od začiatku
-scenecraft.gui.ingame.menu.pausepath=Pozastaviť cestu kamery
+scenecraft.gui.ingame.menu.addposkeyframe=Pridať kľúčový snímok polohy
+scenecraft.gui.ingame.menu.removeposkeyframe=Odstrániť kľúčový snímok polohy
+scenecraft.gui.ingame.menu.addspeckeyframe=Pridať kľúčový snímok pozorovateľa
+scenecraft.gui.ingame.menu.removespeckeyframe=Odstrániť kľúčový snímok pozorovateľa
+scenecraft.gui.ingame.menu.addtimekeyframe=Pridať kľúčový snímok času
+scenecraft.gui.ingame.menu.removetimekeyframe=Odstrániť kľúčový snímok času
+scenecraft.gui.ingame.menu.pause=Pozastaviť záznam
+scenecraft.gui.ingame.menu.unpause=Obnoviť záznam
+scenecraft.gui.ingame.menu.renderpath=Renderovať dráhu kamery
+scenecraft.gui.ingame.menu.playpath=Prehrať dráhu kamery od pozície kurzora
+scenecraft.gui.ingame.menu.playpathfromstart=Prehrať dráhu kamery od začiatku
+scenecraft.gui.ingame.menu.pausepath=Pozastaviť dráhu kamery
 scenecraft.gui.ingame.menu.zoomin=Priblížiť
 scenecraft.gui.ingame.menu.zoomout=Oddialiť
 
 scenecraft.gui.ingame.unnamedmarker=Nepomenovaná značka udalosti
-scenecraft.gui.ingame.autoactivating=Táto možnosť sa môže autoaktivovať v nechcených časoch.
-scenecraft.gui.ingame.autoactivating.disable=Ctrl-klik pre zrušenie autoaktivácie.
-scenecraft.gui.ingame.autoactivating.enable=Ctrl-klik pre povolenie autoaktivácie.
-scenecraft.gui.ingame.first_keyframe_not_at_start_warning=Práve ste položili svoju prvú kľúčovú snímku ale nie je na 00:00.\n\nToto väčšinou značí to že ste nepochopili ako funguje\nčasová os (tá nižšia).\n\nHorná os ukazuje čas v nahrávke,\ndolná ukazuje čas vo výtvore.\nVideo vždy začne na 00:00! Ak vaša kľúčová snímka nie je na 00:00,\ntak bude video zmrazené po čas prvej kľúčovej snímky!
+scenecraft.gui.ingame.autoactivating=Toto priradenie klávesu sa môže automaticky aktivovať vo vhodných okamihoch.
+scenecraft.gui.ingame.autoactivating.disable=Ctrl + kliknutie vypne automatickú aktiváciu.
+scenecraft.gui.ingame.autoactivating.enable=Ctrl + kliknutie zapne automatickú aktiváciu.
+scenecraft.gui.ingame.first_keyframe_not_at_start_warning=Práve bol umiestnený tvoj prvý kľúčový snímok a nie je na 00:00.\n\nZvyčajne to znamená, že nie je celkom jasné, ako funguje\nčasová os videa (tá spodná):\n\nZatiaľ čo horná časová os ukazuje aktuálny čas v zázname,\nspodná ukazuje čas vo videu, ktoré vytváraš.\nVideo vždy začína na 00:00! Ak tvoj prvý kľúčový snímok nie je na 00:00,\nvideo bude vyzerať zamrznuté až do času prvého kľúčového snímku!
 
 #Clear Keyframe Callback
-scenecraft.gui.clearcallback.title=Vyčistiť všetky kľúčové snímky?
+scenecraft.gui.clearcallback.title=Vymazať všetky kľúčové snímky?
 
 #Errors
-scenecraft.error.unknownrestriction1=Túto nahrávku nie je možná prehrať vo vašej verzii.
-scenecraft.error.unknownrestriction2=Snažilo sa to presadiť %s čo ale nie je známe.
-scenecraft.error.negativetime1=niektoré vaše kľúčové snímky sú zle načasované.
-scenecraft.error.negativetime2=ísť späť v čase nie je podporované.
+scenecraft.error.unknownrestriction1=Tento záznam sa nedá prehrať s tvojou aktuálnou verziou.
+scenecraft.error.unknownrestriction2=Pokúsil sa vynútiť %s, čo je neznáme.
+scenecraft.error.negativetime1=Niektoré tvoje kľúčové snímky času sú v nesprávnom poradí.
+scenecraft.error.negativetime2=Posun späť v čase nie je podporovaný.
 scenecraft.error.negativetime3=Neplatné časti sú označené červenou.
 
 #SceneCraft Incompatibility Warning
-scenecraft.gui.modwarning.title=Detekovaná nekompatibilita
-scenecraft.gui.modwarning.message1=Vaša verzia minecraftu je možno nekompatibilná
-scenecraft.gui.modwarning.message2=s touto nahrávkou.
-scenecraft.gui.modwarning.message3=Oné načítanie môže spôsobiť problémy.
-scenecraft.gui.modwarning.name=Názov módu:
-scenecraft.gui.modwarning.id=ID módu:
-scenecraft.gui.modwarning.missing=Chýbajúce módy
-scenecraft.gui.modwarning.version=Inakšie verzie módov
-scenecraft.gui.modwarning.version.expected=Očakávané
-scenecraft.gui.modwarning.version.found=Nájdené
+scenecraft.gui.modwarning.title=Zistená nekompatibilita
+scenecraft.gui.modwarning.message1=Bola zistená možná nekompatibilita medzi tvojou aktuálnou
+scenecraft.gui.modwarning.message2=verziou Minecraftu a týmto záznamom.
+scenecraft.gui.modwarning.message3=Načítanie tohto záznamu môže spôsobiť chyby alebo pád hry.
+scenecraft.gui.modwarning.name=Názov modu:
+scenecraft.gui.modwarning.id=ID modu:
+scenecraft.gui.modwarning.missing=Chýbajúce mody
+scenecraft.gui.modwarning.version=Rôzne verzie modov
+scenecraft.gui.modwarning.version.expected=Očakávaná
+scenecraft.gui.modwarning.version.found=Nájdená
 
 #Advanced Screenshots Gui
-scenecraft.gui.advancedscreenshots.title=Nastavenia snímku obrazovky
-scenecraft.gui.advancedscreenshots.create=Spraviť snímku obrazovky
+scenecraft.gui.advancedscreenshots.title=Nastavenia snímky obrazovky
+scenecraft.gui.advancedscreenshots.create=Urobiť snímku obrazovky
 scenecraft.gui.advancedscreenshots.resolution=Rozlíšenie
 
 # Screenshot Finished Gui
-scenecraft.gui.advancedscreenshots.finished.description=Práve ste úspešne vytvorili snímku obrazovky!
-scenecraft.gui.advancedscreenshots.finished.description.360=práve ste úspešne vytvorili 360° snímku obrazovky!
-scenecraft.gui.advancedscreenshots.finished.description.veer=Nahrajte a pozerajte obrázok vo VR alebo na VeeR.tv alebo to otvorte z disku.
-scenecraft.gui.advancedscreenshots.finished.upload.veer=Nahrať na VeeR.tv
-scenecraft.gui.advancedscreenshots.finished.showfile=Otvoriť priečinok so súborom
+scenecraft.gui.advancedscreenshots.finished.description=Snímka obrazovky bola úspešne vytvorená!
+scenecraft.gui.advancedscreenshots.finished.description.360=360° snímka obrazovky bola úspešne vytvorená!
+scenecraft.gui.advancedscreenshots.finished.description.veer=Odošli obrázok na VeeR.tv a pozri si ho vo VR, alebo ho otvor na disku.
+scenecraft.gui.advancedscreenshots.finished.upload.veer=Odoslať na VeeR.tv
+scenecraft.gui.advancedscreenshots.finished.showfile=Zobraziť súbor na disku

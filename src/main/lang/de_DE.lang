@@ -2,16 +2,16 @@ scenecraft.title=SceneCraft
 
 #All of the chat messages
 scenecraft.chat.recordingstarted=Aufnahme gestartet
-scenecraft.chat.recordingfailed=Fehler beim Starten der Aufnahme
+scenecraft.chat.recordingfailed=Aufnahme konnte nicht gestartet werden
 
-scenecraft.chat.savingthumb=Speichere Thumbnail...
-scenecraft.chat.savedthumb=Thumbnail wurde erfolgreich gespeichert
-scenecraft.chat.failedthumb=Thumbnail konnte nicht gespeichert werden
+scenecraft.chat.savingthumb=Vorschaubild wird gespeichert ...
+scenecraft.chat.savedthumb=Vorschaubild wurde erfolgreich gespeichert
+scenecraft.chat.failedthumb=Vorschaubild konnte nicht gespeichert werden
 
-scenecraft.chat.addedmarker=Event Marker wurde hinzugefügt
+scenecraft.chat.addedmarker=Ereignismarkierung wurde hinzugefügt
 
 #Chat messages displayed in Replay Viewer
-scenecraft.chat.morekeyframes=Mindestens 2 Positionskeyframes und 2 Zeitkeyframes benötigt
+scenecraft.chat.morekeyframes=Mindestens 2 Positions-Keyframes und 2 Zeit-Keyframes erforderlich
 scenecraft.chat.pathstarted=Kamerapfad gestartet
 scenecraft.chat.pathfinished=Kamerapfad beendet
 scenecraft.chat.pathinterrupted=Kamerapfad abgebrochen
@@ -24,16 +24,25 @@ scenecraft.gui.save=Speichern
 scenecraft.gui.rename=Umbenennen
 scenecraft.gui.remove=Entfernen
 scenecraft.gui.delete=Löschen
-scenecraft.gui.record=Nimmt auf
+scenecraft.gui.record=Aufnahme
+scenecraft.gui.paused=Pausiert
 scenecraft.gui.speed=Geschwindigkeit
 scenecraft.gui.pleasewait=Bitte warten
 scenecraft.gui.render=Rendern
-scenecraft.gui.iphidden=Server IP versteckt
+scenecraft.gui.iphidden=Server-IP verborgen
 scenecraft.gui.overwrite=Überschreiben
-scenecraft.gui.saveas=Speichern unter...
+scenecraft.gui.saveas=Speichern unter ...
 scenecraft.gui.done=Fertig
 scenecraft.gui.close=Schließen
-scenecraft.gui.notagain=Nicht noch einmal anzeigen
+scenecraft.gui.notagain=Nicht mehr anzeigen
+scenecraft.gui.edit=Bearbeiten
+scenecraft.gui.copy=Kopieren
+scenecraft.gui.paste=Einfügen
+
+scenecraft.gui.record.resume=Aufnahme fortsetzen
+scenecraft.gui.record.pause=Aufnahme pausieren
+scenecraft.gui.record.stop=Aufnahme beenden
+scenecraft.gui.record.start=Aufnahme starten
 
 scenecraft.gui.renderdonetitle=Video gerendert
 scenecraft.gui.openfolder=Videoordner öffnen
@@ -42,28 +51,28 @@ scenecraft.gui.renderdone1=Dein Video wurde erfolgreich gerendert.
 scenecraft.gui.renderdone2=Wie möchtest du fortfahren?
 scenecraft.gui.videotitle=Titel
 scenecraft.gui.videodescription=Beschreibung
-scenecraft.gui.videotags=Tags, Tags, Tags
-scenecraft.gui.videothumbnail=Video Vorschaubild
+scenecraft.gui.videotags=Tags,Tags,Tags
+scenecraft.gui.videothumbnail=Video-Vorschaubild
 scenecraft.gui.videovisibility.private=Privat
-scenecraft.gui.videovisibility.unlisted=Ungelistet
+scenecraft.gui.videovisibility.unlisted=Nicht gelistet
 scenecraft.gui.videovisibility.public=Öffentlich
-scenecraft.gui.ytuploadprogress.auth=[1/4] Authentifizierung
-scenecraft.gui.ytuploadprogress.prepare_video=[2/4] Video wird vorbereitet: %%d %%%%
-scenecraft.gui.ytuploadprogress.upload=[3/4] Wird hochgeladen: %%d %%%%
+scenecraft.gui.ytuploadprogress.auth=[1/4] Autorisierung
+scenecraft.gui.ytuploadprogress.prepare_video=[2/4] Video wird vorbereitet: %%d%%%%
+scenecraft.gui.ytuploadprogress.upload=[3/4] Wird hochgeladen: %%d%%%%
 scenecraft.gui.ytuploadprogress.cleanup=[4/4] Aufräumen
 scenecraft.gui.ytuploadprogress.done=Fertig: %s
-scenecraft.gui.titleempty=Titel kann nicht leer sein
-scenecraft.gui.videothumbnailtoolarge=Das Vorschaubild ist größer als 2MB
-scenecraft.gui.videothumbnailformat=Das Vorschaubild muss im JPEG oder PNG-Format sein
+scenecraft.gui.titleempty=Der Titel darf nicht leer sein
+scenecraft.gui.videothumbnailtoolarge=Das Vorschaubild ist größer als 2 MB
+scenecraft.gui.videothumbnailformat=Das Vorschaubild muss im JPEG- oder PNG-Format vorliegen
 
-scenecraft.gui.hours=h
-scenecraft.gui.minutes=min
-scenecraft.gui.seconds=s
+scenecraft.gui.hours=Std.
+scenecraft.gui.minutes=Min.
+scenecraft.gui.seconds=Sek.
 scenecraft.gui.milliseconds=ms
 
 scenecraft.gui.pitch=Neigung
-scenecraft.gui.yaw=Drehung
-scenecraft.gui.roll=Schwenkung
+scenecraft.gui.yaw=Gieren
+scenecraft.gui.roll=Rollen
 
 scenecraft.gui.camera=Kamera
 scenecraft.gui.position=Position
@@ -74,139 +83,181 @@ scenecraft.gui.exit=Replay verlassen
 
 scenecraft.gui.settings=Einstellungen
 
-scenecraft.gui.keyframerepo.delete=Bist du sicher, dass du diese Keyframes löschen möchtest?
-scenecraft.gui.keyframerepo.overwrite=Bist du dir sicher, dass du diese Keyframes überschreiben möchtest?
+scenecraft.gui.keyframerepo.delete=Möchtest du diese Keyframes wirklich löschen?
+scenecraft.gui.keyframerepo.overwrite=Möchtest du diese Keyframes wirklich überschreiben?
 
-scenecraft.gui.restorereplay1=Es sieht so aus, als wurde Minecraft nicht richtig beendet.
-scenecraft.gui.restorereplay2=Das Replay "%1$s" wurde nicht korrekt gespeichert.
+scenecraft.gui.restorereplay1=Minecraft wurde anscheinend nicht ordnungsgemäß beendet.
+scenecraft.gui.restorereplay2=Das Replay „%1$s“ wurde nicht korrekt gespeichert.
 scenecraft.gui.restorereplay3=Möchtest du es wiederherstellen?
 
-scenecraft.gui.loadentitytracker=Lade Objekt-Positionen: %%d%%%%
+scenecraft.gui.loadentitytracker=Entitätspositionen werden geladen: %%d%%%%
+scenecraft.gui.loadquickmode=Schnellmodus wird geladen: %%d%%%%
+scenecraft.gui.noquickmode=Der Schnellmodus ist nur ab Minecraft %1$s verfügbar
+scenecraft.gui.minimalmode.unsupported=Diese Funktion ist in deiner aktuellen Minecraft-Version nicht verfügbar.
+scenecraft.gui.minimalmode.supportedversion=(deine SceneCraft-Version unterstützt nur Minecraft %1$s)
 
 #Only change these if it's neccessary
-scenecraft.gui.replayviewer=Replay Vorschau
+scenecraft.gui.replayviewer=Replay-Betrachter
 
 #Replay Viewer GUI
 scenecraft.gui.viewer.rename.name=Replay-Name
-scenecraft.gui.viewer.replayfolder=Replay Ordner öffnen...
+scenecraft.gui.viewer.replayfolder=Replay-Ordner öffnen ...
+scenecraft.gui.viewer.bulkrender=%1$d Videos rendern
 
-scenecraft.gui.viewer.delete.linea=Bist du dir sicher, dass du dieses Replay löschen möchtest?
-scenecraft.gui.viewer.delete.failed1=Dein Betriebssystem erlaubt uns nicht, das Replay zu löschen. Da ist
-scenecraft.gui.viewer.delete.failed2=Wir können da leider nichts tun. Du musst es selber machen.
-scenecraft.gui.viewer.delete.lineb='%1$s' wird für immer verloren sein! (Eine lange Zeit!)
+scenecraft.gui.viewer.delete.linea=Möchtest du dieses Replay wirklich löschen?
+scenecraft.gui.viewer.delete.failed1=Dein Betriebssystem hat das Löschen des Replays nicht erlaubt. Wir
+scenecraft.gui.viewer.delete.failed2=können nichts dagegen tun. Du musst es selbst löschen.
+scenecraft.gui.viewer.delete.lineb=„%1$s“ geht für immer verloren! (eine lange Zeit!)
+
+#Replay Editor UI 2.0 (marker based UI)
+scenecraft.gui.edit.apply=Anwenden
+scenecraft.gui.edit.split=Trennung einfügen
+scenecraft.gui.edit.split.tooltip=Teilt das Replay an der markierten Stelle in mehrere Replays auf
+scenecraft.gui.edit.cut.start=Schnitt einfügen
+scenecraft.gui.edit.cut.end=Schnitt beenden
+scenecraft.gui.edit.cut.tooltip=Schneidet einen Abschnitt aus dem Replay heraus (entfernt ihn)
 
 #Cancel Replay GUI
 scenecraft.gui.cancelrender.title=Rendern abbrechen
-scenecraft.gui.cancelrender.message=Bist du sicher, dass du den momentanen Renderprozess abbrechen möchtest?
+scenecraft.gui.cancelrender.message=Möchtest du den laufenden Rendervorgang wirklich abbrechen?
 #Saving Replay GUI
-scenecraft.gui.replaysaving.title=Replay Datei wird gespeichert...
+scenecraft.gui.replaysaving.title=Replay-Datei wird gespeichert ...
 
 #Player Overview GUI
 scenecraft.gui.playeroverview.visible=Sichtbar
-scenecraft.gui.playeroverview.hideall=Alle verstecken
+scenecraft.gui.playeroverview.hideall=Alle ausblenden
 scenecraft.gui.playeroverview.showall=Alle anzeigen
-scenecraft.gui.playeroverview.spectate=Spieler zuschauen
-scenecraft.gui.playeroverview.remembersettings=Verstecke Spieler merken
-scenecraft.gui.playeroverview.remembersettings.description=Speichert Spieler Sichtbarkeit in der Replay Datei
+scenecraft.gui.playeroverview.spectate=Spieler beobachten
+scenecraft.gui.playeroverview.remembersettings=Versteckte Spieler merken
+scenecraft.gui.playeroverview.remembersettings.description=Speichert die Sichtbarkeit der Spieler in der Replay-Datei
 
 #SceneCraft Settings GUI
-scenecraft.gui.settings.title=SceneCraft Einstellungen
+scenecraft.gui.settings.title=SceneCraft-Einstellungen
+scenecraft.gui.settings.default=STANDARD
 
-scenecraft.gui.settings.notifications=Benachrichtigungen einschalten
-scenecraft.gui.settings.recordserver=Server aufzeichnen
-scenecraft.gui.settings.recordsingleplayer=Einzelspieler aufzeichnen
-scenecraft.gui.settings.indicator=Aufnahmeindikator
+scenecraft.gui.settings.notifications=Benachrichtigungen aktivieren
+scenecraft.gui.settings.recordserver=Server aufnehmen
+scenecraft.gui.settings.recordsingleplayer=Einzelspieler aufnehmen
+scenecraft.gui.settings.indicator=Aufnahmeanzeige
 scenecraft.gui.settings.pathpreview=Pfadvorschau anzeigen
 scenecraft.gui.settings.camera=Kamera
 scenecraft.gui.settings.showchat=Chat anzeigen
-scenecraft.gui.settings.interpolator=Standard Interpolator
+scenecraft.gui.settings.interpolator=Standard-Interpolator
+scenecraft.gui.settings.autostartrecording=Automatische Aufnahme
+scenecraft.gui.settings.rename_recording_dialog=Umbenennungsdialog
+scenecraft.gui.settings.fullbrightness=Volle Helligkeit
+scenecraft.gui.settings.fullbrightness.gamma=Gamma
+scenecraft.gui.settings.fullbrightness.nightvision=Nachtsicht
+scenecraft.gui.settings.fullbrightness.both=Beides
 
 #SceneCraft Keybindings
 scenecraft.input.lighting=Beleuchtung umschalten
 scenecraft.input.thumbnail=Vorschaubild aufnehmen
 scenecraft.input.playeroverview=Spielerübersicht
-scenecraft.input.clearkeyframes=Alle Keyframes löschen
+scenecraft.input.clearkeyframes=Keyframes löschen
 scenecraft.input.synctimeline=Zeitleiste synchronisieren
-scenecraft.input.keyframerepository=Keyframe Voreinstellungen öffnen
-scenecraft.input.rollclockwise=Im Uhrzeigersinn schwenken
-scenecraft.input.rollcounterclockwise=Gegen den Uhrzeigersinn schwenken
-scenecraft.input.resettilt=Kamerarotation zurücksetzen
+scenecraft.input.keyframerepository=Keyframe-Vorlagen öffnen
+scenecraft.input.rollclockwise=Im Uhrzeigersinn rollen
+scenecraft.input.rollcounterclockwise=Gegen den Uhrzeigersinn rollen
+scenecraft.input.resettilt=Kameraneigung zurücksetzen
 scenecraft.input.playpause=Replay abspielen/pausieren
 scenecraft.input.marker=Ereignismarkierung hinzufügen
 scenecraft.input.pathpreview=Pfadvorschau umschalten
-scenecraft.input.settings=SceneCraft Einstellungen
+scenecraft.input.settings=SceneCraft-Einstellungen
+scenecraft.input.quickmode=Schnellmodus
+scenecraft.input.positionkeyframe=Positions-/Zuschauer-Keyframe
+scenecraft.input.positiononlykeyframe=Positions-Keyframe
+scenecraft.input.timekeyframe=Zeit-Keyframe
+scenecraft.input.bothkeyframes=Positions-/Zuschauer- + Zeit-Keyframe
 
 # CameraControllers
 scenecraft.camera.classic=Klassisch
-scenecraft.camera.vanilla=Vanilla-isch
+scenecraft.camera.vanilla=Vanilla-ähnlich
 
 #Keyframe Presets GUI
-scenecraft.gui.keyframerepository.title=Keyframe Voreinstellungen
+scenecraft.gui.keyframerepository.title=Keyframe-Archiv
 
 #Edit Keyframe GUI
-scenecraft.gui.editkeyframe.title.pos=Positions Keyframe bearbeiten
-scenecraft.gui.editkeyframe.title.time=Zeit Keyframe bearbeiten
+scenecraft.gui.editkeyframe.title.pos=Positions-Keyframe bearbeiten
+scenecraft.gui.editkeyframe.title.time=Zeit-Keyframe bearbeiten
 scenecraft.gui.editkeyframe.title.marker=Ereignismarkierung bearbeiten
-scenecraft.gui.editkeyframe.title.spec=Zuschauer Keyframe bearbeiten
-scenecraft.gui.editkeyframe.xpos=X Position
-scenecraft.gui.editkeyframe.ypos=Y Position
-scenecraft.gui.editkeyframe.zpos=Z Position
-scenecraft.gui.editkeyframe.campitch=Kamera Neigung
-scenecraft.gui.editkeyframe.camyaw=Kamera Drehung
-scenecraft.gui.editkeyframe.camroll=Kamera Schwenkung
-scenecraft.gui.editkeyframe.timelineposition=Zeitleisten Position
-scenecraft.gui.editkeyframe.markername=Ereignismarkierung Name
+scenecraft.gui.editkeyframe.title.spec=Zuschauer-Keyframe bearbeiten
+scenecraft.gui.editkeyframe.xpos=X-Position
+scenecraft.gui.editkeyframe.ypos=Y-Position
+scenecraft.gui.editkeyframe.zpos=Z-Position
+scenecraft.gui.editkeyframe.campitch=Kameraneigung
+scenecraft.gui.editkeyframe.camyaw=Kamera-Gieren
+scenecraft.gui.editkeyframe.camroll=Kamera-Rollen
+scenecraft.gui.editkeyframe.timelineposition=Position auf der Zeitleiste
+scenecraft.gui.editkeyframe.markername=Name der Ereignismarkierung
 scenecraft.gui.editkeyframe.timestamp=Zeitindex
 
 scenecraft.gui.editkeyframe.interpolator=Interpolator
-scenecraft.gui.editkeyframe.interpolator.default.name=Standardinterpolator
-scenecraft.gui.editkeyframe.interpolator.default.desc=Benutzt den Standardinterpolator, der in den SceneCraft Einstellungen definiert wurde.
-scenecraft.gui.editkeyframe.interpolator.catmullrom.name=Catmull-Rom-Spline Interpolator
-scenecraft.gui.editkeyframe.interpolator.catmullrom.desc=Berechnet einen Catmull Rom Spline mit veränderbarem Alpha Wert für präzise und weiche Kamerapfade.
+scenecraft.gui.editkeyframe.interpolator.default.name=Standard-Interpolator
+scenecraft.gui.editkeyframe.interpolator.default.desc=Verwendet den in den SceneCraft-Einstellungen festgelegten Standard-Interpolator.
+scenecraft.gui.editkeyframe.interpolator.catmullrom.name=Catmull-Rom-Spline-Interpolator
+scenecraft.gui.editkeyframe.interpolator.catmullrom.desc=Berechnet einen Catmull-Rom-Spline mit anpassbarem Alpha-Wert, um Straffheit und Glätte des Kamerapfads präzise zu steuern.
 scenecraft.gui.editkeyframe.interpolator.catmullrom.alpha=Alpha:
-scenecraft.gui.editkeyframe.interpolator.cubic.name=Kubischer Spline Interpolator
-scenecraft.gui.editkeyframe.interpolator.cubic.desc=Berechnet eine kubische Gleichungsmatrix für alle Punkte für einen weichen Kamerapfad.
+scenecraft.gui.editkeyframe.interpolator.cubic.name=Kubischer Spline-Interpolator
+scenecraft.gui.editkeyframe.interpolator.cubic.desc=Berechnet eine kubische Gleichungsmatrix für alle Punkte, um einen glatten Kamerapfad zu erzeugen.
 scenecraft.gui.editkeyframe.interpolator.linear.name=Linearer Interpolator
 scenecraft.gui.editkeyframe.interpolator.linear.desc=Zieht gerade Linien zwischen den Keyframes.
 
+#Render Settings GUI
+scenecraft.gui.rendersettings.addtoqueue=Zur Warteschlange hinzufügen
+
 scenecraft.gui.rendersettings.renderer=Rendermethode
 
-scenecraft.gui.rendersettings.renderer.default=Standardmäßiges Rendern
-scenecraft.gui.rendersettings.renderer.stereoscopic=Stereoskopisches Rendern
-scenecraft.gui.rendersettings.renderer.cubic=Kubisches Rendern
-scenecraft.gui.rendersettings.renderer.equirectangular=Äquirektanguläres Rendern
-scenecraft.gui.rendersettings.renderer.ods=ODS Rendern
+scenecraft.gui.rendersettings.renderer.default=Standard-Rendering
+scenecraft.gui.rendersettings.renderer.stereoscopic=Stereoskopisches Rendering
+scenecraft.gui.rendersettings.renderer.cubic=Kubisches Rendering
+scenecraft.gui.rendersettings.renderer.equirectangular=Äquirektangulares Rendering
+scenecraft.gui.rendersettings.renderer.ods=ODS-Rendering
+scenecraft.gui.rendersettings.renderer.blend=Blender-Export [Experimentell]
 
-scenecraft.gui.rendersettings.renderer.default.description=Rendert das Video in der angegebenen Auflösung. Schnelleste Renderoption.
-scenecraft.gui.rendersettings.renderer.stereoscopic.description=Rendert das Video als stereoskopisches (nebeneinander) 3D, nutzbar mit verschiedenen 3D Technologien. Die beiden Bilder sind jeweils halb so breit wie das Video
-scenecraft.gui.rendersettings.renderer.cubic.description=Rendert das Video mit einer 360 Grad Panorama Ansicht und Kubischer Projektion. Diese Ansicht wird von verschiedenen 360 Grad Videoplayern, zum Beispiel dem VR Player, (und der Oculus Rift) benutzt.
-scenecraft.gui.rendersettings.renderer.equirectangular.description=Rendert das Video mit einer 360 Grad Panorama Ansicht und Äquirektangulärer Projektion. Diese Ansicht wird von YouTubes neuer 360 Grad Video Funktion und verschiedenen anderen Videoplayern, zum Beispiel dem VR Player, (sowie der Oculus Rift) benutzt.
-scenecraft.gui.rendersettings.renderer.ods.description=Rendert das Video mit einer Stereoskopischen 3D 360 Grad Panorama Ansicht, auch "VR Video" genannt. Diese wird von YouTubes neuer VR Video Funktion benutzt.
+scenecraft.gui.rendersettings.renderer.default.description=Rendert das Video in der angegebenen Auflösung. Die schnellste Rendering-Option.
+scenecraft.gui.rendersettings.renderer.stereoscopic.description=Rendert das Video als stereoskopischen 3D-Film (nebeneinander), der mit verschiedenen 3D-Technologien nutzbar ist. Das Bild für ein Auge ist halb so breit wie das Video.
+scenecraft.gui.rendersettings.renderer.cubic.description=Rendert das Video mit einer 360-Grad-Panoramaansicht per kubischer Projektion. Nutzbar mit mehreren 360-Grad-Videoplayern (und der Oculus Rift), zum Beispiel VR Player.
+scenecraft.gui.rendersettings.renderer.equirectangular.description=Rendert das Video mit einer 360-Grad-Panoramaansicht per äquirektangularer Projektion. Nutzbar mit der neuen 360-Grad-Videofunktion von YouTube und mehreren Videoplayern (sowie der Oculus Rift), zum Beispiel VR Player.
+scenecraft.gui.rendersettings.renderer.ods.description=Rendert das Video mit einer stereoskopischen 3D-360-Grad-Panoramaansicht, auch VR-Video genannt. Nutzbar mit der neuen VR-Videofunktion von YouTube.
+scenecraft.gui.rendersettings.renderer.blend.description=Exportiert die sichtbare Geometrie als .blend-Datei, die mit der Software Blender geöffnet werden kann. Stark experimentell: benötigt viel RAM, hat einige bekannte Probleme und erzeugt manchmal defekte Blender-Dateien.
 
-scenecraft.gui.rendersettings.customresolution=Video Auflösung
-scenecraft.gui.rendersettings.customresolution.warning.yuv420=Für diese Voreinstellung müssen die Breite und Höhe gerade Zahlen sein
-scenecraft.gui.rendersettings.framerate=Video Bildrate
-scenecraft.gui.rendersettings.chromakey=Farbbasierte Bildfreistellung (Chroma Keying)
+scenecraft.gui.rendersettings.customresolution=Videoauflösung
+scenecraft.gui.rendersettings.customresolution.warning.yuv420=Bei dieser Vorgabe müssen Breite und Höhe gerade Zahlen sein
+scenecraft.gui.rendersettings.customresolution.warning.yuv420.cubic=Bei dieser Vorgabe muss die Höhe durch 6 teilbar sein
+scenecraft.gui.rendersettings.customresolution.warning.cubic.height=Kubisches Rendering erfordert eine durch 3 teilbare Höhe
+scenecraft.gui.rendersettings.bitrate=Bitrate
+scenecraft.gui.rendersettings.framerate=Video-Bildrate
+scenecraft.gui.rendersettings.chromakey=Chroma-Keying
 scenecraft.gui.rendersettings.nametags=Namensschilder rendern
+scenecraft.gui.rendersettings.includealpha=Alphakanal beibehalten
 scenecraft.gui.rendersettings.outputfile=Ausgabedatei
+scenecraft.gui.rendersettings.sphericalFov=Sphärisches Sichtfeld
+scenecraft.gui.rendersettings.sphericalmetadata=Sphärische Metadaten einfügen
+scenecraft.gui.rendersettings.sphericalmetadata.error=Sphärische Metadaten können nur zu äquirektangularen und ODS-Videos im MP4-Format hinzugefügt werden
+scenecraft.gui.rendersettings.depthmap=Tiefenkarte
+scenecraft.gui.rendersettings.depthmap.only_exr_or_png=Der Export von Tiefenkarten wird nur mit dem Format OpenEXR oder PNG unterstützt.
+scenecraft.gui.rendersettings.camerapath=Kamerapfad exportieren
 
 scenecraft.gui.rendersettings.command=Befehl
-scenecraft.gui.rendersettings.arguments=Befehlszeilenargumente
-scenecraft.gui.rendersettings.ffmpeg.description=Wenn du ein fortgeschrittener Benutzer bist, kannst du die Befehlszeilenparameter für den Export des Videos anpassen. Für mehr Informationen, besuche http://replaymod.com/docs
+scenecraft.gui.rendersettings.arguments=Kommandozeilenargumente
+scenecraft.gui.rendersettings.ffmpeg.description=Als fortgeschrittener Nutzer kannst du die Kommandozeilenparameter anpassen, die zum Exportieren des Videos verwendet werden. Weitere Informationen findest du unter http://replaymod.com/docs
 
 scenecraft.gui.rendersettings.stabilizecamera=Kamera stabilisieren
 
 scenecraft.gui.rendersettings.video=Videoeinstellungen
 scenecraft.gui.rendersettings.advanced=Erweiterte Einstellungen
-scenecraft.gui.rendersettings.commandline=Befehlszeilen Einstellungen
+scenecraft.gui.rendersettings.commandline=Kommandozeileneinstellungen
 
-scenecraft.gui.rendersettings.presets=Kodierungsvoreinstellungen
-scenecraft.gui.rendersettings.presets.mp4.custom=MP4 - Eigene Bitrate
+scenecraft.gui.rendersettings.presets=Kodierungsvorgaben
+scenecraft.gui.rendersettings.presets.mp4.custom=MP4 - Benutzerdefinierte Bitrate
 scenecraft.gui.rendersettings.presets.mp4.default=MP4 - Standardqualität
 scenecraft.gui.rendersettings.presets.mp4.potato=MP4 - Kartoffelqualität
-scenecraft.gui.rendersettings.presets.webm.custom=WEBM - Eigene Bitrate
+scenecraft.gui.rendersettings.presets.webm.custom=WEBM - Benutzerdefinierte Bitrate
 scenecraft.gui.rendersettings.presets.mkv.lossless=MKV - Verlustfrei
-scenecraft.gui.rendersettings.presets.png=PNG Sequenz
+scenecraft.gui.rendersettings.presets.blend=Blend-Datei
+scenecraft.gui.rendersettings.presets.png=PNG-Sequenz
+scenecraft.gui.rendersettings.presets.exr=OpenEXR-Sequenz
 
 scenecraft.gui.rendersettings.antialiasing=Kantenglättung
 scenecraft.gui.rendersettings.antialiasing.none=Keine
@@ -215,63 +266,81 @@ scenecraft.gui.rendersettings.antialiasing.x4=4x
 scenecraft.gui.rendersettings.antialiasing.x8=8x
 
 #Render Queue GUI
-scenecraft.gui.renderqueue.title=Renderwarteschlange
+scenecraft.gui.renderqueue.title=Render-Warteschlange
 scenecraft.gui.renderqueue.add=Aktuelle Konfiguration hinzufügen
+scenecraft.gui.renderqueue.renderall=Alle rendern
+scenecraft.gui.renderqueue.renderselected=Ausgewählte rendern
 
 #Rendering GUI
 scenecraft.gui.rendering.title=Video wird gerendert
-scenecraft.gui.rendering.pause=Rendern anhalten
+scenecraft.gui.rendering.pause=Rendern pausieren
 scenecraft.gui.rendering.resume=Rendern fortsetzen
 scenecraft.gui.rendering.cancel=Rendern abbrechen
-scenecraft.gui.rendering.cancel.callback=Bist du dir sicher?
-scenecraft.gui.rendering.preview=Vorschau anzeigen (Performance kann darunter leiden)
-scenecraft.gui.rendering.progress=Frames gerendert: %1$d / %2$d
+scenecraft.gui.rendering.cancel.callback=Bist du sicher?
+scenecraft.gui.rendering.preview=Vorschau anzeigen (Leistung kann darunter leiden)
+scenecraft.gui.rendering.progress=Gerenderte Bilder: %1$d / %2$d
 scenecraft.gui.rendering.timetaken=Renderzeit
-scenecraft.gui.rendering.timeleft=Zeit übrig
+scenecraft.gui.rendering.timeleft=Verbleibende Zeit
 
 #Render Errors
 scenecraft.gui.rendering.error.title=Rendern fehlgeschlagen
-scenecraft.gui.rendering.error.message=Um ein Video zu rendern, muss ffmpeg installiert sein.
-scenecraft.gui.rendering.error.ffmpeglog=FFmpeg Ausgabe:
-scenecraft.gui.rendering.error.ffmpegargs.1=Es sieht so aus, als hätten Sie die Befehlszeilenargumente modifiziert.
-scenecraft.gui.rendering.error.ffmpegargs.2=Möchten Sie sie auf die Standardeinstellungen zurücksetzen und es erneut versuchen?
+scenecraft.gui.rendering.error.message=Zum Rendern eines Videos muss ffmpeg installiert sein.
+scenecraft.gui.rendering.error.ffmpeglog=FFmpeg-Ausgabe:
+scenecraft.gui.rendering.error.ffmpegargs.1=Du scheinst die Kommandozeilenargumente geändert zu haben.
+scenecraft.gui.rendering.error.ffmpegargs.2=Möchtest du sie auf die Standardwerte zurücksetzen und es erneut versuchen?
 
 #Ingame Menu
-scenecraft.gui.ingame.menu.addposkeyframe=Positions Keyframe hinzufügen
-scenecraft.gui.ingame.menu.removeposkeyframe=Positions Keyframe entfernen
-scenecraft.gui.ingame.menu.addspeckeyframe=Zuschauer Keyframe hinzufügen
-scenecraft.gui.ingame.menu.removespeckeyframe=Zuschauer Keyframe entfernen
-scenecraft.gui.ingame.menu.addtimekeyframe=Zeit Keyframe hinzufügen
-scenecraft.gui.ingame.menu.removetimekeyframe=Zeit Keyframe entfernen
+scenecraft.gui.ingame.menu.addposkeyframe=Positions-Keyframe hinzufügen
+scenecraft.gui.ingame.menu.removeposkeyframe=Positions-Keyframe entfernen
+scenecraft.gui.ingame.menu.addspeckeyframe=Zuschauer-Keyframe hinzufügen
+scenecraft.gui.ingame.menu.removespeckeyframe=Zuschauer-Keyframe entfernen
+scenecraft.gui.ingame.menu.addtimekeyframe=Zeit-Keyframe hinzufügen
+scenecraft.gui.ingame.menu.removetimekeyframe=Zeit-Keyframe entfernen
 scenecraft.gui.ingame.menu.pause=Replay pausieren
 scenecraft.gui.ingame.menu.unpause=Replay fortsetzen
 scenecraft.gui.ingame.menu.renderpath=Kamerapfad rendern
-scenecraft.gui.ingame.menu.playpath=Kamerapfad von Cursorposition aus abspielen
+scenecraft.gui.ingame.menu.playpath=Kamerapfad ab Cursorposition abspielen
 scenecraft.gui.ingame.menu.playpathfromstart=Kamerapfad von Anfang an abspielen
 scenecraft.gui.ingame.menu.pausepath=Kamerapfad pausieren
-scenecraft.gui.ingame.menu.zoomin=Heranzoomen
+scenecraft.gui.ingame.menu.zoomin=Hineinzoomen
 scenecraft.gui.ingame.menu.zoomout=Herauszoomen
 
 scenecraft.gui.ingame.unnamedmarker=Unbenannte Ereignismarkierung
+scenecraft.gui.ingame.autoactivating=Diese Tastenbelegung kann sich zu passenden Zeitpunkten automatisch aktivieren.
+scenecraft.gui.ingame.autoactivating.disable=Strg + Klick, um die automatische Aktivierung zu deaktivieren.
+scenecraft.gui.ingame.autoactivating.enable=Strg + Klick, um die automatische Aktivierung zu aktivieren.
+scenecraft.gui.ingame.first_keyframe_not_at_start_warning=Du hast gerade deinen ersten Keyframe gesetzt und er liegt nicht bei 00:00.\n\nDas deutet meist darauf hin, dass du missverstanden hast, wie die\nVideo-Zeitleiste (die untere) funktioniert:\n\nWährend die obere Zeitleiste deine aktuelle Zeit im Replay zeigt,\nzeigt die untere die Zeit in dem Video, das du erstellst.\nDas Video beginnt immer bei 00:00! Wenn dein erster Keyframe nicht bei 00:00 liegt,\nwirkt das Video eingefroren, bis die Zeit des ersten Keyframes erreicht ist!
 
 #Clear Keyframe Callback
 scenecraft.gui.clearcallback.title=Alle Keyframes löschen?
 
 #Errors
 scenecraft.error.unknownrestriction1=Dieses Replay kann mit deiner aktuellen Version nicht abgespielt werden.
-scenecraft.error.unknownrestriction2=Es hat versucht %s zu erzwingen, aber es ist unbekannt.
-scenecraft.error.negativetime1=Einige deiner Zeit Keyframes haben eine falsche Reihenfolge.
-scenecraft.error.negativetime2=In der Zeit zurückzugehen wird nicht unterstützt.
-scenecraft.error.negativetime3=Die fehlerhaften Teile sind rot markiert.
+scenecraft.error.unknownrestriction2=Es hat versucht, %s zu erzwingen, was unbekannt ist.
+scenecraft.error.negativetime1=Einige deiner Zeit-Keyframes sind in falscher Reihenfolge.
+scenecraft.error.negativetime2=Ein Rückwärtslauf in der Zeit wird nicht unterstützt.
+scenecraft.error.negativetime3=Die ungültigen Teile sind rot markiert.
 
 #SceneCraft Incompatibility Warning
-scenecraft.gui.modwarning.title=Inkompatibilität gefunden
-scenecraft.gui.modwarning.message1=Eine mögliche Inkompatibilität zwischen deiner aktuellen
-scenecraft.gui.modwarning.message2=Minecraft Version und diesem Replay wurde gefunden.
-scenecraft.gui.modwarning.message3=Das Laden dieses Replays kann in Fehlern oder Abstürzen resultieren.
-scenecraft.gui.modwarning.name=Modname:
-scenecraft.gui.modwarning.id=Mod-Id:
+scenecraft.gui.modwarning.title=Inkompatibilität erkannt
+scenecraft.gui.modwarning.message1=Es wurde eine mögliche Inkompatibilität zwischen deiner aktuellen
+scenecraft.gui.modwarning.message2=Minecraft-Version und diesem Replay erkannt.
+scenecraft.gui.modwarning.message3=Das Laden dieses Replays kann zu Fehlern oder einem Absturz führen.
+scenecraft.gui.modwarning.name=Mod-Name:
+scenecraft.gui.modwarning.id=Mod-ID:
 scenecraft.gui.modwarning.missing=Fehlende Mods
-scenecraft.gui.modwarning.version=Verschiedene Mod Versionen
+scenecraft.gui.modwarning.version=Unterschiedliche Mod-Versionen
 scenecraft.gui.modwarning.version.expected=Erwartet
 scenecraft.gui.modwarning.version.found=Gefunden
+
+#Advanced Screenshots Gui
+scenecraft.gui.advancedscreenshots.title=Screenshot-Einstellungen
+scenecraft.gui.advancedscreenshots.create=Screenshot aufnehmen
+scenecraft.gui.advancedscreenshots.resolution=Auflösung
+
+# Screenshot Finished Gui
+scenecraft.gui.advancedscreenshots.finished.description=Du hast erfolgreich einen Screenshot erstellt!
+scenecraft.gui.advancedscreenshots.finished.description.360=Du hast erfolgreich einen 360°-Screenshot erstellt!
+scenecraft.gui.advancedscreenshots.finished.description.veer=Lade das Bild auf VeeR.tv hoch, um es in VR anzusehen, oder öffne es von deiner Festplatte.
+scenecraft.gui.advancedscreenshots.finished.upload.veer=Auf VeeR.tv hochladen
+scenecraft.gui.advancedscreenshots.finished.showfile=Datei auf der Festplatte anzeigen
