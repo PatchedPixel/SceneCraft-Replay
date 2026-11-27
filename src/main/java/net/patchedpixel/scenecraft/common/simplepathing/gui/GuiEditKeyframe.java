@@ -22,7 +22,7 @@ import net.patchedpixel.scenecraft.common.simplepathing.SPTimeline;
 import net.patchedpixel.scenecraft.common.simplepathing.SPTimeline.SPPath;
 import net.patchedpixel.scenecraft.common.simplepathing.Setting;
 import net.patchedpixel.scenecraft.common.simplepathing.properties.ExplicitInterpolationProperty;
-import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.screen.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import net.patchedpixel.scenecraft.common.flamex.widget.NumberBox;
 import org.apache.logging.log4j.LogManager;

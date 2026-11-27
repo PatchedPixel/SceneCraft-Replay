@@ -1,10 +1,10 @@
-package net.patchedpixel.scenecraft.common.flamex.popup;
+package net.patchedpixel.scenecraft.common.flamex.screen.popup;
 
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
-import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.screen.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import net.patchedpixel.scenecraft.common.flamex.widget.TextListWidget;
 

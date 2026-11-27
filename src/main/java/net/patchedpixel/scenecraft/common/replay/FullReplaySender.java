@@ -20,7 +20,7 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.minecraft.client.Minecraft;
-import net.patchedpixel.scenecraft.common.flamex.popup.MessageScreen;
+import net.patchedpixel.scenecraft.common.flamex.screen.popup.MessageScreen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.network.protocol.game.*;
 import net.minecraft.world.entity.Entity;

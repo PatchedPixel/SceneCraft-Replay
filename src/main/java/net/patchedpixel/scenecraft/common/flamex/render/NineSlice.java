@@ -1,20 +1,20 @@
-package net.patchedpixel.scenecraft.common.flamex.widget;
+package net.patchedpixel.scenecraft.common.flamex.render;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
-import net.patchedpixel.scenecraft.common.flamex.FlameXConstants;
+import net.patchedpixel.scenecraft.common.flamex.FlameXTheme;
 
 public final class NineSlice {
     private NineSlice() {}
 
     public static void panel(GuiGraphics graphics, int x, int y, int width, int height) {
-        ResourceLocation tex = FlameXConstants.GUI_TEXTURE;
+        ResourceLocation tex = FlameXTheme.GUI_TEXTURE;
 
-        int b = FlameXConstants.PANEL_BORDER;
-        int u = FlameXConstants.PANEL_U;
-        int v = FlameXConstants.PANEL_V;
-        int far = FlameXConstants.PANEL_SIZE - b;
-        int mid = FlameXConstants.PANEL_SIZE / 2;
+        int b = FlameXTheme.Panel.BORDER;
+        int u = FlameXTheme.Panel.U;
+        int v = FlameXTheme.Panel.V;
+        int far = FlameXTheme.Panel.SIZE - b;
+        int mid = FlameXTheme.Panel.SIZE / 2;
         int innerW = width - 2 * b;
         int innerH = height - 2 * b;
 
@@ -31,7 +31,7 @@ public final class NineSlice {
 
     public static void draw(GuiGraphics graphics, int ox, int oy, int width, int height, int u, int v, int uWidth, int vHeight,
                             int topBorder, int bottomBorder, int leftBorder, int rightBorder) {
-        draw(graphics, FlameXConstants.GUI_TEXTURE, ox, oy, width, height, u, v, uWidth, vHeight, topBorder, bottomBorder, leftBorder, rightBorder);
+        draw(graphics, FlameXTheme.GUI_TEXTURE, ox, oy, width, height, u, v, uWidth, vHeight, topBorder, bottomBorder, leftBorder, rightBorder);
     }
 
     private static void draw(GuiGraphics graphics, ResourceLocation tex, int ox, int oy, int width, int height, int u, int v, int uWidth, int vHeight,

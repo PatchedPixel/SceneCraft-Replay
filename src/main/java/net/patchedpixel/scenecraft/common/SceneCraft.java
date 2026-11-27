@@ -51,7 +51,7 @@ public class SceneCraft implements net.patchedpixel.scenecraft.common.core.Modul
     { instance = this; }
     public static SceneCraft instance;
 
-    private final List<net.patchedpixel.scenecraft.common.core.Module> modules = new ArrayList<>();
+    private final List<Module> modules = new ArrayList<>();
 
     private final GuiBackgroundProcesses backgroundProcesses = new GuiBackgroundProcesses();
     public final ReplayFoldersService folders = new ReplayFoldersService(settingsRegistry);

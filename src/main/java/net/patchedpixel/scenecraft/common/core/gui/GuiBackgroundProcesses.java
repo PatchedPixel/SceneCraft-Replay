@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
 import net.patchedpixel.scenecraft.common.flamex.event.EventRegistrations;
 import net.patchedpixel.scenecraft.common.flamex.event.callbacks.PostRenderScreenCallback;
-import net.patchedpixel.scenecraft.common.flamex.widget.NineSlice;
+import net.patchedpixel.scenecraft.common.flamex.render.NineSlice;
 import net.patchedpixel.scenecraft.common.flamex.widget.ProgressBarWidget;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 

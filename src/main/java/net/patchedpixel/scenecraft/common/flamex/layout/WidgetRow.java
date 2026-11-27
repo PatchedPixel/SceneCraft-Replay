@@ -1,4 +1,4 @@
-package net.patchedpixel.scenecraft.common.flamex.widget;
+package net.patchedpixel.scenecraft.common.flamex.layout;
 
 import net.minecraft.client.gui.components.AbstractWidget;
 

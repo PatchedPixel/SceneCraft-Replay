@@ -24,11 +24,11 @@ import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;
 import net.patchedpixel.scenecraft.common.replay.Setting;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayFile;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayMetaData;
-import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
-import net.patchedpixel.scenecraft.common.flamex.popup.MessageScreen;
-import net.patchedpixel.scenecraft.common.flamex.popup.PopupScreen;
+import net.patchedpixel.scenecraft.common.flamex.screen.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.screen.popup.MessageScreen;
+import net.patchedpixel.scenecraft.common.flamex.screen.popup.PopupScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
-import net.patchedpixel.scenecraft.common.flamex.FlameXConstants;
+import net.patchedpixel.scenecraft.common.flamex.FlameXTheme;
 import net.patchedpixel.scenecraft.common.flamex.util.Image;
 import net.patchedpixel.scenecraft.common.flamex.widget.SpriteButton;
 import net.patchedpixel.scenecraft.common.utils.Utils;
@@ -354,7 +354,7 @@ public class GuiReplayViewer extends FlameableScreen {
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         super.render(graphics, mouseX, mouseY, partialTicks);
-        graphics.drawString(font, title, width / 2 - font.width(title) / 2, FlameXConstants.TITLE_Y, FlameXConstants.TITLE_COLOR | 0xFF000000, false);
+        graphics.drawString(font, title, width / 2 - font.width(title) / 2, FlameXTheme.Text.TITLE_Y, FlameXTheme.Text.TITLE_COLOR | 0xFF000000, false);
         String filter = list.filter;
         if(!filter.isEmpty()) {
             var font = MCVer.getFontRenderer();

@@ -1,4 +1,4 @@
-package net.patchedpixel.scenecraft.common.flamex.components;
+package net.patchedpixel.scenecraft.common.flamex.screen;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.StringWidget;
@@ -7,9 +7,10 @@ import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
-import net.patchedpixel.scenecraft.common.flamex.FlameXConstants;
+import net.patchedpixel.scenecraft.common.flamex.FlameXTheme;
+import net.patchedpixel.scenecraft.common.flamex.layout.FlameableLayout;
 import net.patchedpixel.scenecraft.common.flamex.widget.CheckboxWidget;
-import net.patchedpixel.scenecraft.common.flamex.widget.NineSlice;
+import net.patchedpixel.scenecraft.common.flamex.render.NineSlice;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
 import javax.annotation.Nullable;
@@ -71,8 +72,8 @@ public abstract class FlameableScreen extends Screen {
         build(root);
         if(panel) {
             root.visitWidgets(widget -> {
-                if(widget instanceof StringWidget label) label.setColor(FlameXConstants.TEXT_ON_PANEL);
-                if(widget instanceof CheckboxWidget checkbox) checkbox.setLabelColor(FlameXConstants.TEXT_ON_PANEL | 0xFF000000);
+                if(widget instanceof StringWidget label) label.setColor(FlameXTheme.Text.ON_PANEL);
+                if(widget instanceof CheckboxWidget checkbox) checkbox.setLabelColor(FlameXTheme.Text.ON_PANEL | 0xFF000000);
             });
         }
 
@@ -94,10 +95,10 @@ public abstract class FlameableScreen extends Screen {
             }
             graphics.pose().pushPose();
             graphics.pose().translate(0, 0, 10);
-            if(dim) graphics.fill(0, 0, this.width, this.height, FlameXConstants.DIM);
+            if(dim) graphics.fill(0, 0, this.width, this.height, FlameXTheme.Overlay.DIM);
             int outer = outerPadding();
-            NineSlice.panel(graphics, root.getX() - FlameXConstants.PANEL_PADDING, root.getY() + outer - FlameXConstants.PANEL_PADDING,
-                    root.getWidth() + FlameXConstants.PANEL_PADDING * 2, root.getHeight() - outer * 2 + FlameXConstants.PANEL_PADDING * 2);
+            NineSlice.panel(graphics, root.getX() - FlameXTheme.Panel.PADDING, root.getY() + outer - FlameXTheme.Panel.PADDING,
+                    root.getWidth() + FlameXTheme.Panel.PADDING * 2, root.getHeight() - outer * 2 + FlameXTheme.Panel.PADDING * 2);
         } else switch(background) {
             case DIRT -> this.renderDirtBackground(graphics);
             case DEFAULT -> this.renderBackground(graphics);
@@ -105,7 +106,7 @@ public abstract class FlameableScreen extends Screen {
         }
 
         if(drawTitle && !panel) {
-            graphics.drawString(this.font, this.title, this.width / 2 - this.font.width(this.title) / 2, FlameXConstants.TITLE_Y, FlameXConstants.TITLE_COLOR | 0xFF000000, false);
+            graphics.drawString(this.font, this.title, this.width / 2 - this.font.width(this.title) / 2, FlameXTheme.Text.TITLE_Y, FlameXTheme.Text.TITLE_COLOR | 0xFF000000, false);
         }
 
         super.render(graphics, mouseX, mouseY, partialTicks);

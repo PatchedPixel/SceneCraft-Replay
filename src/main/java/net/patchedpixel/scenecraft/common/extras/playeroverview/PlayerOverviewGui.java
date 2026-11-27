@@ -16,7 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelPart;
 import net.patchedpixel.scenecraft.common.replay.SceneCraftReplay;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
-import net.patchedpixel.scenecraft.common.flamex.FlameXConstants;
+import net.patchedpixel.scenecraft.common.flamex.FlameXTheme;
 import net.patchedpixel.scenecraft.common.flamex.widget.CheckboxWidget;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 import org.jetbrains.annotations.NotNull;
@@ -102,7 +102,7 @@ public class PlayerOverviewGui extends Screen {
     @Override
     public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         int left = panelLeft();
-        graphics.fill(left, PANEL_TOP, left + PANEL_WIDTH, PANEL_TOP + panelHeight(), FlameXConstants.DIM);
+        graphics.fill(left, PANEL_TOP, left + PANEL_WIDTH, PANEL_TOP + panelHeight(), FlameXTheme.Overlay.DIM);
         graphics.drawString(font, title, width / 2 - font.width(title) / 2, 10, 0xFFFFFFFF, false);
         graphics.drawString(font, Component.translatable("scenecraft.gui.playeroverview.spectate"),
                 left + 10, PANEL_TOP + 10, 0xFFFFFFFF, false);
@@ -240,10 +240,10 @@ public class PlayerOverviewGui extends Screen {
                 int barY = y + offset * h / contentHeight();
                 int barHeight = h * h / contentHeight();
 
-                graphics.fill(sx, y, sx + SLIDER_WIDTH, y + h, FlameXConstants.SLIDER_TRACK);
-                graphics.fill(sx, barY, sx + SLIDER_WIDTH, barY + barHeight, FlameXConstants.SLIDER_THUMB);
-                graphics.fill(sx + SLIDER_WIDTH - 1, barY, sx + SLIDER_WIDTH, barY + barHeight, FlameXConstants.SLIDER_SHADOW);
-                graphics.fill(sx, barY + barHeight - 1, sx + SLIDER_WIDTH, barY + barHeight, FlameXConstants.SLIDER_SHADOW);
+                graphics.fill(sx, y, sx + SLIDER_WIDTH, y + h, FlameXTheme.Slider.TRACK);
+                graphics.fill(sx, barY, sx + SLIDER_WIDTH, barY + barHeight, FlameXTheme.Slider.THUMB);
+                graphics.fill(sx + SLIDER_WIDTH - 1, barY, sx + SLIDER_WIDTH, barY + barHeight, FlameXTheme.Slider.SHADOW);
+                graphics.fill(sx, barY + barHeight - 1, sx + SLIDER_WIDTH, barY + barHeight, FlameXTheme.Slider.SHADOW);
             }
         }
 

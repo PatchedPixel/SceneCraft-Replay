@@ -5,7 +5,7 @@ import com.google.common.base.Throwables;
 import com.google.common.net.PercentEscaper;
 import net.patchedpixel.scenecraft.common.flamex.util.Image;
 import net.minecraft.CrashReport;
-import net.patchedpixel.scenecraft.common.flamex.popup.CrashReportScreen;
+import net.patchedpixel.scenecraft.common.flamex.screen.popup.CrashReportScreen;
 import net.minecraft.Util;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FilenameUtils;

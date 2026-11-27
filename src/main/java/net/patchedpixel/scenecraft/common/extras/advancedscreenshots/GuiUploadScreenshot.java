@@ -7,7 +7,7 @@ import net.patchedpixel.scenecraft.common.core.SettingsRegistry;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 import net.patchedpixel.scenecraft.common.extras.Setting;
 import net.patchedpixel.scenecraft.common.render.RenderSettings;
-import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.screen.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import net.patchedpixel.scenecraft.common.flamex.widget.CheckboxWidget;
 

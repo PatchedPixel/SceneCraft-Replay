@@ -7,7 +7,7 @@ import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.patchedpixel.scenecraft.common.scenestudio.data.Marker;
-import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.screen.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
 import net.patchedpixel.scenecraft.common.flamex.widget.NumberBox;
 

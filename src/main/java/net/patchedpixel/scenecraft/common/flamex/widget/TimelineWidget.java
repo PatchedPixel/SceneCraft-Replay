@@ -6,7 +6,8 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.CommonComponents;
-import net.patchedpixel.scenecraft.common.flamex.FlameXConstants;
+import net.patchedpixel.scenecraft.common.flamex.FlameXTheme;
+import net.patchedpixel.scenecraft.common.flamex.render.NineSlice;
 import org.jetbrains.annotations.NotNull;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
@@ -82,10 +83,10 @@ public class TimelineWidget extends AbstractWidget {
         graphics.flush();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        graphics.blit(FlameXConstants.GUI_TEXTURE, cursorX - 2, getY() + BORDER_TOP - 1, 64, 0, 5, 4);
+        graphics.blit(FlameXTheme.GUI_TEXTURE, cursorX - 2, getY() + BORDER_TOP - 1, 64, 0, 5, 4);
         for(int y = BORDER_TOP - 1; y < getHeight() - BORDER_BOTTOM; y += 11) {
             int segH = Math.min(11, getHeight() - BORDER_BOTTOM - y);
-            graphics.blit(FlameXConstants.GUI_TEXTURE, cursorX - 2, getY() + y, 64, 4, 5, segH);
+            graphics.blit(FlameXTheme.GUI_TEXTURE, cursorX - 2, getY() + y, 64, 4, 5, segH);
         }
 
         RenderSystem.disableBlend();

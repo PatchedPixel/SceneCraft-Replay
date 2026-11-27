@@ -4,6 +4,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.CommonComponents;
+import net.patchedpixel.scenecraft.common.flamex.render.NineSlice;
 import org.jetbrains.annotations.NotNull;
 
 public class ScrollbarWidget extends AbstractWidget {

@@ -6,7 +6,7 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
-import net.patchedpixel.scenecraft.common.flamex.FlameXConstants;
+import net.patchedpixel.scenecraft.common.flamex.FlameXTheme;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -160,10 +160,10 @@ public class TextListWidget extends AbstractWidget {
             int sx = sliderX();
             int barY = y + offset * height / contentHeight();
             int barHeight = height * height / contentHeight();
-            graphics.fill(sx, y, sx + SLIDER_WIDTH, y + height, FlameXConstants.SLIDER_TRACK);
-            graphics.fill(sx, barY, sx + SLIDER_WIDTH, barY + barHeight, FlameXConstants.SLIDER_THUMB);
-            graphics.fill(sx + SLIDER_WIDTH - 1, barY, sx + SLIDER_WIDTH, barY + barHeight, FlameXConstants.SLIDER_SHADOW);
-            graphics.fill(sx, barY + barHeight - 1, sx + SLIDER_WIDTH, barY + barHeight, FlameXConstants.SLIDER_SHADOW);
+            graphics.fill(sx, y, sx + SLIDER_WIDTH, y + height, FlameXTheme.Slider.TRACK);
+            graphics.fill(sx, barY, sx + SLIDER_WIDTH, barY + barHeight, FlameXTheme.Slider.THUMB);
+            graphics.fill(sx + SLIDER_WIDTH - 1, barY, sx + SLIDER_WIDTH, barY + barHeight, FlameXTheme.Slider.SHADOW);
+            graphics.fill(sx, barY + barHeight - 1, sx + SLIDER_WIDTH, barY + barHeight, FlameXTheme.Slider.SHADOW);
         }
     }
 

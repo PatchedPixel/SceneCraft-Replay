@@ -1,4 +1,4 @@
-package net.patchedpixel.scenecraft.common.flamex.popup;
+package net.patchedpixel.scenecraft.common.flamex.screen.popup;
 
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;

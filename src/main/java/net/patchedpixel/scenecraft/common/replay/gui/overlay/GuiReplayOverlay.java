@@ -20,7 +20,7 @@ import net.patchedpixel.scenecraft.common.flamex.event.input.KeyInput;
 import net.patchedpixel.scenecraft.common.flamex.util.ScreenExt;
 import net.patchedpixel.scenecraft.common.flamex.widget.SpriteButton;
 import net.patchedpixel.scenecraft.common.flamex.widget.StepSlider;
-import net.patchedpixel.scenecraft.common.flamex.widget.WidgetRow;
+import net.patchedpixel.scenecraft.common.flamex.layout.WidgetRow;
 import net.patchedpixel.scenecraft.common.core.versions.MCVer;
 
 import java.util.ArrayList;

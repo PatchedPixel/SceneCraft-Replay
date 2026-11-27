@@ -9,8 +9,8 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.patchedpixel.scenecraft.common.flamex.components.FlameableLayout;
-import net.patchedpixel.scenecraft.common.flamex.popup.MessageScreen;
+import net.patchedpixel.scenecraft.common.flamex.layout.FlameableLayout;
+import net.patchedpixel.scenecraft.common.flamex.screen.popup.MessageScreen;
 import net.patchedpixel.scenecraft.common.flamex.widget.CheckboxWidget;
 import net.patchedpixel.scenecraft.common.flamex.widget.DropdownWidget;
 import net.patchedpixel.scenecraft.common.flamex.widget.LabelWidget;
@@ -101,6 +101,7 @@ public final class FlameX {
         for(T value : values) {
             widest = Math.max(widest, MCVer.getFontRenderer().width(toString.apply(value)));
         }
+
         return dropdown(values, initial, toString, 11 + widest + MCVer.getFontRenderer().lineHeight, onSelect);
     }
 

@@ -1,4 +1,4 @@
-package net.patchedpixel.scenecraft.common.flamex.components;
+package net.patchedpixel.scenecraft.common.flamex.layout;
 
 import net.minecraft.client.gui.layouts.Layout;
 import net.minecraft.client.gui.layouts.LayoutElement;

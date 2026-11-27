@@ -1,4 +1,4 @@
-package net.patchedpixel.scenecraft.common.flamex.popup;
+package net.patchedpixel.scenecraft.common.flamex.screen.popup;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.gui.components.Button;

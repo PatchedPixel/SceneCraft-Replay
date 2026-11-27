@@ -84,6 +84,7 @@ public class MCVer {
         if(InputConstants.isKeyDown(handle, InputConstants.KEY_LWIN) || InputConstants.isKeyDown(handle, InputConstants.KEY_RWIN)) {
             modifiers |= GLFW.GLFW_MOD_SUPER;
         }
+
         return modifiers;
     }
 
@@ -91,10 +92,7 @@ public class MCVer {
         return Minecraft.getInstance();
     }
 
-    public static void addButton(
-            Screen screen,
-            Button button
-    ) {
+    public static void addButton(Screen screen, Button button) {
         screen.addRenderableWidget(button);
     }
 
@@ -178,6 +176,7 @@ public class MCVer {
                 return Optional.of(b);
             }
         }
+
         return Optional.empty();
     }
 

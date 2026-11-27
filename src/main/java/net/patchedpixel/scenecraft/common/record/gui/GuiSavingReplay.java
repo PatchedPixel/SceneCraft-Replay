@@ -12,9 +12,9 @@ import net.patchedpixel.scenecraft.common.core.gui.GuiBackgroundProcesses;
 import net.patchedpixel.scenecraft.common.record.Setting;
 import net.patchedpixel.scenecraft.common.replay.gui.screen.GuiReplayViewer;
 import net.patchedpixel.scenecraft.common.scenestudio.replay.ReplayMetaData;
-import net.patchedpixel.scenecraft.common.flamex.components.FlameableScreen;
+import net.patchedpixel.scenecraft.common.flamex.screen.FlameableScreen;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
-import net.patchedpixel.scenecraft.common.flamex.FlameXConstants;
+import net.patchedpixel.scenecraft.common.flamex.FlameXTheme;
 import net.patchedpixel.scenecraft.common.flamex.widget.ProgressBarWidget;
 import net.patchedpixel.scenecraft.common.utils.Utils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -81,12 +81,12 @@ public class GuiSavingReplay {
 
         @Override
         protected int rootX() {
-            return width - 5 - FlameXConstants.PANEL_PADDING - root.getWidth();
+            return width - 5 - FlameXTheme.Panel.PADDING - root.getWidth();
         }
 
         @Override
         protected int rootY() {
-            return 5 + FlameXConstants.PANEL_PADDING - outerPadding();
+            return 5 + FlameXTheme.Panel.PADDING - outerPadding();
         }
 
         @Override

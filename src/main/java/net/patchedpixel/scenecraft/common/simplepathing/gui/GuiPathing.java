@@ -32,7 +32,7 @@ import net.patchedpixel.scenecraft.common.simplepathing.SPTimeline.SPPath;
 import net.patchedpixel.scenecraft.common.simplepathing.SceneCraftSimplePathing;
 import net.patchedpixel.scenecraft.common.simplepathing.Setting;
 import net.patchedpixel.scenecraft.common.flamex.FlameX;
-import net.patchedpixel.scenecraft.common.flamex.popup.ProgressPopup;
+import net.patchedpixel.scenecraft.common.flamex.screen.popup.ProgressPopup;
 import net.patchedpixel.scenecraft.common.flamex.widget.ScrollbarWidget;
 import net.patchedpixel.scenecraft.common.flamex.widget.SpriteButton;
 import net.patchedpixel.scenecraft.common.flamex.widget.TimelineTimeWidget;

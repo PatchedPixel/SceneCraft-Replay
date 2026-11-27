@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import net.patchedpixel.scenecraft.common.flamex.screen.popup.PleaseWaitScreen;
 import net.patchedpixel.scenecraft.common.utils.Restrictions;
 import net.patchedpixel.scenecraft.common.utils.Utils;
 import net.patchedpixel.scenecraft.common.replay.camera.CameraEntity;
@@ -24,7 +25,7 @@ import net.patchedpixel.scenecraft.platform.RegistrySnapshots;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientHandshakePacketListenerImpl;
 import net.minecraft.CrashReport;
-import net.patchedpixel.scenecraft.common.flamex.popup.ProgressPopup;
+import net.patchedpixel.scenecraft.common.flamex.screen.popup.ProgressPopup;
 import net.minecraft.Util;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -436,7 +437,7 @@ public class ReplayHandler {
                 }
             } else { // We either have to restart the replay or send a significant amount of packets
                 // Render our please-wait-screen
-                net.minecraft.client.gui.screens.Screen guiScreen = new net.patchedpixel.scenecraft.common.flamex.popup.PleaseWaitScreen();
+                net.minecraft.client.gui.screens.Screen guiScreen = new PleaseWaitScreen();
 
                 // Make sure that the replay sender changes into sync mode
                 replaySender.setSyncModeAndWait();
