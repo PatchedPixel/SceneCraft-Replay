@@ -70,7 +70,7 @@ public class Utils {
     static {
         Image thumbnail;
         try {
-            thumbnail = Image.read(getResourceAsStream("/assets/scenecraft/logo.png"));
+            thumbnail = Image.read(getResourceAsStream("/assets/scenecraft/unknown.png"));
         } catch(Exception e) {
             thumbnail = new Image(1, 1);
             e.printStackTrace();

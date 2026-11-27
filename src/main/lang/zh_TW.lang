@@ -1,20 +1,20 @@
 scenecraft.title=SceneCraft
 
 #All of the chat messages
-scenecraft.chat.recordingstarted=開始錄製
-scenecraft.chat.recordingfailed=無法啟動錄製
+scenecraft.chat.recordingstarted=已開始錄製
+scenecraft.chat.recordingfailed=無法開始錄製
 
-scenecraft.chat.savingthumb=儲存縮圖...
+scenecraft.chat.savingthumb=正在儲存縮圖...
 scenecraft.chat.savedthumb=縮圖已成功儲存
-scenecraft.chat.failedthumb=縮圖無法保存
+scenecraft.chat.failedthumb=無法儲存縮圖
 
-scenecraft.chat.addedmarker=已增加事件標籤
+scenecraft.chat.addedmarker=已新增事件標記
 
 #Chat messages displayed in Replay Viewer
-scenecraft.chat.morekeyframes=至少需要兩個位置關鍵影格以及兩個時間關鍵影格
-scenecraft.chat.pathstarted=啟動鏡頭路徑
-scenecraft.chat.pathfinished=完成鏡頭路徑
-scenecraft.chat.pathinterrupted=取消鏡頭路徑
+scenecraft.chat.morekeyframes=至少需要 2 個位置關鍵影格和 2 個時間關鍵影格
+scenecraft.chat.pathstarted=攝影機路徑已開始
+scenecraft.chat.pathfinished=攝影機路徑已結束
+scenecraft.chat.pathinterrupted=攝影機路徑已取消
 
 #Common GUI-related strings
 scenecraft.gui.cancel=取消
@@ -24,201 +24,323 @@ scenecraft.gui.save=儲存
 scenecraft.gui.rename=重新命名
 scenecraft.gui.remove=移除
 scenecraft.gui.delete=刪除
-scenecraft.gui.record=記錄
-scenecraft.gui.speed=速率
-scenecraft.gui.pleasewait=請稍後
-scenecraft.gui.render=給予
-scenecraft.gui.iphidden=伺服器IP隱藏
-scenecraft.gui.overwrite=儲存
-scenecraft.gui.saveas=另存為 ...
+scenecraft.gui.record=錄製中
+scenecraft.gui.paused=已暫停
+scenecraft.gui.speed=速度
+scenecraft.gui.pleasewait=請稍候
+scenecraft.gui.render=渲染
+scenecraft.gui.iphidden=已隱藏伺服器 IP
+scenecraft.gui.overwrite=覆寫
+scenecraft.gui.saveas=另存為...
 scenecraft.gui.done=完成
 scenecraft.gui.close=關閉
 scenecraft.gui.notagain=不再顯示
+scenecraft.gui.edit=編輯
+scenecraft.gui.copy=複製
+scenecraft.gui.paste=貼上
 
-scenecraft.gui.renderdonetitle=已渲染影片
-scenecraft.gui.openfolder=打開影片文件夾
-scenecraft.gui.youtubeupload=上傳至 Youtube
-scenecraft.gui.renderdone1=影片已渲染成功。
+scenecraft.gui.record.resume=繼續錄製
+scenecraft.gui.record.pause=暫停錄製
+scenecraft.gui.record.stop=停止錄製
+scenecraft.gui.record.start=開始錄製
+
+scenecraft.gui.renderdonetitle=影片渲染完成
+scenecraft.gui.openfolder=開啟影片資料夾
+scenecraft.gui.youtubeupload=上傳至 YouTube
+scenecraft.gui.renderdone1=你的影片已成功渲染。
+scenecraft.gui.renderdone2=接下來你想做什麼？
 scenecraft.gui.videotitle=標題
-scenecraft.gui.videodescription=描述
+scenecraft.gui.videodescription=說明
+scenecraft.gui.videotags=標籤,標籤,標籤
 scenecraft.gui.videothumbnail=影片縮圖
 scenecraft.gui.videovisibility.private=私人
 scenecraft.gui.videovisibility.unlisted=不公開
 scenecraft.gui.videovisibility.public=公開
 scenecraft.gui.ytuploadprogress.auth=[1/4] 授權
-scenecraft.gui.ytuploadprogress.prepare_video=[2/4] 影片預備中 : %%d%%%%
-scenecraft.gui.ytuploadprogress.upload=[3/4] 上傳中 : %%d%%%%
-scenecraft.gui.ytuploadprogress.cleanup=[4/4] 清除
-scenecraft.gui.ytuploadprogress.done=完成: %s
-scenecraft.gui.titleempty=標題不能填空
+scenecraft.gui.ytuploadprogress.prepare_video=[2/4] 正在準備影片：%%d%%%%
+scenecraft.gui.ytuploadprogress.upload=[3/4] 正在上傳：%%d%%%%
+scenecraft.gui.ytuploadprogress.cleanup=[4/4] 清理
+scenecraft.gui.ytuploadprogress.done=完成：%s
+scenecraft.gui.titleempty=標題不能為空
 scenecraft.gui.videothumbnailtoolarge=縮圖大小超過 2MB
-scenecraft.gui.videothumbnailformat=縮圖必須爲 JPEG 或 PNG 格式
+scenecraft.gui.videothumbnailformat=縮圖必須是 JPEG 或 PNG 格式
 
-scenecraft.gui.hours=小時
-scenecraft.gui.minutes=分鐘
+scenecraft.gui.hours=時
+scenecraft.gui.minutes=分
 scenecraft.gui.seconds=秒
 scenecraft.gui.milliseconds=毫秒
 
-scenecraft.gui.pitch=間距
-scenecraft.gui.yaw=偏擺
-scenecraft.gui.roll=滾動
+scenecraft.gui.pitch=俯仰
+scenecraft.gui.yaw=偏航
+scenecraft.gui.roll=翻滾
 
-scenecraft.gui.camera=鏡頭
+scenecraft.gui.camera=攝影機
 scenecraft.gui.position=位置
 
-scenecraft.gui.unknownerror=一個未知錯誤
+scenecraft.gui.unknownerror=發生未知錯誤
 
-scenecraft.gui.exit=退出Replay
+scenecraft.gui.exit=離開重播
 
 scenecraft.gui.settings=設定
 
-scenecraft.gui.keyframerepo.delete=你真的要刪除這些關鍵幀格嗎?
-scenecraft.gui.keyframerepo.overwrite=你真的要覆蓋這些關鍵幀格嗎?
+scenecraft.gui.keyframerepo.delete=確定要刪除這些關鍵影格嗎？
+scenecraft.gui.keyframerepo.overwrite=確定要覆寫這些關鍵影格嗎？
 
-scenecraft.gui.restorereplay1=似乎 Minecraft 並沒有正常關閉。
-scenecraft.gui.restorereplay2=Replay "%1$s" 沒有被正確儲存。
-scenecraft.gui.restorereplay3=要否將檔案復原?
+scenecraft.gui.restorereplay1=Minecraft 似乎沒有正常結束。
+scenecraft.gui.restorereplay2=重播「%1$s」沒有正確儲存。
+scenecraft.gui.restorereplay3=要嘗試復原嗎？
 
-scenecraft.gui.loadentitytracker=正在載入實體位置 : %%d%%%%
+scenecraft.gui.loadentitytracker=正在載入實體位置：%%d%%%%
+scenecraft.gui.loadquickmode=正在載入快速模式：%%d%%%%
+scenecraft.gui.noquickmode=快速模式僅適用於 Minecraft %1$s 及更新版本
+scenecraft.gui.minimalmode.unsupported=你目前的 Minecraft 版本不支援此功能。
+scenecraft.gui.minimalmode.supportedversion=（你的 SceneCraft 版本只支援 Minecraft %1$s）
 
 #Only change these if it's neccessary
-scenecraft.gui.replayviewer=Replay播放器
+scenecraft.gui.replayviewer=重播檢視器
 
 #Replay Viewer GUI
-scenecraft.gui.viewer.rename.name=Replay 名稱
-scenecraft.gui.viewer.replayfolder=打開 Replay 檔案.
+scenecraft.gui.viewer.rename.name=重播名稱
+scenecraft.gui.viewer.replayfolder=開啟重播資料夾...
+scenecraft.gui.viewer.bulkrender=渲染 %1$d 部影片
 
-scenecraft.gui.viewer.delete.linea=你確定要刪除此 Replay?
-scenecraft.gui.viewer.delete.failed1=你的操作系統不允許我們刪除這個 Replay。我們
-scenecraft.gui.viewer.delete.failed2=對此並無辦法。煩請自行操作。
-scenecraft.gui.viewer.delete.lineb=%1$s 將永遠消失! (很長一段時間!)
+scenecraft.gui.viewer.delete.linea=確定要刪除這個重播嗎？
+scenecraft.gui.viewer.delete.failed1=你的作業系統不允許我們刪除這個重播。
+scenecraft.gui.viewer.delete.failed2=我們無能為力，你必須自己手動刪除。
+scenecraft.gui.viewer.delete.lineb=「%1$s」將永遠消失！（很久很久喔！）
+
+#Replay Editor UI 2.0 (marker based UI)
+scenecraft.gui.edit.apply=套用
+scenecraft.gui.edit.split=插入分割點
+scenecraft.gui.edit.split.tooltip=在標記的位置將重播分割為多個重播
+scenecraft.gui.edit.cut.start=插入剪輯起點
+scenecraft.gui.edit.cut.end=結束剪輯
+scenecraft.gui.edit.cut.tooltip=剪下（移除）重播中的一段
 
 #Cancel Replay GUI
 scenecraft.gui.cancelrender.title=取消渲染
-scenecraft.gui.cancelrender.message=你確定要取消渲染?
+scenecraft.gui.cancelrender.message=確定要取消目前的渲染程序嗎？
 #Saving Replay GUI
-scenecraft.gui.replaysaving.title=儲存Replay檔案...
+scenecraft.gui.replaysaving.title=正在儲存重播檔案...
 
 #Player Overview GUI
-scenecraft.gui.playeroverview.visible=可見的
+scenecraft.gui.playeroverview.visible=可見
 scenecraft.gui.playeroverview.hideall=全部隱藏
 scenecraft.gui.playeroverview.showall=全部顯示
-scenecraft.gui.playeroverview.spectate=旁觀者
-scenecraft.gui.playeroverview.remembersettings=持續影藏玩家
-scenecraft.gui.playeroverview.remembersettings.description=儲存玩家可見的在 Replay 檔案
+scenecraft.gui.playeroverview.spectate=旁觀玩家
+scenecraft.gui.playeroverview.remembersettings=記住隱藏的玩家
+scenecraft.gui.playeroverview.remembersettings.description=將玩家的可見狀態儲存於重播檔案中
 
 #SceneCraft Settings GUI
-scenecraft.gui.settings.title=Replay 模組設定
+scenecraft.gui.settings.title=SceneCraft 設定
+scenecraft.gui.settings.default=預設
 
 scenecraft.gui.settings.notifications=啟用通知
-scenecraft.gui.settings.recordserver=記錄伺服器
-scenecraft.gui.settings.recordsingleplayer=記錄單人
-scenecraft.gui.settings.indicator=錄製指示燈
+scenecraft.gui.settings.recordserver=錄製伺服器
+scenecraft.gui.settings.recordsingleplayer=錄製單人遊戲
+scenecraft.gui.settings.indicator=錄製指示器
 scenecraft.gui.settings.pathpreview=顯示路徑預覽
+scenecraft.gui.settings.camera=攝影機
 scenecraft.gui.settings.showchat=顯示聊天
+scenecraft.gui.settings.interpolator=預設內插器
+scenecraft.gui.settings.autostartrecording=自動錄製
+scenecraft.gui.settings.rename_recording_dialog=重新命名對話框
+scenecraft.gui.settings.fullbrightness=最大亮度
+scenecraft.gui.settings.fullbrightness.gamma=Gamma
+scenecraft.gui.settings.fullbrightness.nightvision=夜視
+scenecraft.gui.settings.fullbrightness.both=兩者
 
 #SceneCraft Keybindings
-scenecraft.input.lighting=切換照明
-scenecraft.input.thumbnail=拍攝縮圖
-scenecraft.input.playeroverview=玩家簡介
+scenecraft.input.lighting=切換光照
+scenecraft.input.thumbnail=擷取縮圖
+scenecraft.input.playeroverview=玩家總覽
 scenecraft.input.clearkeyframes=清除關鍵影格
 scenecraft.input.synctimeline=同步時間軸
-scenecraft.input.keyframerepository=打開預設關鍵影格
+scenecraft.input.keyframerepository=開啟關鍵影格預設集
 scenecraft.input.rollclockwise=順時針翻滾
 scenecraft.input.rollcounterclockwise=逆時針翻滾
-scenecraft.input.resettilt=重置鏡頭傾斜
-scenecraft.input.playpause=播放/暫停 Replay
-scenecraft.input.marker=新增事件標籤
+scenecraft.input.resettilt=重設攝影機傾斜
+scenecraft.input.playpause=播放/暫停重播
+scenecraft.input.marker=新增事件標記
 scenecraft.input.pathpreview=切換路徑預覽
 scenecraft.input.settings=SceneCraft 設定
+scenecraft.input.quickmode=快速模式
+scenecraft.input.positionkeyframe=位置/旁觀者關鍵影格
+scenecraft.input.positiononlykeyframe=位置關鍵影格
+scenecraft.input.timekeyframe=時間關鍵影格
+scenecraft.input.bothkeyframes=位置/旁觀者 + 時間關鍵影格
+
+# CameraControllers
+scenecraft.camera.classic=經典
+scenecraft.camera.vanilla=類原版
 
 #Keyframe Presets GUI
-scenecraft.gui.keyframerepository.title=關鍵影格儲存庫
+scenecraft.gui.keyframerepository.title=關鍵影格資料庫
 
 #Edit Keyframe GUI
 scenecraft.gui.editkeyframe.title.pos=編輯位置關鍵影格
 scenecraft.gui.editkeyframe.title.time=編輯時間關鍵影格
-scenecraft.gui.editkeyframe.title.marker=編輯事件標籤
-scenecraft.gui.editkeyframe.title.spec=編輯觀眾關鍵影格
-scenecraft.gui.editkeyframe.xpos=X位置
-scenecraft.gui.editkeyframe.ypos=Y位置
-scenecraft.gui.editkeyframe.zpos=Z位置
-scenecraft.gui.editkeyframe.campitch=鏡頭間距
-scenecraft.gui.editkeyframe.camyaw=鏡頭偏航
-scenecraft.gui.editkeyframe.camroll=鏡頭翻轉
+scenecraft.gui.editkeyframe.title.marker=編輯事件標記
+scenecraft.gui.editkeyframe.title.spec=編輯旁觀者關鍵影格
+scenecraft.gui.editkeyframe.xpos=X 位置
+scenecraft.gui.editkeyframe.ypos=Y 位置
+scenecraft.gui.editkeyframe.zpos=Z 位置
+scenecraft.gui.editkeyframe.campitch=攝影機俯仰
+scenecraft.gui.editkeyframe.camyaw=攝影機偏航
+scenecraft.gui.editkeyframe.camroll=攝影機翻滾
 scenecraft.gui.editkeyframe.timelineposition=時間軸位置
-scenecraft.gui.editkeyframe.markername=事件標籤名稱
-scenecraft.gui.editkeyframe.timestamp=時間指數
+scenecraft.gui.editkeyframe.markername=事件標記名稱
+scenecraft.gui.editkeyframe.timestamp=時間索引
 
-scenecraft.gui.rendersettings.renderer=渲染方法
+scenecraft.gui.editkeyframe.interpolator=內插器
+scenecraft.gui.editkeyframe.interpolator.default.name=預設內插器
+scenecraft.gui.editkeyframe.interpolator.default.desc=使用 SceneCraft 設定中指定的預設內插器。
+scenecraft.gui.editkeyframe.interpolator.catmullrom.name=Catmull-Rom 樣條內插器
+scenecraft.gui.editkeyframe.interpolator.catmullrom.desc=計算 Catmull-Rom 樣條曲線，可自訂 alpha 值，以精確控制攝影機路徑的緊繃度與平滑度。
+scenecraft.gui.editkeyframe.interpolator.catmullrom.alpha=Alpha：
+scenecraft.gui.editkeyframe.interpolator.cubic.name=三次樣條內插器
+scenecraft.gui.editkeyframe.interpolator.cubic.desc=為所有點計算三次方程式矩陣，讓攝影機路徑更平滑。
+scenecraft.gui.editkeyframe.interpolator.linear.name=線性內插器
+scenecraft.gui.editkeyframe.interpolator.linear.desc=在關鍵影格之間繪製直線。
+
+#Render Settings GUI
+scenecraft.gui.rendersettings.addtoqueue=加入佇列
+
+scenecraft.gui.rendersettings.renderer=渲染方式
 
 scenecraft.gui.rendersettings.renderer.default=預設渲染
-scenecraft.gui.rendersettings.renderer.stereoscopic=Stereoscopic渲染
-scenecraft.gui.rendersettings.renderer.cubic=Cubic渲染
-scenecraft.gui.rendersettings.renderer.equirectangular=Equirectangular渲染
+scenecraft.gui.rendersettings.renderer.stereoscopic=立體渲染
+scenecraft.gui.rendersettings.renderer.cubic=立方體渲染
+scenecraft.gui.rendersettings.renderer.equirectangular=等距長方投影渲染
+scenecraft.gui.rendersettings.renderer.ods=ODS 渲染
+scenecraft.gui.rendersettings.renderer.blend=Blender 匯出 [實驗性]
 
-scenecraft.gui.rendersettings.renderer.default.description=
-scenecraft.gui.rendersettings.renderer.stereoscopic.description=Renders the video as a stereoscopic (side-by-side) 3D movie, useable by different 3D technologies. The image for one eye is half the width of the video
-scenecraft.gui.rendersettings.renderer.cubic.description=Renders the video with a 360 degree panoramic view, using Cubic Projection. This is useable by several 360 degree video players (and the Oculus Rift), for example VR Player.
-scenecraft.gui.rendersettings.renderer.equirectangular.description=Renders the video with a 360 degree panoramic view, using Equirectangular Projection. This is useable by YouTube's new 360 degree video function, and several video players (and the Oculus Rift), for example VR Player.
+scenecraft.gui.rendersettings.renderer.default.description=以指定的解析度渲染影片。這是最快的渲染選項。
+scenecraft.gui.rendersettings.renderer.stereoscopic.description=將影片渲染為立體（左右並排）3D 影片，可搭配多種 3D 技術使用。單眼影像的寬度為影片寬度的一半。
+scenecraft.gui.rendersettings.renderer.cubic.description=使用立方體投影，將影片渲染為 360 度全景畫面。可用於多種 360 度影片播放器（以及 Oculus Rift），例如 VR Player。
+scenecraft.gui.rendersettings.renderer.equirectangular.description=使用等距長方投影，將影片渲染為 360 度全景畫面。可用於 YouTube 的 360 度影片功能，以及多種影片播放器（和 Oculus Rift），例如 VR Player。
+scenecraft.gui.rendersettings.renderer.ods.description=將影片渲染為立體 3D 的 360 度全景畫面，也稱為 VR 影片。可用於 YouTube 的 VR 影片功能。
+scenecraft.gui.rendersettings.renderer.blend.description=將可見的幾何體匯出為 .blend 檔案，可用 Blender 軟體開啟。高度實驗性：需要大量 RAM，已知問題不少，有時還會產生損毀的 Blender 檔案。
 
 scenecraft.gui.rendersettings.customresolution=影片解析度
-scenecraft.gui.rendersettings.customresolution.warning.yuv420=預設寬度與高度的值必為偶數
-scenecraft.gui.rendersettings.framerate=影片幀數
-scenecraft.gui.rendersettings.chromakey=彩度
-scenecraft.gui.rendersettings.nametags=渲染名稱標籤
+scenecraft.gui.rendersettings.customresolution.warning.yuv420=此預設集的寬度和高度必須是偶數
+scenecraft.gui.rendersettings.customresolution.warning.yuv420.cubic=此預設集的高度必須能被 6 整除
+scenecraft.gui.rendersettings.customresolution.warning.cubic.height=立方體渲染的高度必須能被 3 整除
+scenecraft.gui.rendersettings.bitrate=位元率
+scenecraft.gui.rendersettings.framerate=影片影格率
+scenecraft.gui.rendersettings.chromakey=色鍵去背
+scenecraft.gui.rendersettings.nametags=渲染名牌
+scenecraft.gui.rendersettings.includealpha=保留 Alpha 色版
 scenecraft.gui.rendersettings.outputfile=輸出檔案
+scenecraft.gui.rendersettings.sphericalFov=球面視野 (FOV)
+scenecraft.gui.rendersettings.sphericalmetadata=嵌入球面中繼資料
+scenecraft.gui.rendersettings.sphericalmetadata.error=球面中繼資料只能加入 MP4 格式的等距長方投影和 ODS 影片
+scenecraft.gui.rendersettings.depthmap=深度圖
+scenecraft.gui.rendersettings.depthmap.only_exr_or_png=深度圖匯出僅支援 OpenEXR 或 PNG 格式。
+scenecraft.gui.rendersettings.camerapath=匯出攝影機路徑
 
-scenecraft.gui.rendersettings.command=命令
-scenecraft.gui.rendersettings.arguments=命令行參數
-scenecraft.gui.rendersettings.ffmpeg.description=如果你是高級使用者，則你可以自定義影片輸出命令參數。影片命令參數資訊請洽: http://replaymod.com/docs
+scenecraft.gui.rendersettings.command=指令
+scenecraft.gui.rendersettings.arguments=命令列參數
+scenecraft.gui.rendersettings.ffmpeg.description=如果你是進階使用者，可以自訂匯出影片時使用的命令列參數。詳細資訊請參閱 http://replaymod.com/docs
 
-scenecraft.gui.rendersettings.stabilizecamera=穩定鏡頭
+scenecraft.gui.rendersettings.stabilizecamera=穩定攝影機
 
 scenecraft.gui.rendersettings.video=影片設定
 scenecraft.gui.rendersettings.advanced=進階設定
-scenecraft.gui.rendersettings.commandline=命令行設定
+scenecraft.gui.rendersettings.commandline=命令列設定
 
-scenecraft.gui.rendersettings.presets=編碼預設
-scenecraft.gui.rendersettings.presets.mp4.custom=MP4 - 自定義
+scenecraft.gui.rendersettings.presets=編碼預設集
+scenecraft.gui.rendersettings.presets.mp4.custom=MP4 - 自訂位元率
 scenecraft.gui.rendersettings.presets.mp4.default=MP4 - 預設畫質
-scenecraft.gui.rendersettings.presets.mp4.potato=MP4 - 手機畫質
-scenecraft.gui.rendersettings.presets.webm.custom=WEBM - 自定義
-scenecraft.gui.rendersettings.presets.mkv.lossless=MKV
+scenecraft.gui.rendersettings.presets.mp4.potato=MP4 - 馬鈴薯畫質
+scenecraft.gui.rendersettings.presets.webm.custom=WEBM - 自訂位元率
+scenecraft.gui.rendersettings.presets.mkv.lossless=MKV - 無損
+scenecraft.gui.rendersettings.presets.blend=Blend 檔案
 scenecraft.gui.rendersettings.presets.png=PNG 序列
+scenecraft.gui.rendersettings.presets.exr=OpenEXR 序列
+
+scenecraft.gui.rendersettings.antialiasing=反鋸齒
+scenecraft.gui.rendersettings.antialiasing.none=無
+scenecraft.gui.rendersettings.antialiasing.x2=2x
+scenecraft.gui.rendersettings.antialiasing.x4=4x
+scenecraft.gui.rendersettings.antialiasing.x8=8x
+
+#Render Queue GUI
+scenecraft.gui.renderqueue.title=渲染佇列
+scenecraft.gui.renderqueue.add=加入目前的設定
+scenecraft.gui.renderqueue.renderall=全部渲染
+scenecraft.gui.renderqueue.renderselected=渲染所選項目
 
 #Rendering GUI
-scenecraft.gui.rendering.title=渲染影片
+scenecraft.gui.rendering.title=正在渲染影片
 scenecraft.gui.rendering.pause=暫停渲染
 scenecraft.gui.rendering.resume=繼續渲染
 scenecraft.gui.rendering.cancel=取消渲染
-scenecraft.gui.rendering.cancel.callback=你確定嗎?
-scenecraft.gui.rendering.preview=展示預覽(性能可能會受到影響)
-scenecraft.gui.rendering.progress=幀渲染: %1$d / %2$d
+scenecraft.gui.rendering.cancel.callback=確定嗎？
+scenecraft.gui.rendering.preview=顯示預覽（可能影響效能）
+scenecraft.gui.rendering.progress=已渲染影格：%1$d / %2$d
 scenecraft.gui.rendering.timetaken=渲染時間
 scenecraft.gui.rendering.timeleft=剩餘時間
 
 #Render Errors
 scenecraft.gui.rendering.error.title=渲染失敗
-scenecraft.gui.rendering.error.message=影片要渲染，需要安裝ffmpeg。
+scenecraft.gui.rendering.error.message=要渲染影片，你必須先安裝 ffmpeg。
+scenecraft.gui.rendering.error.ffmpeglog=FFmpeg 輸出：
+scenecraft.gui.rendering.error.ffmpegargs.1=你似乎修改了命令列參數。
+scenecraft.gui.rendering.error.ffmpegargs.2=要將它們重設為預設值並重試嗎？
 
 #Ingame Menu
 scenecraft.gui.ingame.menu.addposkeyframe=新增位置關鍵影格
-scenecraft.gui.ingame.menu.removeposkeyframe=刪除位置關鍵影格
-scenecraft.gui.ingame.menu.addspeckeyframe=增加觀眾關鍵影格
-scenecraft.gui.ingame.menu.removespeckeyframe=刪除觀眾關鍵影格
+scenecraft.gui.ingame.menu.removeposkeyframe=移除位置關鍵影格
+scenecraft.gui.ingame.menu.addspeckeyframe=新增旁觀者關鍵影格
+scenecraft.gui.ingame.menu.removespeckeyframe=移除旁觀者關鍵影格
 scenecraft.gui.ingame.menu.addtimekeyframe=新增時間關鍵影格
-scenecraft.gui.ingame.menu.removetimekeyframe=刪除時間關鍵影格
-scenecraft.gui.ingame.menu.pause=暫停 Replay
-scenecraft.gui.ingame.menu.unpause=取消暫停 Replay
-scenecraft.gui.ingame.menu.renderpath=渲染鏡頭路徑
-scenecraft.gui.ingame.menu.playpath=播放鏡頭路徑
-scenecraft.gui.ingame.menu.playpathfromstart=從鏡頭路徑首端開始撥放
-scenecraft.gui.ingame.menu.pausepath=暫停鏡頭路徑
+scenecraft.gui.ingame.menu.removetimekeyframe=移除時間關鍵影格
+scenecraft.gui.ingame.menu.pause=暫停重播
+scenecraft.gui.ingame.menu.unpause=繼續重播
+scenecraft.gui.ingame.menu.renderpath=渲染攝影機路徑
+scenecraft.gui.ingame.menu.playpath=從游標位置播放攝影機路徑
+scenecraft.gui.ingame.menu.playpathfromstart=從頭播放攝影機路徑
+scenecraft.gui.ingame.menu.pausepath=暫停攝影機路徑
 scenecraft.gui.ingame.menu.zoomin=放大
 scenecraft.gui.ingame.menu.zoomout=縮小
 
-scenecraft.gui.ingame.unnamedmarker=無事件標籤
+scenecraft.gui.ingame.unnamedmarker=未命名的事件標記
+scenecraft.gui.ingame.autoactivating=此按鍵綁定可能會在適當的時機自動啟用。
+scenecraft.gui.ingame.autoactivating.disable=按住 Ctrl 並點擊以停用自動啟用。
+scenecraft.gui.ingame.autoactivating.enable=按住 Ctrl 並點擊以啟用自動啟用。
+scenecraft.gui.ingame.first_keyframe_not_at_start_warning=你剛放置了第一個關鍵影格，但它不在 00:00。\n\n這通常表示你可能誤解了影片時間軸（下方那條）的運作方式：\n\n上方的時間軸顯示的是重播中的目前時間，\n下方的時間軸則是你正在製作的影片的時間。\n影片一定是從 00:00 開始！如果第一個關鍵影格不在 00:00，\n影片會一直靜止，直到第一個關鍵影格的時間才會開始動！
 
 #Clear Keyframe Callback
-scenecraft.gui.clearcallback.title=清除所有關鍵影格?
+scenecraft.gui.clearcallback.title=要清除所有關鍵影格嗎？
+
+#Errors
+scenecraft.error.unknownrestriction1=這個重播無法在你目前的版本上播放。
+scenecraft.error.unknownrestriction2=它嘗試強制套用未知的限制：%s。
+scenecraft.error.negativetime1=你的部分時間關鍵影格順序錯誤。
+scenecraft.error.negativetime2=不支援時間倒退。
+scenecraft.error.negativetime3=無效的部分已用紅色標示。
+
+#SceneCraft Incompatibility Warning
+scenecraft.gui.modwarning.title=偵測到不相容
+scenecraft.gui.modwarning.message1=偵測到你目前的 Minecraft 版本
+scenecraft.gui.modwarning.message2=與這個重播之間可能不相容。
+scenecraft.gui.modwarning.message3=載入這個重播可能會導致錯誤或當機。
+scenecraft.gui.modwarning.name=模組名稱：
+scenecraft.gui.modwarning.id=模組 ID：
+scenecraft.gui.modwarning.missing=缺少的模組
+scenecraft.gui.modwarning.version=模組版本不同
+scenecraft.gui.modwarning.version.expected=預期
+scenecraft.gui.modwarning.version.found=實際
+
+#Advanced Screenshots Gui
+scenecraft.gui.advancedscreenshots.title=螢幕截圖設定
+scenecraft.gui.advancedscreenshots.create=拍攝螢幕截圖
+scenecraft.gui.advancedscreenshots.resolution=解析度
+
+# Screenshot Finished Gui
+scenecraft.gui.advancedscreenshots.finished.description=你已成功建立螢幕截圖！
+scenecraft.gui.advancedscreenshots.finished.description.360=你已成功建立 360° 螢幕截圖！
+scenecraft.gui.advancedscreenshots.finished.description.veer=你可以上傳至 VeeR.tv 以 VR 檢視，或在磁碟中開啟。
+scenecraft.gui.advancedscreenshots.finished.upload.veer=上傳至 VeeR.tv
+scenecraft.gui.advancedscreenshots.finished.showfile=在磁碟中顯示檔案

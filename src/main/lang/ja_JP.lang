@@ -2,64 +2,73 @@ scenecraft.title=SceneCraft
 
 #All of the chat messages
 scenecraft.chat.recordingstarted=録画を開始しました
-scenecraft.chat.recordingfailed=録画の開始に失敗しました
+scenecraft.chat.recordingfailed=録画を開始できませんでした
 
-scenecraft.chat.savingthumb=サムネイルを保存しています…
-scenecraft.chat.savedthumb=サムネイルは正常に保存されました
+scenecraft.chat.savingthumb=サムネイルを保存中...
+scenecraft.chat.savedthumb=サムネイルを保存しました
 scenecraft.chat.failedthumb=サムネイルを保存できませんでした
 
-scenecraft.chat.addedmarker=イベントマーカーが追加されました
+scenecraft.chat.addedmarker=イベントマーカーを追加しました
 
 #Chat messages displayed in Replay Viewer
-scenecraft.chat.morekeyframes=少なくとも2つのポジションキーフレームと2つのタイムキーフレームが必要です
-scenecraft.chat.pathstarted=カメラの移動を開始しました
-scenecraft.chat.pathfinished=カメラの移動を終了しました
-scenecraft.chat.pathinterrupted=カメラの移動が中止されました
+scenecraft.chat.morekeyframes=位置キーフレームと時間キーフレームがそれぞれ2つ以上必要です
+scenecraft.chat.pathstarted=カメラパスを開始しました
+scenecraft.chat.pathfinished=カメラパスが終了しました
+scenecraft.chat.pathinterrupted=カメラパスをキャンセルしました
 
 #Common GUI-related strings
 scenecraft.gui.cancel=キャンセル
 scenecraft.gui.back=戻る
 scenecraft.gui.load=読み込む
 scenecraft.gui.save=保存
-scenecraft.gui.rename=名前変更
-scenecraft.gui.remove=消去
+scenecraft.gui.rename=名前の変更
+scenecraft.gui.remove=除去
 scenecraft.gui.delete=削除
 scenecraft.gui.record=録画中
+scenecraft.gui.paused=一時停止中
 scenecraft.gui.speed=速度
-scenecraft.gui.pleasewait=お待ちください
-scenecraft.gui.render=書き出す
-scenecraft.gui.iphidden=サーバーIPは隠されています
+scenecraft.gui.pleasewait=しばらくお待ちください
+scenecraft.gui.render=レンダリング
+scenecraft.gui.iphidden=サーバーIPを非表示
 scenecraft.gui.overwrite=上書き
-scenecraft.gui.saveas=名前を付けて保存…
+scenecraft.gui.saveas=名前を付けて保存...
 scenecraft.gui.done=完了
 scenecraft.gui.close=閉じる
-scenecraft.gui.notagain=二度と表示しない
+scenecraft.gui.notagain=今後表示しない
+scenecraft.gui.edit=編集
+scenecraft.gui.copy=コピー
+scenecraft.gui.paste=貼り付け
 
-scenecraft.gui.renderdonetitle=動画が書き出されました
-scenecraft.gui.openfolder=動画のフォルダーを開く
+scenecraft.gui.record.resume=録画を再開
+scenecraft.gui.record.pause=録画を一時停止
+scenecraft.gui.record.stop=録画を停止
+scenecraft.gui.record.start=録画を開始
+
+scenecraft.gui.renderdonetitle=動画のレンダリングが完了しました
+scenecraft.gui.openfolder=動画フォルダを開く
 scenecraft.gui.youtubeupload=YouTubeにアップロード
-scenecraft.gui.renderdone1=動画は正常に書き出されました。
-scenecraft.gui.renderdone2=続行しますか?
+scenecraft.gui.renderdone1=動画のレンダリングが正常に完了しました。
+scenecraft.gui.renderdone2=次の操作を選択してください。
 scenecraft.gui.videotitle=タイトル
-scenecraft.gui.videodescription=説明文
+scenecraft.gui.videodescription=説明
 scenecraft.gui.videotags=タグ,タグ,タグ
 scenecraft.gui.videothumbnail=動画のサムネイル
 scenecraft.gui.videovisibility.private=非公開
-scenecraft.gui.videovisibility.unlisted=一覧に表示しない
+scenecraft.gui.videovisibility.unlisted=限定公開
 scenecraft.gui.videovisibility.public=公開
-scenecraft.gui.ytuploadprogress.auth=[1/4] 認証中
-scenecraft.gui.ytuploadprogress.prepare_video=[2/4] 動画を準備しています: %%d %%%%
-scenecraft.gui.ytuploadprogress.upload=[3/4] アップロード中:%%d %%%%
-scenecraft.gui.ytuploadprogress.cleanup=[4/4] データ整理中
+scenecraft.gui.ytuploadprogress.auth=[1/4] 認証
+scenecraft.gui.ytuploadprogress.prepare_video=[2/4] 動画を準備中: %%d%%%%
+scenecraft.gui.ytuploadprogress.upload=[3/4] アップロード中: %%d%%%%
+scenecraft.gui.ytuploadprogress.cleanup=[4/4] クリーンアップ
 scenecraft.gui.ytuploadprogress.done=完了: %s
-scenecraft.gui.titleempty=タイトルは空にできません
-scenecraft.gui.videothumbnailtoolarge=サムネイルの容量が2MBを超えています
-scenecraft.gui.videothumbnailformat=サムネイルはJPEGもしくはPNG形式にする必要があります
+scenecraft.gui.titleempty=タイトルを空にすることはできません
+scenecraft.gui.videothumbnailtoolarge=サムネイルのサイズが2MBを超えています
+scenecraft.gui.videothumbnailformat=サムネイルはJPEGまたはPNG形式である必要があります
 
 scenecraft.gui.hours=時間
 scenecraft.gui.minutes=分
 scenecraft.gui.seconds=秒
-scenecraft.gui.milliseconds=ミリ秒
+scenecraft.gui.milliseconds=ms
 
 scenecraft.gui.pitch=ピッチ
 scenecraft.gui.yaw=ヨー
@@ -74,79 +83,105 @@ scenecraft.gui.exit=リプレイを終了
 
 scenecraft.gui.settings=設定
 
-scenecraft.gui.keyframerepo.delete=本当にこれらのキーフレームを削除してよろしいですか?
+scenecraft.gui.keyframerepo.delete=これらのキーフレームを削除してもよろしいですか？
+scenecraft.gui.keyframerepo.overwrite=これらのキーフレームを上書きしてもよろしいですか？
 
 scenecraft.gui.restorereplay1=Minecraftが正常に終了しなかったようです。
 scenecraft.gui.restorereplay2=リプレイ「%1$s」は正しく保存されませんでした。
-scenecraft.gui.restorereplay3=修復しますか?
+scenecraft.gui.restorereplay3=復元しますか？
 
-scenecraft.gui.loadentitytracker=エンティティの位置を読み込んでいます: %%d %%%%
+scenecraft.gui.loadentitytracker=エンティティの位置を読み込み中: %%d%%%%
+scenecraft.gui.loadquickmode=クイックモードを読み込み中: %%d%%%%
+scenecraft.gui.noquickmode=クイックモードはMinecraft %1$s以降でのみ利用できます
+scenecraft.gui.minimalmode.unsupported=この機能は現在のMinecraftのバージョンでは利用できません。
+scenecraft.gui.minimalmode.supportedversion=（お使いのSceneCraftのバージョンはMinecraft %1$sのみ対応しています）
 
 #Only change these if it's neccessary
-scenecraft.gui.replayviewer=リプレイビューワー
+scenecraft.gui.replayviewer=リプレイビューア
 
 #Replay Viewer GUI
-scenecraft.gui.viewer.rename.name=リプレイの名前
-scenecraft.gui.viewer.replayfolder=リプレイのフォルダーを開く…
+scenecraft.gui.viewer.rename.name=リプレイ名
+scenecraft.gui.viewer.replayfolder=リプレイフォルダを開く...
+scenecraft.gui.viewer.bulkrender=%1$d本の動画をレンダリング
 
-scenecraft.gui.viewer.delete.linea=本当にこのリプレイを削除してよろしいですか?
-scenecraft.gui.viewer.delete.failed1=OSが原因で、リプレイを削除できませんでした。ここには
-scenecraft.gui.viewer.delete.failed2=SceneCraftはお力になれませんので、あなた自身で削除してください。
-scenecraft.gui.viewer.delete.lineb=「%1$s」は削除されます! (二度と元に戻せません!)
+scenecraft.gui.viewer.delete.linea=このリプレイを削除してもよろしいですか？
+scenecraft.gui.viewer.delete.failed1=お使いのOSがリプレイの削除を許可しませんでした。
+scenecraft.gui.viewer.delete.failed2=こちらでできることはありません。ご自身で削除してください。
+scenecraft.gui.viewer.delete.lineb=「%1$s」は永久に失われます！（とても長い間です！）
+
+#Replay Editor UI 2.0 (marker based UI)
+scenecraft.gui.edit.apply=適用
+scenecraft.gui.edit.split=分割点を挿入
+scenecraft.gui.edit.split.tooltip=マークした位置でリプレイを複数のリプレイに分割します
+scenecraft.gui.edit.cut.start=カットを挿入
+scenecraft.gui.edit.cut.end=カットを終了
+scenecraft.gui.edit.cut.tooltip=リプレイの一部をカット（削除）します
 
 #Cancel Replay GUI
-scenecraft.gui.cancelrender.title=書き出しをキャンセル
-scenecraft.gui.cancelrender.message=本当に書き出しの進行を中止しますか?
+scenecraft.gui.cancelrender.title=レンダリングのキャンセル
+scenecraft.gui.cancelrender.message=現在のレンダリング処理をキャンセルしてもよろしいですか？
 #Saving Replay GUI
-scenecraft.gui.replaysaving.title=リプレイファイルを保存中…
+scenecraft.gui.replaysaving.title=リプレイファイルを保存中...
 
 #Player Overview GUI
 scenecraft.gui.playeroverview.visible=表示
-scenecraft.gui.playeroverview.hideall=全て隠す
-scenecraft.gui.playeroverview.showall=全て表示
-scenecraft.gui.playeroverview.spectate=プレイヤーを監視する
+scenecraft.gui.playeroverview.hideall=すべて非表示
+scenecraft.gui.playeroverview.showall=すべて表示
+scenecraft.gui.playeroverview.spectate=プレイヤーを観戦
 scenecraft.gui.playeroverview.remembersettings=非表示のプレイヤーを記憶
-scenecraft.gui.playeroverview.remembersettings.description=プレイヤーの表示状態をリプレイファイルに保存
+scenecraft.gui.playeroverview.remembersettings.description=プレイヤーの表示状態をリプレイファイルに保存します
 
 #SceneCraft Settings GUI
 scenecraft.gui.settings.title=SceneCraftの設定
+scenecraft.gui.settings.default=デフォルト
 
 scenecraft.gui.settings.notifications=通知を有効にする
-scenecraft.gui.settings.recordserver=サーバーでのプレイを録画
+scenecraft.gui.settings.recordserver=サーバーを録画
 scenecraft.gui.settings.recordsingleplayer=シングルプレイを録画
 scenecraft.gui.settings.indicator=録画インジケーター
-scenecraft.gui.settings.pathpreview=カメラ経路のプレビュー表示
+scenecraft.gui.settings.pathpreview=パスのプレビューを表示
 scenecraft.gui.settings.camera=カメラ
 scenecraft.gui.settings.showchat=チャットを表示
-scenecraft.gui.settings.interpolator=デフォルトのカメラ移動補完方式
+scenecraft.gui.settings.interpolator=デフォルトの補間方式
+scenecraft.gui.settings.autostartrecording=自動録画
+scenecraft.gui.settings.rename_recording_dialog=名前変更ダイアログ
+scenecraft.gui.settings.fullbrightness=最大輝度
+scenecraft.gui.settings.fullbrightness.gamma=ガンマ値
+scenecraft.gui.settings.fullbrightness.nightvision=暗視
+scenecraft.gui.settings.fullbrightness.both=両方
 
 #SceneCraft Keybindings
-scenecraft.input.lighting=暗視の切り替え
+scenecraft.input.lighting=ライティングの切り替え
 scenecraft.input.thumbnail=サムネイルを撮影
-scenecraft.input.playeroverview=プレイヤーの一覧表示
-scenecraft.input.clearkeyframes=キーフレームを消去
-scenecraft.input.synctimeline=タイムラインと同期
-scenecraft.input.keyframerepository=キーフレームプリセット画面を開く
-scenecraft.input.rollclockwise=時計回りに回転
-scenecraft.input.rollcounterclockwise=反時計回りに回転
+scenecraft.input.playeroverview=プレイヤー一覧
+scenecraft.input.clearkeyframes=キーフレームをクリア
+scenecraft.input.synctimeline=タイムラインを同期
+scenecraft.input.keyframerepository=キーフレームプリセットを開く
+scenecraft.input.rollclockwise=時計回りにロール
+scenecraft.input.rollcounterclockwise=反時計回りにロール
 scenecraft.input.resettilt=カメラの傾きをリセット
-scenecraft.input.playpause=リプレイを再生/一時停止
+scenecraft.input.playpause=リプレイの再生/一時停止
 scenecraft.input.marker=イベントマーカーを追加
-scenecraft.input.pathpreview=カメラ経路プレビューを切り替え
+scenecraft.input.pathpreview=パスのプレビューの切り替え
 scenecraft.input.settings=SceneCraftの設定
+scenecraft.input.quickmode=クイックモード
+scenecraft.input.positionkeyframe=位置/スペクテイターのキーフレーム
+scenecraft.input.positiononlykeyframe=位置キーフレーム
+scenecraft.input.timekeyframe=時間キーフレーム
+scenecraft.input.bothkeyframes=位置/スペクテイター + 時間のキーフレーム
 
 # CameraControllers
 scenecraft.camera.classic=クラシック
 scenecraft.camera.vanilla=バニラ風
 
 #Keyframe Presets GUI
-scenecraft.gui.keyframerepository.title=保存したキーフレーム一覧
+scenecraft.gui.keyframerepository.title=キーフレームリポジトリ
 
 #Edit Keyframe GUI
-scenecraft.gui.editkeyframe.title.pos=ポジションキーフレームを編集
-scenecraft.gui.editkeyframe.title.time=タイムキーフレームを編集
-scenecraft.gui.editkeyframe.title.marker=イベントマーカーを編集
-scenecraft.gui.editkeyframe.title.spec=スペクテイターキーフレームを編集
+scenecraft.gui.editkeyframe.title.pos=位置キーフレームの編集
+scenecraft.gui.editkeyframe.title.time=時間キーフレームの編集
+scenecraft.gui.editkeyframe.title.marker=イベントマーカーの編集
+scenecraft.gui.editkeyframe.title.spec=スペクテイターキーフレームの編集
 scenecraft.gui.editkeyframe.xpos=X座標
 scenecraft.gui.editkeyframe.ypos=Y座標
 scenecraft.gui.editkeyframe.zpos=Z座標
@@ -154,120 +189,158 @@ scenecraft.gui.editkeyframe.campitch=カメラのピッチ
 scenecraft.gui.editkeyframe.camyaw=カメラのヨー
 scenecraft.gui.editkeyframe.camroll=カメラのロール
 scenecraft.gui.editkeyframe.timelineposition=タイムライン上の位置
-scenecraft.gui.editkeyframe.markername=イベントマーカーの名前
-scenecraft.gui.editkeyframe.timestamp=時間指定
+scenecraft.gui.editkeyframe.markername=イベントマーカー名
+scenecraft.gui.editkeyframe.timestamp=時間インデックス
 
-scenecraft.gui.editkeyframe.interpolator=補完方式
-scenecraft.gui.editkeyframe.interpolator.default.name=デフォルトの経路補完方式
-scenecraft.gui.editkeyframe.interpolator.default.desc=SceneCraftの設定画面で指定されたデフォルトの経路補完方式を使います。
-scenecraft.gui.editkeyframe.interpolator.catmullrom.name=Catmull-Romスプライン曲線
-scenecraft.gui.editkeyframe.interpolator.catmullrom.desc=Catmull-Romスプライン曲線を計算します。精密な密度と滑らかさをアルファ値を使って調整できます。
-scenecraft.gui.editkeyframe.interpolator.catmullrom.alpha=アルファ値:
-scenecraft.gui.editkeyframe.interpolator.cubic.name=三次スプライン曲線
-scenecraft.gui.editkeyframe.interpolator.cubic.desc=三次スプライン曲線を使って移動経路を滑らかにします。
+scenecraft.gui.editkeyframe.interpolator=補間方式
+scenecraft.gui.editkeyframe.interpolator.default.name=デフォルトの補間方式
+scenecraft.gui.editkeyframe.interpolator.default.desc=SceneCraftの設定で指定したデフォルトの補間方式を使用します。
+scenecraft.gui.editkeyframe.interpolator.catmullrom.name=Catmull-Romスプライン補間
+scenecraft.gui.editkeyframe.interpolator.catmullrom.desc=調整可能なα値を持つCatmull-Romスプラインを計算し、カメラパスの張りと滑らかさを細かく制御します。
+scenecraft.gui.editkeyframe.interpolator.catmullrom.alpha=α値:
+scenecraft.gui.editkeyframe.interpolator.cubic.name=3次スプライン補間
+scenecraft.gui.editkeyframe.interpolator.cubic.desc=すべての点について3次方程式の行列を計算し、滑らかなカメラパスを作成します。
 scenecraft.gui.editkeyframe.interpolator.linear.name=線形補間
-scenecraft.gui.editkeyframe.interpolator.linear.desc=キーフレームの間を直線的に移動します。
+scenecraft.gui.editkeyframe.interpolator.linear.desc=キーフレーム間を直線で結びます。
 
-scenecraft.gui.rendersettings.renderer=書き出し方式
+#Render Settings GUI
+scenecraft.gui.rendersettings.addtoqueue=キューに追加
 
-scenecraft.gui.rendersettings.renderer.default=デフォルトの書き出し方式
-scenecraft.gui.rendersettings.renderer.stereoscopic=ステレオスコピックレンダリング(立体視)
-scenecraft.gui.rendersettings.renderer.cubic=キュービックレンダリング(360°)
-scenecraft.gui.rendersettings.renderer.equirectangular=正距円筒図法(360°)
-scenecraft.gui.rendersettings.renderer.ods=ODSレンダリング(3D/360°)
+scenecraft.gui.rendersettings.renderer=レンダリング方式
 
-scenecraft.gui.rendersettings.renderer.default.description=指定された解像度の動画を書き出します。最も速く書き出しできます。
-scenecraft.gui.rendersettings.renderer.stereoscopic.description=動画を2分割する形式の3D動画を書き出します。左右の目それぞれに視点をずらした動画を見せることで立体感を生み出します
-scenecraft.gui.rendersettings.renderer.cubic.description=立方体の展開図の形をした360°パノラマ動画を書き出します。Oculus Riftを含むいくつかの360°動画プレイヤーに対応しています。
-scenecraft.gui.rendersettings.renderer.equirectangular.description=360°のパノラマ動画を書き出します。YouTubeの新しい360°動画再生機能や、Oculus Riftを含むいくつかの動画プレイヤーに対応しています。
-scenecraft.gui.rendersettings.renderer.ods.description=3Dの360°動画を書き出します。VR動画とも呼ばれます。YouTubeのVR動画再生機能に対応しています。
+scenecraft.gui.rendersettings.renderer.default=標準レンダリング
+scenecraft.gui.rendersettings.renderer.stereoscopic=ステレオスコピックレンダリング
+scenecraft.gui.rendersettings.renderer.cubic=キューブレンダリング
+scenecraft.gui.rendersettings.renderer.equirectangular=正距円筒図法レンダリング
+scenecraft.gui.rendersettings.renderer.ods=ODSレンダリング
+scenecraft.gui.rendersettings.renderer.blend=Blenderにエクスポート [実験的]
+
+scenecraft.gui.rendersettings.renderer.default.description=指定した解像度で動画をレンダリングします。最も高速なレンダリング方式です。
+scenecraft.gui.rendersettings.renderer.stereoscopic.description=動画をステレオスコピック（左右並び）の3D映像としてレンダリングします。さまざまな3D技術で利用できます。片目分の映像の幅は動画の幅の半分になります。
+scenecraft.gui.rendersettings.renderer.cubic.description=キューブ投影を使い、360度のパノラマ映像として動画をレンダリングします。VR Playerなど、多くの360度動画プレーヤー（およびOculus Rift）で利用できます。
+scenecraft.gui.rendersettings.renderer.equirectangular.description=正距円筒図法を使い、360度のパノラマ映像として動画をレンダリングします。YouTubeの360度動画機能や、VR Playerなど多くの動画プレーヤー（およびOculus Rift）で利用できます。
+scenecraft.gui.rendersettings.renderer.ods.description=ステレオスコピック3Dの360度パノラマ映像（いわゆるVR動画）として動画をレンダリングします。YouTubeのVR動画機能で利用できます。
+scenecraft.gui.rendersettings.renderer.blend.description=表示されているジオメトリをBlenderで開ける.blendファイルとしてエクスポートします。非常に実験的な機能です。大量のRAMが必要で、既知の問題も多く、破損したBlenderファイルが生成されることもあります。
 
 scenecraft.gui.rendersettings.customresolution=動画の解像度
-scenecraft.gui.rendersettings.customresolution.warning.yuv420=このプリセットでは、横幅と高さは偶数の値にする必要があります
+scenecraft.gui.rendersettings.customresolution.warning.yuv420=このプリセットでは、幅と高さは偶数である必要があります
+scenecraft.gui.rendersettings.customresolution.warning.yuv420.cubic=このプリセットでは、高さは6で割り切れる必要があります
+scenecraft.gui.rendersettings.customresolution.warning.cubic.height=キューブレンダリングでは、高さが3で割り切れる必要があります
+scenecraft.gui.rendersettings.bitrate=ビットレート
 scenecraft.gui.rendersettings.framerate=動画のフレームレート
 scenecraft.gui.rendersettings.chromakey=クロマキー
-scenecraft.gui.rendersettings.nametags=名札を表示
-scenecraft.gui.rendersettings.outputfile=書き出す動画
+scenecraft.gui.rendersettings.nametags=ネームタグをレンダリング
+scenecraft.gui.rendersettings.includealpha=アルファチャンネルを保持
+scenecraft.gui.rendersettings.outputfile=出力ファイル
+scenecraft.gui.rendersettings.sphericalFov=球面の視野角
+scenecraft.gui.rendersettings.sphericalmetadata=球面メタデータを埋め込む
+scenecraft.gui.rendersettings.sphericalmetadata.error=球面メタデータは、MP4形式の正距円筒図法動画とODS動画にのみ追加できます
+scenecraft.gui.rendersettings.depthmap=デプスマップ
+scenecraft.gui.rendersettings.depthmap.only_exr_or_png=デプスマップのエクスポートはOpenEXRまたはPNG形式でのみ対応しています。
+scenecraft.gui.rendersettings.camerapath=カメラパスをエクスポート
 
 scenecraft.gui.rendersettings.command=コマンド
 scenecraft.gui.rendersettings.arguments=コマンドライン引数
-scenecraft.gui.rendersettings.ffmpeg.description=上級者の方は、コマンドライン引数を使って動画の書き出し形式をカスタマイズできます。詳しい情報は http://replaymod.com/docs をチェックしてください
+scenecraft.gui.rendersettings.ffmpeg.description=上級者の方は、動画のエクスポートに使用するコマンドラインパラメーターをカスタマイズできます。詳しくは http://replaymod.com/docs をご覧ください。
 
-scenecraft.gui.rendersettings.stabilizecamera=カメラを安定化する
+scenecraft.gui.rendersettings.stabilizecamera=カメラを安定化
 
 scenecraft.gui.rendersettings.video=動画の設定
 scenecraft.gui.rendersettings.advanced=詳細設定
-scenecraft.gui.rendersettings.commandline=コマンドライン設定
+scenecraft.gui.rendersettings.commandline=コマンドラインの設定
 
-scenecraft.gui.rendersettings.presets=エンコードのプリセット
-scenecraft.gui.rendersettings.presets.mp4.custom=MP4 - 任意のビットレート
-scenecraft.gui.rendersettings.presets.mp4.default=MP4 - デフォルトの品質
-scenecraft.gui.rendersettings.presets.mp4.potato=MP4 - 低品質
-scenecraft.gui.rendersettings.presets.webm.custom=WEBM - 任意のビットレート
+scenecraft.gui.rendersettings.presets=エンコードプリセット
+scenecraft.gui.rendersettings.presets.mp4.custom=MP4 - カスタムビットレート
+scenecraft.gui.rendersettings.presets.mp4.default=MP4 - 標準画質
+scenecraft.gui.rendersettings.presets.mp4.potato=MP4 - ポテト画質
+scenecraft.gui.rendersettings.presets.webm.custom=WEBM - カスタムビットレート
 scenecraft.gui.rendersettings.presets.mkv.lossless=MKV - ロスレス
-scenecraft.gui.rendersettings.presets.png=PNGシーケンス
+scenecraft.gui.rendersettings.presets.blend=Blendファイル
+scenecraft.gui.rendersettings.presets.png=PNG連番
+scenecraft.gui.rendersettings.presets.exr=OpenEXR連番
 
 scenecraft.gui.rendersettings.antialiasing=アンチエイリアス
 scenecraft.gui.rendersettings.antialiasing.none=なし
-scenecraft.gui.rendersettings.antialiasing.x2=2×
-scenecraft.gui.rendersettings.antialiasing.x4=4×
-scenecraft.gui.rendersettings.antialiasing.x8=8×
+scenecraft.gui.rendersettings.antialiasing.x2=2x
+scenecraft.gui.rendersettings.antialiasing.x4=4x
+scenecraft.gui.rendersettings.antialiasing.x8=8x
 
 #Render Queue GUI
-scenecraft.gui.renderqueue.title=書き出しキュー
-scenecraft.gui.renderqueue.add=現在の設定を追加する
+scenecraft.gui.renderqueue.title=レンダリングキュー
+scenecraft.gui.renderqueue.add=現在の設定を追加
+scenecraft.gui.renderqueue.renderall=すべてレンダリング
+scenecraft.gui.renderqueue.renderselected=選択したものをレンダリング
 
 #Rendering GUI
-scenecraft.gui.rendering.title=動画を書き出し中
-scenecraft.gui.rendering.pause=書き出しを一時停止
-scenecraft.gui.rendering.resume=書き出しを再開
-scenecraft.gui.rendering.cancel=書き出しを中止
-scenecraft.gui.rendering.cancel.callback=本当にいいんですか?
-scenecraft.gui.rendering.preview=プレビューを表示(パフォーマンスが低下する恐れがあります)
-scenecraft.gui.rendering.progress=書き出したフレーム: %1$d / %2$d
-scenecraft.gui.rendering.timetaken=書き出し時間
+scenecraft.gui.rendering.title=動画をレンダリング中
+scenecraft.gui.rendering.pause=レンダリングを一時停止
+scenecraft.gui.rendering.resume=レンダリングを再開
+scenecraft.gui.rendering.cancel=レンダリングをキャンセル
+scenecraft.gui.rendering.cancel.callback=よろしいですか？
+scenecraft.gui.rendering.preview=プレビューを表示（パフォーマンスが低下する場合があります）
+scenecraft.gui.rendering.progress=レンダリング済みフレーム: %1$d / %2$d
+scenecraft.gui.rendering.timetaken=レンダリング時間
 scenecraft.gui.rendering.timeleft=残り時間
 
 #Render Errors
-scenecraft.gui.rendering.error.title=書き出しに失敗しました
-scenecraft.gui.rendering.error.message=動画を書き出すには、ffmpegをインストールする必要があります。
+scenecraft.gui.rendering.error.title=レンダリングに失敗しました
+scenecraft.gui.rendering.error.message=動画をレンダリングするには、ffmpegがインストールされている必要があります。
+scenecraft.gui.rendering.error.ffmpeglog=FFmpegの出力:
+scenecraft.gui.rendering.error.ffmpegargs.1=コマンドライン引数が変更されているようです。
+scenecraft.gui.rendering.error.ffmpegargs.2=デフォルトに戻して、もう一度試しますか？
 
 #Ingame Menu
-scenecraft.gui.ingame.menu.addposkeyframe=ポジションキーフレームを追加
-scenecraft.gui.ingame.menu.removeposkeyframe=ポジションキーフレームを削除
+scenecraft.gui.ingame.menu.addposkeyframe=位置キーフレームを追加
+scenecraft.gui.ingame.menu.removeposkeyframe=位置キーフレームを除去
 scenecraft.gui.ingame.menu.addspeckeyframe=スペクテイターキーフレームを追加
-scenecraft.gui.ingame.menu.removespeckeyframe=スペクテイターキーフレームを削除
-scenecraft.gui.ingame.menu.addtimekeyframe=タイムキーフレームを追加
-scenecraft.gui.ingame.menu.removetimekeyframe=タイムキーフレームを削除
+scenecraft.gui.ingame.menu.removespeckeyframe=スペクテイターキーフレームを除去
+scenecraft.gui.ingame.menu.addtimekeyframe=時間キーフレームを追加
+scenecraft.gui.ingame.menu.removetimekeyframe=時間キーフレームを除去
 scenecraft.gui.ingame.menu.pause=リプレイを一時停止
-scenecraft.gui.ingame.menu.unpause=リプレイを再生
-scenecraft.gui.ingame.menu.renderpath=カメラの移動経路を動画として書き出す
-scenecraft.gui.ingame.menu.playpath=現在の場所からカメラの移動を開始
-scenecraft.gui.ingame.menu.playpathfromstart=最初からカメラの移動を開始
-scenecraft.gui.ingame.menu.pausepath=カメラの移動を一時停止
-scenecraft.gui.ingame.menu.zoomin=拡大
-scenecraft.gui.ingame.menu.zoomout=縮小
+scenecraft.gui.ingame.menu.unpause=リプレイの一時停止を解除
+scenecraft.gui.ingame.menu.renderpath=カメラパスをレンダリング
+scenecraft.gui.ingame.menu.playpath=カーソル位置からカメラパスを再生
+scenecraft.gui.ingame.menu.playpathfromstart=最初からカメラパスを再生
+scenecraft.gui.ingame.menu.pausepath=カメラパスを一時停止
+scenecraft.gui.ingame.menu.zoomin=ズームイン
+scenecraft.gui.ingame.menu.zoomout=ズームアウト
 
-scenecraft.gui.ingame.unnamedmarker=名前のないイベントマーカー
+scenecraft.gui.ingame.unnamedmarker=名称未設定のイベントマーカー
+scenecraft.gui.ingame.autoactivating=このキー割り当ては、適切なタイミングで自動的に有効になることがあります。
+scenecraft.gui.ingame.autoactivating.disable=Ctrl + クリックで自動有効化をオフにします。
+scenecraft.gui.ingame.autoactivating.enable=Ctrl + クリックで自動有効化をオンにします。
+scenecraft.gui.ingame.first_keyframe_not_at_start_warning=最初のキーフレームを配置しましたが、00:00にありません。\n\nこれは、動画のタイムライン（下側のもの）の仕組みを\n誤解している可能性があります。\n\n上側のタイムラインはリプレイ内の現在の時間を表し、\n下側のタイムラインは作成中の動画内の時間を表します。\n動画は常に00:00から始まります！最初のキーフレームが00:00にない場合、\n最初のキーフレームの時間になるまで映像が静止して見えます！
 
 #Clear Keyframe Callback
-scenecraft.gui.clearcallback.title=全てのキーフレームを消去しますか?
+scenecraft.gui.clearcallback.title=すべてのキーフレームをクリアしますか？
 
 #Errors
 scenecraft.error.unknownrestriction1=このリプレイは現在のバージョンでは再生できません。
-scenecraft.error.unknownrestriction2=不明な%sが強制されました。
-scenecraft.error.negativetime1=順番がおかしいタイムキーフレームがあるようです。
-scenecraft.error.negativetime2=時間を後戻りすることはできません。
-scenecraft.error.negativetime3=無効な区間は赤く表示されます。
+scenecraft.error.unknownrestriction2=不明な制限「%s」を適用しようとしました。
+scenecraft.error.negativetime1=一部の時間キーフレームの順序が正しくありません。
+scenecraft.error.negativetime2=時間を遡ることには対応していません。
+scenecraft.error.negativetime3=無効な部分は赤色で表示されています。
 
 #SceneCraft Incompatibility Warning
-scenecraft.gui.modwarning.title=互換性エラーが検知されました
-scenecraft.gui.modwarning.message1=起こりうる互換性エラーが現在の
-scenecraft.gui.modwarning.message2=Minecraftのバージョンとこのリプレイの間で検知されました。
-scenecraft.gui.modwarning.message3=このリプレイを読み込むことでエラーやクラッシュが引き起こされる可能性があります。
-scenecraft.gui.modwarning.name=MOD名:
-scenecraft.gui.modwarning.id=MODのID:
-scenecraft.gui.modwarning.missing=MODが見つかりません
-scenecraft.gui.modwarning.version=MODのバージョンが違います
-scenecraft.gui.modwarning.version.expected=本来のバージョン
-scenecraft.gui.modwarning.version.found=実際のバージョン
+scenecraft.gui.modwarning.title=互換性の問題を検出しました
+scenecraft.gui.modwarning.message1=現在のMinecraftのバージョンと
+scenecraft.gui.modwarning.message2=このリプレイの間に互換性の問題がある可能性があります。
+scenecraft.gui.modwarning.message3=このリプレイを読み込むと、エラーやクラッシュが発生する場合があります。
+scenecraft.gui.modwarning.name=Mod名:
+scenecraft.gui.modwarning.id=Mod ID:
+scenecraft.gui.modwarning.missing=不足しているMod
+scenecraft.gui.modwarning.version=Modのバージョンが異なります
+scenecraft.gui.modwarning.version.expected=期待値
+scenecraft.gui.modwarning.version.found=検出値
+
+#Advanced Screenshots Gui
+scenecraft.gui.advancedscreenshots.title=スクリーンショットの設定
+scenecraft.gui.advancedscreenshots.create=スクリーンショットを撮影
+scenecraft.gui.advancedscreenshots.resolution=解像度
+
+# Screenshot Finished Gui
+scenecraft.gui.advancedscreenshots.finished.description=スクリーンショットを作成しました！
+scenecraft.gui.advancedscreenshots.finished.description.360=360°スクリーンショットを作成しました！
+scenecraft.gui.advancedscreenshots.finished.description.veer=VeeR.tvにアップロードしてVRで表示するか、ディスク上で開くことができます。
+scenecraft.gui.advancedscreenshots.finished.upload.veer=VeeR.tvにアップロード
+scenecraft.gui.advancedscreenshots.finished.showfile=ディスク上でファイルを表示

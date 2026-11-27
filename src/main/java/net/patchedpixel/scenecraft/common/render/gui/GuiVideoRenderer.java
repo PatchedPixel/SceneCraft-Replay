@@ -28,7 +28,7 @@ import java.nio.ByteBuffer;
 import static net.patchedpixel.scenecraft.common.core.versions.MCVer.identifier;
 
 public class GuiVideoRenderer extends GuiScreen implements Tickable {
-    private static final Identifier NO_PREVIEW_TEXTURE = identifier(SceneCraft.MOD_ID, "logo.png");
+    private static final Identifier NO_PREVIEW_TEXTURE = identifier(SceneCraft.MOD_ID, "unknown.png");
 
     private final VideoRenderer renderer;
 

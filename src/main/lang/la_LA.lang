@@ -1,0 +1,346 @@
+scenecraft.title=SceneCraft
+
+#All of the chat messages
+scenecraft.chat.recordingstarted=Recordatio incepta est
+scenecraft.chat.recordingfailed=Recordationem incipere non potuit
+
+scenecraft.chat.savingthumb=Imaginem parvam servo...
+scenecraft.chat.savedthumb=Imago parva feliciter servata est
+scenecraft.chat.failedthumb=Imaginem parvam servare non potuit
+
+scenecraft.chat.addedmarker=Nota eventus addita est
+
+#Chat messages displayed in Replay Viewer
+scenecraft.chat.morekeyframes=Duae saltem imagines clavis positionis et duae temporis requiruntur
+scenecraft.chat.pathstarted=Via camerae incepta est
+scenecraft.chat.pathfinished=Via camerae confecta est
+scenecraft.chat.pathinterrupted=Via camerae abrogata est
+
+#Common GUI-related strings
+scenecraft.gui.cancel=Abrogare
+scenecraft.gui.back=Redire
+scenecraft.gui.load=Onerare
+scenecraft.gui.save=Servare
+scenecraft.gui.rename=Renominare
+scenecraft.gui.remove=Removere
+scenecraft.gui.delete=Delere
+scenecraft.gui.record=Recordatio
+scenecraft.gui.paused=Intermissum
+scenecraft.gui.speed=Celeritas
+scenecraft.gui.pleasewait=Exspecta, quaeso
+scenecraft.gui.render=Reddere
+scenecraft.gui.iphidden=IP servitoris occultum
+scenecraft.gui.overwrite=Superscribere
+scenecraft.gui.saveas=Servare ut ...
+scenecraft.gui.done=Factum
+scenecraft.gui.close=Claudere
+scenecraft.gui.notagain=Noli iterum ostendere
+scenecraft.gui.edit=Recensere
+scenecraft.gui.copy=Imitari
+scenecraft.gui.paste=Inserere
+
+scenecraft.gui.record.resume=Recordationem resumere
+scenecraft.gui.record.pause=Recordationem intermittere
+scenecraft.gui.record.stop=Recordationem sistere
+scenecraft.gui.record.start=Recordationem incipere
+
+scenecraft.gui.renderdonetitle=Pellicula reddita est
+scenecraft.gui.openfolder=Aperire fasciculum pelliculae
+scenecraft.gui.youtubeupload=In YouTube imponere
+scenecraft.gui.renderdone1=Pellicula tua feliciter reddita est.
+scenecraft.gui.renderdone2=Quid nunc facere vis?
+scenecraft.gui.videotitle=Titulus
+scenecraft.gui.videodescription=Descriptio
+scenecraft.gui.videotags=Notae,Notae,Notae
+scenecraft.gui.videothumbnail=Imago parva pelliculae
+scenecraft.gui.videovisibility.private=Privatum
+scenecraft.gui.videovisibility.unlisted=Non indicatum
+scenecraft.gui.videovisibility.public=Publicum
+scenecraft.gui.ytuploadprogress.auth=[1/4] Auctoritas
+scenecraft.gui.ytuploadprogress.prepare_video=[2/4] Pelliculam paro: %%d%%%%
+scenecraft.gui.ytuploadprogress.upload=[3/4] Impono: %%d%%%%
+scenecraft.gui.ytuploadprogress.cleanup=[4/4] Purgatio
+scenecraft.gui.ytuploadprogress.done=Factum: %s
+scenecraft.gui.titleempty=Titulus vacuus esse non potest
+scenecraft.gui.videothumbnailtoolarge=Imago parva duo megabyta superat
+scenecraft.gui.videothumbnailformat=Imago parva forma JPEG vel PNG esse debet
+
+scenecraft.gui.hours=h
+scenecraft.gui.minutes=min
+scenecraft.gui.seconds=sec
+scenecraft.gui.milliseconds=ms
+
+scenecraft.gui.pitch=Inclinatio
+scenecraft.gui.yaw=Deviatio
+scenecraft.gui.roll=Volutio
+
+scenecraft.gui.camera=Camera
+scenecraft.gui.position=Positio
+
+scenecraft.gui.unknownerror=Error ignotus accidit
+
+scenecraft.gui.exit=Ex repetitione exire
+
+scenecraft.gui.settings=Optiones
+
+scenecraft.gui.keyframerepo.delete=Certusne es te has imagines clavis delere velle?
+scenecraft.gui.keyframerepo.overwrite=Certusne es te has imagines clavis superscribere velle?
+
+scenecraft.gui.restorereplay1=Minecraft non recte clausum esse videtur.
+scenecraft.gui.restorereplay2=Repetitio "%1$s" non recte servata est.
+scenecraft.gui.restorereplay3=Visne eam recuperare?
+
+scenecraft.gui.loadentitytracker=Positiones entium onero: %%d%%%%
+scenecraft.gui.loadquickmode=Modum celerem onero: %%d%%%%
+scenecraft.gui.noquickmode=Modus celer tantum in Minecraft %1$s et recentiore praesto est
+scenecraft.gui.minimalmode.unsupported=Haec functio in versione Minecraft tua praesto non est.
+scenecraft.gui.minimalmode.supportedversion=(versio SceneCraft tua tantum Minecraft %1$s sustinet)
+
+#Only change these if it's neccessary
+scenecraft.gui.replayviewer=Spectator repetitionum
+
+#Replay Viewer GUI
+scenecraft.gui.viewer.rename.name=Nomen repetitionis
+scenecraft.gui.viewer.replayfolder=Aperire fasciculum repetitionum...
+scenecraft.gui.viewer.bulkrender=Reddere %1$d pelliculas
+
+scenecraft.gui.viewer.delete.linea=Certusne es te hanc repetitionem delere velle?
+scenecraft.gui.viewer.delete.failed1=Systema operativum tuum nobis non permisit repetitionem delere.
+scenecraft.gui.viewer.delete.failed2=Nihil facere possumus; ipse eam delere debes.
+scenecraft.gui.viewer.delete.lineb='%1$s' in aeternum peribit! (diu admodum!)
+
+#Replay Editor UI 2.0 (marker based UI)
+scenecraft.gui.edit.apply=Applicare
+scenecraft.gui.edit.split=Divisionem inserere
+scenecraft.gui.edit.split.tooltip=Repetitionem in plures repetitiones ad punctum notatum dividere
+scenecraft.gui.edit.cut.start=Sectionem inserere
+scenecraft.gui.edit.cut.end=Sectionem finire
+scenecraft.gui.edit.cut.tooltip=Partem repetitionis secare (removere)
+
+#Cancel Replay GUI
+scenecraft.gui.cancelrender.title=Redditionem abrogare
+scenecraft.gui.cancelrender.message=Certusne es te processum redditionis currentem abrogare velle?
+#Saving Replay GUI
+scenecraft.gui.replaysaving.title=Fasciculum repetitionis servo...
+
+#Player Overview GUI
+scenecraft.gui.playeroverview.visible=Visibilis
+scenecraft.gui.playeroverview.hideall=Omnes occultare
+scenecraft.gui.playeroverview.showall=Omnes ostendere
+scenecraft.gui.playeroverview.spectate=Lusorem spectare
+scenecraft.gui.playeroverview.remembersettings=Lusores occultos meminisse
+scenecraft.gui.playeroverview.remembersettings.description=Visibilitatem lusorum in fasciculo repetitionis servat
+
+#SceneCraft Settings GUI
+scenecraft.gui.settings.title=Optiones SceneCraft
+scenecraft.gui.settings.default=STATUTUM
+
+scenecraft.gui.settings.notifications=Notificationes activare
+scenecraft.gui.settings.recordserver=Servitorem recordari
+scenecraft.gui.settings.recordsingleplayer=Ludum solitarium recordari
+scenecraft.gui.settings.indicator=Index recordationis
+scenecraft.gui.settings.pathpreview=Praevisionem viae ostendere
+scenecraft.gui.settings.camera=Camera
+scenecraft.gui.settings.showchat=Colloquium ostendere
+scenecraft.gui.settings.interpolator=Interpolator statutus
+scenecraft.gui.settings.autostartrecording=Recordatio automatica
+scenecraft.gui.settings.rename_recording_dialog=Dialogus renominandi
+scenecraft.gui.settings.fullbrightness=Claritas plena
+scenecraft.gui.settings.fullbrightness.gamma=Gamma
+scenecraft.gui.settings.fullbrightness.nightvision=Visio nocturna
+scenecraft.gui.settings.fullbrightness.both=Utraque
+
+#SceneCraft Keybindings
+scenecraft.input.lighting=Illuminationem commutare
+scenecraft.input.thumbnail=Imaginem parvam capere
+scenecraft.input.playeroverview=Conspectus lusorum
+scenecraft.input.clearkeyframes=Imagines clavis purgare
+scenecraft.input.synctimeline=Lineam temporis synchronizare
+scenecraft.input.keyframerepository=Aperire praeparata imaginum clavis
+scenecraft.input.rollclockwise=Volvere dextrorsum
+scenecraft.input.rollcounterclockwise=Volvere sinistrorsum
+scenecraft.input.resettilt=Inclinationem camerae restituere
+scenecraft.input.playpause=Repetitionem agere/intermittere
+scenecraft.input.marker=Notam eventus addere
+scenecraft.input.pathpreview=Praevisionem viae commutare
+scenecraft.input.settings=Optiones SceneCraft
+scenecraft.input.quickmode=Modus celer
+scenecraft.input.positionkeyframe=Imago clavis positionis/spectatoris
+scenecraft.input.positiononlykeyframe=Imago clavis positionis
+scenecraft.input.timekeyframe=Imago clavis temporis
+scenecraft.input.bothkeyframes=Imago clavis positionis/spectatoris + temporis
+
+# CameraControllers
+scenecraft.camera.classic=Classica
+scenecraft.camera.vanilla=Quasi vanilla
+
+#Keyframe Presets GUI
+scenecraft.gui.keyframerepository.title=Thesaurus imaginum clavis
+
+#Edit Keyframe GUI
+scenecraft.gui.editkeyframe.title.pos=Imaginem clavis positionis recensere
+scenecraft.gui.editkeyframe.title.time=Imaginem clavis temporis recensere
+scenecraft.gui.editkeyframe.title.marker=Notam eventus recensere
+scenecraft.gui.editkeyframe.title.spec=Imaginem clavis spectatoris recensere
+scenecraft.gui.editkeyframe.xpos=Positio X
+scenecraft.gui.editkeyframe.ypos=Positio Y
+scenecraft.gui.editkeyframe.zpos=Positio Z
+scenecraft.gui.editkeyframe.campitch=Inclinatio camerae
+scenecraft.gui.editkeyframe.camyaw=Deviatio camerae
+scenecraft.gui.editkeyframe.camroll=Volutio camerae
+scenecraft.gui.editkeyframe.timelineposition=Positio in linea temporis
+scenecraft.gui.editkeyframe.markername=Nomen notae eventus
+scenecraft.gui.editkeyframe.timestamp=Index temporis
+
+scenecraft.gui.editkeyframe.interpolator=Interpolator
+scenecraft.gui.editkeyframe.interpolator.default.name=Interpolator statutus
+scenecraft.gui.editkeyframe.interpolator.default.desc=Interpolatorem statutum in optionibus SceneCraft definitum adhibet.
+scenecraft.gui.editkeyframe.interpolator.catmullrom.name=Interpolator splinis Catmull-Rom
+scenecraft.gui.editkeyframe.interpolator.catmullrom.desc=Splinem Catmull-Rom cum valore alpha mutabili computat ad tensionem et lenitatem viae camerae subtiliter temperandam.
+scenecraft.gui.editkeyframe.interpolator.catmullrom.alpha=Alpha:
+scenecraft.gui.editkeyframe.interpolator.cubic.name=Interpolator splinis cubici
+scenecraft.gui.editkeyframe.interpolator.cubic.desc=Matricem aequationum cubicarum pro omnibus punctis computat ad viam camerae lenem.
+scenecraft.gui.editkeyframe.interpolator.linear.name=Interpolator linearis
+scenecraft.gui.editkeyframe.interpolator.linear.desc=Lineas rectas inter imagines clavis ducit.
+
+#Render Settings GUI
+scenecraft.gui.rendersettings.addtoqueue=Ad ordinem addere
+
+scenecraft.gui.rendersettings.renderer=Modus redditionis
+
+scenecraft.gui.rendersettings.renderer.default=Redditio statuta
+scenecraft.gui.rendersettings.renderer.stereoscopic=Redditio stereoscopica
+scenecraft.gui.rendersettings.renderer.cubic=Redditio cubica
+scenecraft.gui.rendersettings.renderer.equirectangular=Redditio aequirectangularis
+scenecraft.gui.rendersettings.renderer.ods=Redditio ODS
+scenecraft.gui.rendersettings.renderer.blend=Exportatio Blender [Experimentalis]
+
+scenecraft.gui.rendersettings.renderer.default.description=Pelliculam in resolutione definita reddit. Optio celerrima.
+scenecraft.gui.rendersettings.renderer.stereoscopic.description=Pelliculam ut cinematographeum stereoscopicum 3D (iuxta se positum) reddit, variis technologiis 3D idoneum. Imago pro uno oculo dimidiam latitudinem pelliculae habet.
+scenecraft.gui.rendersettings.renderer.cubic.description=Pelliculam cum prospectu panoramico CCCLX graduum reddit, proiectione cubica utens. Pluribus instrumentis pelliculas CCCLX graduum agentibus (et Oculus Rift) idonea est, exempli gratia VR Player.
+scenecraft.gui.rendersettings.renderer.equirectangular.description=Pelliculam cum prospectu panoramico CCCLX graduum reddit, proiectione aequirectangulari utens. Nova functioni pellicularum CCCLX graduum in YouTube et pluribus instrumentis agentibus (et Oculus Rift) idonea est, exempli gratia VR Player.
+scenecraft.gui.rendersettings.renderer.ods.description=Pelliculam cum prospectu panoramico stereoscopico 3D CCCLX graduum reddit, quae etiam Pellicula VR appellatur. Novae functioni pellicularum VR in YouTube idonea est.
+scenecraft.gui.rendersettings.renderer.blend.description=Geometriam visibilem ut fasciculum .blend exportat, qui programmate Blender aperiri potest. Maxime experimentalis: multum RAM requirit, complura vitia nota habet, et interdum fasciculos Blender corruptos gignit.
+
+scenecraft.gui.rendersettings.customresolution=Resolutio pelliculae
+scenecraft.gui.rendersettings.customresolution.warning.yuv420=Pro hoc praeparato, latitudo et altitudo numeri pares esse debent
+scenecraft.gui.rendersettings.customresolution.warning.yuv420.cubic=Pro hoc praeparato, altitudo per sex dividi debet
+scenecraft.gui.rendersettings.customresolution.warning.cubic.height=Redditio cubica altitudinem per tres divisibilem requirit
+scenecraft.gui.rendersettings.bitrate=Bitrate
+scenecraft.gui.rendersettings.framerate=Frequentia imaginum
+scenecraft.gui.rendersettings.chromakey=Clavis chromatica
+scenecraft.gui.rendersettings.nametags=Titulos nominum reddere
+scenecraft.gui.rendersettings.includealpha=Canalem alpha servare
+scenecraft.gui.rendersettings.outputfile=Fasciculus exitus
+scenecraft.gui.rendersettings.sphericalFov=FOV sphaericum
+scenecraft.gui.rendersettings.sphericalmetadata=Metadata sphaerica inserere
+scenecraft.gui.rendersettings.sphericalmetadata.error=Metadata sphaerica tantum pelliculis aequirectangularibus et ODS in forma MP4 addi possunt
+scenecraft.gui.rendersettings.depthmap=Tabula profunditatis
+scenecraft.gui.rendersettings.depthmap.only_exr_or_png=Exportatio tabulae profunditatis tantum cum forma OpenEXR vel PNG sustinetur.
+scenecraft.gui.rendersettings.camerapath=Viam camerae exportare
+
+scenecraft.gui.rendersettings.command=Mandatum
+scenecraft.gui.rendersettings.arguments=Argumenta lineae mandatorum
+scenecraft.gui.rendersettings.ffmpeg.description=Si peritus usor es, parametra lineae mandatorum ad pelliculam exportandam adhibita mutare potes. Plura scire vis? Visita http://replaymod.com/docs
+
+scenecraft.gui.rendersettings.stabilizecamera=Cameram stabilire
+
+scenecraft.gui.rendersettings.video=Optiones pelliculae
+scenecraft.gui.rendersettings.advanced=Optiones provectae
+scenecraft.gui.rendersettings.commandline=Optiones lineae mandatorum
+
+scenecraft.gui.rendersettings.presets=Praeparata codificationis
+scenecraft.gui.rendersettings.presets.mp4.custom=MP4 - Bitrate proprium
+scenecraft.gui.rendersettings.presets.mp4.default=MP4 - Qualitas statuta
+scenecraft.gui.rendersettings.presets.mp4.potato=MP4 - Qualitas tuberis
+scenecraft.gui.rendersettings.presets.webm.custom=WEBM - Bitrate proprium
+scenecraft.gui.rendersettings.presets.mkv.lossless=MKV - Sine iactura
+scenecraft.gui.rendersettings.presets.blend=Fasciculus Blend
+scenecraft.gui.rendersettings.presets.png=Series PNG
+scenecraft.gui.rendersettings.presets.exr=Series OpenEXR
+
+scenecraft.gui.rendersettings.antialiasing=Lenimentum marginum
+scenecraft.gui.rendersettings.antialiasing.none=Nullum
+scenecraft.gui.rendersettings.antialiasing.x2=2x
+scenecraft.gui.rendersettings.antialiasing.x4=4x
+scenecraft.gui.rendersettings.antialiasing.x8=8x
+
+#Render Queue GUI
+scenecraft.gui.renderqueue.title=Ordo redditionis
+scenecraft.gui.renderqueue.add=Configurationem currentem addere
+scenecraft.gui.renderqueue.renderall=Omnia reddere
+scenecraft.gui.renderqueue.renderselected=Selecta reddere
+
+#Rendering GUI
+scenecraft.gui.rendering.title=Pelliculam reddo
+scenecraft.gui.rendering.pause=Redditionem intermittere
+scenecraft.gui.rendering.resume=Redditionem resumere
+scenecraft.gui.rendering.cancel=Redditionem abrogare
+scenecraft.gui.rendering.cancel.callback=Certusne es?
+scenecraft.gui.rendering.preview=Praevisionem ostendere (effectus minui potest)
+scenecraft.gui.rendering.progress=Imagines redditae: %1$d / %2$d
+scenecraft.gui.rendering.timetaken=Tempus redditionis
+scenecraft.gui.rendering.timeleft=Tempus reliquum
+
+#Render Errors
+scenecraft.gui.rendering.error.title=Redditio defecit
+scenecraft.gui.rendering.error.message=Ad pelliculam reddendam, ffmpeg installatum habere debes.
+scenecraft.gui.rendering.error.ffmpeglog=Exitus FFmpeg:
+scenecraft.gui.rendering.error.ffmpegargs.1=Argumenta lineae mandatorum mutavisse videris.
+scenecraft.gui.rendering.error.ffmpegargs.2=Visne ea ad statuta restituere et iterum conari?
+
+#Ingame Menu
+scenecraft.gui.ingame.menu.addposkeyframe=Imaginem clavis positionis addere
+scenecraft.gui.ingame.menu.removeposkeyframe=Imaginem clavis positionis removere
+scenecraft.gui.ingame.menu.addspeckeyframe=Imaginem clavis spectatoris addere
+scenecraft.gui.ingame.menu.removespeckeyframe=Imaginem clavis spectatoris removere
+scenecraft.gui.ingame.menu.addtimekeyframe=Imaginem clavis temporis addere
+scenecraft.gui.ingame.menu.removetimekeyframe=Imaginem clavis temporis removere
+scenecraft.gui.ingame.menu.pause=Repetitionem intermittere
+scenecraft.gui.ingame.menu.unpause=Repetitionem resumere
+scenecraft.gui.ingame.menu.renderpath=Viam camerae reddere
+scenecraft.gui.ingame.menu.playpath=Viam camerae a cursore agere
+scenecraft.gui.ingame.menu.playpathfromstart=Viam camerae ab initio agere
+scenecraft.gui.ingame.menu.pausepath=Viam camerae intermittere
+scenecraft.gui.ingame.menu.zoomin=Appropinquare
+scenecraft.gui.ingame.menu.zoomout=Recedere
+
+scenecraft.gui.ingame.unnamedmarker=Nota eventus sine nomine
+scenecraft.gui.ingame.autoactivating=Haec clavis opportunis temporibus sponte activari potest.
+scenecraft.gui.ingame.autoactivating.disable=Ctrl + preme ut activatio automatica exstinguatur.
+scenecraft.gui.ingame.autoactivating.enable=Ctrl + preme ut activatio automatica accendatur.
+scenecraft.gui.ingame.first_keyframe_not_at_start_warning=Primam imaginem clavis modo posuisti, et non est in 00:00.\n\nHoc plerumque significat te non recte intellexisse quomodo\nlinea temporis pelliculae (ea inferior) operetur:\n\nLinea superior tempus currens in repetitione monstrat,\ninferior autem tempus in pellicula quam facis.\nPellicula semper in 00:00 incipit! Si prima imago clavis non est in 00:00,\npellicula congelata videbitur donec tempus primae imaginis clavis adveniat!
+
+#Clear Keyframe Callback
+scenecraft.gui.clearcallback.title=Omnes imagines clavis purgare?
+
+#Errors
+scenecraft.error.unknownrestriction1=Haec repetitio cum versione tua currenti agi non potest.
+scenecraft.error.unknownrestriction2=%s imponere conata est, quod ignotum est.
+scenecraft.error.negativetime1=Quaedam imagines clavis temporis tuae ordine carent.
+scenecraft.error.negativetime2=Retro in tempore ire non sustinetur.
+scenecraft.error.negativetime3=Partes invalidae rubro colore notatae sunt.
+
+#SceneCraft Incompatibility Warning
+scenecraft.gui.modwarning.title=Incompatibilitas deprehensa est
+scenecraft.gui.modwarning.message1=Possibilis incompatibilitas inter versionem
+scenecraft.gui.modwarning.message2=Minecraft tuam currentem et hanc repetitionem deprehensa est.
+scenecraft.gui.modwarning.message3=Hanc repetitionem onerare errores vel ruinam efficere potest.
+scenecraft.gui.modwarning.name=Nomen modi:
+scenecraft.gui.modwarning.id=ID modi:
+scenecraft.gui.modwarning.missing=Modi absentes
+scenecraft.gui.modwarning.version=Versiones modorum diversae
+scenecraft.gui.modwarning.version.expected=Exspectata
+scenecraft.gui.modwarning.version.found=Inventa
+
+#Advanced Screenshots Gui
+scenecraft.gui.advancedscreenshots.title=Optiones imaginis captae
+scenecraft.gui.advancedscreenshots.create=Imaginem capere
+scenecraft.gui.advancedscreenshots.resolution=Resolutio
+
+# Screenshot Finished Gui
+scenecraft.gui.advancedscreenshots.finished.description=Imaginem captam feliciter fecisti!
+scenecraft.gui.advancedscreenshots.finished.description.360=Imaginem captam CCCLX graduum feliciter fecisti!
+scenecraft.gui.advancedscreenshots.finished.description.veer=Imponere et imaginem in VR in VeeR.tv spectare, vel in disco tuo aperire.
+scenecraft.gui.advancedscreenshots.finished.upload.veer=In VeeR.tv imponere
+scenecraft.gui.advancedscreenshots.finished.showfile=Fasciculum in disco ostendere
